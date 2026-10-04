@@ -1,0 +1,245 @@
+{
+  "verified_at": "2026-10-02",
+  "registry": "https://registry.npmjs.org",
+  "node": "24.21.0",
+  "pnpm": "10.33.0",
+  "packages": {
+    "next": {
+      "version": "16.3.8",
+      "engines": {
+        "node": ">=20.9.0"
+      },
+      "peerDependencies": {
+        "sass": "^1.3.0",
+        "react": "^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0",
+        "react-dom": "^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0",
+        "@playwright/test": "^1.51.1",
+        "@opentelemetry/api": "^1.1.0",
+        "babel-plugin-react-compiler": "*"
+      }
+    },
+    "react": {
+      "version": "19.3.0",
+      "engines": {
+        "node": ">=0.10.0"
+      },
+      "peerDependencies": {}
+    },
+    "react-dom": {
+      "version": "19.3.0",
+      "engines": {},
+      "peerDependencies": {
+        "react": "^19.3.0"
+      }
+    },
+    "@nestjs/core": {
+      "version": "12.1.2",
+      "engines": {
+        "node": ">= 20"
+      },
+      "peerDependencies": {
+        "rxjs": "^7.1.0",
+        "@nestjs/common": "^12.0.0",
+        "reflect-metadata": "^0.1.12 || ^0.2.0",
+        "@nestjs/websockets": "^12.0.0",
+        "@nestjs/microservices": "^12.0.0",
+        "@nestjs/platform-express": "^12.0.0"
+      }
+    },
+    "@nestjs/common": {
+      "version": "12.1.2",
+      "engines": {},
+      "peerDependencies": {
+        "rxjs": "^7.1.0",
+        "class-validator": ">=0.13.2",
+        "reflect-metadata": "^0.1.12 || ^0.2.0",
+        "class-transformer": ">=0.4.1"
+      }
+    },
+    "@nestjs/platform-express": {
+      "version": "12.1.2",
+      "engines": {},
+      "peerDependencies": {
+        "@nestjs/core": "^12.0.0",
+        "@nestjs/common": "^12.0.0"
+      }
+    },
+    "reflect-metadata": {
+      "version": "0.2.2",
+      "engines": {},
+      "peerDependencies": {}
+    },
+    "rxjs": {
+      "version": "7.8.2",
+      "engines": {},
+      "peerDependencies": {}
+    },
+    "typescript": {
+      "version": "5.9.3",
+      "engines": {
+        "node": ">=14.17"
+      },
+      "peerDependencies": {}
+    },
+    "vitest": {
+      "version": "5.0.3",
+      "engines": {
+        "node": "^22.12.0 || ^24.0.0 || >=26.0.0"
+      },
+      "peerDependencies": {
+        "vite": "^6.4.0 || ^7.0.0 || ^8.0.0",
+        "jsdom": "*",
+        "happy-dom": "*",
+        "@vitest/ui": "5.0.3",
+        "@types/node": "^22.0.0 || >=24.0.0",
+        "@edge-runtime/vm": "*",
+        "@opentelemetry/api": "^1.9.0",
+        "@vitest/coverage-v8": "5.0.3",
+        "@vitest/browser-preview": "5.0.3",
+        "@vitest/coverage-istanbul": "5.0.3",
+        "@vitest/browser-playwright": "5.0.3",
+        "@vitest/browser-webdriverio": "^5.0.0-beta.5 || >=5.0.0"
+      }
+    },
+    "@types/node": {
+      "version": "24.10.1",
+      "engines": {},
+      "peerDependencies": {}
+    },
+    "@types/react": {
+      "version": "19.3.0",
+      "engines": {},
+      "peerDependencies": {}
+    },
+    "@types/react-dom": {
+      "version": "19.3.0",
+      "engines": {},
+      "peerDependencies": {
+        "@types/react": "^19.3.0"
+      }
+    },
+    "ajv": {
+      "version": "8.20.0",
+      "engines": {},
+      "peerDependencies": {}
+    },
+    "ajv-formats": {
+      "version": "3.0.1",
+      "engines": {},
+      "peerDependencies": {
+        "ajv": "^8.0.0"
+      }
+    },
+    "json-schema-to-typescript": {
+      "version": "16.0.0",
+      "engines": {
+        "node": ">=16.0.0"
+      },
+      "peerDependencies": {}
+    },
+    "openapi-typescript": {
+      "version": "7.13.0",
+      "engines": {},
+      "peerDependencies": {
+        "typescript": "^5.x"
+      }
+    },
+    "typeorm": {
+      "version": "1.1.1",
+      "engines": {
+        "node": "^20.19.0 || ^22.13.0 || >=24.11.0"
+      },
+      "peerDependencies": {
+        "pg": "^8.5.1",
+        "mssql": "^12.0.0",
+        "redis": "^5.0.0 || ^6.0.0",
+        "mysql2": "^3.15.3",
+        "sql.js": "^1.4.0",
+        "ioredis": "^5.0.4",
+        "mongodb": "^7.0.0",
+        "ts-node": "^10.9.2",
+        "oracledb": "^6.3.0 || ^7.0.0",
+        "pg-native": "^3.0.0",
+        "better-sqlite3": "^12.0.0",
+        "pg-query-stream": "^4.0.0",
+        "@sap/hana-client": "^2.14.22",
+        "@google-cloud/spanner": "^8.0.0",
+        "typeorm-aurora-data-api-driver": "^3.0.0"
+      }
+    },
+    "mysql2": {
+      "version": "3.24.5",
+      "engines": {
+        "node": ">= 8.0"
+      },
+      "peerDependencies": {
+        "@types/node": ">= 8"
+      }
+    },
+    "ioredis": {
+      "version": "5.8.2",
+      "engines": {
+        "node": ">=12.22.0"
+      },
+      "peerDependencies": {}
+    },
+    "bullmq": {
+      "version": "6.3.11",
+      "engines": {
+        "node": ">=14.17.0"
+      },
+      "peerDependencies": {
+        "pg": ">=8.0.0",
+        "redis": ">=5.0.0",
+        "ioredis": ">=5.0.0",
+        "bullmq-otel": ">=2.0.0"
+      }
+    },
+    "tsx": {
+      "version": "4.23.15",
+      "engines": {
+        "node": ">=18.0.0"
+      },
+      "peerDependencies": {}
+    },
+    "vite": {
+      "version": "8.3.2",
+      "engines": {
+        "node": "^20.19.0 || >=22.12.0"
+      },
+      "peerDependencies": {
+        "tsx": "^4.8.1",
+        "jiti": ">=1.21.0",
+        "less": "^4.0.0",
+        "sass": "^1.70.0",
+        "yaml": "^2.4.2",
+        "stylus": ">=0.54.8",
+        "terser": "^5.16.0",
+        "esbuild": "^0.27.0 || ^0.28.0",
+        "sugarss": "^5.0.0",
+        "@types/node": "^20.19.0 || >=22.12.0",
+        "sass-embedded": "^1.70.0",
+        "@vitejs/devtools": "^0.7.1"
+      }
+    },
+    "jose": {
+      "version": "6.1.3",
+      "verified_at": "2026-10-03",
+      "purpose": "OIDC JWT signature and claims validation"
+    },
+    "@playwright/test": {
+      "version": "1.58.2",
+      "verified_at": "2026-10-03",
+      "purpose": "Browser auth verification"
+    }
+  },
+  "images": {
+    "node": "node@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6",
+    "mysql": "mysql@sha256:6ea90827b1100f8f2ae306a539f86d2c264a26ed435a2a9f75551dd5c3aeb242",
+    "redis": "redis@sha256:858f009f9709ce576febc734aa78b8f6d624b82571f9ddb6bda4377c833b3499",
+    "gateway": "nginx@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236",
+    "keycloak": "quay.io/keycloak/keycloak@sha256:b0f60d489d51c5d113390bdf5461d4c06e6051be026c05549f2e1e10ec352bcc"
+  },
+  "images_verified_at": "2026-10-03",
+  "local_image_architecture": "arm64"
+}

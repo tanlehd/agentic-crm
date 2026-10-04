@@ -1,0 +1,27 @@
+# Disposable test-only MySQL; never mounts development volumes.
+services:
+  mysql:
+    image: mysql@sha256:6ea90827b1100f8f2ae306a539f86d2c264a26ed435a2a9f75551dd5c3aeb242
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Run pnpm env:init}
+      MYSQL_ROOT_HOST: '%'
+    tmpfs: [/var/lib/mysql]
+    command: [--character-set-server=utf8mb4, --collation-server=utf8mb4_0900_as_cs]
+    healthcheck:
+      test: [CMD-SHELL, 'MYSQL_PWD="$$MYSQL_ROOT_PASSWORD" mysql -u root -e "SELECT 1" >/dev/null 2>&1']
+      interval: 2s
+      timeout: 3s
+      retries: 60
+  test:
+    build: {context: ., dockerfile: infra/docker/Dockerfile, target: test}
+    environment:
+      APP_ENV: test
+      MYSQL_HOST: mysql
+      MYSQL_DATABASE: kernel_test
+      MYSQL_MIGRATION_USER: root
+      MYSQL_MIGRATION_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Run pnpm env:init}
+      MYSQL_USER: crm_test
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Run pnpm env:init}
+    depends_on:
+      mysql: {condition: service_healthy}
+    command: [pnpm, exec, vitest, run, apps/backend/tests/database.integration.test.ts]

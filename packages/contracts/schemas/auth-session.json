@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AuthSessionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "data",
+    "meta"
+  ],
+  "properties": {
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "account_id",
+        "display_name",
+        "expires_at"
+      ],
+      "properties": {
+        "account_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "display_name": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "correlation_id"
+      ],
+      "properties": {
+        "correlation_id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    }
+  }
+}

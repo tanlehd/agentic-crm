@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AuthCsrfResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "data",
+    "meta"
+  ],
+  "properties": {
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "csrf_token"
+      ],
+      "properties": {
+        "csrf_token": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "correlation_id"
+      ],
+      "properties": {
+        "correlation_id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    }
+  }
+}

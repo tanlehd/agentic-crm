@@ -1,0 +1,15 @@
+# Must be invoked with -p agentic-crm-test. Volumes remain project-scoped.
+services:
+  gateway:
+    ports: !override [127.0.0.1:18080:8080]
+  keycloak:
+    environment:
+      KC_HOSTNAME: http://localhost:18080/identity
+  test:
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile
+      target: test
+    environment:
+      APP_ENV: test
+    command: [pnpm, test]

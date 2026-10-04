@@ -1,0 +1,1081 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "IdentityAdminContract",
+  "definitions": {
+    "memberships-create": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "account_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "seat_code": {
+          "enum": [
+            "viewer",
+            "chat",
+            "sales",
+            "service",
+            "admin"
+          ]
+        },
+        "role_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "uniqueItems": true,
+          "maxItems": 100
+        },
+        "team_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "uniqueItems": true,
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "account_id",
+        "seat_code",
+        "role_ids",
+        "team_ids"
+      ]
+    },
+    "teams-create": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "\\S"
+        },
+        "purpose": {
+          "enum": [
+            "chat",
+            "sales",
+            "service",
+            "general"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "purpose"
+      ]
+    },
+    "roles-create": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "\\S"
+        },
+        "permissions": {
+          "type": "array",
+          "maxItems": 200,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "resource": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$"
+              },
+              "action": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$"
+              },
+              "scope": {
+                "enum": [
+                  "own",
+                  "team",
+                  "all"
+                ]
+              }
+            },
+            "required": [
+              "resource",
+              "action",
+              "scope"
+            ]
+          }
+        }
+      },
+      "required": [
+        "key",
+        "name",
+        "permissions"
+      ]
+    },
+    "ai-agents-create": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "\\S"
+        },
+        "policy_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "runtime_adapter": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
+        },
+        "max_concurrency": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "role_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "uniqueItems": true,
+          "maxItems": 100
+        },
+        "team_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "uniqueItems": true,
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "name",
+        "policy_id",
+        "runtime_adapter",
+        "max_concurrency",
+        "role_ids",
+        "team_ids"
+      ]
+    },
+    "memberships-patch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "seat_code": {
+          "enum": [
+            "viewer",
+            "chat",
+            "sales",
+            "service",
+            "admin"
+          ]
+        },
+        "role_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "uniqueItems": true,
+          "maxItems": 100
+        },
+        "team_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "uniqueItems": true,
+          "maxItems": 100
+        },
+        "status": {
+          "enum": [
+            "active",
+            "suspended"
+          ]
+        }
+      },
+      "required": [],
+      "minProperties": 1
+    },
+    "teams-patch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "\\S"
+        },
+        "active": {
+          "type": "boolean"
+        }
+      },
+      "required": [],
+      "minProperties": 1
+    },
+    "roles-patch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "\\S"
+        },
+        "permissions": {
+          "type": "array",
+          "maxItems": 200,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "resource": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$"
+              },
+              "action": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$"
+              },
+              "scope": {
+                "enum": [
+                  "own",
+                  "team",
+                  "all"
+                ]
+              }
+            },
+            "required": [
+              "resource",
+              "action",
+              "scope"
+            ]
+          }
+        }
+      },
+      "required": [],
+      "minProperties": 1
+    },
+    "ai-agents-patch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "\\S"
+        },
+        "policy_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "max_concurrency": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "role_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "uniqueItems": true,
+          "maxItems": 100
+        },
+        "team_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "uniqueItems": true,
+          "maxItems": 100
+        }
+      },
+      "required": [],
+      "minProperties": 1
+    },
+    "principals-patch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "availability": {
+          "enum": [
+            "available",
+            "unavailable"
+          ]
+        },
+        "status": {
+          "enum": [
+            "active",
+            "suspended"
+          ]
+        }
+      },
+      "required": [],
+      "minProperties": 1
+    },
+    "memberships-entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "tenant_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        },
+        "account_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "seat_code": {
+          "enum": [
+            "viewer",
+            "chat",
+            "sales",
+            "service",
+            "admin"
+          ]
+        },
+        "role_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "uniqueItems": true,
+          "maxItems": 100
+        },
+        "team_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "uniqueItems": true,
+          "maxItems": 100
+        },
+        "principal_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "principal_version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        },
+        "auth_revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        },
+        "status": {
+          "enum": [
+            "invited",
+            "active",
+            "suspended"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "tenant_id",
+        "version",
+        "account_id",
+        "seat_code",
+        "role_ids",
+        "team_ids",
+        "principal_id",
+        "principal_version",
+        "auth_revision",
+        "status"
+      ]
+    },
+    "teams-entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "tenant_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "\\S"
+        },
+        "purpose": {
+          "enum": [
+            "chat",
+            "sales",
+            "service",
+            "general"
+          ]
+        },
+        "active": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "tenant_id",
+        "version",
+        "name",
+        "purpose",
+        "active"
+      ]
+    },
+    "roles-entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "tenant_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        },
+        "key": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "\\S"
+        },
+        "permissions": {
+          "type": "array",
+          "maxItems": 200,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "resource": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$"
+              },
+              "action": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$"
+              },
+              "scope": {
+                "enum": [
+                  "own",
+                  "team",
+                  "all"
+                ]
+              }
+            },
+            "required": [
+              "resource",
+              "action",
+              "scope"
+            ]
+          }
+        }
+      },
+      "required": [
+        "id",
+        "tenant_id",
+        "version",
+        "key",
+        "name",
+        "permissions"
+      ]
+    },
+    "ai-agents-entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "tenant_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "\\S"
+        },
+        "policy_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "runtime_adapter": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
+        },
+        "max_concurrency": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "role_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "uniqueItems": true,
+          "maxItems": 100
+        },
+        "team_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "uniqueItems": true,
+          "maxItems": 100
+        },
+        "principal_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "principal_version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        },
+        "auth_revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        }
+      },
+      "required": [
+        "id",
+        "tenant_id",
+        "version",
+        "name",
+        "policy_id",
+        "runtime_adapter",
+        "max_concurrency",
+        "role_ids",
+        "team_ids",
+        "principal_id",
+        "principal_version",
+        "auth_revision"
+      ]
+    },
+    "principals-entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "tenant_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        },
+        "kind": {
+          "enum": [
+            "human",
+            "ai"
+          ]
+        },
+        "status": {
+          "enum": [
+            "active",
+            "suspended"
+          ]
+        },
+        "availability": {
+          "enum": [
+            "available",
+            "unavailable"
+          ]
+        },
+        "auth_revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        }
+      },
+      "required": [
+        "id",
+        "tenant_id",
+        "version",
+        "kind",
+        "status",
+        "availability",
+        "auth_revision"
+      ]
+    },
+    "my-membership-entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "tenant_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        },
+        "seat_code": {
+          "enum": [
+            "viewer",
+            "chat",
+            "sales",
+            "service",
+            "admin"
+          ]
+        },
+        "principal_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "tenant_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "id",
+        "tenant_id",
+        "version",
+        "seat_code",
+        "principal_id",
+        "tenant_name"
+      ]
+    },
+    "memberships-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/memberships-entity"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "memberships-list": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/memberships-entity"
+          }
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        },
+        "next_cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta",
+        "next_cursor"
+      ]
+    },
+    "teams-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/teams-entity"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "teams-list": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/teams-entity"
+          }
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        },
+        "next_cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta",
+        "next_cursor"
+      ]
+    },
+    "roles-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/roles-entity"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "roles-list": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roles-entity"
+          }
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        },
+        "next_cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta",
+        "next_cursor"
+      ]
+    },
+    "ai-agents-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/ai-agents-entity"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "ai-agents-list": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ai-agents-entity"
+          }
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        },
+        "next_cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta",
+        "next_cursor"
+      ]
+    },
+    "principals-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/principals-entity"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "principals-list": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/principals-entity"
+          }
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        },
+        "next_cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta",
+        "next_cursor"
+      ]
+    },
+    "my-membership-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/my-membership-entity"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "my-membership-list": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/my-membership-entity"
+          }
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        },
+        "next_cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta",
+        "next_cursor"
+      ]
+    }
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {}
+}

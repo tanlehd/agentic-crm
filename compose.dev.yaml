@@ -1,0 +1,18 @@
+services:
+  api:
+    image: agentic-crm-development:local
+    build: {context: ., dockerfile: infra/docker/Dockerfile, target: development}
+    command: [pnpm, dev:api]
+    volumes:
+      - ./apps/backend/src:/app/apps/backend/src:ro
+  worker:
+    image: agentic-crm-development:local
+    command: [pnpm, dev:worker]
+    volumes:
+      - ./apps/backend/src:/app/apps/backend/src:ro
+  web:
+    image: agentic-crm-web-development:local
+    build: {target: development}
+    command: [pnpm, dev:web]
+    volumes:
+      - ./apps/web/app:/app/apps/web/app:ro

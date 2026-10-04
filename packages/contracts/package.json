@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "name": "@agentic-crm/contracts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "files": [
+    "dist"
+  ]
+}

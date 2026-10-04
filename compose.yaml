@@ -1,0 +1,155 @@
+name: agentic-crm
+
+x-backend: &backend
+  image: agentic-crm-backend:local
+  environment: &backend-env
+    APP_ENV: ${APP_ENV:-development}
+    MYSQL_HOST: mysql
+    MYSQL_DATABASE: ${MYSQL_DATABASE:?Run pnpm env:init}
+    MYSQL_USER: ${MYSQL_USER:?Run pnpm env:init}
+    MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Run pnpm env:init}
+    REDIS_HOST: redis
+  depends_on:
+    mysql: {condition: service_healthy}
+    redis: {condition: service_healthy}
+    db-grants: {condition: service_completed_successfully}
+  init: true
+  stop_grace_period: 15s
+  healthcheck:
+    test: [CMD, node, -e, "fetch('http://127.0.0.1:'+process.env.PORT+'/api/v1/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+    interval: 10s
+    timeout: 5s
+    retries: 6
+    start_period: 20s
+
+services:
+  mysql:
+    image: mysql@sha256:6ea90827b1100f8f2ae306a539f86d2c264a26ed435a2a9f75551dd5c3aeb242
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:?Run pnpm env:init}
+      MYSQL_USER: ${MYSQL_USER:?Run pnpm env:init}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Run pnpm env:init}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Run pnpm env:init}
+      TZ: UTC
+    command: [--character-set-server=utf8mb4, --collation-server=utf8mb4_0900_as_cs, --default-time-zone=+00:00]
+    volumes: [mysql_data:/var/lib/mysql]
+    healthcheck:
+      test: [CMD-SHELL, 'MYSQL_PWD="$$MYSQL_PASSWORD" mysql -h 127.0.0.1 -u "$$MYSQL_USER" "$$MYSQL_DATABASE" -e "SELECT 1" >/dev/null 2>&1']
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 30s
+  redis:
+    image: redis@sha256:858f009f9709ce576febc734aa78b8f6d624b82571f9ddb6bda4377c833b3499
+    command: [redis-server, --appendonly, 'yes']
+    volumes: [redis_data:/data]
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  db-provision:
+    image: agentic-crm-backend:local
+    build: {context: ., dockerfile: infra/docker/Dockerfile, target: backend}
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      MYSQL_HOST: mysql
+      MYSQL_DATABASE: ${MYSQL_DATABASE:?Run pnpm env:init}
+      MYSQL_USER: ${MYSQL_USER:?Run pnpm env:init}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Run pnpm env:init}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Run pnpm env:init}
+      MYSQL_MIGRATION_USER: ${MYSQL_MIGRATION_USER:?Run pnpm env:init}
+      MYSQL_MIGRATION_PASSWORD: ${MYSQL_MIGRATION_PASSWORD:?Run pnpm env:init}
+    depends_on:
+      mysql: {condition: service_healthy}
+    command: [node, dist/kernel/database/provision.js]
+  migrate:
+    image: agentic-crm-backend:local
+    pull_policy: never
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_DATABASE: ${MYSQL_DATABASE:?Run pnpm env:init}
+      MYSQL_MIGRATION_USER: ${MYSQL_MIGRATION_USER:?Run pnpm env:init}
+      MYSQL_MIGRATION_PASSWORD: ${MYSQL_MIGRATION_PASSWORD:?Run pnpm env:init}
+    depends_on:
+      db-provision: {condition: service_completed_successfully}
+    command: [node, dist/kernel/database/cli.js]
+  db-grants:
+    image: agentic-crm-backend:local
+    pull_policy: never
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      MYSQL_HOST: mysql
+      MYSQL_DATABASE: ${MYSQL_DATABASE:?Run pnpm env:init}
+      MYSQL_USER: ${MYSQL_USER:?Run pnpm env:init}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Run pnpm env:init}
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    command: [node, dist/kernel/database/grants-cli.js]
+  api:
+    <<: *backend
+    pull_policy: never
+    environment:
+      <<: *backend-env
+      PORT: '3001'
+      APP_ORIGIN: ${APP_ORIGIN:-http://localhost:8080}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:?Run pnpm env:init}
+      SESSION_ENCRYPTION_KEY: ${SESSION_ENCRYPTION_KEY:?Run pnpm env:init}
+      OIDC_BACKCHANNEL: http://keycloak:8080/identity/realms/agentic-crm-dev
+    command: [node, dist/main.js]
+  worker:
+    <<: *backend
+    pull_policy: never
+    environment:
+      <<: *backend-env
+      PORT: '3002'
+    command: [node, dist/worker.js]
+  web:
+    image: agentic-crm-web:local
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile
+      target: web
+    environment:
+      API_INTERNAL_URL: http://api:3001
+    init: true
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:3000').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+  keycloak:
+    image: quay.io/keycloak/keycloak@sha256:b0f60d489d51c5d113390bdf5461d4c06e6051be026c05549f2e1e10ec352bcc
+    command: [start-dev, --import-realm]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: local_admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?Run pnpm env:init}
+      KC_HTTP_RELATIVE_PATH: /identity
+      KC_HTTP_MANAGEMENT_RELATIVE_PATH: /
+      KC_HOSTNAME: ${APP_ORIGIN:-http://localhost:8080}/identity
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: 'true'
+      KC_PROXY_HEADERS: xforwarded
+      KC_HEALTH_ENABLED: 'true'
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+      - ./infra/docker/realm.json:/opt/keycloak/data/import/realm.json:ro
+    healthcheck:
+      test: [CMD-SHELL, "bash -c 'exec 3<>/dev/tcp/127.0.0.1/9000; printf \"GET /health/ready HTTP/1.0\\r\\n\\r\\n\" >&3; head -1 <&3 | grep -q 200'"]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 40s
+  gateway:
+    image: nginx@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236
+    ports: [127.0.0.1:8080:8080]
+    volumes: [./infra/docker/nginx.conf:/etc/nginx/nginx.conf:ro]
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, http://127.0.0.1:8080/gateway-health]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+
+volumes:
+  mysql_data:
+  redis_data:
+  keycloak_data:

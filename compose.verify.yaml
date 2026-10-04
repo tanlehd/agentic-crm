@@ -1,0 +1,13 @@
+# Standalone verify: no development environment, network or database volumes.
+services:
+  verify:
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile
+      target: verify
+    environment:
+      APP_ENV: test
+      NEXT_TELEMETRY_DISABLED: '1'
+    volumes:
+      - ./artifacts/verify:/app/artifacts/verify
+    command: [pnpm, verify]

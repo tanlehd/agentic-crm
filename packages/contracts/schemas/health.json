@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HealthResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "service", "stage", "checks"],
+  "properties": {
+    "status": {"enum": ["ok", "degraded"]},
+    "service": {"enum": ["api", "worker"]},
+    "stage": {"const": "scaffold"},
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mysql", "redis"],
+      "properties": {
+        "mysql": {"enum": ["up", "down", "not_configured"]},
+        "redis": {"enum": ["up", "down", "not_configured"]}
+      }
+    }
+  }
+}

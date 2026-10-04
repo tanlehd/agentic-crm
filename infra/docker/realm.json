@@ -1,0 +1,10 @@
+{
+  "realm": "agentic-crm-dev",
+  "enabled": true,
+  "registrationAllowed": false,
+  "resetPasswordAllowed": false,
+  "loginWithEmailAllowed": false,
+  "sslRequired": "external",
+  "clients": [],
+  "users": []
+}
