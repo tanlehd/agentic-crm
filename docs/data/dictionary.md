@@ -111,3 +111,7 @@ Quy tắc physical type/default/index/FK/migration bổ sung ở [physical schem
 SRC-007 CHG-20261003-06 triển khai Identity v2 và storage reliability v3 (`audit_entry`, `idempotency_record`, `outbox_event`) phục vụ admin transaction. SRC-008 nối inbox/relay/leases. V1/v2 giữ immutable; không thêm schema field_policy tới SRC-010. API Identity version/revision truyền string decimal để không mất BIGINT.
 
 SRC-010 migration v6 triển khai object_type/crm_record/association_type/association/ownership_history/record_team_access/field_policy. association_type có version; association immutable chỉ created_at. ownership_history UNIQUE tenant+record+owner_revision và chỉ created_at; runtime SELECT/INSERT. Standard/custom subtype và property/index/form/view chưa có tới SRC-011/012. [Registry contract](../contracts/registry.md) làm rõ cardinality, CAS source và application ports.
+
+SRC-011: property/form/view có created_at/updated_at/version; custom_record và property_index_value dùng composite PK không surrogate ID. Exact validation và wire shapes theo [CRM records](../contracts/crm-records.md).
+
+SRC-012 v8 Contact/Company/Activity/Lead theo [CRM core](../contracts/crm-core.md); M2 refs nullable CHECK IS NULL, future FK forward migration.

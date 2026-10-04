@@ -1,3 +1,4 @@
+import { seedM1 } from '../src/modules/crm/m1-seed.js';
 import { seedRegistry } from '../src/modules/crm/seed.js';
 import { describe,it,expect } from 'vitest';
 import type { DataSource } from 'typeorm';
@@ -52,6 +53,17 @@ export function seedCases(isolated:(name:string)=>Promise<DataSource>){
       const snapshot=await ds.query('SELECT * FROM object_type ORDER BY id');const roles=await ds.query('SELECT * FROM `role` ORDER BY id');
       expect(await seedRegistry(ds,env)).toEqual({created:0,existing:2});expect(await ds.query('SELECT * FROM object_type ORDER BY id')).toEqual(snapshot);expect(await ds.query('SELECT * FROM `role` ORDER BY id')).toEqual(roles);
       await ds.query('DELETE FROM object_type WHERE id=?',[fixtureId('beta:object:ticket')]);await expect(seedRegistry(ds,env)).rejects.toThrow('SEED_INCOMPLETE');
+    });
+    it('M1 v3 additive fixture is atomic, repeat safe and preserves prior role edits',async()=>{
+      const before=await ds.query("SELECT id,permissions FROM `role` ORDER BY id");
+      await ds.query(`CREATE TRIGGER m1_seed_fail BEFORE INSERT ON property_definition FOR EACH ROW BEGIN IF NEW.tenant_id='${fixtureId("clinic_beta")}' THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='synthetic failure'; END IF; END`);
+      await expect(seedM1(ds,env)).rejects.toThrow();expect(await ds.query("SELECT id,permissions FROM `role` ORDER BY id")).toEqual(before);await ds.query('DROP TRIGGER m1_seed_fail');
+      expect(await seedM1(ds,env)).toEqual({created:2,existing:0});
+      const snapshot=await ds.query('SELECT * FROM property_definition ORDER BY id');
+      await ds.query('DELETE FROM principal_role WHERE principal_id=? AND role_id=?',[fixtureId('alpha:human:read_only'),fixtureId('alpha:role:m1_crm_viewer')]);
+      expect(await seedM1(ds,env)).toEqual({created:0,existing:2});expect(await ds.query('SELECT * FROM property_definition ORDER BY id')).toEqual(snapshot);
+      expect(await ds.query('SELECT * FROM principal_role WHERE principal_id=? AND role_id=?',[fixtureId('alpha:human:read_only'),fixtureId('alpha:role:m1_crm_viewer')])).toEqual([]);
+      for(const r of before)expect((await ds.query('SELECT permissions FROM `role` WHERE id=?',[r.id]))[0].permissions).toEqual(r.permissions);
     });
     it('rerun preserves revocation and refuses changed provider mapping or incomplete fixture',async()=>{
       await ds.query("UPDATE membership SET status='suspended',auth_revision=auth_revision+1 WHERE id=?",[fixtureId('alpha:member:chat_anna')]);

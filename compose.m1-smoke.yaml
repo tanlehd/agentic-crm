@@ -1,0 +1,14 @@
+# Disposable cold-start gate. Separate project + tmpfs; never touches preview volumes.
+services:
+  mysql:
+    volumes: !override []
+    tmpfs: [/var/lib/mysql]
+  redis:
+    volumes: !override []
+    tmpfs: [/data]
+  keycloak:
+    volumes: !override
+      - ./infra/docker/realm.json:/opt/keycloak/data/import/realm.json:ro
+    tmpfs: [/opt/keycloak/data:mode=1777]
+  gateway:
+    ports: !override [127.0.0.1:18080:8080]

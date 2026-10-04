@@ -2,7 +2,7 @@
 
 Nguồn chuẩn trạng thái công việc. Updated: 2026-10-04. Thiết kế có thể Ready nhưng source task vẫn TODO; hai trạng thái không đồng nghĩa.
 
-**Hiện tại:** SRC-001…010 DONE (10/25); preview local localhost:8080 có OIDC, Identity admin API và tenant selector. SRC-011 READY; registry metadata/association và seed v2 đã có; chưa có record CRUD/UI nghiệp vụ. [Checkpoint](checkpoint.md) · [Execution log](log.md) · [Build plan](../planning/build-plan.md).
+**Hiện tại:** SRC-001…013 DONE (13/25); base CRM M1 gate PASS. Preview localhost:8080 có OIDC, Identity Admin/CRM UI, standard/custom CRUD, Lead qualification, metadata/form/view và association. SRC-014 READY, chưa claim; không task active. [Checkpoint](checkpoint.md) · [Execution log](log.md) · [Build plan](../planning/build-plan.md).
 
 Owner `—` nghĩa chưa claim. Evidence `—` nghĩa chưa kiểm thử/hoàn thành, không phải pass. Chỉ promote TODO→READY khi tất cả dependency DONE và thiết kế đúng phạm vi Ready. Một task active tại một thời điểm theo mặc định.
 
@@ -28,15 +28,15 @@ Git sync S-20261004-03: initial commit `7c05518` đã push lên `origin/main` th
 | SRC-008 | Hoàn thiện audit/idempotency, outbox relay/inbox, worker leases | SRC-007 | DONE | Codex 2026-10-03 | AC-05 foundation, AC-12; transaction atomic, duplicate consume, replay response rights, lease fencing | details/SRC-008.md |
 | SRC-009 | Bootstrap/seed hai tenant, users/roles/service actors | SRC-008 | DONE | Codex 2026-10-04 | Alpha/Beta fixtures idempotent, không hard-code secret; dev guard; login mỗi tenant và negative cross-tenant | details/SRC-009.md |
 | SRC-010 | Object/record registry, ownership history, association | SRC-009 | DONE | Codex 2026-10-04 | Same-tenant FK/cardinality/CAS; record+subtype atomic; source/target permission tests | details/SRC-010.md |
-| SRC-011 | Properties, custom values/index, form/view API | SRC-010 | READY | — | AC-04/M1 và AC-13/M1; validation, index rollback, query ACL; Appointment/ServiceOffering generic CRUD | — |
-| SRC-012 | Contact/Company/Activity + Lead core/draft/qualification | SRC-011 | TODO | — | AC-03/M1, AC-09 phần qualification; nhiều Lead/Contact; consent evidence; reserved session creation interface; handoff triển khai SRC-021 | — |
-| SRC-013 | Admin/CRM UI và M1 release gate | SRC-012 | TODO | — | Browser login→tenant→custom/standard record; permission/error states; M1 AC sub-scopes pass; Docker cold/warm demo | — |
+| SRC-011 | Properties, custom values/index, form/view API | SRC-010 | DONE | Codex 2026-10-04 | AC-04/M1 và AC-13/M1; validation, index rollback, query ACL; Appointment/ServiceOffering generic CRUD | details/SRC-011.md |
+| SRC-012 | Contact/Company/Activity + Lead core/draft/qualification | SRC-011 | DONE | Codex 2026-10-04 | AC-03/M1, AC-09 phần qualification; nhiều Lead/Contact; consent evidence; reserved session creation interface; handoff triển khai SRC-021 | details/SRC-012.md |
+| SRC-013 | Admin/CRM UI và M1 release gate | SRC-012 | DONE | Codex 2026-10-04 | Browser login→tenant→custom/standard record; permission/error states; M1 AC sub-scopes pass; Docker cold/warm demo | details/SRC-013.md |
 
 ## M2 — Mock vertical slice
 
 | ID | Deliverable | Deps | Status | Owner | Gate / acceptance cụ thể | Evidence |
 |---|---|---|---|---|---|---|
-| SRC-014 | Conversation/message domain, outbound intent/mock sender | SRC-013 | TODO | — | Một active Conversation/identity, owner-only send, notes; status queued/sending/sent/unknown; ports cho intake | — |
+| SRC-014 | Conversation/message domain, outbound intent/mock sender | SRC-013 | READY | — | Một active Conversation/identity, owner-only send, notes; status queued/sending/sent/unknown; ports cho intake | — |
 | SRC-015 | Mock Messenger intake, identity resolution, attribution | SRC-014 | TODO | — | AC-05; durable ACK, duplicate event/message, same-key different-payload conflict; missing referral vẫn hoạt động | — |
 | SRC-016 | Chat inbox UI, timeline, note, quick reply, polling | SRC-015 | TODO | — | Queue/detail/context; loading/error/forbidden/owner stale; API-backed timeline, không static mock UI thay backend | — |
 | SRC-017 | Routing/capability/capacity, assignment/takeover | SRC-016 | TODO | — | AC-06; round-robin concurrency, unassigned fallback, owner independence; cancel intent khi đổi owner | — |
@@ -79,3 +79,7 @@ Không tính các epic này vào 25 task source M1–M2; không tạo thời h�
 ## Quy tắc evidence
 
 Mỗi DONE trỏ session log hoặc task detail có command/result/artifact, docs changed và remaining risks. Commit/PR chỉ ghi khi thực sự có; working-tree reference hợp lệ khi chưa commit. Dashboard tiến độ báo số task DONE và milestone gate, không suy diễn % chức năng từ số dòng code.
+
+## Defect regression
+
+DEF-001 DONE (Codex 2026-10-04): concurrent session touch gây AUTH_SESSION_BUSY; bounded wait + live reread/CAS đã qua unit và real Chrome M1. CHG-20261004-06; [evidence SRC-013](details/SRC-013.md). Không tính thêm vào 25 source tasks.

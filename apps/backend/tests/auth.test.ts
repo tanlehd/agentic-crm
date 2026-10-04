@@ -95,9 +95,15 @@ describe('auth security and session lifecycle', () => {
   it('refreshes once under concurrent access and invalidates on revocation', async () => {
     const f = fixture(), login = await f.login(); f.advance(3600_000);
     const outcomes = await Promise.allSettled([f.service.session(login.id), f.service.session(login.id)]);
-    expect(outcomes.filter(x => x.status === 'fulfilled')).toHaveLength(1); expect(f.provider.refresh).toHaveBeenCalledTimes(1);
+    expect(outcomes.filter(x => x.status === 'fulfilled')).toHaveLength(2); expect(f.provider.refresh).toHaveBeenCalledTimes(1);
     f.advance(3600_000); vi.mocked(f.provider.refresh).mockRejectedValue(new AuthError(401, 'AUTH_SESSION_EXPIRED'));
     await expect(f.service.session(login.id)).rejects.toMatchObject({ status: 401 }); expect(f.store.values.has(`auth:session:${hash(login.id)}`)).toBe(false);
+  });
+  it('supports concurrent UI session touches without losing TTL or weakening logout',async()=>{
+    const f=fixture(),login=await f.login();f.advance(1000);
+    const results=await Promise.all(Array.from({length:12},()=>f.service.session(login.id,true)));
+    expect(results).toHaveLength(12);for(const result of results)expect(result.last_seen_at).toBe(login.session.last_seen_at+1000);
+    expect(f.provider.refresh).not.toHaveBeenCalled();
   });
   it('keeps transient provider failure retryable without extending idle', async () => {
     const f = fixture(), login = await f.login(); f.advance(3600_000);

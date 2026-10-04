@@ -1,4 +1,5 @@
 'use client';
+import { CrmWorkspace } from './crm/workspace';
 import { useEffect, useState } from 'react';
 interface Membership {id:string;tenant_id:string;tenant_name:string;seat_code:string}
 export function TenantPanel(){
@@ -24,8 +25,8 @@ export function TenantPanel(){
     }).catch(()=>{if(!controller.signal.aborted)setMessage('Chưa thể xác minh quyền truy cập tổ chức.');});
     return()=>controller.abort();
   },[selected]);
-  return <section className="auth-panel" aria-label="Tổ chức">
+  return <><section className="auth-panel" aria-label="Tổ chức">
     <div><h2>Tổ chức</h2>{members.length>0&&<label>Chọn tổ chức <select aria-label="Chọn tổ chức" value={selected} onChange={event=>setSelected(event.target.value)}><option value="">Chọn tổ chức…</option>{members.map(member=><option key={member.id} value={member.tenant_id}>{member.tenant_name} · {member.seat_code}</option>)}</select></label>}<p role="status">{message}</p></div>
     {error&&<button disabled={loading} onClick={()=>void load()}>Tải lại tổ chức</button>}{cursor&&<button disabled={loading} onClick={()=>void load(cursor)}>Tải thêm tổ chức</button>}
-  </section>;
+  </section>{selected&&<CrmWorkspace key={selected} tenant={selected}/>}</>;
 }

@@ -231,6 +231,41 @@
       "version": "1.58.2",
       "verified_at": "2026-10-03",
       "purpose": "Browser auth verification"
+    },
+    "@tanstack/react-query": {
+      "version": "5.104.1",
+      "verified_at": "2026-10-04",
+      "purpose": "M1 CRM UI; registry checked, container build gate SRC-013"
+    },
+    "react-hook-form": {
+      "version": "7.89.0",
+      "verified_at": "2026-10-04",
+      "purpose": "M1 CRM UI; registry checked, container build gate SRC-013"
+    },
+    "tailwindcss": {
+      "version": "4.3.3",
+      "verified_at": "2026-10-04",
+      "purpose": "M1 CRM UI; registry checked, container build gate SRC-013"
+    },
+    "@tailwindcss/postcss": {
+      "version": "4.3.3",
+      "verified_at": "2026-10-04",
+      "purpose": "M1 CRM UI; registry checked, container build gate SRC-013"
+    },
+    "class-variance-authority": {
+      "version": "0.7.1",
+      "verified_at": "2026-10-04",
+      "purpose": "M1 CRM UI; registry checked, container build gate SRC-013"
+    },
+    "clsx": {
+      "version": "2.1.1",
+      "verified_at": "2026-10-04",
+      "purpose": "M1 CRM UI; registry checked, container build gate SRC-013"
+    },
+    "tailwind-merge": {
+      "version": "3.7.0",
+      "verified_at": "2026-10-04",
+      "purpose": "M1 CRM UI; registry checked, container build gate SRC-013"
     }
   },
   "images": {

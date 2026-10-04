@@ -170,3 +170,29 @@ AC-01/02/04/12 chỉ registry/association sub-scope; custom CRUD/index/form/view
 - Kiểm tra trên macOS host: `node scripts/check-docs.mjs` PASS (58 Markdown/242 links/25 acyclic tasks); `node scripts/generate-contracts.mjs --check` PASS; `node scripts/lint.mjs` PASS (80 JS/TS); `git diff --cached --check` PASS. Rà 207 candidate files với private-key/token patterns và giá trị secret local không tìm thấy match; không xuất giá trị secret. `git check-ignore` xác nhận .env/artifacts/node_modules/.cache ngoài Git.
 - Không chạy lại integration/browser/full build cho tác vụ đồng bộ; evidence implementation giữ ở các session trước. Remote CI chưa kiểm tra kết quả. Artifacts evidence vẫn local theo .gitignore.
 - Cập nhật tracker/checkpoint/log trong commit tài liệu tiếp theo. Runtime không bị thao tác trong phiên; trạng thái 7 services là checkpoint trước, chưa kiểm tra lại. Không blocker/decision pending; next implementation task SRC-011.
+
+## S-20261004-04 — SRC-011 → SRC-013 implementation
+
+SRC-011 claimed Codex 2026-10-04; SRC-012/013 chờ dependency. Workspace main sạch trước claim.
+
+CHG-20261004-03 (C2, SRC-011): bổ sung exact property/form/view/custom-record contract, typed query/null sort/cursor và replay field ACL; migration v7 additive, không sửa v1–v6. Docs: contracts/crm-records.md, api.md, dictionary, physical schema. Thiết kế resolved trước code; implementation/tests pending.
+
+SRC-011 DONE:45 integration tests,9 verify gates PASS; evidence details/SRC-011.md. SRC-012 claimed sau dependency DONE. Preview v6 chưa đổi. CHG-20261004-04 C2: exact standard record/Lead contract và v8 bổ sung; M2 references fail closed, manual consent stamped server-side, Sales/CRM references qua UoW ports. Design resolved trước code.
+
+SRC-012 DONE:52 MySQL integration,9 verify gates PASS; details/SRC-012.md. SRC-013 claimed, dependency DONE. CHG-20261004-05 C2: UI context/record descriptor endpoint để renderer nhận readable/writable fields và action capabilities mà không cần schema-admin grant; chuẩn ACL backend vẫn authoritative. M1 seed extension v3 chỉ additive grants/schema, không sửa seed v1/v2 hoặc quyền người dùng tùy chỉnh. Thiết kế theo contracts/crm-ui.md trước implementation.
+
+CHG-20261004-06 / DEF-001 (Defect phát hiện SRC-013): browser nhiều request đọc/touch cùng session gây AUTH_SESSION_BUSY ngay lập tức ở SRC-006. Sửa bằng bounded lock wait, giữ live reread/CAS/logout revocation; không đổi TTL hoặc nới CSRF. Regression concurrent touch/refresh và logout race, real Chrome gate phải pass trước đóng. Không sửa evidence lịch sử SRC-006.
+
+### S-20261004-04 — Hoàn tất SRC-013 / M1
+
+SRC-013 IN_PROGRESS → VERIFYING → DONE, SRC-014 READY; 13/25 DONE, không task active. CHG-03/04/05/06 resolved; DEF-001 regression PASS. CRM/Admin UI theo descriptor và tenant cache isolation, seed v3 additive. SRC-011/012 evidence giữ riêng, [SRC-013 final evidence](details/SRC-013.md).
+
+Final 53 real MySQL integration PASS; 9 canonical Linux ARM64 verify gates PASS (40 unit/contract +7 tooling). Latest preview rebuild, real Chrome154 browser M1, tmpfs cold v1–v8+seed+OIDC và preview stop/start giữ Contact/Appointment/qualified Lead hai tenant đều PASS. V6→v8 exact fingerprint13 bảng cũ trước seed; M1 seed first2/repeat0 created. 7 preview services healthy, volume/credential giữ nguyên; disposable projects cleanup.
+
+Browser iterations phát hiện AUTH_SESSION_BUSY, accessible selector và chờ response metadata save; đã sửa nguyên nhân/harness và chạy lại gate thật. Screenshot desktop xem trực tiếp, mobile overflow assert PASS. Artifacts local SRC-013; secrets không log. Schema8 immutable sau apply. M1 sub-scopes AC-03/04/13 đạt, không mở rộng M2/M4/M5. Unknown domain outbox giữ failed tới khi có consumer thật theo ADR-014.
+
+README/index, contracts/data/modules/UX/runbooks, acceptance/tracker/details/checkpoint đồng bộ. Working tree main dirty sau7c05518, chưa commit/push/deploy; remote CI/AMD64/Windows NOT_RUN. Không blocker/decision pending/background automation. Next SRC-014 khi người dùng tiếp tục M2.
+
+## S-20261004-05 — Commit/push M1 theo yêu cầu
+
+Người dùng yêu cầu commit và push toàn bộ SRC-011…013 đã nghiệm thu. Target `main` → `origin/main`, SSH remote tanlehd/agentic-crm; không force push/deploy. Kiểm tra diff whitespace và quét candidate files với secret local/private-key/token patterns PASS; .env/artifacts/cache/dependencies tiếp tục ngoài Git. Evidence kiểm thử M1 ở S-20261004-04, không chạy lại application tests chỉ để đồng bộ Git. Commit chứa entry này là working-tree handoff M1; kết quả push được xác minh với remote sau thao tác.

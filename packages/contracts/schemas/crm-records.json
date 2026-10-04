@@ -1,0 +1,1169 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CrmRecords",
+  "definitions": {
+    "crm-property-create": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "type": {
+          "enum": [
+            "string",
+            "text",
+            "integer",
+            "decimal",
+            "boolean",
+            "date",
+            "datetime",
+            "enum"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "default_value": {},
+        "options": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "indexed": {
+          "type": "boolean"
+        },
+        "sensitive": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "key",
+        "label",
+        "type",
+        "required",
+        "indexed",
+        "sensitive"
+      ]
+    },
+    "crm-property-patch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      },
+      "required": [
+        "label"
+      ]
+    },
+    "crm-property": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "type": {
+          "enum": [
+            "string",
+            "text",
+            "integer",
+            "decimal",
+            "boolean",
+            "date",
+            "datetime",
+            "enum"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "default_value": {},
+        "options": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "indexed": {
+          "type": "boolean"
+        },
+        "sensitive": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        }
+      },
+      "required": [
+        "key",
+        "label",
+        "type",
+        "required",
+        "default_value",
+        "options",
+        "indexed",
+        "sensitive",
+        "id",
+        "version"
+      ]
+    },
+    "crm-record": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "tenant_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "object_key": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        },
+        "owner_revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        },
+        "owner_principal_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "team_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "fields": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "custom_values": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "id",
+        "tenant_id",
+        "object_key",
+        "version",
+        "owner_revision",
+        "owner_principal_id",
+        "team_id",
+        "archived",
+        "fields",
+        "custom_values"
+      ]
+    },
+    "crm-record-create": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fields": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "custom_values": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "team_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": []
+    },
+    "crm-record-patch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fields": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "custom_values": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "required": [],
+      "minProperties": 1
+    },
+    "crm-archive": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "reason"
+      ]
+    },
+    "crm-form-put": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{0,63}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "fields"
+      ]
+    },
+    "crm-view-put": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "columns": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{0,63}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100
+        },
+        "filter": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "field": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$"
+              },
+              "op": {
+                "enum": [
+                  "eq",
+                  "in",
+                  "gte",
+                  "lte"
+                ]
+              },
+              "value": {}
+            },
+            "required": [
+              "field",
+              "op",
+              "value"
+            ]
+          },
+          "maxItems": 10
+        },
+        "sort": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                },
+                "direction": {
+                  "enum": [
+                    "asc",
+                    "desc"
+                  ]
+                }
+              },
+              "required": [
+                "field",
+                "direction"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "columns",
+        "filter",
+        "sort"
+      ]
+    },
+    "crm-form": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{0,63}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "key": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        }
+      },
+      "required": [
+        "fields",
+        "id",
+        "key",
+        "version"
+      ]
+    },
+    "crm-view": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "columns": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{0,63}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100
+        },
+        "filter": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "field": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$"
+              },
+              "op": {
+                "enum": [
+                  "eq",
+                  "in",
+                  "gte",
+                  "lte"
+                ]
+              },
+              "value": {}
+            },
+            "required": [
+              "field",
+              "op",
+              "value"
+            ]
+          },
+          "maxItems": 10
+        },
+        "sort": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                },
+                "direction": {
+                  "enum": [
+                    "asc",
+                    "desc"
+                  ]
+                }
+              },
+              "required": [
+                "field",
+                "direction"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "key": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        }
+      },
+      "required": [
+        "columns",
+        "filter",
+        "sort",
+        "id",
+        "key",
+        "version"
+      ]
+    },
+    "crm-property-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/crm-property"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "crm-record-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/crm-record"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "crm-form-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/crm-form"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "crm-view-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/crm-view"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "crm-property-list": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/crm-property"
+          }
+        },
+        "next_cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "next_cursor",
+        "meta"
+      ]
+    },
+    "crm-record-list": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/crm-record"
+          }
+        },
+        "next_cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "next_cursor",
+        "meta"
+      ]
+    },
+    "crm-lead-create": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contact_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "qualification": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "service_interest": {
+              "type": "string",
+              "maxLength": 255
+            },
+            "need_summary": {
+              "type": "string",
+              "maxLength": 4000
+            },
+            "contact_permission": {
+              "type": "boolean"
+            },
+            "preferred_contact_method": {
+              "enum": [
+                "messenger",
+                "phone"
+              ]
+            },
+            "phone": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "consent_evidence": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "manual"
+                },
+                "note": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1000
+                }
+              },
+              "required": [
+                "kind",
+                "note"
+              ]
+            }
+          },
+          "required": []
+        },
+        "conversation_id": {
+          "type": "null"
+        },
+        "qualification_session_id": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "contact_id"
+      ]
+    },
+    "crm-lead-qualify": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "qualification": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "service_interest": {
+              "type": "string",
+              "maxLength": 255
+            },
+            "need_summary": {
+              "type": "string",
+              "maxLength": 4000
+            },
+            "contact_permission": {
+              "type": "boolean"
+            },
+            "preferred_contact_method": {
+              "enum": [
+                "messenger",
+                "phone"
+              ]
+            },
+            "phone": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "consent_evidence": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "manual"
+                },
+                "note": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1000
+                }
+              },
+              "required": [
+                "kind",
+                "note"
+              ]
+            }
+          },
+          "required": []
+        }
+      },
+      "required": [
+        "qualification"
+      ]
+    },
+    "crm-lead-disqualify": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "reason"
+      ]
+    },
+    "crm-contact-fields": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "display_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "normalized_phone": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "normalized_email": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "contact_preference": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "preferred_contact_method": {
+              "enum": [
+                "messenger",
+                "phone",
+                "email"
+              ]
+            }
+          },
+          "required": []
+        }
+      },
+      "required": [
+        "display_name"
+      ]
+    },
+    "crm-company-fields": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "domain": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "crm-activity-fields": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "note",
+            "task",
+            "call"
+          ]
+        },
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "body": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 4000
+        },
+        "due_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "related_record_id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "kind",
+        "subject",
+        "related_record_id"
+      ]
+    },
+    "crm-context-response": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "principal_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "capabilities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "grants": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "resource": {
+                    "type": "string"
+                  },
+                  "action": {
+                    "type": "string"
+                  },
+                  "scope": {
+                    "enum": [
+                      "own",
+                      "team",
+                      "all"
+                    ]
+                  }
+                },
+                "required": [
+                  "resource",
+                  "action",
+                  "scope"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "objects": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "key": {
+                    "type": "string"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "kind": {
+                    "enum": [
+                      "standard",
+                      "custom"
+                    ]
+                  },
+                  "version": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "key",
+                  "label",
+                  "kind",
+                  "version"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "principal_id",
+            "capabilities",
+            "grants",
+            "objects"
+          ],
+          "additionalProperties": false
+        },
+        "meta": {
+          "type": "object",
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ],
+      "additionalProperties": false
+    },
+    "crm-descriptor-response": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "object_key": {
+              "type": "string"
+            },
+            "standard": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "type": "string"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "required": {
+                    "type": "boolean"
+                  },
+                  "indexed": {
+                    "type": "boolean"
+                  },
+                  "immutable": {
+                    "type": "boolean"
+                  },
+                  "writable": {
+                    "type": "boolean"
+                  },
+                  "options": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "key",
+                  "label",
+                  "type",
+                  "writable",
+                  "indexed"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "custom": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  },
+                  "type": {
+                    "enum": [
+                      "string",
+                      "text",
+                      "integer",
+                      "decimal",
+                      "boolean",
+                      "date",
+                      "datetime",
+                      "enum"
+                    ]
+                  },
+                  "required": {
+                    "type": "boolean"
+                  },
+                  "default_value": {},
+                  "options": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "indexed": {
+                    "type": "boolean"
+                  },
+                  "sensitive": {
+                    "type": "boolean"
+                  },
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "version": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "writable": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "key",
+                  "label",
+                  "type",
+                  "required",
+                  "default_value",
+                  "options",
+                  "indexed",
+                  "sensitive",
+                  "id",
+                  "version",
+                  "writable"
+                ]
+              }
+            },
+            "order": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "object_key",
+            "standard",
+            "custom",
+            "order"
+          ],
+          "additionalProperties": false
+        },
+        "meta": {
+          "type": "object",
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

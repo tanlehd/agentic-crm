@@ -67,3 +67,9 @@ SRC-008 đạt AC-05 foundation (consumer duplicate) và AC-12 foundation (trans
 SRC-009 đạt bootstrap sub-scope AC-01/02/12: Alpha/Beta Identity fixtures, sáu OIDC users, shared viewer không có admin permission, cross-tenant context/reference denied, seed atomic/repeat-safe, system audit + Identity outbox/inbox. Không đóng CRM object/record/provider subject/association/job portions của AC-01 hoặc M1 release gate; các phần đó tiếp tục SRC-010…013/024. [Evidence SRC-009](../tracking/details/SRC-009.md).
 
 SRC-010 kiểm registry/association sub-scope AC-01/02/04/12: FK và tenant isolation hai đầu, cardinality/CAS/race, scoped reads/shares, field-policy loader, subtype atomicity bằng test-only adapter, ownership history/outbox và receipt rollback. Chưa đóng full AC-04/13, query/index/form/view, CRM UI, runtime business subtypes hoặc public assignment/routing AC-06. [Evidence SRC-010](../tracking/details/SRC-010.md).
+
+SRC-011 đạt backend AC-04/13 M1 và record ACL/query/replay phần AC-01/02/12; [evidence](../tracking/details/SRC-011.md). UI/render và gate M1 chờ SRC-013.
+
+SRC-012 backend AC-03/M1, qualification sub-scope AC-09 và standard ACL/transaction đã kiểm; [evidence](../tracking/details/SRC-012.md). Handoff/acceptance và Customer M4 chưa đóng.
+
+SRC-013 đóng **M1 release gate**: Admin/CRM UI real OIDC, tenant/permission negative, standard/custom CRUD, association, typed query/form/view; cold tmpfs migration+seed và warm restart giữ dữ liệu PASS. AC-03/04/13 chỉ phạm vi M1; AC-09 chỉ qualification, handoff/acceptance vẫn M2. Regression 53 MySQL và40 unit/contract; [evidence SRC-013](../tracking/details/SRC-013.md).

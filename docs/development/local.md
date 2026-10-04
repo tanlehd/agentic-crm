@@ -107,3 +107,13 @@ Sau `pnpm preview:up` (migration v6 và runtime grants), chạy `pnpm seed:regis
 Registry CLI không gán thêm quyền: admin fixtures hiện chỉ có Identity grants. Dùng Identity role API để tạo/gán role `schema.read/create/update` scope all cho Human admin muốn quản lý metadata; association cần `association.read/create` all và read hai đầu/update source. Không cấp schema role cho viewer hoặc service mặc định. Endpoint shapes và source If-Match tại [registry contract](../contracts/registry.md). Không có registry UI ở task này.
 
 `pnpm test:registry` kiểm OIDC thật cho Alpha/Beta admin và viewer, session/tenant guards, metadata denied khi fixture không có schema grant. Positive metadata/association HTTP và concurrency được kiểm bằng MySQL integration cô lập.
+
+## CRM M1 (SRC-011…013)
+
+Sau khi schema và Identity/registry seed đã sẵn sàng: `pnpm seed:m1`. Fixture v3 thêm role riêng và metadata Appointment/ServiceOffering cho Alpha/Beta; chạy lại giữ nguyên chỉnh sửa/revocation, không sửa seed v1/v2 và không reset volume. Account passwords vẫn nằm trong `.env` local, không ghi vào tài liệu.
+
+Đăng nhập Alpha/Beta admin → chọn tổ chức → CRM để tạo Contact/Company/Activity/custom record hoặc Lead. Lead cần Contact, lưu nháp rồi ghi nhận consent thủ công và xác nhận qualification. Tab Quản trị dùng Identity APIs; Cấu hình dữ liệu cho property/form/view/association types. Admin seat vẫn cần role grant; object mới chưa có quyền record cho tới khi role được cấu hình.
+
+`pnpm test:m1` chạy Chrome real OIDC và tạo dữ liệu có prefix Synthetic; không dùng dữ liệu khách hàng thật. Screenshot/facts/log trong artifacts/SRC-013. `node scripts/m1-cold-smoke.mjs` tạo project riêng trên cổng18080 với tmpfs, private env trong temp, chạy cold migration+seed+browser rồi dọn containers; không dùng preview volumes. `node scripts/m1-warm-check.mjs` kiểm facts của browser test sau restart preview. Không chạy warm-check trước test:m1 có facts.
+
+M1 chưa có Messenger/Chatflow/Sales handoff hay Customer transition. Domain outbox events được giữ bền vững; consumers reporting/automation còn task sau, không đăng ký consumer giả để ACK. UI lỗi409 yêu cầu tải bản mới; API receipt giữ idempotency key cho retry cùng payload.

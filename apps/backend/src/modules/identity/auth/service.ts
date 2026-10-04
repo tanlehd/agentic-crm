@@ -1,3 +1,4 @@
+import { setTimeout as delay } from 'node:timers/promises';
 import { createHash, randomUUID } from 'node:crypto';
 import { createPool } from 'mysql2/promise';
 import type { Pool, RowDataPacket } from 'mysql2/promise';
@@ -66,7 +67,9 @@ export class AuthService {
     const read = await this.read(id);
     if (read.session.tokens.expires_at > this.now() + 60_000 && !touch) return read.session;
     const lockKey = `${read.key}:lock`, lock = opaque();
-    if (!await this.store.lock(lockKey, lock)) throw new AuthError(503, 'AUTH_SESSION_BUSY');
+    let acquired=await this.store.lock(lockKey,lock);
+    for(let attempt=0;!acquired&&attempt<100;attempt++){await delay(25);acquired=await this.store.lock(lockKey,lock);}
+    if(!acquired)throw new AuthError(503,'AUTH_SESSION_BUSY');
     try {
       const current = await this.read(read.id);
       if (current.session.tokens.expires_at <= this.now() + 60_000) {

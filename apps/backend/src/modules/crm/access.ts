@@ -2,7 +2,7 @@ import type { Access, RecordAccess } from '../identity/domain/authorization.js';
 import type { TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
 import { CommandError } from '../../kernel/reliability/commands.js';
 export function allows(access:Access,resource:string,action:string,record?:RecordAccess):boolean {
-  const capable=resource==='schema'?access.capabilities.includes('configure'):action==='read'?access.capabilities.includes('read'):['create','update','assign'].includes(action)&&access.capabilities.some(c=>['chat','sales','service'].includes(c));
+  const capable=resource==='schema'?access.capabilities.includes('configure'):action==='read'?access.capabilities.includes('read'):['create','update','assign','archive','qualify'].includes(action)&&access.capabilities.some(c=>['chat','sales','service'].includes(c));
   if(!capable || record&&record.tenantId!==access.tenantId)return false;
   return access.grants.some(g=>g.resource===resource&&g.action===action&&(g.scope==='all'||!!record&&(g.scope==='own'?record.ownerPrincipalId===access.principalId:g.scope==='team'&&access.teamIds.some(t=>t===record.teamId||record.sharedTeamIds.includes(t)))));
 }

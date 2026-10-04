@@ -62,3 +62,5 @@ Blueprint: dashboard template gallery theo ngành/mục tiêu, card định ngh�
 Wireframe là đặc tả hành vi, chưa phải prototype có thể bấm hoặc giao diện đã dựng. Tham chiếu nguồn ở [references](../references.md).
 
 SRC-007 foundation UI có selector tổ chức từ `/me/memberships`, loading/empty/error và tải thêm. Đổi lựa chọn gửi X-Tenant-Id ở request mới; request cũ được abort để không ghi đè kết quả tổ chức vừa chọn. Admin team read kiểm quyền thật; 403 hiển thị thiếu quyền quản trị. Đây chưa phải full Admin UI SRC-013.
+
+SRC-013 exact UI/API additions theo [M1 UI contract](../contracts/crm-ui.md); record descriptors dùng field ACL, tenant keyed cache, explicit Lead consent và stale reload.

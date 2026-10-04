@@ -7,7 +7,7 @@ import { registryId } from './ids.js';
 export interface RegistryRecord extends RecordAccess { id:string; objectTypeId:string; objectKey:string; kind:'standard'|'custom'; version:string; ownerRevision:string; archived:boolean }
 // Installed only by module composition. Never accept an adapter/table from HTTP.
 export interface SubtypeAdapter {
-  insert(scope:TransactionScope,id:string,input:unknown):Promise<void>;
+  insert(scope:TransactionScope,id:string,input:unknown,access:Access,correlation:string):Promise<void>;
   exists(scope:TransactionScope,id:string):Promise<boolean>;
   eligible(scope:TransactionScope,record:RegistryRecord,owner:string|null,team:string|null):Promise<void>;
   assigned(scope:TransactionScope,record:RegistryRecord):Promise<void>;
@@ -30,7 +30,7 @@ export class RecordRegistry {
     await validateOwnershipTarget(scope,access.principalId,team);
     const id=registryId();
     await scope.query('INSERT INTO crm_record(id,tenant_id,object_type_id,owner_principal_id,team_id,created_at,updated_at) VALUES (?,?,?,?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))',[id,scope.context.tenantId,type.id,access.principalId,team]);
-    await adapter.insert(scope,id,input);
+    await adapter.insert(scope,id,input,access,correlation);
     if(!await adapter.exists(scope,id))throw new Error('SUBTYPE_REQUIRED');
     const record=await this.get(scope,id);
     await this.history(scope,access,record,null,null,'created');
@@ -38,9 +38,9 @@ export class RecordRegistry {
     return record;
   }
   // Callers must not swallow errors: subtype and registry share the same UoW.
-  async update(scope:TransactionScope,access:Access,id:string,version:string,write:(scope:TransactionScope)=>Promise<void>):Promise<RegistryRecord>{
+  async update(scope:TransactionScope,access:Access,id:string,version:string,write:(scope:TransactionScope)=>Promise<void>,action='update'):Promise<RegistryRecord>{
     const record=await this.get(scope,id,true);this.read(access,record);
-    if(!allows(access,record.objectKey,'update',record))throw new CommandError(403,'FORBIDDEN');
+    if(!allows(access,record.objectKey,action,record))throw new CommandError(403,'FORBIDDEN');
     const adapter=this.adapter(record.objectKey);
     if(record.archived)throw new CommandError(409,'INVALID_TRANSITION');
     await this.bump(scope,record,version);await write(scope);

@@ -1,34 +1,31 @@
 # Checkpoint — điểm tiếp tục
 
-Updated: 2026-10-04. Session S-20261004-03 (Git sync; implementation checkpoint SRC-010 giữ nguyên).
+Updated 2026-10-04, S-20261004-04.
 
 ## Trạng thái thực tế
 
-- **SRC-001…010 DONE:10/25. SRC-011 READY**, không task active. [SRC-010 evidence](details/SRC-010.md).
-- Preview localhost:8080: OIDC, Identity admin API/tenant selector, reliability worker và registry metadata/association API. Chưa có record CRUD hoặc CRM UI.
-- Schema v6 ready; v1–v5 immutable. Migration registry v6 additive tạo object_type/crm_record/association_type/association/history/shares/field_policy. Runtime history và audit chỉ SELECT/INSERT.
-- Registry fixture v2 qua `pnpm seed:registry`:14 standard object types cho Alpha/Beta; first2 created/repeat0 created2 preserved,2 system bootstrap audits. No CRM records. Identity fingerprint exact trước/sau upgrade:6 OIDC users,7 memberships,9 principals,14 roles,4 teams,2 policies/AI configs,2 service actors giữ nguyên; credentials/volumes không đổi.
-- Fixture admin grants vẫn Identity-only; registry CLI không regrant ACL. Muốn quản lý metadata dùng Identity role API gán schema.read/create/update all. Viewer không configure/write. Browser kiểm default grants403 đúng thiết kế.
-- 35 MySQL integration PASS;9 canonical verify gates PASS (34 unit/contract+7 tooling), Node24.21.0/pnpm10.33.0 Linux ARM64/MySQL8.4.11. Chrome154 OIDC Alpha/Beta admin+viewer/registry authorization smoke PASS; positive HTTP registry/schema tests dùng MySQL harness stub auth. Host Node25 chỉ driver.
-- AC-01/02/04/12 registry/association sub-scope, không full M1 gate, custom/property/query/index/form/view/UI hoặc public assignment/routing.
-- Không blocker/decision pending. Đã khởi tạo Git nhánh `main`, tracking `origin/main` tại `git@github.com:tanlehd/agentic-crm.git`; initial commit `7c05518` đã push thành công theo yêu cầu người dùng. `.env`, artifacts, cache và dependencies được ignore. Remote CI chưa kiểm tra kết quả; AMD64/Windows native NOT_RUN. Không deploy.
+**SRC-001…013 DONE (13/25), base CRM M1 gate PASS. SRC-014 READY, chưa claim; không task active.** [Evidence SRC-013](details/SRC-013.md), [tracker](tasks.md).
+
+Preview [localhost:8080](http://localhost:8080) có OIDC/tenant selector, Identity Admin UI, Contact/Company/Activity, Lead draft/consent/qualification, custom Appointment/ServiceOffering CRUD, metadata/property/form/view, typed index/query và association. Quyền vẫn kiểm ở backend; query cache/form tách tenant.
+
+Migration v1–v8 immutable; v7 properties/custom records, v8 CRM core/Lead. Upgrade v6→v8 giữ exact fingerprint 13 bảng cũ trước seed. Seed Identity v1/registry v2 giữ nguyên; M1 v3 additive dedicated roles/metadata, first2/repeat0 created. Synthetic E2E records được giữ trong preview. Không reset volume/credential.
+
+Final verification: 53 MySQL integration, 9 verify gates (40 unit/contract +7 tooling), real Chrome154 E2E, cold tmpfs và warm stop/start preservation đều PASS. Canonical Linux ARM64 Node24.21.0/pnpm10.33.0/MySQL8.4.11; Node25 host chỉ driver. DEF-001 concurrent auth touch đã sửa và regression PASS. Artifacts local `artifacts/SRC-011/`, `SRC-012/`, `SRC-013/`, `artifacts/verify/`.
 
 ## Điểm nối source
 
-- `apps/backend/src/modules/crm/platform.ts`: metadata/association commands, source CAS, receipt, same-tenant endpoint ACL/cardinality, signed visible-only pagination. HTTP writes tenant exclusive lock như Identity; reads authorization shared lock.
-- `registry.ts`: composable record create/update/assign trong caller UoW. Adapters insert+exists/eligible/assigned đăng ký tại composition, không từ request. Hiện chưa production adapter; test-only synthetic subtype không phải Contact/custom implementation. Module domain phải ghi creation event trong cùng transaction.
-- `access.ts`: object-key own/team/all evaluator, persisted field denies qua Identity role IDs. SRC-011 phải áp dụng vào read/write/filter/sort/export, không chỉ gọi loader. Identity ownership reference port kiểm Human/AI active, cùng tenant và team; domain eligibility thuộc adapter/module sau.
-- `seed.ts`/`seed-cli.ts` và scripts/seed-registry.mjs: fixture v2 atomic+advisory lock+completion marker, repeat preserves metadata/ACL. Không sửa Identity seed v1 để regrant. Standard IDs dùng fixtureId(`${label}:object:${key}`).
-- `packages/contracts/schemas/registry.json`, generator/OpenAPI/generated types: object-types/association-types/associations routes. `If-Match` POST association là source version; tăng source version, owner_revision giữ nguyên.
-- `record.assigned` outbox chỉ internal assignment port; chưa consumer nghiệp vụ/cancellation, preview chưa có record nên chưa phát. Metadata/association chưa phát arbitrary workflow events.
-- Tests: apps/backend/tests/registry-cases.ts + seed-cases.ts; `pnpm test:registry` OIDC permission smoke. Artifacts/SRC-010 có test/build/verify/runtime/seed/schema/service evidence.
+- CRM properties/records/core/ui/http trong `apps/backend/src/modules/crm/`; Sales Lead core trong `modules/sales/leads.ts`. Transaction/reference/archive qua application ports, không truy cập chéo bảng module.
+- Frontend `apps/web/app/crm/`: API/query provider, records, administration, metadata. Tenant unmount hủy query và clear cache; stale version có reload rõ ràng.
+- Contracts CRM records/core/ui cùng OpenAPI/generated TS; local seed `pnpm seed:m1` và E2E `pnpm test:m1`.
+- Session lock bounded wait tối đa2.5s/25ms, reread/CAS và logout revocation giữ nguyên. CHG-20261004-06/DEF-001.
+- Lead session-origin/M2 references fail closed; chưa Conversation/Chatflow/Sale handoff. Domain outbox reporting/automation chưa consumer, unknown events được giữ failed theo ADR-014. Không giả production integration.
 
-## Next action
+## Bước tiếp theo
 
-Claim **SRC-011** sau khi đọc properties/custom record/typed index/form/view design, data dictionary, contracts và AC-04/M1+AC-13/M1. Dependency SRC-010 DONE; không khởi chạy task/agent song song. Bổ sung exact contract/schema gaps qua change entry trước code; thêm migration mới, không sửa v6 đã áp dụng.
+Khi tiếp tục M2, claim **SRC-014**: Conversation/message domain, outbound intent/mock sender. Dependency SRC-013 DONE; thiết kế text inbox M2 Ready. Đọc module Conversation/Channels, data dictionary, contracts/events và acceptance trước khi code; gap cần change entry. Không tự mở task/agent song song.
 
-## Runtime / recovery
+## Workspace / runtime
 
-7 preview services gateway/web/API/worker/MySQL/Redis/Keycloak healthy; API/worker image SRC-010, schema6. Volumes/auth_demo/Identity Alpha/Beta giữ nguyên. Không test runner hoặc background automation active; disposable integration project cleaned.
+Nhánh `main`, base implementation trước M1 là `7c05518`, tracking origin/main. Người dùng yêu cầu commit/push SRC-011…013 ngày 2026-10-04; commit chứa checkpoint này là bản bàn giao M1, kết quả Git xác minh sau thao tác. Remote CI/AMD64/Windows native NOT_RUN, không deploy. Không blocker hoặc quyết định pending.
 
-[Local runbook](../development/local.md), [registry contract](../contracts/registry.md), [verification](../development/verification.md). `pnpm verify:container`; `pnpm test:integration` isolated; `pnpm seed:registry` local only; `pnpm test:registry` needs preview+Chrome+existing seed credentials. Lost .env/realm hoặc partial migration không tự reset/reseed; theo runbook operator.
+7 services preview gateway/web/API/worker/MySQL/Redis/Keycloak healthy sau stop/start; migrations/provision one-shots exit0. Cold/integration projects đã cleanup; không automation hoặc test runner active. [Local runbook](../development/local.md), [verification](../development/verification.md). Không reset DB nếu gặp sự cố; recovery theo runbook.

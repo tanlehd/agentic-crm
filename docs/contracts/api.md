@@ -149,3 +149,7 @@ M2 graph schema và primitive nằm trong [Workflow](../modules/workflow.md), [C
 `GET /operations/audit` và `/operations/failed-deliveries` dùng pagination chung; quyền lần lượt audit.read/all và integration.read/all. Chat agent đọc qualification panel/session liên quan qua conversation.read và field permissions; quyền automation.read dành cho chi tiết engine, không bắt chat agent có quyền quản trị automation.
 
 Auth login/callback/session/CSRF/logout theo [auth transport](auth.md); đã triển khai ở SRC-006; OpenAPI gồm health/auth và Identity admin; registry routes theo [contract SRC-010](registry.md); CRM record CRUD vẫn ở task tiếp theo.
+
+Exact SRC-011 metadata/custom-record contract: [CRM records](crm-records.md).
+
+Exact SRC-012: [CRM core](crm-core.md).

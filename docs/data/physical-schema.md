@@ -82,3 +82,7 @@ CHG-20261003-07 / SRC-008: migration v5 additive tạo consumer_inbox với PK `
 ## SRC-010 — registry v6
 
 CHG-20261004-02: object_type, crm_record, association_type, association, ownership_history, record_team_access, field_policy additive; custom/subtype tables giữ task sau. Association type có version; association immutable có created_at, version source tăng khi thêm link. History có created_at, không updated_at, UNIQUE tenant+record+owner_revision. Actor human/ai/service/system typed UUID kiểm ở application port. All object/record/owner/team/history refs composite FK. History runtime grants chỉ SELECT/INSERT như audit. Key pattern kiểm tại API và CHECK; JSON custom_values object, denied_actions array. Queue và association lookup indexes tenant-first. Xem [registry contract](../contracts/registry.md).
+
+SRC-011 v7 additive theo [CRM records](../contracts/crm-records.md): property/form/view mutable version, custom subtype, typed indexes; v1–v6 immutable.
+
+SRC-012 v8 additive contact/company/activity/lead; immutable v1–v7. Standard query indexes tenant-first; M2 refs fail closed CHECK IS NULL. [Exact core contract](../contracts/crm-core.md).

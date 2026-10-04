@@ -39,7 +39,9 @@
     "seed:dev": "node scripts/seed-dev.mjs",
     "test:seed": "node scripts/seed-e2e.mjs",
     "seed:registry": "node scripts/seed-registry.mjs",
-    "test:registry": "node scripts/registry-e2e.mjs"
+    "test:registry": "node scripts/registry-e2e.mjs",
+    "seed:m1": "node scripts/seed-m1.mjs",
+    "test:m1": "node scripts/m1-e2e.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.58.2",

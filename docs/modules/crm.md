@@ -47,3 +47,7 @@ Formula field, computed property, unique custom field, multiselect, relationship
 ## SRC-010 implementation boundary
 
 Registry metadata/association HTTP và internal record/subtype/ownership ports triển khai tại `apps/backend/src/modules/crm`; exact [registry contract](../contracts/registry.md). Migration v6 có persisted field_policy, loader dùng Identity role IDs port. Chưa có production subtype adapter, record CRUD/typed index/forms hoặc public assignment; không coi synthetic subtype trong test là Contact đã triển khai. History append-only ở DB grants, source version tăng khi tạo association; HTTP commands có atomic audit/receipt. Metadata/association chưa phát workflow event; domain creation events và assignment consumers nối cùng modules tương ứng.
+
+## SRC-011…013 M1 boundary
+
+Property/custom/index/form/view ở SRC-011, Contact/Company/Activity và Lead core qua Sales port ở SRC-012. SRC-013 nối CRM/Admin UI, descriptor/context API và dev fixture v3. [Exact record contract](../contracts/crm-records.md), [core](../contracts/crm-core.md), [UI](../contracts/crm-ui.md). Các ghi chú “chưa có subtype/CRUD” của SRC-010 phía trên chỉ mô tả mốc lịch sử đó. Generic Deal/Ticket/Conversation và public assignment vẫn chưa mở. Gate/evidence hiện hành ở tracker.

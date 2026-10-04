@@ -1,3 +1,5 @@
+import { crmCoreMigration } from './crm-core-migration.js';
+import { propertiesMigration } from './properties-migration.js';
 import { registryMigration } from './registry-migration.js';
 import { deliveryMigration } from './delivery-migration.js';
 import { adminReliabilityMigration } from './admin-reliability-migration.js';
@@ -16,5 +18,5 @@ export const migrations: readonly Migration[] = [{
   version: 4, name: 'outbox_positive_versions', statements: [
     'ALTER TABLE outbox_event ADD CONSTRAINT ck_outbox_schema_version CHECK (schema_version >= 1), ADD CONSTRAINT ck_outbox_aggregate_version CHECK (aggregate_version >= 1)',
   ],
-}, deliveryMigration, registryMigration];
+}, deliveryMigration, registryMigration, propertiesMigration, crmCoreMigration];
 export const checksum = (m: Migration) => createHash('sha256').update(JSON.stringify([m.version, m.name, m.statements])).digest('hex');

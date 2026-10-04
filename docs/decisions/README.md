@@ -63,3 +63,7 @@ Image digest là gate SRC-003 ngay trước Compose build, không chặn source 
 ## ADR-014 — M1 transactional consumer registry
 
 Accepted 2026-10-03, CHG-20261003-07. SRC-008 dispatch trực tiếp qua consumer registry trong worker; source backlog và lease ở MySQL. Mỗi consumer transaction ghi side effect và inbox, publish có thể lặp sau crash. Điều này dùng cùng UoW trong modular monolith và không cần queue hop khi M1 chỉ có Identity access event. BullMQ vẫn là lựa chọn job wakeup cho workflow/runtime sau; transport adapter tương lai phải giữ tenant/event IDs, dedup và fencing, không thay durable state. Consumer handler không được external I/O; tác động ngoài DB phải qua outbox/intent riêng. Không tự đăng ký consumer cho module chưa triển khai; type/schema không hỗ trợ chuyển failed.
+
+## ADR-015 — M1 UI metadata và tenant cache
+
+Accepted 2026-10-04, CHG-20261004-05. Giữ Next.js/React, Tailwind4, local shadcn-style CVA button primitive, React Hook Form cho record renderer và TanStack Query cho server state. Descriptor endpoint trả readable fields/writable flags và form order cho record readers mà không cấp schema admin; authorization cuối cùng vẫn backend. QueryClient riêng theo tenant, unmount cancel/clear cache, record selection/form state keyed theo tenant/object/version. Mutation retry giữ key theo route/body/version; explicit stale reload. Dependency versions pin trong toolchain/lockfile, compatibility bằng container verify và browser gate.

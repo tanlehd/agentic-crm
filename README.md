@@ -2,7 +2,7 @@
 
 Nền tảng conversational CRM dạng SaaS multi-tenant, nơi Human Agent và AI Agent cùng xử lý hội thoại, lead, cơ hội bán hàng và yêu cầu hỗ trợ.
 
-**Trạng thái:** Next.js/NestJS và Docker local đã có OIDC login/session/logout, Identity admin API (membership, seat, role, team, Human/AI principal), kiểm quyền tenant và selector tổ chức. Migration v1–v6, audit append-only, idempotency 7 ngày và outbox relay/inbox/lease fencing đã có; seed Identity Alpha/Beta và standard registry đã có. SRC-010 bổ sung metadata/association API, registry transaction ports và ownership history. Chưa có CRM nghiệp vụ hoặc full Admin UI.
+**Trạng thái:** Base CRM M1 có OIDC, tenant isolation, Identity Admin UI, Contact/Company/Activity, Lead draft/consent/qualification và custom object CRUD. Metadata/property/form/view, typed query/index, association, audit/idempotency/outbox đã có; migration v1–v8 và seed Alpha/Beta. Trạng thái nghiệm thu và evidence xem [task tracker](docs/tracking/tasks.md).
 
 Mở [ứng dụng local](http://localhost:8080) sau khi khởi động theo [hướng dẫn chạy](docs/development/local.md).
 
@@ -17,7 +17,7 @@ Mở [ứng dụng local](http://localhost:8080) sau khi khởi động theo [h�
 
 ## Bắt đầu build
 
-Đợt đầu gồm 25 task M1–M2; trạng thái hiện tại ở tracker. [Docker Compose](compose.yaml) đã có web/API/worker, MySQL, Redis, Keycloak dev; test runner tách project. Migration/kernel ở SRC-004; portable verify/CI adapter ở SRC-005, seed Identity idempotent ở SRC-009; registry foundation ở SRC-010; properties và CRM CRUD tiếp tục SRC-011/012.
+Đợt đầu gồm 25 task M1–M2; trạng thái hiện tại ở tracker. [Docker Compose](compose.yaml) đã có web/API/worker, MySQL, Redis, Keycloak dev; test runner tách project. Migration/kernel ở SRC-004; portable verify/CI adapter ở SRC-005, seed Identity idempotent ở SRC-009; registry foundation ở SRC-010; properties/custom CRUD ở SRC-011, CRM core ở SRC-012 và Admin/CRM UI ở SRC-013.
 
 Mỗi phiên cập nhật tracker, evidence và checkpoint; thay đổi thiết kế theo [change control](docs/governance/change-control.md). [AGENTS.md](AGENTS.md) hướng dẫn các phiên triển khai sau đọc đúng tài liệu và ghi lại tiến độ.
 
@@ -34,4 +34,4 @@ Mỗi phiên cập nhật tracker, evidence và checkpoint; thay đổi thiết 
 
 Blueprint toàn platform; đặc tả chi tiết nền móng và case Facebook Messenger CTM giả lập → nhận diện Contact → Conversation → phân công → qualify Lead → bàn giao Sale. Connector thật, AI thật, builder nâng cao, Google Ads và custom report đầy đủ nằm ở milestone sau.
 
-Tài liệu bằng tiếng Việt; tên entity, API, event, field và requirement ID bằng tiếng Anh. CRM nghiệp vụ vẫn ở trạng thái thiết kế; foundation và Identity có evidence riêng trong task tracker.
+Tài liệu bằng tiếng Việt; tên entity, API, event, field và requirement ID bằng tiếng Anh. CRM M1 đã có source và kiểm thử; mock Messenger → Conversation → Sale thuộc SRC-014…025, chưa triển khai.

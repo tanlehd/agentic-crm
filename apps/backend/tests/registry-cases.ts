@@ -69,7 +69,7 @@ export function registryCases(isolated:(name:string)=>Promise<DataSource>){descr
     const upgrade=await isolated('registry_upgrade_test');await migrate(upgrade,migrations.slice(0,5));
     const id=randomUUID();await upgrade.query("INSERT INTO tenant(id,name,status,created_at,updated_at) VALUES (?,'Preserved','active',UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[id]);
     const before=await upgrade.query('SELECT * FROM tenant');const journal=await upgrade.query('SELECT version,checksum FROM schema_migration ORDER BY version');
-    expect(await migrate(upgrade)).toBe(1);expect(await migrate(upgrade)).toBe(0);expect(await upgrade.query('SELECT * FROM tenant')).toEqual(before);expect((await upgrade.query('SELECT version,checksum FROM schema_migration ORDER BY version')).slice(0,5)).toEqual(journal);
+    expect(await migrate(upgrade)).toBe(migrations.length-5);expect(await migrate(upgrade)).toBe(0);expect(await upgrade.query('SELECT * FROM tenant')).toEqual(before);expect((await upgrade.query('SELECT version,checksum FROM schema_migration ORDER BY version')).slice(0,5)).toEqual(journal);
   });
   it('metadata receipt, signed pagination and unknown request fields',async()=>{
     const key=randomUUID(),body={key:'appointment',label:'Appointment'};
