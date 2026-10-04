@@ -162,3 +162,11 @@ SRC-010 IN_PROGRESS → VERIFYING → DONE; SRC-011 READY,10/25 source tasks DON
 Initial33 tests PASS, bổ sung2 cases upgrade và association guards/replay rồi35 PASS; không code-test failures. Sandbox Docker/Chrome denied được rerun với escalation được duyệt. Canonical verify trước browser harness mới, final local lint/docs check bổ sung; host Node25 chỉ test driver, app/test canonical Node24.21.0 Linux ARM64.
 
 AC-01/02/04/12 chỉ registry/association sub-scope; custom CRUD/index/form/view, CRM business subtype/UI và public assignment/routing/consumer còn task sau. Fixture v2 không regrant Identity ACL; schema APIs cần schema role explicit. Không Git/branch/commit/remote; working directory source/config/docs/artifacts. Không reset volume hoặc commit/push/deploy. Không blocker/decision pending. Next duy nhất SRC-011; không background automation/test runner active.
+
+## S-20261004-03 — Đồng bộ GitHub theo yêu cầu người dùng
+
+- Khởi tạo Git `main`, remote `git@github.com:tanlehd/agentic-crm.git` (cùng repository HTTPS người dùng cung cấp). Remote ban đầu trống. Initial commit `7c05518` gồm 207 file đã push thành công; `main` tracking `origin/main`.
+- HTTPS push thất bại vì không có credential; SSH xác thực đúng tài khoản tanlehd, chuyển remote sang SSH và push thành công. Không force push, không deploy, không thay đổi source hoặc trạng thái SRC-001…011.
+- Kiểm tra trên macOS host: `node scripts/check-docs.mjs` PASS (58 Markdown/242 links/25 acyclic tasks); `node scripts/generate-contracts.mjs --check` PASS; `node scripts/lint.mjs` PASS (80 JS/TS); `git diff --cached --check` PASS. Rà 207 candidate files với private-key/token patterns và giá trị secret local không tìm thấy match; không xuất giá trị secret. `git check-ignore` xác nhận .env/artifacts/node_modules/.cache ngoài Git.
+- Không chạy lại integration/browser/full build cho tác vụ đồng bộ; evidence implementation giữ ở các session trước. Remote CI chưa kiểm tra kết quả. Artifacts evidence vẫn local theo .gitignore.
+- Cập nhật tracker/checkpoint/log trong commit tài liệu tiếp theo. Runtime không bị thao tác trong phiên; trạng thái 7 services là checkpoint trước, chưa kiểm tra lại. Không blocker/decision pending; next implementation task SRC-011.

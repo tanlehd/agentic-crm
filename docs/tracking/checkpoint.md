@@ -1,6 +1,6 @@
 # Checkpoint — điểm tiếp tục
 
-Updated: 2026-10-04. Session S-20261004-02.
+Updated: 2026-10-04. Session S-20261004-03 (Git sync; implementation checkpoint SRC-010 giữ nguyên).
 
 ## Trạng thái thực tế
 
@@ -11,7 +11,7 @@ Updated: 2026-10-04. Session S-20261004-02.
 - Fixture admin grants vẫn Identity-only; registry CLI không regrant ACL. Muốn quản lý metadata dùng Identity role API gán schema.read/create/update all. Viewer không configure/write. Browser kiểm default grants403 đúng thiết kế.
 - 35 MySQL integration PASS;9 canonical verify gates PASS (34 unit/contract+7 tooling), Node24.21.0/pnpm10.33.0 Linux ARM64/MySQL8.4.11. Chrome154 OIDC Alpha/Beta admin+viewer/registry authorization smoke PASS; positive HTTP registry/schema tests dùng MySQL harness stub auth. Host Node25 chỉ driver.
 - AC-01/02/04/12 registry/association sub-scope, không full M1 gate, custom/property/query/index/form/view/UI hoặc public assignment/routing.
-- Không blocker/decision pending. Không Git/branch/commit/remote; working directory có source/config/docs/artifacts mới, không có Git status để phân loại dirty. Không commit/push/deploy. Remote CI/AMD64/Windows native NOT_RUN.
+- Không blocker/decision pending. Đã khởi tạo Git nhánh `main`, tracking `origin/main` tại `git@github.com:tanlehd/agentic-crm.git`; initial commit `7c05518` đã push thành công theo yêu cầu người dùng. `.env`, artifacts, cache và dependencies được ignore. Remote CI chưa kiểm tra kết quả; AMD64/Windows native NOT_RUN. Không deploy.
 
 ## Điểm nối source
 

@@ -6,6 +6,8 @@ Nguồn chuẩn trạng thái công việc. Updated: 2026-10-04. Thiết kế c�
 
 Owner `—` nghĩa chưa claim. Evidence `—` nghĩa chưa kiểm thử/hoàn thành, không phải pass. Chỉ promote TODO→READY khi tất cả dependency DONE và thiết kế đúng phạm vi Ready. Một task active tại một thời điểm theo mặc định.
 
+Git sync S-20261004-03: initial commit `7c05518` đã push lên `origin/main` theo yêu cầu người dùng; implementation status không đổi. Xem [execution log](log.md).
+
 ## Công việc chuẩn bị
 
 | ID | Công việc | Status | Owner | Evidence |
