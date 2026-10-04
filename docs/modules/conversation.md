@@ -41,3 +41,7 @@ Network lỗi giữ draft local, không tự tạo idempotency key mới khi ret
 ## Mở rộng còn Draft
 
 Omnichannel merge, attachment, message edit/delete, typing indicator, realtime stream, macro quản trị, SLA response calendar và chatbot content builder.
+
+## Implementation SRC-014
+
+Domain/API text, internal note Activity, signed timeline/queue cursor, owner-only outbound intent và persisted mock sender đã có. [Exact contract](../contracts/conversation.md) · [evidence](../tracking/details/SRC-014.md). Intake port `Conversations.receive` dùng shared TransactionScope; không public inbound tới SRC-015. `cancelQueued` là assignment hook phải gọi cùng registry lock/UoW tại SRC-017; `onClose` nối orchestration tại SRC-020. AI submit fail closed tới SRC-018. Inbox UI SRC-016, routing/takeover SRC-017 chưa có.

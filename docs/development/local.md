@@ -117,3 +117,7 @@ Sau khi schema và Identity/registry seed đã sẵn sàng: `pnpm seed:m1`. Fixt
 `pnpm test:m1` chạy Chrome real OIDC và tạo dữ liệu có prefix Synthetic; không dùng dữ liệu khách hàng thật. Screenshot/facts/log trong artifacts/SRC-013. `node scripts/m1-cold-smoke.mjs` tạo project riêng trên cổng18080 với tmpfs, private env trong temp, chạy cold migration+seed+browser rồi dọn containers; không dùng preview volumes. `node scripts/m1-warm-check.mjs` kiểm facts của browser test sau restart preview. Không chạy warm-check trước test:m1 có facts.
 
 M1 chưa có Messenger/Chatflow/Sales handoff hay Customer transition. Domain outbox events được giữ bền vững; consumers reporting/automation còn task sau, không đăng ký consumer giả để ACK. UI lỗi409 yêu cầu tải bản mới; API receipt giữ idempotency key cho retry cùng payload.
+
+## Conversation backend — SRC-014
+
+Preview sau rebuild có `/api/v1/conversations`, message timeline/send intent, note và transition ([contract](../contracts/conversation.md)). Worker poll MySQL mỗi giây dispatch mock queued, sending quá60s thành unknown, không resend tự động. Reconcile/retry chỉ internal port, chưa operations UI. Chưa seed channel/identity hoặc public intake, nên queue rỗng ở fixture M1 là đúng; SRC-015 bổ sung intake, SRC-016 inbox UI. Chạy regression `pnpm test:integration`, `pnpm verify:container`.

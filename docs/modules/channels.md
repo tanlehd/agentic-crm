@@ -41,3 +41,5 @@ Validation/scope conflict không retry; DB transient theo retry policy. Retry kh
 ## Mở rộng còn Draft
 
 Meta signature, app review, page subscription, message permission/window, attachment, delivery receipts và token rotation phải kiểm chứng với tài liệu Meta tại M3. Google Ads lead form cần raw webhook schema, mapping form → Contact/Lead, consent, dedup submission ID và cách giữ campaign attribution trước M4.
+
+SRC-014 đã có ChannelReferences và MockSender persisted receipt (lookup reconcile không resend). `channel_connection`/`contact_identity` là foundation v9; public intake, credential binding, durable delivery và attribution thuộc SRC-015. Không có provider/Meta thật. Xem [contract](../contracts/conversation.md).

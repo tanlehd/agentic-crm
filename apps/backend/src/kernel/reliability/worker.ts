@@ -1,3 +1,5 @@
+import { OutboundDispatcher } from '../../modules/conversation/outbound.js';
+import { MockSender } from '../../modules/channels/mock-sender.js';
 import { Injectable, Module } from '@nestjs/common';
 import type { OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { databaseSource } from '../database/data-source.js';
@@ -7,6 +9,7 @@ import { identityAccessConsumer } from '../../modules/identity/access-consumer.j
 class DeliveryWorker implements OnModuleInit, OnModuleDestroy {
   private readonly source = databaseSource();
   private readonly delivery = new DurableDelivery(this.source);
+  private readonly outbound = new OutboundDispatcher(this.source,new MockSender(this.source));
   private timer?: ReturnType<typeof setTimeout>;
   private stopped = false;
   private running?: Promise<void>;
@@ -28,6 +31,7 @@ class DeliveryWorker implements OnModuleInit, OnModuleDestroy {
         await Promise.all(claims.slice(offset,offset+4).map(claim=>this.delivery.dispatch(claim,[identityAccessConsumer])));
       }
       await this.delivery.expireReceipts();
+      await this.outbound.tick();
     } catch { console.warn('RELIABILITY_TICK_FAILED'); }
   }
   async onModuleDestroy() {

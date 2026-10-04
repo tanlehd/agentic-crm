@@ -196,3 +196,13 @@ README/index, contracts/data/modules/UX/runbooks, acceptance/tracker/details/che
 ## S-20261004-05 — Commit/push M1 theo yêu cầu
 
 Người dùng yêu cầu commit và push toàn bộ SRC-011…013 đã nghiệm thu. Target `main` → `origin/main`, SSH remote tanlehd/agentic-crm; không force push/deploy. Kiểm tra diff whitespace và quét candidate files với secret local/private-key/token patterns PASS; .env/artifacts/cache/dependencies tiếp tục ngoài Git. Evidence kiểm thử M1 ở S-20261004-04, không chạy lại application tests chỉ để đồng bộ Git. Commit chứa entry này là working-tree handoff M1; kết quả push được xác minh với remote sau thao tác.
+
+## S-20261004-05 — SRC-014 (DONE)
+
+Claim Codex 2026-10-04; dependency SRC-013 DONE; working tree sạch lúc bắt đầu. Không agent song song, không commit/push/deploy.
+
+CHG-20261004-07 (C2, resolved design): bổ sung physical v9 và [Conversation contract](../contracts/conversation.md) trước code. Migration additive connection/identity/conversation/message/outbound/mock receipt; v1–v8 không sửa, Lead M2 references vẫn guarded. Internal UoW ports cho Channels/CRM, không public intake ở SRC-014. Durable sending timeout 60s chuyển unknown, không tự resend; mock receipt persisted theo tenant+intent, reconcile qua internal port. Hooks close/assignment chuẩn bị cho SRC-017/020, chưa engine. Tests/evidence bổ sung cuối phiên.
+
+S-20261004-05 kết thúc: SRC-014 DONE, SRC-015 READY. Source Conversation domain/http/outbound, Channels reference/mock sender, CRM ports/archive guard, migration v9 và generated contracts. `pnpm test:integration` PASS67 (14 Conversation mới); `pnpm verify:container` PASS9 gates/42 unit+7 tooling, Linux ARM64 Node24.21.0/pnpm10.33.0/MySQL8.4.11. Preview rebuild PASS, Schema ready9, 7 services healthy; fingerprint27 bảng M1 trước/sau giữ exact count/hash. Evidence [SRC-014](details/SRC-014.md), artifacts/SRC-014/{integration.log,verify.log,verify-summary.json,preview-build.log,upgrade-check.json,migration-status.log,services.log,worker.log}. Host Node25 chỉ driver; Docker sandbox denial rerun với escalation. Không browser inbox test (SRC-016), không provider thật/remote CI, không commit/push/deploy.
+
+Docs sync: module Conversation/Channels, dictionary/model/physical v9, Conversation/API contracts, migration/local runbook, AC sub-scope, README/index, tracker/detail/checkpoint. Working tree main sau f575a8e dirty chứa task này. Không blocker/pending decision, test projects cleanup; preview giữ chạy. Next: claim SRC-015, đọc Channels/normalized intake/service-actor binding/referral trước code.

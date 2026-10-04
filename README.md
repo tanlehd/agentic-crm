@@ -2,7 +2,7 @@
 
 Nền tảng conversational CRM dạng SaaS multi-tenant, nơi Human Agent và AI Agent cùng xử lý hội thoại, lead, cơ hội bán hàng và yêu cầu hỗ trợ.
 
-**Trạng thái:** Base CRM M1 có OIDC, tenant isolation, Identity Admin UI, Contact/Company/Activity, Lead draft/consent/qualification và custom object CRUD. Metadata/property/form/view, typed query/index, association, audit/idempotency/outbox đã có; migration v1–v8 và seed Alpha/Beta. Trạng thái nghiệm thu và evidence xem [task tracker](docs/tracking/tasks.md).
+**Trạng thái:** Base CRM M1 có OIDC, tenant isolation, Identity Admin UI, Contact/Company/Activity, Lead draft/consent/qualification và custom object CRUD. Metadata/property/form/view, typed query/index, association, audit/idempotency/outbox đã có; migration v1–v9 và seed Alpha/Beta; Conversation backend/notes/outbound mock SRC-014. Trạng thái nghiệm thu và evidence xem [task tracker](docs/tracking/tasks.md).
 
 Mở [ứng dụng local](http://localhost:8080) sau khi khởi động theo [hướng dẫn chạy](docs/development/local.md).
 
@@ -34,4 +34,4 @@ Mỗi phiên cập nhật tracker, evidence và checkpoint; thay đổi thiết 
 
 Blueprint toàn platform; đặc tả chi tiết nền móng và case Facebook Messenger CTM giả lập → nhận diện Contact → Conversation → phân công → qualify Lead → bàn giao Sale. Connector thật, AI thật, builder nâng cao, Google Ads và custom report đầy đủ nằm ở milestone sau.
 
-Tài liệu bằng tiếng Việt; tên entity, API, event, field và requirement ID bằng tiếng Anh. CRM M1 đã có source và kiểm thử; mock Messenger → Conversation → Sale thuộc SRC-014…025, chưa triển khai.
+Tài liệu bằng tiếng Việt; tên entity, API, event, field và requirement ID bằng tiếng Anh. CRM M1 đã có source và kiểm thử; Conversation/message domain và outbound mock SRC-014 đã có; intake Messenger → inbox UI → Sale tiếp tục SRC-015…025.

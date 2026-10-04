@@ -1,3 +1,4 @@
+import { conversationCases } from './conversation-cases.js';
 import { crmCoreCases } from './crm-core-cases.js';
 import { propertiesCases } from './properties-cases.js';
 import { registryCases } from './registry-cases.js';
@@ -178,6 +179,7 @@ describe.skipIf(!enabled)('SRC-004 real MySQL', () => {
   registryCases(isolated);
   propertiesCases(isolated);
   crmCoreCases(isolated);
+  conversationCases(isolated);
   it('runtime user can perform DML but cannot execute DDL', async () => {
     const user=process.env.MYSQL_USER!, password=process.env.MYSQL_PASSWORD!;
     await source.query("CREATE USER ?@'%' IDENTIFIED BY ?",[user,password]);

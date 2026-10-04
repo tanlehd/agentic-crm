@@ -84,6 +84,8 @@ Filter M1 là AND của tối đa 10 predicate `{field,op,value}`; op `eq,in,gte
 
 ## Channels và Conversation
 
+Chi tiết DTO/ports SRC-014: [Conversation text M2](conversation.md).
+
 Mock inbound endpoint `POST /integrations/mock-messenger/deliveries` dùng credential connection, không human session. Payload dưới là **normalized fixture**, không phải payload chính thức của Meta:
 
 ```json

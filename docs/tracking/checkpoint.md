@@ -1,31 +1,32 @@
 # Checkpoint — điểm tiếp tục
 
-Updated 2026-10-04, S-20261004-04.
+Updated 2026-10-04, S-20261004-05.
 
 ## Trạng thái thực tế
 
-**SRC-001…013 DONE (13/25), base CRM M1 gate PASS. SRC-014 READY, chưa claim; không task active.** [Evidence SRC-013](details/SRC-013.md), [tracker](tasks.md).
+**SRC-001…014 DONE (14/25), M1 gate PASS. SRC-015 READY, chưa claim; không task active.** [SRC-014 evidence](details/SRC-014.md), [tracker](tasks.md).
 
-Preview [localhost:8080](http://localhost:8080) có OIDC/tenant selector, Identity Admin UI, Contact/Company/Activity, Lead draft/consent/qualification, custom Appointment/ServiceOffering CRUD, metadata/property/form/view, typed index/query và association. Quyền vẫn kiểm ở backend; query cache/form tách tenant.
+Preview [localhost:8080](http://localhost:8080) giữ M1 OIDC/Identity Admin/CRM UI; backend mới có Conversation queue/detail/timeline/note/transition và outbound intent/mock sender. Chưa có channel seed/public inbound hoặc inbox UI — thuộc SRC-015/016. Không suy diễn hoàn tất M2.
 
-Migration v1–v8 immutable; v7 properties/custom records, v8 CRM core/Lead. Upgrade v6→v8 giữ exact fingerprint 13 bảng cũ trước seed. Seed Identity v1/registry v2 giữ nguyên; M1 v3 additive dedicated roles/metadata, first2/repeat0 created. Synthetic E2E records được giữ trong preview. Không reset volume/credential.
+Migration v1–v9 đã áp dụng preview, immutable; v9 additive channel_connection/contact_identity/conversation/message/outbound/mock receipt. 27 bảng M1 exact count/hash giữ nguyên qua upgrade. Seed v1/v2/v3 không đổi, không reset volume/credential. Lead Conversation/session/touchpoint refs vẫn guarded tới Sales M2.
 
-Final verification: 53 MySQL integration, 9 verify gates (40 unit/contract +7 tooling), real Chrome154 E2E, cold tmpfs và warm stop/start preservation đều PASS. Canonical Linux ARM64 Node24.21.0/pnpm10.33.0/MySQL8.4.11; Node25 host chỉ driver. DEF-001 concurrent auth touch đã sửa và regression PASS. Artifacts local `artifacts/SRC-011/`, `SRC-012/`, `SRC-013/`, `artifacts/verify/`.
+Final verification: 67 MySQL integration (14 Conversation), 9 verify gates (42 unit/contract +7 tooling), build/typecheck/docs/schema/generated/smoke PASS. Canonical Linux ARM64 Node24.21.0/pnpm10.33.0/MySQL8.4.11; Node25 host chỉ Compose driver. Artifacts `artifacts/SRC-014/` local ignored. M1 browser evidence giữ ở SRC-013; không chạy browser inbox khi UI chưa có.
 
 ## Điểm nối source
 
-- CRM properties/records/core/ui/http trong `apps/backend/src/modules/crm/`; Sales Lead core trong `modules/sales/leads.ts`. Transaction/reference/archive qua application ports, không truy cập chéo bảng module.
-- Frontend `apps/web/app/crm/`: API/query provider, records, administration, metadata. Tenant unmount hủy query và clear cache; stale version có reload rõ ràng.
-- Contracts CRM records/core/ui cùng OpenAPI/generated TS; local seed `pnpm seed:m1` và E2E `pnpm test:m1`.
-- Session lock bounded wait tối đa2.5s/25ms, reread/CAS và logout revocation giữ nguyên. CHG-20261004-06/DEF-001.
-- Lead session-origin/M2 references fail closed; chưa Conversation/Chatflow/Sale handoff. Domain outbox reporting/automation chưa consumer, unknown events được giữ failed theo ADR-014. Không giả production integration.
+- `apps/backend/src/modules/conversation/domain.ts`: `Conversations.receive(TransactionScope, normalizedMessage)` là intake port; lock identity→Contact→Conversation, tạo registry ownerNULL/team từ channel connection, atomic message/audit/outbox, duplicate/provider-payload conflict. Caller SRC-015 phải đưa durable delivery/Contact resolution/touchpoint vào cùng UoW.
+- `modules/channels/ports.ts`: Channels-owned connection/identity reads; v9 channel_connection chỉ mock_messenger, active/disabled/team FK; credentials/delivery/referral chưa triển khai. `mock-sender.ts` persisted fake receipt tenant+intent, lookup reconcile không resend.
+- `modules/conversation/outbound.ts`: queued→sending→sent/failed/unknown, token CAS, auth/owner/connection recheck; sending quá60s→unknown; retry chỉ failed pre-dispatch. Reliability worker tick gọi dispatcher. Unknown không auto-resend.
+- `cancelQueued` export phải nối assignment UoW dưới registry lock tại SRC-017; close gọi hook orchestration được compose tại SRC-020. AI send chưa exposed, fail closed tới SRC-018. Test dùng assignment harness, không gọi là routing implementation.
+- CRM conversation ports tạo Activity note và unassigned registry, Contact archive guard. Exact schema/OpenAPI/TS ở packages/contracts; [contract](../contracts/conversation.md).
+- Domain outbox chưa có automation/reporting consumer, unknown events giữ failed theo ADR-014. Không provider/AI thật.
 
 ## Bước tiếp theo
 
-Khi tiếp tục M2, claim **SRC-014**: Conversation/message domain, outbound intent/mock sender. Dependency SRC-013 DONE; thiết kế text inbox M2 Ready. Đọc module Conversation/Channels, data dictionary, contracts/events và acceptance trước khi code; gap cần change entry. Không tự mở task/agent song song.
+Claim **SRC-015 — Mock Messenger intake, identity resolution, attribution**. Dependency SRC-014 DONE; đọc Channels, normalized inbound/API/service actor credential binding, data dictionary, AC-05/referral/duplicate delivery trước code. Thêm physical/contract refinement bằng CHG trước phần phụ thuộc; không tự mở task/agent song song.
 
 ## Workspace / runtime
 
-Nhánh `main`, base implementation trước M1 là `7c05518`, tracking origin/main. Người dùng yêu cầu commit/push SRC-011…013 ngày 2026-10-04; commit chứa checkpoint này là bản bàn giao M1, kết quả Git xác minh sau thao tác. Remote CI/AMD64/Windows native NOT_RUN, không deploy. Không blocker hoặc quyết định pending.
+Nhánh `main`, HEAD `f575a8e` (M1), tracking origin/main. Working tree dirty gồm SRC-014 implementation/docs/contracts/tests; chưa commit/push, không deploy. Không blocker/quyết định pending.
 
-7 services preview gateway/web/API/worker/MySQL/Redis/Keycloak healthy sau stop/start; migrations/provision one-shots exit0. Cold/integration projects đã cleanup; không automation hoặc test runner active. [Local runbook](../development/local.md), [verification](../development/verification.md). Không reset DB nếu gặp sự cố; recovery theo runbook.
+7 services preview gateway/web/API/worker/MySQL/Redis/Keycloak healthy; migration/provision/grants one-shots exit0, status `Schema ready: 9`. Worker logs không tick error. Integration tmpfs projects cleanup, không runner/automation active. Remote CI/AMD64/Windows native NOT_RUN. Không reset DB; recovery theo [migration runbook](../development/migrations.md).

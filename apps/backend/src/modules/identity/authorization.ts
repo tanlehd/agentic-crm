@@ -48,3 +48,8 @@ export async function validateOwnershipTarget(scope:TransactionScope,owner:strin
     if(team && !(await scope.query('SELECT principal_id FROM team_member WHERE tenant_id=? AND team_id=? AND principal_id=? AND active=1',[tenant,team,owner]))[0])throw new AccessError('FORBIDDEN');
   }
 }
+
+export async function requireActiveTenant(scope:TransactionScope,exclusive=false){
+  const [tenant]=await scope.query(`SELECT status FROM tenant WHERE id=? ${exclusive?'FOR UPDATE':'FOR SHARE'}`,[scope.context.tenantId]);
+  if(tenant?.status!=='active')throw new AccessError('FORBIDDEN');
+}

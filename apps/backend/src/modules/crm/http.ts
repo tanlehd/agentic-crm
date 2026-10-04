@@ -1,3 +1,4 @@
+import { conversationArchiveGuard } from '../conversation/domain.js';
 import { Controller,Get,Post,Patch,Put,Req,Res,Inject,Module,type OnModuleDestroy } from '@nestjs/common';
 import type { IncomingMessage,ServerResponse } from 'node:http';
 import { createHmac,randomUUID } from 'node:crypto';
@@ -16,7 +17,7 @@ import { CrmPlatform,type MetadataRoute } from './platform.js';
 interface Request extends IncomingMessage {query:Record<string,unknown>;params:Record<string,string>;body:unknown}
 export class CrmRuntime implements OnModuleDestroy {
   private readonly source=databaseSource();private initialized:Promise<unknown>|undefined;readonly platform:CrmPlatform;readonly records:CrmRecords;readonly leads:LeadService;readonly ui:CrmUi;
-  constructor(@Inject(AuthRuntime) auth:AuthRuntime){this.platform=new CrmPlatform(this.source,createHmac('sha256',auth.service.config.encryptionKey).update('registry-pagination-v1').digest());const domains=coreDomains();domains.set('lead',leadDomain(contactReferences));this.records=new CrmRecords(this.source,createHmac('sha256',auth.service.config.encryptionKey).update('records-pagination-v1').digest(),domains,undefined,[leadArchiveGuard]);this.leads=new LeadService(this.records,contactReferences);this.ui=new CrmUi(this.records);}
+  constructor(@Inject(AuthRuntime) auth:AuthRuntime){this.platform=new CrmPlatform(this.source,createHmac('sha256',auth.service.config.encryptionKey).update('registry-pagination-v1').digest());const domains=coreDomains();domains.set('lead',leadDomain(contactReferences));this.records=new CrmRecords(this.source,createHmac('sha256',auth.service.config.encryptionKey).update('records-pagination-v1').digest(),domains,undefined,[leadArchiveGuard,conversationArchiveGuard]);this.leads=new LeadService(this.records,contactReferences);this.ui=new CrmUi(this.records);}
   async ready(){if(!this.initialized)this.initialized=this.source.initialize().catch(e=>{this.initialized=undefined;throw e;});await this.initialized;}
   async onModuleDestroy(){await this.initialized?.catch(()=>{});if(this.source.isInitialized)await this.source.destroy();}
 }

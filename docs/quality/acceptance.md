@@ -73,3 +73,7 @@ SRC-011 đạt backend AC-04/13 M1 và record ACL/query/replay phần AC-01/02/1
 SRC-012 backend AC-03/M1, qualification sub-scope AC-09 và standard ACL/transaction đã kiểm; [evidence](../tracking/details/SRC-012.md). Handoff/acceptance và Customer M4 chưa đóng.
 
 SRC-013 đóng **M1 release gate**: Admin/CRM UI real OIDC, tenant/permission negative, standard/custom CRUD, association, typed query/form/view; cold tmpfs migration+seed và warm restart giữ dữ liệu PASS. AC-03/04/13 chỉ phạm vi M1; AC-09 chỉ qualification, handoff/acceptance vẫn M2. Regression 53 MySQL và40 unit/contract; [evidence SRC-013](../tracking/details/SRC-013.md).
+
+## SRC-014 — sub-scope M2
+
+Evidence [SRC-014](../tracking/details/SRC-014.md): AC-05 business-message dedup/transaction port (chưa durable ACK/referral); AC-15 race một active Conversation/identity; AC-18 queued cancellation hook/close, sending giữ kết quả, unknown không resend và mock reconcile; AC-01/02 tenant/owner/field policy; AC-12 audit/outbox sanitized. Không đóng toàn AC-05/06/07/09/15/18 hoặc M2 release gate: intake, actual takeover/routing/AI, workflow/chatflow và Sales vẫn thuộc các task tiếp theo.

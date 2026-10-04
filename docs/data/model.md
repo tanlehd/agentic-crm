@@ -108,3 +108,7 @@ Customer projection dùng `customer_since` thời điểm thắng đầu tiên, 
 Index chính: owner queue `(tenant_id,object_type_id,owner_principal_id,updated_at,id)`; team queue `(tenant_id,object_type_id,team_id,updated_at,id)`; message `(tenant_id,conversation_id,received_at,id)`; outbox `(status,next_attempt_at,id)`; run/wait `(tenant_id,status,resume_at,id)`; inbound unique provider key. Query always tenant-scoped; global worker scan chỉ đọc delivery IDs rồi khởi tạo tenant context.
 
 Chi tiết field và constraint nằm trong [dictionary](dictionary.md).
+
+## SRC-014 physical implementation
+
+Migration v9 thêm channel_connection → contact_identity → conversation (registry subtype), outbound_intent → message và mock_outbound_receipt. Composite tenant FK bảo đảm identity/contact/connection đồng nhất; generated active_identity_key unique. Chi tiết [physical schema](physical-schema.md), [dictionary](dictionary.md). Inbound delivery/touchpoint chưa triển khai; Lead/session refs vẫn fail closed.

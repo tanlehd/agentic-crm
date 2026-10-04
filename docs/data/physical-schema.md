@@ -86,3 +86,11 @@ CHG-20261004-02: object_type, crm_record, association_type, association, ownersh
 SRC-011 v7 additive theo [CRM records](../contracts/crm-records.md): property/form/view mutable version, custom subtype, typed indexes; v1–v6 immutable.
 
 SRC-012 v8 additive contact/company/activity/lead; immutable v1–v7. Standard query indexes tenant-first; M2 refs fail closed CHECK IS NULL. [Exact core contract](../contracts/crm-core.md).
+
+## v9 — SRC-014 Conversation text
+
+Additive sau v8. channel_connection: tenant+id, external_account_id varchar255 unique theo tenant/provider, provider chỉ mock_messenger, status active/disabled, team_id cùng tenant. contact_identity: tenant+id, connection/contact composite FK, external_subject_id varchar255 unique tenant+connection+subject; tuple tenant+id+contact+connection unique để Conversation FK bảo đảm coherence.
+
+conversation subtype: contact/identity/connection tuple FK; active_identity_key generated identity khi open/pending, NULL khi closed; unique tenant+active_identity_key. status check, opened/closed datetime6, closed consistency check. message: UUID PK, tenant FK qua Conversation+connection tuple; text max4000 application+CHECK, direction/status checks, occurred/received datetime6, index tenant+conversation+received_at+id; provider ID varchar255 unique tenant+connection+provider; outbound_intent nullable unique tenant+intent. outbound_intent: actor principal/account refs qua tenant, owner_revision bigint, text, status check, idempotency_key varchar128 ascii, unique tenant+actor+key, dispatch_token UUID nullable, sending_at datetime6 nullable, sanitized error_code varchar64/provider ID varchar255. message→intent FK sau khi intent table tồn tại; intent→message tham chiếu bằng message unique intent lookup (không cột vòng dư). mock_outbound_receipt tenant+intent PK FK, provider ID unique tenant+provider; chỉ synthetic provider persistence. Không token/payload thật.
+
+CRM Contact archive guard chặn active Conversation qua module port; v8 Lead reference CHECK giữ nguyên tới task Sales M2. Upgrade không rewrite M1 data; rollback ứng dụng cần version tương thích v9, không drop dữ liệu để downgrade.

@@ -11,6 +11,12 @@ export function canonical(value: unknown): string {
 export interface CommandIdentity { actorId: string; correlationId: string; route: string; key: string; body: unknown; version?: string }
 export interface CommandResponse { status: number; body: {data: Record<string,unknown>; meta:{correlation_id:string}} }
 export class DurableCommands {
+  async systemAudit(scope:TransactionScope,correlation:string,resource:string,id:string,action:string,fields:string[]){
+    await scope.query("INSERT INTO audit_entry(id,tenant_id,actor_kind,actor_id,action,resource_type,resource_id,outcome,changed_fields,correlation_id,occurred_at,created_at) VALUES (?,?,'system',?,?,?,?,'accepted',?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[randomUUID(),scope.context.tenantId,scope.context.tenantId,action,resource,id,JSON.stringify(fields),correlation]);
+  }
+  async conversationEvent(scope:TransactionScope,correlation:string,type:'conversation.created'|'message.received'|'message.sent'|'message.delivery_failed',id:string,version:string,payload:Record<string,unknown>){
+    await scope.query("INSERT INTO outbox_event(id,tenant_id,event_type,schema_version,aggregate_type,aggregate_id,aggregate_version,payload,correlation_id,actor_kind,actor_id,occurred_at,created_at,status) VALUES (?,?,?,1,'conversation',?,?,?,?,'system',?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6),'pending')",[randomUUID(),scope.context.tenantId,type,id,version,JSON.stringify(payload),correlation,scope.context.tenantId]);
+  }
   async domainEvent(scope:TransactionScope,actorId:string,correlationId:string,eventType:'contact.created'|'lead.created'|'lead.qualified',recordId:string,version:string,payload:Record<string,unknown>){
     await scope.query("INSERT INTO outbox_event(id,tenant_id,event_type,schema_version,aggregate_type,aggregate_id,aggregate_version,payload,correlation_id,actor_kind,actor_id,occurred_at,created_at,status) VALUES (?,?,?,1,?,?,?,?,?,'human',?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6),'pending')",[randomUUID(),scope.context.tenantId,eventType,eventType.split('.')[0],recordId,version,JSON.stringify(payload),correlationId,actorId]);
   }
