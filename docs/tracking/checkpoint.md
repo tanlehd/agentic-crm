@@ -1,6 +1,6 @@
 # Checkpoint — điểm tiếp tục
 
-Updated2026-10-05, S-20261005-13 (SRC-023 DONE).
+Updated2026-10-06, S-20261006-01 (Git sync SRC-023; implementation status unchanged).
 
 ## Trạng thái thực tế
 
@@ -10,9 +10,9 @@ Healthcare fixture chạy application services Intake→Workflow AI routing→Ch
 
 ## Preview và Git
 
-SRC-022 commit `7583d6e` pushed origin/main from8497cf2 theo yêu cầu user. SRC-023 tests/scripts/config/docs dirty trên main7583d6e, chưa commit/push. Không production deployment.
+SRC-022 commit `7583d6e` pushed origin/main from8497cf2 theo yêu cầu user. SRC-023 commit `92d3ed6` đã push origin/main ngày2026-10-06 theo yêu cầu user; bản cập nhật Git checkpoint nằm trong commit docs kế tiếp. Không production deployment.
 
-Preview localhost:8080 vẫn SRC-022/schema17;7 services healthy, volume giữ nguyên. Fixture SRC-023 chỉ chạy MySQL tmpfs trong project test riêng; không ghi preview. Containers/network test đã cleanup; không automation/subagent.
+Preview theo kiểm tra phiên2026-10-05: SRC-022/schema17;7 services healthy, volume giữ nguyên. Phiên Git sync không khởi động/dừng hoặc kiểm tra lại services. Fixture SRC-023 chỉ chạy MySQL tmpfs trong project test riêng; không ghi preview. Containers/network test đã cleanup; không automation/subagent.
 
 ## Evidence và next action
 
