@@ -1,8 +1,9 @@
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
+if (process.argv.slice(2).some(arg => arg !== '--healthcare')) throw new Error('Usage: integration.mjs [--healthcare]');
 process.chdir(fileURLToPath(new URL('../', import.meta.url)));
-const env = { ...process.env, MYSQL_ROOT_PASSWORD: randomBytes(32).toString('hex'), MYSQL_PASSWORD: randomBytes(32).toString('hex') };
+const env = { ...process.env, TEST_CASE_FILTER: process.argv.includes('--healthcare') ? 'SRC-023 healthcare fixture' : '.', MYSQL_ROOT_PASSWORD: randomBytes(32).toString('hex'), MYSQL_PASSWORD: randomBytes(32).toString('hex') };
 const args = ['compose','-p',`agentic-crm-kernel-test-${process.pid}`,'-f','compose.integration.yaml'];
 let status = 1;
 try {

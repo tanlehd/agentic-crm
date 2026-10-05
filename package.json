@@ -26,6 +26,7 @@
     "test:smoke-api": "node scripts/smoke-api.mjs",
     "db:migrate": "node scripts/compose.mjs migrate",
     "db:status": "node scripts/compose.mjs dbstatus",
+    "test:healthcare": "node scripts/integration.mjs --healthcare",
     "test:integration": "node scripts/integration.mjs",
     "lint": "node scripts/lint.mjs",
     "schemas:check": "node scripts/check-schemas.mjs",

@@ -67,3 +67,5 @@ Google Ads form dùng submission identity để chống trùng; campaign/form at
 Template ngành gồm acquisition funnel, chat qualification, handoff latency, sales pipeline và lịch hẹn; custom report dùng cùng grain/metric semantics ở [Reporting](../modules/reporting.md).
 
 SRC-009 Identity fixture scope và repeat/credential policy: [bootstrap contract](../contracts/bootstrap.md). Registry và dữ liệu ngành chưa thuộc seed này.
+
+SRC-023 executable refinement: exact consent evidence uses `đồng ý` / `không đồng ý`; A/D cover Human completion after AI prompt, C automated collect, B short refusal graph. Counts and outcomes above unchanged. See [fixture contract](../contracts/healthcare-fixture.md).

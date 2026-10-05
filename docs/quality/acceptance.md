@@ -109,3 +109,7 @@ AC-09 backend Chatflow→Workflow handoff→Sale accept PASS with unchanged Conv
 ## SRC-022 Sales và Operations UI
 
 Sales queue/detail + real accept command + authorized CRM link, stale race UI and Operations reason-coded inbound retry/run timeline/runtime attention PASS.171 MySQL regression/integration, canonical verify9/9 and real Chrome154/OIDC browser gate; [evidence SRC-022](../tracking/details/SRC-022.md). Negative403 cached-detail and409 browser conflict use explicit injection; actual permission/race behavior independently covered in MySQL. Preview schema17 upgrade data check and fixture cleanup verified. Full M2 healthcare KPI/chaos/release remains SRC-023…025.
+
+## SRC-023 healthcare and metric sub-scope
+
+AC-09 application-service healthcare fixture and AC-11/M2 persisted metric semantics PASS:12/4/3,3 qualified,2/3 ratios,180s acceptance/30s response medians; duplicate deliveries, no-referral/refusal, historical owner, tenant/null/fan-out and as_of boundaries.176 MySQL regression PASS and isolated cold walkthrough5 PASS; [evidence](../tracking/details/SRC-023.md). No M5 report API/cache ACL or browser fixture seed claimed; full M2 fault/release gate remains SRC-024/025.

@@ -24,4 +24,4 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Run pnpm env:init}
     depends_on:
       mysql: {condition: service_healthy}
-    command: [pnpm, exec, vitest, run, apps/backend/tests/database.integration.test.ts]
+    command: [pnpm, exec, vitest, run, apps/backend/tests/database.integration.test.ts, --testNamePattern, "${TEST_CASE_FILTER:-.}"]

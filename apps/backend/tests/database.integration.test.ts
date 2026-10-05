@@ -1,3 +1,4 @@
+import { healthcareCases } from './healthcare-cases.js';
 import { salesHandoffCases } from './sales-handoff-cases.js';
 import { chatflowCases } from './chatflow-cases.js';
 import { workflowCases } from './workflow-cases.js';
@@ -192,6 +193,7 @@ describe.skipIf(!enabled)('SRC-004 real MySQL', () => {
   chatflowCases(isolated);
   salesHandoffCases(isolated);
   intakeCases(isolated);
+  healthcareCases(isolated);
   it('runtime user can perform DML but cannot execute DDL', async () => {
     const user=process.env.MYSQL_USER!, password=process.env.MYSQL_PASSWORD!;
     await source.query("CREATE USER ?@'%' IDENTIFIED BY ?",[user,password]);

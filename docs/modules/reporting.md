@@ -54,3 +54,5 @@ Pre-aggregate theo grain trước join one-to-many; không fix fan-out bằng DI
 ## Mở rộng còn Draft
 
 Query planner, limits, joins, metric version migration, dashboard sharing, refresh schedule, export và attribution đa chạm cần thiết kế trước M5. M2 không hứa tính ROAS khi chưa có cost/revenue data.
+
+M2 private query verification and continuous percentile/as_of rules: [healthcare fixture contract](../contracts/healthcare-fixture.md). No production report execution or cache is introduced.

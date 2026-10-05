@@ -2,7 +2,7 @@
 
 Nguồn chuẩn trạng thái công việc. Updated: 2026-10-05. Thiết kế có thể Ready nhưng source task vẫn TODO; hai trạng thái không đồng nghĩa.
 
-**Hiện tại:** SRC-001…022 DONE (22/25); base CRM M1 gate PASS. Preview localhost:8080 có OIDC, Identity Admin/CRM UI, standard/custom CRUD, Lead qualification, metadata/form/view và association. SRC-014/015 Conversation và mock intake, SRC-016 inbox UI DONE; SRC-017 routing/assignment/takeover DONE; SRC-018 private mock runtime DONE; SRC-019 durable Workflow DONE; SRC-020 DONE, Codex 2026-10-05; SRC-021 DONE, Codex 2026-10-05; SRC-022 DONE, Codex 2026-10-05; SRC-023 READY, chưa claim. [Checkpoint](checkpoint.md) · [Execution log](log.md) · [Build plan](../planning/build-plan.md).
+**Hiện tại:** SRC-001…023 DONE (23/25); base CRM M1 gate PASS. Preview localhost:8080 có OIDC, Identity Admin/CRM UI, standard/custom CRUD, Lead qualification, metadata/form/view và association. SRC-014/015 Conversation và mock intake, SRC-016 inbox UI DONE; SRC-017 routing/assignment/takeover DONE; SRC-018 private mock runtime DONE; SRC-019 durable Workflow DONE; SRC-020 DONE, Codex 2026-10-05; SRC-021 DONE, Codex 2026-10-05; SRC-022 DONE, Codex 2026-10-05; SRC-023 DONE, Codex 2026-10-05; SRC-024 READY, chưa claim. [Checkpoint](checkpoint.md) · [Execution log](log.md) · [Build plan](../planning/build-plan.md).
 
 Owner `—` nghĩa chưa claim. Evidence `—` nghĩa chưa kiểm thử/hoàn thành, không phải pass. Chỉ promote TODO→READY khi tất cả dependency DONE và thiết kế đúng phạm vi Ready. Một task active tại một thời điểm theo mặc định.
 
@@ -45,8 +45,8 @@ Git sync S-20261004-03: initial commit `7c05518` đã push lên `origin/main` th
 | SRC-020 | Chatflow/session/turn và Human completion | SRC-019 | DONE | Codex 2026-10-05 | AC-07/08/16; first message không mất, consent explicit, paused_human giữ dữ liệu, single Lead/session; nối Workflow thật | details/SRC-020.md |
 | SRC-021 | Sales handoff/acceptance API và workflow action | SRC-020 | DONE | Codex 2026-10-05 | AC-09/15; Contact share đúng team, hai Sales race chỉ một thắng, queue khi không eligible, 15 phút attention | details/SRC-021.md |
 | SRC-022 | Sale queue/detail và operations/run UI | SRC-021 | DONE | Codex 2026-10-05 | Nhận Lead bằng command thật, link CRM có quyền, failed delivery/retry an toàn, run timeline sanitized | details/SRC-022.md |
-| SRC-023 | Healthcare fixtures xuyên luồng + metric queries | SRC-022 | READY | — | AC-09, AC-11/M2; dataset KPI đúng 12/4/3 và 2/3; deterministic clock; có walkthrough từ volume trống | — |
-| SRC-024 | Regression/fault/race/permission integration suite | SRC-023 | TODO | — | AC-01/02 regression + AC-05…09/12/15…18 thuộc M2; crash/restart/out-of-order/Redis outage/in-flight send | — |
+| SRC-023 | Healthcare fixtures xuyên luồng + metric queries | SRC-022 | DONE | Codex 2026-10-05 | AC-09, AC-11/M2; dataset KPI đúng 12/4/3 và 2/3; deterministic clock; có walkthrough từ volume trống | details/SRC-023.md |
+| SRC-024 | Regression/fault/race/permission integration suite | SRC-023 | READY | — | AC-01/02 regression + AC-05…09/12/15…18 thuộc M2; crash/restart/out-of-order/Redis outage/in-flight send | — |
 | SRC-025 | Release images, upgrade smoke, M2 demo và handoff | SRC-024 | TODO | — | Cold start + M1→M2 migration, data giữ qua restart, native/multi-arch evidence rõ, docs sync và gate report; không production deploy | — |
 
 ## Mapping về backlog gốc
