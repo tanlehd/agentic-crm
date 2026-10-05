@@ -1,3 +1,4 @@
+import { faultProcess } from './fixtures/fault-process.js';
 import { routingAccessConsumer } from '../src/modules/agents/access-consumer.js';
 import { DurableDelivery } from '../src/kernel/reliability/delivery.js';
 import { DurableCommands } from '../src/kernel/reliability/commands.js';
@@ -71,6 +72,25 @@ export function routingCases(isolated:(name:string)=>Promise<DataSource>){descri
     await routing.uow.run({tenantId:tenant},s=>routing.capacity.release(s,ai,winner));expect(await routing.uow.run({tenantId:tenant},s=>routing.capacity.reserve(s,ai,winner))).toBe(false);expect((await route('ai')).owner_principal_id).toBe(ai);
     const expired=randomUUID();await routing.uow.run({tenantId:tenant},s=>routing.capacity.reserve(s,ai,expired));await ds.query('UPDATE agent_capacity_slot SET expires_at=TIMESTAMPADD(SECOND,-1,UTC_TIMESTAMP(6)) WHERE execution_id=?',[expired]);expect(await routing.uow.run({tenantId:tenant},s=>routing.capacity.reserve(s,ai,expired))).toBe(false);expect((await route('ai')).owner_principal_id).toBe(ai);
   });
+  it('SRC-024 provider accepted then SIGKILL; takeover leaves unknown and reconcile never resends',async()=>{
+    await assign(owner);const before=await detail();
+    const send=async()=>String((await conversations.mutate(account,tenant,id,'messages',{text:'Synthetic crash outbound',owner_revision:before.owner_revision},randomUUID(),undefined,'synthetic')).body.data.id);
+    const sending=await send(),queued=await send();
+    await faultProcess(ds,{mode:'send-crash',tenant,conversation:id,intent:sending},true);
+    expect((await ds.query('SELECT status FROM outbound_intent WHERE id=?',[sending]))[0].status).toBe('sending');
+    expect(await ds.query('SELECT intent_id FROM mock_outbound_receipt WHERE intent_id=?',[sending])).toHaveLength(1);
+    await routing.mutate(otherAccount,tenant,id,true,{reason:'human_takeover'},randomUUID(),(await detail()).version,'synthetic');
+    expect((await ds.query('SELECT status FROM outbound_intent WHERE id=?',[queued]))[0].status).toBe('cancelled');
+    await ds.query('UPDATE outbound_intent SET sending_at=TIMESTAMPADD(SECOND,-61,UTC_TIMESTAMP(6)) WHERE id=?',[sending]);
+    let sends=0;const mock=new MockSender(ds),restarted=new OutboundDispatcher(ds,{send:async input=>{sends++;return mock.send(input);},lookup:(t,i)=>mock.lookup(t,i)});
+    await restarted.tick();await restarted.tick();
+    expect((await ds.query('SELECT status FROM outbound_intent WHERE id=?',[sending]))[0].status).toBe('unknown');
+    await expect(restarted.retryFailed(tenant,id,sending)).rejects.toThrow('INVALID_TRANSITION');
+    await restarted.reconcile(tenant,id,sending);await restarted.tick();expect(sends).toBe(0);
+    expect((await ds.query('SELECT status FROM outbound_intent WHERE id=?',[sending]))[0].status).toBe('sent');
+    expect(await ds.query("SELECT id FROM outbox_event WHERE event_type='message.sent' AND JSON_UNQUOTE(JSON_EXTRACT(payload,'$.outbound_intent_id'))=?",[sending])).toHaveLength(1);
+    await assign(owner);
+  },20000);
   it('Human takeover only needs takeover grant; Lead independent; queued cancelled, sending finishes',async()=>{
     await assign(ai);const aiBefore=await detail();await routing.mutate(account,tenant,id,true,{reason:'human_takeover'},randomUUID(),aiBefore.version,'synthetic');expect((await detail()).owner_principal_id).toBe(owner);
     await assign(owner);const before=await detail(),leadBefore=await ds.query('SELECT * FROM crm_record WHERE id=?',[lead]);

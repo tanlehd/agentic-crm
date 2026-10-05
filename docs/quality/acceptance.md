@@ -113,3 +113,7 @@ Sales queue/detail + real accept command + authorized CRM link, stale race UI an
 ## SRC-023 healthcare and metric sub-scope
 
 AC-09 application-service healthcare fixture and AC-11/M2 persisted metric semantics PASS:12/4/3,3 qualified,2/3 ratios,180s acceptance/30s response medians; duplicate deliveries, no-referral/refusal, historical owner, tenant/null/fan-out and as_of boundaries.176 MySQL regression PASS and isolated cold walkthrough5 PASS; [evidence](../tracking/details/SRC-023.md). No M5 report API/cache ACL or browser fixture seed claimed; full M2 fault/release gate remains SRC-024/025.
+
+## SRC-024 M2 fault/regression gate
+
+[Evidence SRC-024](../tracking/details/SRC-024.md), [fault matrix](m2-fault-suite.md):180 MySQL tests PASS, including real SIGKILL/restarted compiled services after assignment action/consumer/provider receipt commits; stale fencing, one durable effect/run, no blind resend unknown; actual Redis TCP outage with HTTP503/session loss401 and durable inbound202/replay/recovery. Full suite reruns AC-01/02/12 permissions/tenant/audit, AC-05/06/07/08/09/15/16/17/18 M2 mock sub-scopes and healthcare metrics. Canonical verify9/9 PASS. Lease expiry is accelerated by test SQL; OIDC exchange in outage harness is synthetic; no Redis queue implementation or real provider claimed. This closes SRC-024 regression/fault gate, not the full M2 release gate: cold/warm release images, M1 upgrade and demo remain SRC-025.

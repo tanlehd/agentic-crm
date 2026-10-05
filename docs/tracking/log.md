@@ -351,3 +351,13 @@ SRC-023 completed same session. Source: healthcare-cases.ts + private fixtures/h
 ## S-20261006-01 — Git sync SRC-023
 
 User explicitly requested commit/push. SRC-023 committed `92d3ed6` and pushed origin/main from7583d6e. Fresh docs check83 files/356 links and git diff --check PASS; previous176 integration and9/9 canonical verify evidence reviewed, not rerun. No implementation/task status change; SRC-024 remains READY, unclaimed. Services untouched; last runtime evidence remains S-20261005-13. This Git checkpoint update is recorded in the following docs commit.
+
+## S-20261006-02 — SRC-024 claim
+
+Codex2026-10-06; dependency SRC-023 DONE, relevant M2 designs/contracts Ready, clean working tree at session start. SRC-024 IN_PROGRESS. Preview7 services healthy; no preview mutation authorized or needed. Add real transport outage and process crash boundaries, then run full permission/race/fault regression in disposable test infrastructure. No subagents/automation/commit/push.
+
+CHG-20261006-01 (SRC-024, C1): fault harness uses dedicated ephemeral Redis and MySQL plus a test-local TCP cut and SIGKILL child processes running compiled application services. Existing M2 worker polls MySQL directly (no BullMQ transport in this scope); test outage must assert actual Redis unavailability, durable intake and recovery without claiming a Redis queue implementation. No schema/API/event change or migration; verification plan in docs/quality/m2-fault-suite.md. Status resolved;180 MySQL tests and9 canonical gates PASS.
+
+### S-20261006-02 completion
+
+SRC-024 DONE; SRC-025 READY, unclaimed. Added four fault cases and test-only process/TCP helpers, ephemeral Redis in integration Compose, compiled-service runner and fault matrix/runbook. Initial179/180 with one new SQL assertion failure (action_key table mismatch), corrected; final180/180 PASS. Canonical verify9/9 (66 unit/contract,7 tooling) PASS in pinned Linux ARM64 Node24.21.0/pnpm10.33.0/MySQL8.4.11/Redis7.4.11. Commands/artifacts and precise injection limits at [SRC-024](details/SRC-024.md). Final docs check after status edits. README/index/acceptance/tracker/checkpoint synchronized; stale SRC-023 READY in index corrected. No production code/schema/API change, no commit/push/deploy; dirty working tree on main d4a4506. Seven preview services healthy and untouched; test containers/network cleaned. No blocker, no pending decision, no automation/subagents. Next action: claim SRC-025 release images/upgrade smoke/M2 demo.

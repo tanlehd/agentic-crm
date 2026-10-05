@@ -1,3 +1,4 @@
+import { faultProcess } from './fixtures/fault-process.js';
 import { describe,it,expect } from 'vitest';
 import { randomUUID } from 'node:crypto';
 import type { DataSource } from 'typeorm';
@@ -48,6 +49,41 @@ export function workflowCases(isolated:(name:string)=>Promise<DataSource>){descr
  it('crash after effect replays one child using same action key; fencing rejects old worker',async()=>{
   const f=await start(childGraph()),old=await claim(f.id);await engine.effect(old);await ds.query('UPDATE workflow_step_run SET lease_until=TIMESTAMPADD(SECOND,-1,UTC_TIMESTAMP(6)) WHERE run_id=?',[f.id]);const current=await claim(f.id);expect(current.token).not.toBe(old.token);await expect(engine.finish(old)).rejects.toThrow('WORKFLOW_LEASE_LOST');await expect(engine.effect(old)).rejects.toThrow('WORKFLOW_LEASE_LOST');await engine.effect(current);await engine.finish(current);expect(await ds.query('SELECT id FROM synthetic_workflow_child WHERE run_id=?',[f.id])).toHaveLength(1);const [s]=await ds.query('SELECT action_key,attempt FROM workflow_step_run WHERE run_id=? AND node_key=?',[f.id,'start']);expect(s.action_key).toBe(`${f.id}:start`);expect(s.attempt).toBe(2);
  });
+ it('SRC-024 SIGKILL after assignment commit; restart preserves pinned version and exactly one effect',async()=>{
+  const f=await start(graph([{key:'assign',type:'assign_owner',config:{record_id:{ref:'trigger.aggregate_id'},team_id:team,capability:'chat',preference:'human'},next:'end'},end]));
+  const old=await claim(f.id),pinned=(await row(f.id)).version_id;
+  await faultProcess(ds,{mode:'effect-crash',claim:old},true);
+  expect((await ds.query('SELECT status FROM workflow_step_run WHERE run_id=?',[f.id]))[0].status).toBe('running');
+  const effects=await ds.query('SELECT * FROM ownership_history WHERE record_id=? ORDER BY owner_revision',[f.e.aggregate_id]);
+  expect(effects).toHaveLength(2);
+  await mutate('version',{graph:graph(),execution_role_id:role},f.d);await mutate('publish',{},f.d,2,'3');
+  await ds.query('UPDATE workflow_step_run SET lease_until=TIMESTAMPADD(SECOND,-1,UTC_TIMESTAMP(6)) WHERE run_id=?',[f.id]);
+  const fresh=await claim(f.id);expect(BigInt(fresh.token)).toBeGreaterThan(BigInt(old.token));
+  await expect(engine.effect(old)).rejects.toThrow('WORKFLOW_LEASE_LOST');await expect(engine.finish(old)).rejects.toThrow('WORKFLOW_LEASE_LOST');
+  await faultProcess(ds,{mode:'effect-recover',claim:fresh},false);
+  expect(await ds.query('SELECT * FROM ownership_history WHERE record_id=? ORDER BY owner_revision',[f.e.aggregate_id])).toEqual(effects);
+  expect(await ds.query('SELECT node_key FROM workflow_action WHERE run_id=?',[f.id])).toEqual([{node_key:'assign'}]);
+  expect(await ds.query('SELECT action_key FROM workflow_step_run WHERE run_id=?',[f.id])).toEqual([{action_key:`${f.id}:assign`}]);
+  expect((await row(f.id)).version_id).toBe(pinned);await step(f.id);expect((await row(f.id)).status).toBe('completed');
+ },20000);
+ it('SRC-024 SIGKILL after consumer commit before relay ACK; restarted dispatch deduplicates real starter',async()=>{
+  await ds.query('UPDATE workflow_definition SET enabled=0');const d=await definition(),e=await event();
+  const [outbox]=await ds.query("SELECT id FROM outbox_event WHERE aggregate_id=? AND event_type='conversation.created'",[e.aggregate_id]);
+  // Isolate the selected crash boundary from unrelated backlog in this fixture.
+  await ds.query("UPDATE outbox_event SET status='dispatched' WHERE id<>?",[outbox.id]);
+  const delivery=new DurableDelivery(ds),old=(await delivery.claim())[0]!;
+  await faultProcess(ds,{mode:'relay-crash',claim:old},true);
+  expect((await ds.query('SELECT status FROM outbox_event WHERE id=?',[outbox.id]))[0].status).toBe('processing');
+  const before=await ds.query('SELECT id,version_id FROM workflow_run WHERE definition_id=?',[d]);expect(before).toHaveLength(1);
+  await ds.query('UPDATE outbox_event SET lease_until=TIMESTAMPADD(SECOND,-1,UTC_TIMESTAMP(6)) WHERE id=?',[outbox.id]);
+  const fresh=(await delivery.claim()).find(c=>c.eventId===old.eventId)!;
+  await expect(delivery.finish(old)).rejects.toThrow('LEASE_LOST');
+  await faultProcess(ds,{mode:'relay-recover',claim:fresh},false);
+  expect(await ds.query('SELECT id,version_id FROM workflow_run WHERE definition_id=?',[d])).toEqual(before);
+  expect(await ds.query('SELECT status FROM consumer_inbox WHERE event_id=?',[outbox.id])).toEqual([{status:'completed'}]);
+  expect((await ds.query('SELECT status FROM outbox_event WHERE id=?',[outbox.id]))[0].status).toBe('dispatched');
+  await step(before[0].id);
+ },20000);
  it('expired effect rolls back child and ledger even if work passed initial fence',async()=>{
   const f=await start(childGraph()),c=await claim(f.id),slow=new WorkflowEngine(ds,{...children,async execute(s,n,i,ctx){const out=await children.execute(s,n,i,ctx);await s.query('UPDATE workflow_step_run SET lease_until=TIMESTAMPADD(SECOND,-1,UTC_TIMESTAMP(6)) WHERE run_id=?',[ctx.runId]);return out;}});await expect(slow.effect(c)).rejects.toThrow('WORKFLOW_LEASE_LOST');expect(await ds.query('SELECT id FROM synthetic_workflow_child WHERE run_id=?',[f.id])).toHaveLength(0);expect(await ds.query('SELECT * FROM workflow_action WHERE run_id=?',[f.id])).toHaveLength(0);await engine.uow.run({tenantId:tenant},s=>engine.cancel(s,f.id));
  });

@@ -57,3 +57,7 @@ SRC-010: MySQL integration kiểm registry/subtype rollback (synthetic subtype c
 ## M1 release gate
 
 SRC-013: `pnpm test:integration` cho MySQL tenant/record/index/Lead/seed/ACL; `pnpm verify:container` cho pinned Node24/lint/docs/schemas/contracts/unit/build/typecheck/smoke. `pnpm test:m1` kiểm real Chrome OIDC, CRUD/render/form/view/association, consent, stale version và viewer/tenant isolation. `node scripts/m1-cold-smoke.mjs` dùng compose.m1-smoke.yaml project riêng/tmpfs/cổng18080; tự down project test. Preview upgrade fingerprint chạy scripts/m1-fingerprint.mjs qua stdin của migration one-shot (script này chỉ chạy bên trong backend image). Warm restart giữ preview volumes và `node scripts/m1-warm-check.mjs` kiểm persisted browser facts. Không suy diễn ARM64 PASS thành AMD64/Windows hoặc remote CI PASS.
+
+## SRC-024 fault regression
+
+`pnpm test:integration` compiles backend services, then runs the full MySQL suite with a dedicated ephemeral Redis. The [fault matrix](../quality/m2-fault-suite.md) adds test-local TCP disconnection and process SIGKILL after committed boundaries. No preview ports/volumes are used. Redis session service and HTTP error handling are real; OIDC exchange/account resolution are synthetic in this fault test. Real OIDC/browser evidence stays in previous task gates and the SRC-025 release demo.

@@ -12,10 +12,21 @@ services:
       interval: 2s
       timeout: 3s
       retries: 60
+  redis:
+    image: redis@sha256:858f009f9709ce576febc734aa78b8f6d624b82571f9ddb6bda4377c833b3499
+    command: [redis-server, --save, "", --appendonly, "no"]
+    tmpfs: [/data]
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 2s
+      timeout: 3s
+      retries: 30
   test:
     build: {context: ., dockerfile: infra/docker/Dockerfile, target: test}
     environment:
       APP_ENV: test
+      TEST_REDIS_HOST: redis
+      TEST_CASE_FILTER: "${TEST_CASE_FILTER:-.}"
       MYSQL_HOST: mysql
       MYSQL_DATABASE: kernel_test
       MYSQL_MIGRATION_USER: root
@@ -24,4 +35,5 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Run pnpm env:init}
     depends_on:
       mysql: {condition: service_healthy}
-    command: [pnpm, exec, vitest, run, apps/backend/tests/database.integration.test.ts, --testNamePattern, "${TEST_CASE_FILTER:-.}"]
+      redis: {condition: service_healthy}
+    command: [node, scripts/integration-container.mjs]

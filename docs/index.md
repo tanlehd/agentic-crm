@@ -53,4 +53,4 @@ Mọi mục `Ready` có phạm vi giới hạn như trên. Không suy diễn m�
 
 SRC-021 Sales handoff/acceptance backend DONE; [exact contract](contracts/sales-handoff.md), [execution evidence](tracking/details/SRC-021.md). Preview nâng schema17 trong SRC-022.
 
-SRC-022 Sales/Operations UI DONE: [workspace contract](contracts/workspaces-m2.md), [evidence](tracking/details/SRC-022.md). SRC-023 READY.
+SRC-022 Sales/Operations UI DONE: [workspace contract](contracts/workspaces-m2.md), [evidence](tracking/details/SRC-022.md). SRC-023 healthcare fixture/KPI DONE; SRC-024 fault/regression DONE ([matrix](quality/m2-fault-suite.md), [evidence](tracking/details/SRC-024.md)); SRC-025 release gate READY.

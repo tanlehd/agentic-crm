@@ -1,3 +1,9 @@
+import { AuthService } from '../src/modules/identity/auth/service.js';
+import { hash } from '../src/modules/identity/auth/security.js';
+import { redisCut } from './fixtures/redis-cut.js';
+import { RedisAuthStore } from '../src/modules/identity/auth/store.js';
+import { DurableDelivery } from '../src/kernel/reliability/delivery.js';
+import { WorkflowEngine } from '../src/modules/workflow/engine.js';
 import { describe,it,expect } from 'vitest';
 import { randomUUID,randomBytes,createHash } from 'node:crypto';
 import type { DataSource } from 'typeorm';
@@ -100,6 +106,47 @@ export function intakeCases(isolated:(name:string)=>Promise<DataSource>){describ
       const human=await fetch(`${base}/api/v1/integrations/deliveries/${ack.data.delivery_id}`,{headers:{'X-Tenant-Id':tenant}});expect(human.status).toBe(200);
     }finally{await server.close();}await processAll();
   });
+  it('SRC-024 real Redis transport outage: auth fails closed, HTTP ACK durable, backlog/replay recover',async()=>{
+    if(!process.env.TEST_REDIS_HOST)throw new Error('TEST_REDIS_HOST_REQUIRED');
+    const proxy=await redisCut(process.env.TEST_REDIS_HOST),previous=process.env.REDIS_HOST;
+    process.env.REDIS_HOST='127.0.0.1';const store=new RedisAuthStore();
+    if(previous===undefined)delete process.env.REDIS_HOST;else process.env.REDIS_HOST=previous;
+    const config={origin:'http://localhost:8080',issuer:'http://localhost:8080/identity/realms/test',backchannel:'http://keycloak:8080/identity/realms/test',clientId:'synthetic',clientSecret:randomBytes(32).toString('hex'),encryptionKey:randomBytes(32).toString('hex'),secure:false};
+    const tokens={access_token:randomBytes(32).toString('hex'),refresh_token:randomBytes(32).toString('hex'),id_token:randomBytes(32).toString('hex'),expires_at:Date.now()+3600000};
+    // Only OIDC exchange/account resolution are synthetic; session crypto/store/service are real.
+    const auth=new AuthService(config,store,{exchange:async()=>({tokens,identity:{subject:'synthetic-redis',displayName:'Synthetic',email:null}}),refresh:async()=>tokens,revoke:async()=>{}},{resolve:async()=>({account_id:account,display_name:'Synthetic'})});
+    class TestModule{}Module({controllers:[ChannelsController],providers:[{provide:ChannelsRuntime,useValue:{ready:async()=>{},intake:app}},{provide:AuthRuntime,useValue:{service:auth}}]})(TestModule);
+    const server=await NestFactory.create(TestModule,{logger:false});server.setGlobalPrefix('api/v1');
+    try{
+      await server.listen(0,'127.0.0.1');
+      await expect.poll(()=>store.redis.status,{timeout:5000}).toBe('ready');
+      const login=await auth.login('/'),session=await auth.callback(new URL(login.location).searchParams.get('state'),login.browser,'synthetic-code',undefined),sessionKey=`auth:session:${hash(session.id)}`;
+      expect((await auth.session(session.id)).account_id).toBe(account);
+      proxy.cut();
+      await expect.poll(async()=>{try{await store.get(sessionKey);return 'available';}catch(e){return (e as Error).message;}},{timeout:5000}).toBe('AUTH_STORE_UNAVAILABLE');
+      const base=await server.getUrl(),headers={'Content-Type':'application/json','Authorization':bearer,'X-Connection-Id':connection},body=payload({external_subject_id:'redis-outage-synthetic'});
+      const post=()=>fetch(`${base}/api/v1/integrations/mock-messenger/deliveries`,{method:'POST',headers,body:JSON.stringify(body)});
+      const response=await post();expect(response.status).toBe(202);const ack=await response.json() as any;
+      expect((await read(ack.data.delivery_id)).status).toBe('received');
+      const humanRead=()=>fetch(`${base}/api/v1/integrations/deliveries/${ack.data.delivery_id}`,{headers:{'X-Tenant-Id':tenant,Cookie:`crm_session=${session.id}`}});
+      const unavailable=await humanRead();expect(unavailable.status).toBe(503);expect((await unavailable.json() as any).error.code).toBe('AUTH_STORE_UNAVAILABLE');
+      expect(await ds.query("SELECT id FROM contact_identity WHERE external_subject_id='redis-outage-synthetic'")).toHaveLength(0);
+      // Intake and MySQL polling continue with the actual Redis socket unavailable.
+      const restarted=new MessengerIntake(ds,new Conversations(ds,'synthetic'));await restarted.tick();
+      const processed=await read(ack.data.delivery_id);expect(processed.status).toBe('processed');
+      await expect(store.get(sessionKey)).rejects.toThrow('AUTH_STORE_UNAVAILABLE');
+      const [outbox]=await ds.query("SELECT id FROM outbox_event WHERE aggregate_id=? AND event_type='conversation.created'",[processed.conversation_id]);
+      expect((await ds.query('SELECT status FROM outbox_event WHERE id=?',[outbox.id]))[0].status).toBe('pending');
+      const before=await snapshot();proxy.restore();await expect.poll(()=>store.redis.status,{timeout:5000}).toBe('ready');
+      expect((await humanRead()).status).toBe(200);
+      await store.remove(sessionKey);const lost=await humanRead();expect(lost.status).toBe(401);expect((await lost.json() as any).error.code).toBe('AUTH_SESSION_REQUIRED');
+      const replay=await post();expect(replay.status).toBe(202);expect((await replay.json() as any).data).toEqual(ack.data);await restarted.tick();expect(await snapshot()).toEqual(before);
+      const relay=new DurableDelivery(ds),claim=(await relay.claim()).find(c=>c.eventId===outbox.id)!;expect(claim).toBeDefined();
+      await relay.dispatch(claim,new WorkflowEngine(ds).consumers());
+      expect((await ds.query('SELECT status FROM outbox_event WHERE id=?',[outbox.id]))[0].status).toBe('dispatched');
+      expect(await ds.query('SELECT status FROM consumer_inbox WHERE event_id=?',[outbox.id])).toEqual([{status:'completed'}]);
+    }finally{store.close();await server.close();await proxy.close();}
+  },20000);
   it('audit/event/status never expose credentials or normalized message content',async()=>{const logs=JSON.stringify([await ds.query('SELECT * FROM audit_entry'),await ds.query('SELECT * FROM outbox_event')]);for(const secret of [token,betaToken,'Synthetic message content','Synthetic customer','synthetic-subject'])expect(logs).not.toContain(secret);});
  it('SRC-022 operations list sanitized, reason required, retry same delivery once',async()=>{
   const ack=await accept(),id=ack.data.delivery_id;await ds.query('UPDATE service_actor SET active=0 WHERE id=?',[service]);await app.dispatch(await claim(id));await ds.query('UPDATE service_actor SET active=1 WHERE id=?',[service]);const list=await app.failedDeliveries(account,tenant,{limit:'50'});expect(list.data.some((r:any)=>r.id===id&&r.can_retry)).toBe(true);expect(JSON.stringify(list)).not.toContain('Synthetic message content');expect((await app.failedDeliveries(account,beta,{})).data.some((r:any)=>r.id===id)).toBe(false);expect(()=>app.retry(account,tenant,id,{},randomUUID(),'synthetic',true)).toThrow('INVALID_REQUEST');const key=randomUUID(),one=await app.retry(account,tenant,id,{reason:'operator_retry'},key,'synthetic',true);expect(await app.retry(account,tenant,id,{reason:'operator_retry'},key,'synthetic',true)).toEqual(one);await processAll();expect((await read(id)).status).toBe('processed');expect(await ds.query("SELECT id FROM audit_entry WHERE resource_id=? AND action='intake.retry' AND reason='operator_retry'",[id])).toHaveLength(1);
