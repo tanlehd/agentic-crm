@@ -89,3 +89,7 @@ Evidence [SRC-014](../tracking/details/SRC-014.md): AC-05 business-message dedup
 ## SRC-017 sub-scope
 
 AC-06 routing/assignment/takeover: live target eligibility, atomic round-robin cursor, queue fallback/attention, independent Lead owner, CAS/history/audit/outbox. AC-18 actual queued cancellation and in-flight completion after takeover. AC-01/02 tenant/seat/role/team/policy/field negative checks and receipt replay revocation. Capacity reservation concurrency and disable attention tested through MySQL ports/durable inbox. Runtime execution/queued30s, session pause and tools remain SRC-018/020; full AC-07/08 and M2 gate are not closed. [Evidence SRC-017](../tracking/details/SRC-017.md).
+
+## SRC-018 sub-scope
+
+AC-07 runtime boundary implemented: exact schema/allowlist, live field/auth/policy/owner checks, transactional tool replay, queue30s/execution deadline, takeover/close/disable cancellation, released capacity, late-result rejection and sanitized audit. Durable synthetic ChatflowSessionPort proves draft preservation/handoff transaction effects; production port fails closed. Full Human session form, consent, Chatflow orchestration and M2 end-to-end remain SRC-020; full AC-07/08 is not closed. [Evidence SRC-018](../tracking/details/SRC-018.md).

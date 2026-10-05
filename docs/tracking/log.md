@@ -260,3 +260,20 @@ Docs sync: README/index, Agents/Conversation, routing/API/events/registry/bootst
 ## S-20261005-05 — Git handoff SRC-017
 
 Người dùng yêu cầu commit/push SRC-017 và tiếp tục SRC-019. Trước Git: 64 candidate files, diff whitespace và quét credential local/private-key marker PASS; .env/artifacts/dependencies ignored. Evidence application giữ theo S-20261005-04, không chạy lại suite chỉ để đồng bộ Git. Commit chứa entry này gom SRC-017 trên main, target origin/main (không force push/deploy); kết quả push được kiểm tra sau thao tác. SRC-019 vẫn TODO do dependency SRC-018 READY chưa DONE; đang xác nhận phạm vi tiếp tục 018 trước 019, chưa claim task sai dependency.
+
+
+## S-20261005-06 — SRC-018
+
+Người dùng xác nhận chỉ thực hiện SRC-018. SRC-017 commit a8462e8 đã push origin/main, working tree sạch. Claim SRC-018 IN_PROGRESS Codex 2026-10-05; dependency SRC-017 DONE. Không parallel agent hoặc commit/push/deploy mới.
+
+CHG-20261005-04 (C2, design refinement): physical v12 agent_execution/tool_execution, private runtime protocol và ChatflowSessionPort fail closed tới SRC-020. Runtime nhận context redacted qua Conversation/CRM ports; tools giữ UoW, max5/deadline30s/live auth-owner-policy. Không tạo Chatflow table/engine giả trong production; test harness riêng dùng session port synthetic. Xem runtime contract.
+
+S-20261005-06 hoàn tất SRC-018 DONE,18/25; SRC-019 dependency READY chưa claim. CHG-20261005-04 resolved. [Evidence SRC-018](details/SRC-018.md): v12 execution/tool ledger, private schema/generated protocol, deterministic mock, fail-closed session port, live permission/owner/policy/service guards, transaction tool replay, capacity/deadline/late-result fencing, takeover/close/disable cancellation và bounded worker recovery. Không fake production Chatflow hoặc public fixture endpoint.
+
+Final `pnpm test:integration` PASS115 (19 runtime +96 regression); `pnpm verify:container` PASS9 gates (50 unit/contract +7 tooling), Linux ARM64 Node24.21.0/pnpm10.33.0/MySQL8.4.11. `pnpm preview:up` build/v12/grants PASS, fingerprint13 tables exact count/hash; `pnpm test:routing` Chrome154/OIDC PASS sau v12. Schema12, seven services healthy, worker sample no tick error. Initial112/113 failed synthetic fixture missing provider_message_id, corrected; final115 includes terminal replay/current Contact redaction/nonblocking worker checks. Artifacts local ignored `artifacts/SRC-018/`, commands/logs linked in detail.
+
+Docs synchronized README/index, Agent/Conversation modules, runtime contract, dictionary/model/physical schema, local/migration runbooks, acceptance sub-scope, task/detail/checkpoint. Full AC-07/08/M2 remains pending real Chatflow SRC-020. Main HEAD a8462e8, dirty SRC-018 retained without new commit/push/deploy. No blocker/pending decision, parallel agent, automation, volume reset or historical migration change. Preview retained; test runners complete; remote CI/native AMD64/Windows/production provider NOT_RUN.
+
+## S-20261005-07 — Git handoff SRC-018
+
+Người dùng yêu cầu commit và push Git. Snapshot source/contracts/tests/docs SRC-018 DONE trên main; target origin/main, không force push/deploy. Kiểm tra working tree, whitespace và credential local/private-key marker trước staging; .env/artifacts/dependencies không đưa vào Git. Evidence application giữ tại S-20261005-06 (115 MySQL tests,9 verify gates, Chrome/OIDC regression), không chạy lại application suite chỉ cho Git handoff. Commit chứa entry này là snapshot bàn giao; hash và kết quả remote được kiểm tra sau thao tác. SRC-019 dependency READY, chưa claim.

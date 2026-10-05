@@ -1,3 +1,4 @@
+import { cancelAgentExecutions } from './cancellation.js';
 import { ownershipHistory,ownedRecords } from '../crm/ownership-port.js';
 import type { DataSource } from 'typeorm';
 import { UnitOfWork,type TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
@@ -41,7 +42,7 @@ export class Routing {
   }
   private async assign(s:TransactionScope,a:Access,r:RegistryRecord,version:string,owner:string|null,team:string|null,correlation:string,reason:string,takeover=false,actorKind:'human'|'service'='human'){
     await this.identity.team(s,team);if(owner&&await this.eligibility(s,r,owner,team))throw new CommandError(422,'TARGET_INELIGIBLE');
-    const registry=r.objectKey==='conversation'?new RecordRegistry(new Map([['conversation',conversationOwnership(this.changed)]])):this.records.registry(r.objectKey,r.kind==='custom');
+    const registry=r.objectKey==='conversation'?new RecordRegistry(new Map([['conversation',conversationOwnership(async(s,r)=>{await cancelAgentExecutions(s,r.id);await this.changed(s,r);})]])):this.records.registry(r.objectKey,r.kind==='custom');
     const updated=await registry.assign(s,a,r.id,version,owner,team,correlation,{reason,takeover,actorKind});
     if(owner)await s.query('UPDATE routing_attention SET active=0,updated_at=UTC_TIMESTAMP(6) WHERE tenant_id=? AND record_id=?',[s.context.tenantId,r.id]);return updated;
   }

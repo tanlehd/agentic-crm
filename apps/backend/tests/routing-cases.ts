@@ -39,7 +39,7 @@ export function routingCases(isolated:(name:string)=>Promise<DataSource>){descri
     lead=String((await new LeadService(records,contactReferences).create(account,tenant,{contact_id:contact},randomUUID(),'synthetic')).body.data.id);
     const connection=randomUUID(),identity=randomUUID();await ds.query("INSERT INTO channel_connection(id,tenant_id,provider,external_account_id,team_id) VALUES (?,?,'mock_messenger','routing',?)",[connection,tenant,team]);await ds.query("INSERT INTO contact_identity(id,tenant_id,connection_id,contact_id,external_subject_id) VALUES (?,?,?,?,'synthetic-routing')",[identity,tenant,connection,contact]);
     conversations=new Conversations(ds,'synthetic');id=(await conversations.uow.run({tenantId:tenant},s=>conversations.receive(s,{identityId:identity,providerMessageId:randomUUID(),text:'Synthetic',occurredAt:'2026-10-05T01:00:00Z',correlation:'synthetic'}))).conversationId;
-    const before=await ds.query('SELECT * FROM crm_record ORDER BY id');expect(await migrate(ds)).toBe(1);expect(await migrate(ds)).toBe(0);expect(await ds.query('SELECT * FROM crm_record ORDER BY id')).toEqual(before);routing=new Routing(ds);
+    const before=await ds.query('SELECT * FROM crm_record ORDER BY id');expect(await migrate(ds)).toBe(migrations.length-10);expect(await migrate(ds)).toBe(0);expect(await ds.query('SELECT * FROM crm_record ORDER BY id')).toEqual(before);routing=new Routing(ds);
     await expect(ds.query('INSERT INTO agent_capacity_slot VALUES (?,?,?,UTC_TIMESTAMP(6),NULL)',[beta,randomUUID(),ai])).rejects.toThrow();
   });
   it('manual assignment bumps history/revision, replays once and stale CAS loses',async()=>{

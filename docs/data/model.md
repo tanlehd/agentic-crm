@@ -116,3 +116,5 @@ Migration v9 thêm channel_connection → contact_identity → conversation (reg
 SRC-015 v10 bổ sung channel_connection credential/service actor → inbound_delivery → identity/Conversation qua ports và touchpoint CTM. Worker transaction commit Message/touchpoint/processed cùng nhau; event-key và message-key dedup riêng. Không thêm FK Lead/session hoặc Workflow tables.
 
 SRC-017 physical v11: routing_cursor references team/principal by tenant; agent_capacity_slot references principal with execution UUID reserved for SRC-018; routing_attention references crm_record. Ownership remains in crm_record/history, with no cascading owner change from Conversation to Lead. [Exact routing contract](../contracts/routing.md).
+
+SRC-018 physical v12: agent_execution has same-tenant Conversation/principal/service_actor/policy references; tool_execution references execution by tenant. Session binding uses an application port until SRC-020 adds its table/FK. Capacity slot reservation/release is atomic with execution state. No cross-module direct session/Contact writes.

@@ -44,4 +44,6 @@ Stale owner kết quả runtime bị discard có audit. Runtime timeout/forbidde
 
 Routing theo hiệu suất cần metric window/minimum sample/cold start và policy giải thích được; cost budget theo tenant, knowledge/RAG, skill catalog và agent marketplace thiết kế ở milestone sau.
 
-SRC-017 implementation binding: [routing contract](../contracts/routing.md), physical v11. Ownership cancellation/session callback is composed through UoW ports; runtime/session engines remain SRC-018/020.
+SRC-017 implementation binding: [routing contract](../contracts/routing.md), physical v11. Ownership cancellation/session callback is composed through UoW ports; runtime implemented SRC-018; production session engine remains SRC-020.
+
+SRC-018: private validated runtime protocol, deterministic adapter, v12 execution/tool ledger, capacity/deadline fencing, live authorization and cancellation are implemented. Worker uses a fail-closed session port until SRC-020; durable synthetic session harness is test-only. Proposals never send directly; draft tools cannot set consent/status. [Evidence](../tracking/details/SRC-018.md).
