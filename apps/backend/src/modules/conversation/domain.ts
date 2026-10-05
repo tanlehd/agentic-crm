@@ -1,8 +1,8 @@
 import { randomUUID,createHmac,timingSafeEqual } from 'node:crypto';
 import type { DataSource } from 'typeorm';
 import { UnitOfWork,type TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
-import { CommandError,DurableCommands,canonical } from '../../kernel/reliability/commands.js';
-import { IdentityAuthorization,requireActiveTenant } from '../identity/authorization.js';
+import { CommandError,DurableCommands,canonical,type SystemActor } from '../../kernel/reliability/commands.js';
+import { IdentityAuthorization,requireActiveTenant,conversationOwnerKind } from '../identity/authorization.js';
 import { permits,fieldAllowed,type Access } from '../identity/domain/authorization.js';
 import { uuid } from '../identity/admin.js';
 import { RecordRegistry,type RegistryRecord } from '../crm/registry.js';
@@ -29,7 +29,7 @@ export class Conversations {
   private readonly commands=new DurableCommands();private readonly registry=new RecordRegistry();
   constructor(source:DataSource,private readonly secret:string|Buffer,private readonly channels=new ChannelReferences(),private readonly crm=new ConversationCrmPort(),private readonly onClose:CloseHook=async()=>{}){this.uow=new UnitOfWork(source);this.auth=new IdentityAuthorization(this.uow);}
   // Trusted normalized intake only. Caller owns transaction and durable delivery acknowledgment.
-  async receive(s:TransactionScope,input:{identityId:string;providerMessageId:string;text:string;occurredAt:string;correlation:string}){
+  async receive(s:TransactionScope,input:{identityId:string;providerMessageId:string;text:string;occurredAt:string;correlation:string;actor?:SystemActor}){
     messageText(input.text);if(!uuid(input.identityId)||typeof input.providerMessageId!=='string'||!input.providerMessageId.trim()||input.providerMessageId.length>255||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,3})?Z$/.test(input.occurredAt)||!Number.isFinite(Date.parse(input.occurredAt)))throw new CommandError(400,'INVALID_REQUEST');
     await requireActiveTenant(s);
     const identity=await this.channels.lockIdentity(s,input.identityId);await this.crm.activeContact(s,identity.contactId);
@@ -39,19 +39,27 @@ export class Conversations {
     const [active]=await s.query('SELECT record_id FROM conversation WHERE tenant_id=? AND active_identity_key=?',[tenant,identity.id]);
     let id:string,version:string;
     if(active){id=active.record_id;const c=await conversation(s,id,true);await this.registry.bump(s,c.record,c.record.version);version=String(BigInt(c.record.version)+1n);await s.query("UPDATE conversation SET status='open' WHERE tenant_id=? AND record_id=?",[tenant,id]);}
-    else {id=await this.crm.createUnassigned(s,identity.teamId,input.correlation);version='1';await s.query("INSERT INTO conversation(tenant_id,record_id,contact_id,contact_identity_id,connection_id,opened_at) VALUES (?,?,?,?,?,UTC_TIMESTAMP(6))",[tenant,id,identity.contactId,identity.id,identity.connectionId]);await this.commands.conversationEvent(s,input.correlation,'conversation.created',id,version,{contact_id:identity.contactId,connection_id:identity.connectionId});}
+    else {id=await this.crm.createUnassigned(s,identity.teamId,input.correlation,input.actor);version='1';await s.query("INSERT INTO conversation(tenant_id,record_id,contact_id,contact_identity_id,connection_id,opened_at) VALUES (?,?,?,?,?,UTC_TIMESTAMP(6))",[tenant,id,identity.contactId,identity.id,identity.connectionId]);await this.commands.conversationEvent(s,input.correlation,'conversation.created',id,version,{contact_id:identity.contactId,connection_id:identity.connectionId},input.actor);}
     const messageId=randomUUID();await s.query("INSERT INTO message(id,tenant_id,conversation_id,connection_id,provider_message_id,direction,text,occurred_at,received_at,status) VALUES (?,?,?,?,?,'inbound',?,?,UTC_TIMESTAMP(6),'received')",[messageId,tenant,id,identity.connectionId,input.providerMessageId,input.text,new Date(input.occurredAt)]);
-    await this.commands.systemAudit(s,input.correlation,'conversation',id,'message.receive',['message_id']);
-    await this.commands.conversationEvent(s,input.correlation,'message.received',id,version,{conversation_id:id,message_id:messageId,connection_id:identity.connectionId});
+    await this.commands.systemAudit(s,input.correlation,'conversation',id,'message.receive',['message_id'],input.actor);
+    await this.commands.conversationEvent(s,input.correlation,'message.received',id,version,{conversation_id:id,message_id:messageId,connection_id:identity.connectionId},input.actor);
     return {conversationId:id,messageId,duplicate:false};
   }
-  private async output(s:TransactionScope,a:Access,id:string){const {record:r,row:c}=await conversation(s,id);requirePermission(a,r,'read');return {id,contact_id:c.contact_id,contact_identity_id:c.contact_identity_id,connection_id:c.connection_id,status:c.status,opened_at:stamp(c.opened_at),closed_at:stamp(c.closed_at),version:r.version,owner_revision:r.ownerRevision,owner_principal_id:r.ownerPrincipalId,team_id:r.teamId,contact:await this.crm.contactSummary(s,a,c.contact_id)};}
+  async findInbound(s:TransactionScope,connectionId:string,providerId:string):Promise<{conversationId:string;messageId:string}|null>{
+    const [row]=await s.query("SELECT conversation_id,id FROM message WHERE tenant_id=? AND connection_id=? AND provider_message_id=? AND direction='inbound'",[s.context.tenantId,connectionId,providerId]);
+    return row?{conversationId:row.conversation_id,messageId:row.id}:null;
+  }
+  private async latest(s:TransactionScope,a:Access,id:string){
+    const [m]=await s.query('SELECT id,text,status,direction,received_at FROM message WHERE tenant_id=? AND conversation_id=? ORDER BY received_at DESC,id DESC LIMIT 1',[s.context.tenantId,id]);
+    if(!m)return null;return {id:m.id,status:m.status,direction:m.direction,received_at:stamp(m.received_at),...(fieldAllowed(a,'conversation','text','read')?{text:m.text}:{})};
+  }
+  private async output(s:TransactionScope,a:Access,id:string){const {record:r,row:c}=await conversation(s,id);requirePermission(a,r,'read');return {id,contact_id:c.contact_id,contact_identity_id:c.contact_identity_id,connection_id:c.connection_id,status:c.status,opened_at:stamp(c.opened_at),closed_at:stamp(c.closed_at),version:r.version,owner_revision:r.ownerRevision,owner_principal_id:r.ownerPrincipalId,owner_kind:await conversationOwnerKind(s,r.ownerPrincipalId),allowed_actions:c.status==='closed'?[]:['reply','note','update'].filter(action=>permits(a,'conversation',action,r)&&(action==='update'||fieldAllowed(a,'conversation','text','read')&&fieldAllowed(a,'conversation','text','write'))&&(action!=='reply'||r.ownerPrincipalId===a.principalId)&&(action!=='note'||fieldAllowed(a,'activity','body','read')&&fieldAllowed(a,'activity','body','write'))),team_id:r.teamId,contact:await this.crm.contactSummary(s,a,c.contact_id),latest_message:await this.latest(s,a,id),...(fieldAllowed(a,'conversation','attribution','read')?{attribution:await this.channels.attribution(s,id)}:{})};}
   private async intent(s:TransactionScope,id:string,intent:string){
     if(!uuid(intent))throw new CommandError(400,'INVALID_REQUEST');const [r]=await s.query('SELECT i.id,i.conversation_id,m.id message_id,i.status,i.provider_message_id,i.error_code FROM outbound_intent i JOIN message m ON m.tenant_id=i.tenant_id AND m.outbound_intent_id=i.id WHERE i.tenant_id=? AND i.conversation_id=? AND i.id=?',[s.context.tenantId,id,intent]);if(!r)throw new CommandError(404,'NOT_FOUND');return r;
   }
-  read(account:string,tenant:string,id?:string,kind:'detail'|'messages'|'intent'='detail',query:Record<string,unknown>={},intentId?:string){return this.auth.runHuman(account,tenant,async(s,raw)=>{
+  read(account:string,tenant:string,id?:string,kind:'detail'|'messages'|'intent'|'notes'='detail',query:Record<string,unknown>={},intentId?:string){return this.auth.runHuman(account,tenant,async(s,raw)=>{
     const a=await withFieldPolicies(s,raw);
-    if(id){const {record}=await conversation(s,id);requirePermission(a,record,'read');if(kind!=='messages'&&Object.keys(query).length)throw new CommandError(400,'INVALID_REQUEST');if(kind==='detail')return {data:await this.output(s,a,id)};if(kind==='intent')return {data:await this.intent(s,id,intentId!)};}
+    if(id){const {record}=await conversation(s,id);requirePermission(a,record,'read');if(kind==='notes'){const limit=query.limit===undefined?50:Number(query.limit);if(Object.keys(query).some(k=>!['limit','cursor'].includes(k))||!Number.isInteger(limit)||limit<1||limit>100||typeof query.limit==='object'||query.cursor!==undefined&&!uuid(query.cursor))throw new CommandError(400,'INVALID_REQUEST');return this.crm.notes(s,a,id,limit,query.cursor as string|undefined);}if(kind!=='messages'&&Object.keys(query).length)throw new CommandError(400,'INVALID_REQUEST');if(kind==='detail')return {data:await this.output(s,a,id)};if(kind==='intent')return {data:await this.intent(s,id,intentId!)};}
     return this.list(s,a,account,id,query);
   });}
   private async list(s:TransactionScope,a:Access,account:string,id:string|undefined,q:Record<string,unknown>){
@@ -83,6 +91,8 @@ export class Conversations {
       const command={actorId:a.principalId,correlationId:correlation,route:`POST /api/v1/conversations/${id}/${kind}`,key,body:b,version};
       const replay=await this.commands.replay(s,command,async response=>{
         requirePermission(a,r,'read');
+        if((response.body.data.latest_message as {text?:string}|undefined)?.text!==undefined&&!fieldAllowed(a,'conversation','text','read'))throw new CommandError(403,'FORBIDDEN');
+        if(response.body.data.attribution&&!fieldAllowed(a,'conversation','attribution','read'))throw new CommandError(403,'FORBIDDEN');
         if(kind==='transition'&&response.body.data.contact){
           const current=await this.crm.contactSummary(s,a,c.contact_id);
           if(!current||Object.keys(response.body.data.contact as object).some(k=>!Object.hasOwn(current,k)))throw new CommandError(403,'FORBIDDEN');

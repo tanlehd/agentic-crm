@@ -11,3 +11,11 @@ Một transaction MySQL tạo hai tenant clinic_alpha/clinic_beta, accounts, mem
 Alpha có alpha_admin, chat_anna, sales_binh, sales_chi, read_only. Beta có beta_admin và cùng account read_only để kiểm tra tenant selector; admin mỗi tenant không thuộc tenant kia. Team label Intake/Sales và role keys giống nhau ở hai tenant. Roles tenant_admin/chat_agent/sales_agent/supervisor/viewer theo Identity/healthcare; intake_ai và ctm_automation tách riêng. Tenant admin có Identity read/create/update all; role CRM là fixture cấu hình, capability chưa implement vẫn deny. AI policy tools/actions rỗng tới SRC-018; service role không có schema/admin grants, không mint token và không làm owner.
 
 Bootstrap ghi system audit + principal.access_changed v1 qua reliability application port trong cùng transaction. Rerun không thêm audit/event. SRC-010 bổ sung registry bằng `pnpm seed:registry` ([contract](registry.md)); seed Identity v1 này vẫn không tạo registry/connection/CRM/workflow/field policy và không reset ACL. Không schema migration mới; additive CLI/config không đổi public API.
+
+## Channels fixture — SRC-015
+
+`pnpm env:init` giữ credential cũ và chỉ thêm MOCK_ALPHA_TOKEN/MOCK_BETA_TOKEN ngẫu nhiên64hex trong .env mode0600. `pnpm seed:channels` sau schema v10 và Identity/registry fixture; tokens qua stdin (loại khỏi child env), database chỉ SHA256. Tạo mỗi tenant một channel mock, role mock_ingress + service actor mock_messenger_ingress riêng với integration.deliver/all, integration_operator read/retry all gắn tenant admin fixture; bump principal auth revision/event. Ctm_service/ctm_automation cũ không mở rộng quyền.
+
+Hai tenant chung transaction, tenant locks theo Alpha→Beta. Repeat không regrant role assignment/permissions, không reset connection status/token; mapping/hash khác hoặc fixture thiếu fail closed. Không HTTP provision/rotate token. Connector thật vẫn Draft.
+
+SRC-016 `pnpm seed:inbox` adds local `inbox_operator` role (conversation read/reply/note/update/assign all) to Alpha/Beta admins, once. Repeat preserves role permissions and revoked membership. Requires prior Identity/M1/channel seed; does not assign live conversations. Browser-only ownership fixture restricted to `src016-synthetic-` identities; uses registry assignment with audit/outbox and cancellation hook, no public API.

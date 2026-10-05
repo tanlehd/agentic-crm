@@ -26,13 +26,13 @@ export default async function Page() {
       <a className="brand" href="/" aria-label="Agentic CRM home"><span className="mark">a</span>agentic<span className="crm">crm</span></a>
       <div className="workspace"><span className="workspace-icon">A</span><div>Development workspace<small>Local environment</small></div></div>
       <p className="nav-label">WORKSPACE</p>
-      <nav aria-label="Workspace"><a className="active" href="/">◈ <span>CRM nền tảng</span><b>01</b></a>
-        {['Chat workspace', 'Sales workspace', 'Automation', 'Reports'].map(name => <span className="nav-future" key={name}>○ <span>{name}</span><small>Planned</small></span>)}
+      <nav aria-label="Workspace"><a className="active" href="/">◈ <span>CRM & Chat</span><b>01</b></a>
+        {['Sales workspace', 'Automation', 'Reports'].map(name => <span className="nav-future" key={name}>○ <span>{name}</span><small>Planned</small></span>)}
       </nav>
       <div className="sidebar-footer"><span className="dot"/> Documentation-first build<small>M1 · Platform foundation</small></div>
     </aside>
     <main>
-      <header><span>Workspace <i>/</i> CRM nền tảng</span><span className="environment">LOCAL DEVELOPMENT</span></header>
+      <header><span>Workspace <i>/</i> CRM & Chat</span><span className="environment">LOCAL DEVELOPMENT</span></header>
       <section className="intro"><div className="eyebrow">YOUR CRM WORKSPACE</div><h1>Liên hệ, nhu cầu.<br/><span>Cùng một không gian.</span></h1><p>Quản lý liên hệ, lưu hoạt động và xác nhận nhu cầu khách hàng trong từng tổ chức.</p></section>
       <AuthPanel />
       <details className="runtime-health"><summary>Trạng thái môi trường local</summary><div className="section-heading"><h2>Kết nối dịch vụ</h2><a href="/">↻ Làm mới</a></div>
@@ -42,7 +42,7 @@ export default async function Page() {
         ['02', 'Môi trường Docker', 'Đóng gói dịch vụ, kiểm tra kết nối và giữ dữ liệu.'],
         ['03', 'Tenant & Identity', 'Đăng nhập OIDC, chọn tổ chức và kiểm tra quyền truy cập.'],
       ].map(([number,title,note]) => <li key={number}><span>{number}</span><div><h3>{title}</h3><p>{note}</p></div></li>)}</ol></section>
-      <footer>Agentic CRM <span>M1 · CRM foundation</span></footer>
+      <footer>Agentic CRM <span>M2 · Conversation inbox</span></footer>
     </main>
   </div>;
 }

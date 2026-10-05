@@ -9,6 +9,10 @@ export class ChannelReferences {
     const connection=await this.connection(s,row.connection_id);
     return {id:row.id,contactId:row.contact_id,connectionId:row.connection_id,teamId:connection.team_id};
   }
+  async attribution(s:TransactionScope,conversationId:string){
+    const [row]=await s.query('SELECT source,ad_id,campaign_id FROM touchpoint WHERE tenant_id=? AND conversation_id=? ORDER BY received_at,id LIMIT 1',[s.context.tenantId,conversationId]);
+    return row??{source:'unknown',ad_id:null,campaign_id:null};
+  }
   async connection(s:TransactionScope,id:string){
     const [row]=await s.query("SELECT * FROM channel_connection WHERE tenant_id=? AND id=? AND status='active' AND provider='mock_messenger' FOR SHARE",[s.context.tenantId,id]);
     if(!row)throw new CommandError(409,'CONNECTION_UNAVAILABLE');return row;

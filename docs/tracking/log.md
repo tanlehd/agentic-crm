@@ -206,3 +206,37 @@ CHG-20261004-07 (C2, resolved design): bổ sung physical v9 và [Conversation c
 S-20261004-05 kết thúc: SRC-014 DONE, SRC-015 READY. Source Conversation domain/http/outbound, Channels reference/mock sender, CRM ports/archive guard, migration v9 và generated contracts. `pnpm test:integration` PASS67 (14 Conversation mới); `pnpm verify:container` PASS9 gates/42 unit+7 tooling, Linux ARM64 Node24.21.0/pnpm10.33.0/MySQL8.4.11. Preview rebuild PASS, Schema ready9, 7 services healthy; fingerprint27 bảng M1 trước/sau giữ exact count/hash. Evidence [SRC-014](details/SRC-014.md), artifacts/SRC-014/{integration.log,verify.log,verify-summary.json,preview-build.log,upgrade-check.json,migration-status.log,services.log,worker.log}. Host Node25 chỉ driver; Docker sandbox denial rerun với escalation. Không browser inbox test (SRC-016), không provider thật/remote CI, không commit/push/deploy.
 
 Docs sync: module Conversation/Channels, dictionary/model/physical v9, Conversation/API contracts, migration/local runbook, AC sub-scope, README/index, tracker/detail/checkpoint. Working tree main sau f575a8e dirty chứa task này. Không blocker/pending decision, test projects cleanup; preview giữ chạy. Next: claim SRC-015, đọc Channels/normalized intake/service-actor binding/referral trước code.
+
+## S-20261004-06 — SRC-014 Git và SRC-015
+
+Theo yêu cầu người dùng, commit SRC-014 `8cceb22` đã tạo (không push). Working tree sạch sau commit. Claim SRC-015 IN_PROGRESS, Codex 2026-10-04; dependency SRC-014 DONE.
+
+CHG-20261004-08 (C2, resolved design): bổ sung [mock intake contract](../contracts/mock-intake.md), physical v10 và permission mapping trước code. Credential SHA256 gắn connection/tenant/service actor, service role ingress riêng để không đổi ctm_automation v1. Durable received ACK, worker lease60s/fencing, atomic identity/contact/conversation/message/touchpoint; connection row serialize identity resolution M2. Human operator admin seat+integration.read/retry all. Seed additive two-tenant channel fixture, random tokens private .env/stdin; không reset credential/quyền cũ. V1–v9 immutable; v10 nullable config không tự kích hoạt connection cũ. Tests và evidence bổ sung cuối phiên.
+
+S-20261005-01 tiếp tục S-20261004-06 theo yêu cầu “thử lại”: hai lệnh trước đã exit0, MySQL80/80 và verify9 gates PASS. Commit SRC-014 vẫn `8cceb22`. Tiếp tục preview v10/seed+real worker E2E và docs sync; chưa đánh DONE trước các kiểm tra cuối.
+
+S-20261005-01 hoàn tất SRC-015 DONE; SRC-016 READY. Evidence [SRC-015](details/SRC-015.md): test:integration PASS80; verify:container final PASS9/44 unit+7 tooling; preview v10, seed first2/repeat0, HTTP→real worker E2E PASS. Fingerprint27 bảng M1 exact trước/sau upgrade trước seed; migration status10/7 services healthy/worker không tick error. Compatibility paths/schemas cũ giữ nguyên ngoài attribution optional. Docker commands qua escalation do socket sandbox; không reset volume.
+
+Docs sync: Channels/Conversation, contracts API+mock intake+bootstrap, dictionary/model/physical v10, local/migration runbook, acceptance, README/index, tracker/detail/checkpoint. Artifact refs artifacts/SRC-015/{integration.log,verify.log,verify-summary.json,preview-build.log,upgrade-check.json,seed-first.log,seed-repeat.log,e2e.log,e2e-facts.json,services.log,worker.log,migration-status.log,compatibility.json,docs-final.log}. Không credential/content thật trong evidence.
+
+Git SRC-014 commit8cceb22 đã thực hiện; SRC-015 giữ working tree dirty, không commit/push/deploy thêm. Preview giữ chạy với synthetic channel records; test projects cleanup, không automation/runner, không blocker/quyết định pending. Next duy nhất: claim SRC-016 và xây inbox UI theo API.
+
+## S-20261005-02 — SRC-016
+
+Claim SRC-016 IN_PROGRESS, Codex 2026-10-05; SRC-015 DONE. Existing dirty SRC-015 files preserved; no parallel agents or commit/push.
+
+CHG-20261005-01 (C2, resolved design): inbox needs readable internal notes and accurate owner/action controls. Add GET Conversation notes through CRM port (conversation.read plus independent Activity read/field ACL), optional owner_kind via Identity port and allowed_actions evaluated by backend. Notes cursor UUID in ascending ID order, UI sorts loaded notes by created_at/id; limit 1–100. No schema migration; existing APIs compatible. Queue uses existing state/owner/team filters, prefix search in loaded queue pages; no attention/handoff/qualification claims before SRC-017/020/021. Synthetic browser-only owner fixtures may use internal registry assignment port with audit, never public assignment endpoint. Tests/evidence pending.
+
+CHG-20261005-02 (C2, resolved design): existing admin fixture has no Conversation grant. Add idempotent local inbox_operator role for Alpha/Beta admins via Identity-owned seed; preserve existing permissions/revocations on repeat. No public assignment route; browser-only synthetic ownership harness uses registry UoW and cancelQueued hook. No migration.
+
+CHG-20261005-01 refinement: optional latest_message projection (same Conversation text ACL) supplies queue preview and actual received time/status. Read review revision remains in tenant memory across detail navigation/error reload; pending send retains exact original payload/key.
+
+S-20261005-02 hoàn tất SRC-016 DONE; SRC-017 READY, 16/25 DONE. CHG-20261005-01/02 resolved. [Evidence SRC-016](details/SRC-016.md): 82 MySQL integration PASS; 9 Linux ARM64 verify gates PASS (44 unit/contract +7 tooling); canonical preview build and Chrome154 inbox E2E PASS. Final one-line textarea aria-label fix verified by preview build/browser plus host lint/typecheck; full verify preceded that label-only fix. Browser iterations corrected select/textarea accessible names.
+
+Real tests cover intake→timeline, non-owner note, owner poll/review, quick reply no auto-send, lost ACK after commit→same-key retry exactly one message, signed message cursor, sent status, retained stale draft, Alpha/Beta/viewer isolation. Unknown/403 UI states use declared fault injection. Desktop/mobile screenshots inspected, overflow assertion PASS. Local inbox seed first2/repeat0; revocation preservation tested. No migration; latest-message snapshot replay rechecks field read.
+
+Docs sync: README/index, Conversation/UX, API/Conversation/bootstrap contracts, dictionary, local runbook, acceptance/task detail/tracker/checkpoint. Artifacts local ignored `artifacts/SRC-016/` include integration/verify/preview/e2e logs, verify-summary/browser-facts, screenshots, seed runs, services/worker, final docs check. Head8cceb22 on main; dirty SRC-015 + SRC-016 retained, no commit/push/deploy. Seven preview services healthy; schema v10 unchanged; no test runner/automation active, no blocker/pending decision. Next: claim SRC-017 per Agent/Routing design.
+
+## S-20261005-03 — Git handoff SRC-015/016
+
+Người dùng yêu cầu commit Git. Gom source/contracts/tests/docs SRC-015 và SRC-016 đã nghiệm thu vào một commit trên main; không push/deploy. Trước staging: 70 candidate files, whitespace check và đối chiếu credential local/private-key marker PASS; .env/artifacts/dependencies ngoài Git. Evidence chức năng giữ ở SRC-015/016; không chạy lại application suite chỉ cho thao tác Git. Commit chứa entry này là snapshot handoff; hash thực lấy từ `git log -1`, trạng thái được kiểm tra sau commit.

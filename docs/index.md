@@ -13,15 +13,15 @@ Ngày baseline: 2026-10-02. Trạng thái phản ánh độ sâu thiết kế, k
 | Product | [Vision](product/vision.md), [Glossary](product/glossary.md) | Ready for implementation: baseline thuật ngữ/phạm vi |
 | Planning | [Roadmap](product/roadmap.md) | Ready for implementation: thứ tự milestone; chưa cam kết lịch |
 | Build & tracking | [Build plan](planning/build-plan.md), [tasks](tracking/tasks.md), [checkpoint](tracking/checkpoint.md), [log](tracking/log.md) | Kế hoạch 25 task M1–M2; status source xem tracker |
-| Docker | [Development & packaging](system/docker-development.md) | M1 images + Conversation backend, migration v9, auth và seed Alpha/Beta đã chạy |
+| Docker | [Development & packaging](system/docker-development.md) | M1 images + Conversation backend, migration v10, auth và seed Alpha/Beta đã chạy |
 | Governance | [Development](governance/development.md), [module template](templates/module-design.md) | Ready for implementation |
 | Build governance | [Change control](governance/change-control.md), [task template](templates/task.md), [AGENTS](../AGENTS.md) | Cập nhật docs/evidence/checkpoint mỗi phiên |
 | System | [Architecture](system/architecture.md), [Security & operations](system/security-operations.md) | Ready for implementation: M1–M2; scaling nâng cao là Draft |
 | Data | [Model & ERD](data/model.md), [Dictionary](data/dictionary.md) | Ready for implementation: bảng M1–M2; bảng M4–M5 là Draft |
-| Contract | [REST API](contracts/api.md), [Events](contracts/events.md), [Conversation DTO](contracts/conversation.md), [Agent Runtime](contracts/agent-runtime.md) | Ready for implementation: mock slice M1–M2 |
+| Contract | [REST API](contracts/api.md), [Events](contracts/events.md), [Conversation DTO](contracts/conversation.md), [Mock intake](contracts/mock-intake.md), [Agent Runtime](contracts/agent-runtime.md) | Ready for implementation: mock slice M1–M2 |
 | UX | [Workspaces](ux/workspaces.md) | Ready for implementation: wireframe/hành vi M2; các workspace nâng cao là Draft |
 | Business | [Healthcare](business/healthcare.md), [First slice](business/first-slice.md) | Ready for implementation: fixtures và mock scenario; production integration là Draft |
-| Quality | [Acceptance & traceability](quality/acceptance.md), [baseline validation](quality/validation.md) | M1 có unit/MySQL/browser evidence; M2 SRC-014 có MySQL evidence; full slice chưa chạy |
+| Quality | [Acceptance & traceability](quality/acceptance.md), [baseline validation](quality/validation.md) | M1 có unit/MySQL/browser evidence; M2 SRC-014/015 có MySQL và HTTP-worker evidence; full slice chưa chạy |
 | Decisions | [ADRs](decisions/README.md) | Accepted: baseline thiết kế |
 | References | [Nguồn tham khảo](references.md) | Tách đặc tính tham khảo khỏi quyết định tự thiết kế |
 
@@ -35,8 +35,8 @@ Ngày baseline: 2026-10-02. Trạng thái phản ánh độ sâu thiết kế, k
 |---|---|---|
 | MOD-01 | [Identity & Administration](modules/identity.md) | OIDC, membership/seat/role/team và local seed implemented SRC-006/007/009; Admin UI implemented SRC-013 |
 | MOD-02 | [CRM & Object Platform](modules/crm.md) | Registry/association, properties/custom CRUD, Contact/Company/Activity và UI implemented SRC-010…013; advanced builder Draft |
-| MOD-03 | [Channels & Acquisition](modules/channels.md) | Ready for implementation: mock Messenger + normalized inbound; connector thật/Google Ads Draft |
-| MOD-04 | [Conversation & Chat Workspace](modules/conversation.md) | Domain/API/notes/mock outbound SRC-014; inbox UI/routing/handoff tiếp tục SRC-016…021 |
+| MOD-03 | [Channels & Acquisition](modules/channels.md) | Mock Messenger durable intake/identity/CTM implemented SRC-015; connector thật/Google Ads Draft |
+| MOD-04 | [Conversation & Chat Workspace](modules/conversation.md) | Domain/API/notes/mock outbound SRC-014 và inbox UI SRC-016 implemented; routing/handoff tiếp tục SRC-017…021 |
 | MOD-05 | [Lead/Opportunity & Sale Workspace](modules/sales.md) | Lead core/draft/qualification implemented SRC-012/013; queue/handoff/accept M2 Ready; Deal/customer production Draft |
 | MOD-06 | [Ticket System](modules/ticket.md) | Draft: blueprint M4 |
 | MOD-07 | [Agent & Routing](modules/agents.md) | Ready for implementation: rule-based routing, mock AI, handoff |

@@ -64,3 +64,7 @@ Wireframe là đặc tả hành vi, chưa phải prototype có thể bấm hoặ
 SRC-007 foundation UI có selector tổ chức từ `/me/memberships`, loading/empty/error và tải thêm. Đổi lựa chọn gửi X-Tenant-Id ở request mới; request cũ được abort để không ghi đè kết quả tổ chức vừa chọn. Admin team read kiểm quyền thật; 403 hiển thị thiếu quyền quản trị. Đây chưa phải full Admin UI SRC-013.
 
 SRC-013 exact UI/API additions theo [M1 UI contract](../contracts/crm-ui.md); record descriptors dùng field ACL, tenant keyed cache, explicit Lead consent và stale reload.
+
+## SRC-016 implementation scope
+
+Queue state/all/mine/unassigned and explicit team-ID filter use Conversation API; prefix search applies to loaded pages. Detail shows real Contact summary, attribution, Human/AI owner kind, team and message delivery status. Notes read via Conversation notes endpoint with Activity ACL; quick replies insert editable text only. Loaded cursor pages refetch every 5 seconds, including pending outbound status; no hidden-tab polling. Forbidden reads replace cached content. Draft/idempotency keys are memory-only and isolated by tenant/conversation; tenant switch clears cache. Owner revision change blocks send until explicit review; retry ambiguous network result uses original payload/key. Closed detail read-only. On narrow screens Contact context opens in a disclosure panel. Routing/takeover, attention queue and session qualification remain later tasks; no dummy buttons or fabricated Lead status.

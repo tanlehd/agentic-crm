@@ -3,7 +3,7 @@
   "info": {
     "title": "Agentic CRM foundation API",
     "version": "0.0.1",
-    "description": "Health, OIDC, Identity, CRM registry and metadata, standard records and Lead qualification APIs. Conversation text, notes and mock outbound intent APIs."
+    "description": "Health, OIDC, Identity, CRM registry and metadata, standard records and Lead qualification APIs. Conversation text, notes and mock outbound intent APIs. Durable mock Messenger intake and delivery status/retry."
   },
   "paths": {
     "/api/v1/health/live": {
@@ -6911,6 +6911,143 @@
       }
     },
     "/api/v1/conversations/{id}/notes": {
+      "get": {
+        "operationId": "conversation-get-conversations-id-notes",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized Conversation result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/conversation-notes"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "operationId": "conversation-post-conversations-id-notes",
         "security": [
@@ -7143,6 +7280,419 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/conversation-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/integrations/mock-messenger/deliveries": {
+      "post": {
+        "operationId": "intake-request",
+        "security": [
+          {
+            "connectionBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Connection-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/intake-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Durable mock intake result; no raw payload",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/intake-ack"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/integrations/deliveries/{id}": {
+      "get": {
+        "operationId": "intake-status",
+        "security": [
+          {
+            "connectionBearer": []
+          },
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Connection-Id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Durable mock intake result; no raw payload",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/intake-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/integrations/deliveries/{id}/retry": {
+      "post": {
+        "operationId": "intake-retry",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/intake-retry"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Durable mock intake result; no raw payload",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/intake-response"
                 }
               }
             }
@@ -10257,6 +10807,110 @@
                 "type": "null"
               }
             ]
+          },
+          "attribution": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "source": {
+                "enum": [
+                  "unknown",
+                  "ctm"
+                ]
+              },
+              "ad_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "campaign_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "source",
+              "ad_id",
+              "campaign_id"
+            ]
+          },
+          "owner_kind": {
+            "enum": [
+              "human",
+              "ai",
+              null
+            ]
+          },
+          "allowed_actions": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "reply",
+                "note",
+                "update"
+              ]
+            }
+          },
+          "latest_message": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "text": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4000,
+                    "pattern": "\\S"
+                  },
+                  "status": {
+                    "enum": [
+                      "received",
+                      "queued",
+                      "sending",
+                      "sent",
+                      "failed",
+                      "unknown",
+                      "cancelled"
+                    ]
+                  },
+                  "direction": {
+                    "enum": [
+                      "inbound",
+                      "outbound"
+                    ]
+                  },
+                  "received_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                },
+                "required": [
+                  "id",
+                  "status",
+                  "direction",
+                  "received_at"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -10656,6 +11310,327 @@
           "next_cursor",
           "meta"
         ]
+      },
+      "conversation-notes": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "body": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "created_at"
+              ]
+            }
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "next_cursor",
+          "meta"
+        ]
+      },
+      "intake-request": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "provider_event_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+          },
+          "provider_message_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+          },
+          "external_subject_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$"
+          },
+          "display_label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+          },
+          "message": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "text"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4000,
+                "pattern": "\\S"
+              }
+            },
+            "required": [
+              "type",
+              "text"
+            ]
+          },
+          "referral": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "source": {
+                "const": "ctm"
+              },
+              "ad_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "campaign_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "source"
+            ]
+          }
+        },
+        "required": [
+          "provider_event_id",
+          "provider_message_id",
+          "external_subject_id",
+          "occurred_at",
+          "message"
+        ]
+      },
+      "intake-status": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "connection_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "enum": [
+              "received",
+              "processed",
+              "failed"
+            ]
+          },
+          "attempts": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "conversation_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "message_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "duplicate": {
+            "type": "boolean"
+          },
+          "attribution": {
+            "enum": [
+              "unknown",
+              "ctm"
+            ]
+          },
+          "received_at": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$"
+          },
+          "processed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "connection_id",
+          "status",
+          "attempts",
+          "error_code",
+          "conversation_id",
+          "message_id",
+          "duplicate",
+          "attribution",
+          "received_at",
+          "processed_at"
+        ]
+      },
+      "intake-ack": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "delivery_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "status": {
+                "const": "received"
+              }
+            },
+            "required": [
+              "delivery_id",
+              "status"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "intake-response": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/intake-status"
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "intake-retry": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {},
+        "required": []
       }
     },
     "securitySchemes": {
@@ -10663,6 +11638,11 @@
         "type": "apiKey",
         "in": "cookie",
         "name": "crm_session"
+      },
+      "connectionBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Random mock token bound to X-Connection-Id; cannot supply X-Tenant-Id, Cookie or Origin"
       }
     }
   }

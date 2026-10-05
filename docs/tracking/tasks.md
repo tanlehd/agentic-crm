@@ -1,8 +1,8 @@
 # Task tracker — source generation
 
-Nguồn chuẩn trạng thái công việc. Updated: 2026-10-04. Thiết kế có thể Ready nhưng source task vẫn TODO; hai trạng thái không đồng nghĩa.
+Nguồn chuẩn trạng thái công việc. Updated: 2026-10-05. Thiết kế có thể Ready nhưng source task vẫn TODO; hai trạng thái không đồng nghĩa.
 
-**Hiện tại:** SRC-001…014 DONE (14/25); base CRM M1 gate PASS. Preview localhost:8080 có OIDC, Identity Admin/CRM UI, standard/custom CRUD, Lead qualification, metadata/form/view và association. SRC-014 backend Conversation/mock outbound DONE; SRC-015 READY, chưa claim; không task active. [Checkpoint](checkpoint.md) · [Execution log](log.md) · [Build plan](../planning/build-plan.md).
+**Hiện tại:** SRC-001…016 DONE (16/25); base CRM M1 gate PASS. Preview localhost:8080 có OIDC, Identity Admin/CRM UI, standard/custom CRUD, Lead qualification, metadata/form/view và association. SRC-014/015 Conversation và mock intake, SRC-016 inbox UI DONE; SRC-017 READY, chưa claim; không task active. [Checkpoint](checkpoint.md) · [Execution log](log.md) · [Build plan](../planning/build-plan.md).
 
 Owner `—` nghĩa chưa claim. Evidence `—` nghĩa chưa kiểm thử/hoàn thành, không phải pass. Chỉ promote TODO→READY khi tất cả dependency DONE và thiết kế đúng phạm vi Ready. Một task active tại một thời điểm theo mặc định.
 
@@ -37,9 +37,9 @@ Git sync S-20261004-03: initial commit `7c05518` đã push lên `origin/main` th
 | ID | Deliverable | Deps | Status | Owner | Gate / acceptance cụ thể | Evidence |
 |---|---|---|---|---|---|---|
 | SRC-014 | Conversation/message domain, outbound intent/mock sender | SRC-013 | DONE | Codex 2026-10-04 | Một active Conversation/identity, owner-only send, notes; status queued/sending/sent/unknown; ports cho intake | details/SRC-014.md |
-| SRC-015 | Mock Messenger intake, identity resolution, attribution | SRC-014 | READY | — | AC-05; durable ACK, duplicate event/message, same-key different-payload conflict; missing referral vẫn hoạt động | — |
-| SRC-016 | Chat inbox UI, timeline, note, quick reply, polling | SRC-015 | TODO | — | Queue/detail/context; loading/error/forbidden/owner stale; API-backed timeline, không static mock UI thay backend | — |
-| SRC-017 | Routing/capability/capacity, assignment/takeover | SRC-016 | TODO | — | AC-06; round-robin concurrency, unassigned fallback, owner independence; cancel intent khi đổi owner | — |
+| SRC-015 | Mock Messenger intake, identity resolution, attribution | SRC-014 | DONE | Codex 2026-10-04/05 | AC-05; durable ACK, duplicate event/message, same-key different-payload conflict; missing referral vẫn hoạt động | details/SRC-015.md |
+| SRC-016 | Chat inbox UI, timeline, note, quick reply, polling | SRC-015 | DONE | Codex 2026-10-05 | Queue/detail/context; loading/error/forbidden/owner stale; API-backed timeline, không static mock UI thay backend | details/SRC-016.md |
+| SRC-017 | Routing/capability/capacity, assignment/takeover | SRC-016 | READY | — | AC-06; round-robin concurrency, unassigned fallback, owner independence; cancel intent khi đổi owner | — |
 | SRC-018 | Agent Runtime adapter + deterministic mock + tools | SRC-017 | TODO | — | AC-07; tool allowlist, deadline, auth/owner revocation, timeout, late result reject; test harness riêng khỏi API public | — |
 | SRC-019 | Workflow graph/version/run/step/wait engine | SRC-018 | TODO | — | AC-08/16 engine; publish validation, pin version, action key, fencing, lost-signal prevention; Chatflow port contract fake trong test | — |
 | SRC-020 | Chatflow/session/turn và Human completion | SRC-019 | TODO | — | AC-07/08/16; first message không mất, consent explicit, paused_human giữ dữ liệu, single Lead/session; nối Workflow thật | — |

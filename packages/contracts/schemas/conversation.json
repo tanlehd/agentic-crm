@@ -173,6 +173,110 @@
               "type": "null"
             }
           ]
+        },
+        "attribution": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "enum": [
+                "unknown",
+                "ctm"
+              ]
+            },
+            "ad_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "campaign_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "source",
+            "ad_id",
+            "campaign_id"
+          ]
+        },
+        "owner_kind": {
+          "enum": [
+            "human",
+            "ai",
+            null
+          ]
+        },
+        "allowed_actions": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "reply",
+              "note",
+              "update"
+            ]
+          }
+        },
+        "latest_message": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "text": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4000,
+                  "pattern": "\\S"
+                },
+                "status": {
+                  "enum": [
+                    "received",
+                    "queued",
+                    "sending",
+                    "sent",
+                    "failed",
+                    "unknown",
+                    "cancelled"
+                  ]
+                },
+                "direction": {
+                  "enum": [
+                    "inbound",
+                    "outbound"
+                  ]
+                },
+                "received_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "id",
+                "status",
+                "direction",
+                "received_at"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
@@ -552,6 +656,62 @@
             {
               "type": "null"
             }
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "next_cursor",
+        "meta"
+      ]
+    },
+    "conversation-notes": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "body": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "created_at"
+            ]
+          }
+        },
+        "next_cursor": {
+          "type": [
+            "string",
+            "null"
           ]
         },
         "meta": {

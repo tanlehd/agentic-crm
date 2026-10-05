@@ -1,6 +1,7 @@
 import { randomBytes } from 'node:crypto';
 import { writeFile, readFile, appendFile, chmod } from 'node:fs/promises';
 const secret = () => randomBytes(32).toString('hex');
+const channelSecrets = ['MOCK_ALPHA_TOKEN','MOCK_BETA_TOKEN'];
 const seedSecrets = ['ALPHA_ADMIN','BETA_ADMIN','CHAT_ANNA','SALES_BINH','SALES_CHI','READ_ONLY'].map(user=>`SEED_${user}_PASSWORD`);
 const contents = [
   '# Local development only. Generated credentials; do not commit.',
@@ -9,7 +10,7 @@ const contents = [
   `MYSQL_PASSWORD=${secret()}`, `MYSQL_ROOT_PASSWORD=${secret()}`,
   'MYSQL_MIGRATION_USER=crm_migrate', `MYSQL_MIGRATION_PASSWORD=${secret()}`,
   `OIDC_CLIENT_SECRET=${secret()}`, `SESSION_ENCRYPTION_KEY=${secret()}`, `AUTH_DEMO_PASSWORD=${secret()}`,
-  `KEYCLOAK_ADMIN_PASSWORD=${secret()}`, ...seedSecrets.map(name=>`${name}=${secret()}`), '',
+  `KEYCLOAK_ADMIN_PASSWORD=${secret()}`, ...channelSecrets.map(name=>`${name}=${secret()}`), ...seedSecrets.map(name=>`${name}=${secret()}`), '',
 ].join('\n');
 try {
   await writeFile('.env', contents, { flag: 'wx', mode: 0o600 });
@@ -20,7 +21,7 @@ try {
   const additions = [];
   if (!/^MYSQL_MIGRATION_USER=/m.test(existing)) additions.push('MYSQL_MIGRATION_USER=crm_migrate');
   if (!/^MYSQL_MIGRATION_PASSWORD=/m.test(existing)) additions.push(`MYSQL_MIGRATION_PASSWORD=${secret()}`);
-  for (const name of ['OIDC_CLIENT_SECRET', 'SESSION_ENCRYPTION_KEY', 'AUTH_DEMO_PASSWORD', ...seedSecrets]) {
+  for (const name of ['OIDC_CLIENT_SECRET', 'SESSION_ENCRYPTION_KEY', 'AUTH_DEMO_PASSWORD', ...seedSecrets, ...channelSecrets]) {
     if (!new RegExp(`^${name}=`, 'm').test(existing)) additions.push(`${name}=${secret()}`);
   }
   if (additions.length) await appendFile('.env', '\n' + additions.join('\n') + '\n');

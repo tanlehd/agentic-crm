@@ -1,0 +1,272 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://agentic-crm.invalid/schemas/intake.json",
+  "title": "IntakeSchema",
+  "definitions": {
+    "intake-request": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "provider_event_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+        },
+        "provider_message_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+        },
+        "external_subject_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$"
+        },
+        "display_label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+        },
+        "message": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "text"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4000,
+              "pattern": "\\S"
+            }
+          },
+          "required": [
+            "type",
+            "text"
+          ]
+        },
+        "referral": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "const": "ctm"
+            },
+            "ad_id": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 255,
+                  "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "campaign_id": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 255,
+                  "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "source"
+          ]
+        }
+      },
+      "required": [
+        "provider_event_id",
+        "provider_message_id",
+        "external_subject_id",
+        "occurred_at",
+        "message"
+      ]
+    },
+    "intake-status": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "connection_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "status": {
+          "enum": [
+            "received",
+            "processed",
+            "failed"
+          ]
+        },
+        "attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "error_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "conversation_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "message_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "duplicate": {
+          "type": "boolean"
+        },
+        "attribution": {
+          "enum": [
+            "unknown",
+            "ctm"
+          ]
+        },
+        "received_at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$"
+        },
+        "processed_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "connection_id",
+        "status",
+        "attempts",
+        "error_code",
+        "conversation_id",
+        "message_id",
+        "duplicate",
+        "attribution",
+        "received_at",
+        "processed_at"
+      ]
+    },
+    "intake-ack": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "delivery_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "status": {
+              "const": "received"
+            }
+          },
+          "required": [
+            "delivery_id",
+            "status"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "intake-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/intake-status"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "intake-retry": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {},
+      "required": []
+    }
+  }
+}

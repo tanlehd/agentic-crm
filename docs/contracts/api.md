@@ -84,7 +84,7 @@ Filter M1 là AND của tối đa 10 predicate `{field,op,value}`; op `eq,in,gte
 
 ## Channels và Conversation
 
-Chi tiết DTO/ports SRC-014: [Conversation text M2](conversation.md).
+Chi tiết DTO/ports: [Conversation text M2](conversation.md), [mock intake SRC-015](mock-intake.md).
 
 Mock inbound endpoint `POST /integrations/mock-messenger/deliveries` dùng credential connection, không human session. Payload dưới là **normalized fixture**, không phải payload chính thức của Meta:
 
@@ -100,11 +100,12 @@ Mock inbound endpoint `POST /integrations/mock-messenger/deliveries` dùng crede
 }
 ```
 
-`provider_event_id`, `provider_message_id`, `external_subject_id`, `occurred_at`, `message` bắt buộc; `display_label`, `referral` optional. Chỉ text, nonblank tối đa 4.000 ký tự; ID provider tối đa 255; metadata ngoài allowlist không forward cho runtime. Nhận trả 202 `{delivery_id,status:"received"}`; replay cùng key/hash trả cùng ID; cùng key khác payload trả 409. Worker nhận message ID trùng qua event khác thì không tạo message, conversation, touchpoint hoặc qualification mới; đánh dấu delivery processed với duplicate reference.
+`provider_event_id`, `provider_message_id`, `external_subject_id`, `occurred_at`, `message` bắt buộc; `display_label`, `referral` optional. Chỉ text, nonblank tối đa 4.000 ký tự; ID provider tối đa 255; metadata ngoài allowlist không forward cho runtime. Nhận trả 202 `{data:{delivery_id,status:"received"},meta:{correlation_id}}`; replay cùng key/hash trả cùng ID; cùng key khác payload trả 409. Worker nhận message ID trùng qua event khác thì không tạo message, conversation, touchpoint hoặc qualification mới; đánh dấu delivery processed với duplicate reference.
 
 | Method + path | Input → output | Permission |
 |---|---|---|
-| GET `/integrations/deliveries/{id}` | status,error_code? | integration.read/all; mock credential chỉ connection mình |
+| GET `/integrations/deliveries/{id}` | sanitized status/refs, không payload | integration.read/all + admin seat; mock credential chỉ connection mình |
+| POST `/integrations/deliveries/{id}/retry` | empty body, Idempotency-Key → delivery status | Human admin seat + integration.read/retry all, session/CSRF |
 | GET `/conversations` | state,owner/team filters,cursor → queue | conversation.read scoped |
 | GET `/conversations/{id}` | conversation + permitted Contact summary | conversation.read |
 | GET `/conversations/{id}/messages` | cursor → timeline | conversation.read |
@@ -155,3 +156,5 @@ Auth login/callback/session/CSRF/logout theo [auth transport](auth.md); đã tri
 Exact SRC-011 metadata/custom-record contract: [CRM records](crm-records.md).
 
 Exact SRC-012: [CRM core](crm-core.md).
+
+SRC-016 bổ sung GET `/conversations/{id}/notes` và optional owner_kind/allowed_actions cho detail/list theo [exact Conversation contract](conversation.md). Không đổi mutation DTO hoặc schema persisted.

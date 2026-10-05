@@ -23,7 +23,7 @@ export class ConversationController {
     try{
       const session=mutation?await this.auth.service.requireMutation(cookie(req,'crm_session'),req.headers.origin,req.headers['x-csrf-token']):await this.auth.service.session(cookie(req,'crm_session'),true),tenant=req.headers['x-tenant-id'];
       if(!uuid(tenant)||Object.values(req.params).some(v=>!uuid(v)))throw new CommandError(400,'INVALID_REQUEST');await this.runtime.ready();
-      if(!mutation){const result=await this.runtime.conversations.read(session.account_id,tenant,req.params.id,kind as 'detail'|'messages'|'intent',req.query,req.params.intentId);if(!Array.isArray(result.data)&&result.data.version)res.setHeader('ETag',`"${result.data.version}"`);res.end(JSON.stringify({...result,meta:{correlation_id:correlation}}));return;}
+      if(!mutation){const result=await this.runtime.conversations.read(session.account_id,tenant,req.params.id,kind as 'detail'|'messages'|'intent'|'notes',req.query,req.params.intentId);if(!Array.isArray(result.data)&&result.data.version)res.setHeader('ETag',`"${result.data.version}"`);res.end(JSON.stringify({...result,meta:{correlation_id:correlation}}));return;}
       const key=req.headers['idempotency-key'],match=req.headers['if-match'];
       if(Object.keys(req.query).length||typeof key!=='string'||!/^application\/json(?:;|$)/i.test(req.headers['content-type']??'')||match!==undefined&&(typeof match!=='string'||!/^"[1-9][0-9]{0,19}"$/.test(match)))throw new CommandError(400,'INVALID_REQUEST');
       const result=await this.runtime.conversations.mutate(session.account_id,tenant,req.params.id!,kind as 'messages'|'notes'|'transition',req.body,key,typeof match==='string'?match.slice(1,-1):undefined,correlation);res.statusCode=result.status;if(result.body.data.version)res.setHeader('ETag',`"${result.body.data.version}"`);res.end(JSON.stringify(result.body));
@@ -34,6 +34,7 @@ export class ConversationController {
   @Get(':id/messages') messages(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'messages');}
   @Get(':id/outbound-intents/:intentId') intent(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'intent');}
   @Post(':id/messages') send(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'messages',true);}
+  @Get(':id/notes') notes(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'notes');}
   @Post(':id/notes') note(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'notes',true);}
   @Post(':id/transition') transition(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'transition',true);}
 }

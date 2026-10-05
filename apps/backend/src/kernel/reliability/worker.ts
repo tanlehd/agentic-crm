@@ -1,3 +1,4 @@
+import { MessengerIntake } from '../../modules/channels/intake.js';
 import { OutboundDispatcher } from '../../modules/conversation/outbound.js';
 import { MockSender } from '../../modules/channels/mock-sender.js';
 import { Injectable, Module } from '@nestjs/common';
@@ -8,6 +9,7 @@ import { identityAccessConsumer } from '../../modules/identity/access-consumer.j
 @Injectable()
 class DeliveryWorker implements OnModuleInit, OnModuleDestroy {
   private readonly source = databaseSource();
+  private readonly intake = new MessengerIntake(this.source);
   private readonly delivery = new DurableDelivery(this.source);
   private readonly outbound = new OutboundDispatcher(this.source,new MockSender(this.source));
   private timer?: ReturnType<typeof setTimeout>;
@@ -32,6 +34,7 @@ class DeliveryWorker implements OnModuleInit, OnModuleDestroy {
       }
       await this.delivery.expireReceipts();
       await this.outbound.tick();
+      await this.intake.tick();
     } catch { console.warn('RELIABILITY_TICK_FAILED'); }
   }
   async onModuleDestroy() {

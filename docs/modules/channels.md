@@ -1,6 +1,6 @@
 # MOD-03 — Channels & Acquisition
 
-Status: Ready for implementation mock Messenger M2; real Meta/Google Ads Draft M3–M4. Requirements: REQ-05, REQ-09, REQ-11.
+Status: Implemented SRC-015 cho mock Messenger text intake; real Meta/Google Ads Draft M3–M4. Requirements: REQ-05, REQ-09, REQ-11.
 
 ## Mục tiêu và phạm vi
 
@@ -43,3 +43,9 @@ Validation/scope conflict không retry; DB transient theo retry policy. Retry kh
 Meta signature, app review, page subscription, message permission/window, attachment, delivery receipts và token rotation phải kiểm chứng với tài liệu Meta tại M3. Google Ads lead form cần raw webhook schema, mapping form → Contact/Lead, consent, dedup submission ID và cách giữ campaign attribution trước M4.
 
 SRC-014 đã có ChannelReferences và MockSender persisted receipt (lookup reconcile không resend). `channel_connection`/`contact_identity` là foundation v9; public intake, credential binding, durable delivery và attribution thuộc SRC-015. Không có provider/Meta thật. Xem [contract](../contracts/conversation.md).
+
+## Implementation SRC-015
+
+[Exact contract](../contracts/mock-intake.md) · [evidence](../tracking/details/SRC-015.md). Endpoint credential-only ACK sau MySQL commit; status dùng connection credential hoặc Human operator, retry Human có CSRF/idempotency. Worker claim lease60s/fencing và bounded backoff, duplicate message kiểm trước identity/Contact để không tạo dữ liệu thừa; Touchpoint chỉ new message có referral CTM. Seed Alpha/Beta additive và repeat-safe; tokens random private .env, hash DB. API không trả raw payload. Conversation detail có attribution CTM/unknown qua Channels port.
+
+Phạm vi chưa có: inbox UI SRC-016, routing SRC-017, workflow/chatflow/Lead/Sales xuyên luồng SRC-018…023; không Meta thật.

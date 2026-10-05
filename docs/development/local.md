@@ -121,3 +121,17 @@ M1 chưa có Messenger/Chatflow/Sales handoff hay Customer transition. Domain ou
 ## Conversation backend — SRC-014
 
 Preview sau rebuild có `/api/v1/conversations`, message timeline/send intent, note và transition ([contract](../contracts/conversation.md)). Worker poll MySQL mỗi giây dispatch mock queued, sending quá60s thành unknown, không resend tự động. Reconcile/retry chỉ internal port, chưa operations UI. Chưa seed channel/identity hoặc public intake, nên queue rỗng ở fixture M1 là đúng; SRC-015 bổ sung intake, SRC-016 inbox UI. Chạy regression `pnpm test:integration`, `pnpm verify:container`.
+
+## Mock Messenger intake — SRC-015
+
+Sau `pnpm preview:up` (schema v10), chạy `pnpm env:init`, `pnpm seed:channels`, `pnpm test:intake`. Seed yêu cầu Identity/registry/M1 fixture đã có; rerun không reset credentials/quyền. Token riêng Alpha/Beta nằm trong .env private, không paste vào chat/log; script gửi qua stdin.
+
+`test:intake` dùng HTTP local + worker thật kiểm ACK/replay/conflict/duplicate message/missing referral và tenant credential scope. Chỉ synthetic, giữ records phục vụ inbox task sau; IDs trong artifacts/SRC-015/e2e-facts.json, không chứa credential/content. `/integrations/deliveries/{id}` trả state/refs sanitized; manual retry cần Human admin và integration.read/retry all. Public endpoint không nhận cookie/Origin/X-Tenant-Id với mock bearer. [Contract](../contracts/mock-intake.md).
+
+Worker claim25/tick1s, lease60s/fencing; crash reclaim, DB transient delay1/5/30/120/600s/max6 attempts; terminal failure chờ operator. Chưa có operations UI hoặc inbox UI.
+
+## Inbox SRC-016
+
+Sau seed M1 và Channels, chạy `pnpm seed:inbox` để cấp role local cho Alpha/Beta admin (repeat no-op, không khôi phục quyền đã thu hồi). Rebuild `pnpm preview:up`, đăng nhập `alpha_admin`, chọn tenant rồi tab **Chat**. Inbound synthetic từ `pnpm test:intake` hiển thị unassigned; có thể ghi chú, chưa gửi khi chưa owner. Public assignment/takeover thuộc SRC-017.
+
+`pnpm test:inbox` chạy Chrome/OIDC với Alpha/Beta/read_only, tạo inbound qua HTTP/worker và dùng harness ownership chỉ cho identity `src016-synthetic-`; giữ synthetic records. Harness không phải API nghiệp vụ. Test mất ACK kiểm đúng một message khi retry cùng key; 403/unknown bổ sung bằng browser fault injection. Artifact `artifacts/SRC-016/`. Không lưu credential hoặc transcript thật.

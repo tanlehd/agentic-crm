@@ -77,3 +77,11 @@ SRC-013 đóng **M1 release gate**: Admin/CRM UI real OIDC, tenant/permission ne
 ## SRC-014 — sub-scope M2
 
 Evidence [SRC-014](../tracking/details/SRC-014.md): AC-05 business-message dedup/transaction port (chưa durable ACK/referral); AC-15 race một active Conversation/identity; AC-18 queued cancellation hook/close, sending giữ kết quả, unknown không resend và mock reconcile; AC-01/02 tenant/owner/field policy; AC-12 audit/outbox sanitized. Không đóng toàn AC-05/06/07/09/15/18 hoặc M2 release gate: intake, actual takeover/routing/AI, workflow/chatflow và Sales vẫn thuộc các task tiếp theo.
+
+## SRC-015 — AC-05 mock inbound
+
+[Evidence SRC-015](../tracking/details/SRC-015.md): durable ACK trước business processing, same event/hash replay cùng ID, payload conflict409 không overwrite, different event/same message no-op cả Contact/identity/Conversation/Message/touchpoint; missing referral vẫn xử lý unknown. Credential gắn tenant/connection/service role, live revocation, cross-tenant404/credential401; AC-15 identity race và AC-17 claim/crash/reclaim/fencing/rollback/backoff sub-scope. HTTP→worker local E2E dùng Alpha/Beta thật. Không đóng M2 full slice/Lead/Workflow KPI hoặc provider Meta acceptance.
+
+## SRC-016 — Inbox UI sub-scope
+
+[Evidence SRC-016](../tracking/details/SRC-016.md): queue/detail/Contact/CTM, real timeline and Activity notes, quick reply insertion, 5-second polling with cursor pagination, owner-revision review, lost-ACK retry same payload/key with exactly one Message, read-only and tenant switch. Chrome154 E2E PASS; 403 detail cache removal and unknown delivery display tested by explicit browser fault injection. Backend note scope/field/tenant and latest-message receipt replay regressions included in 82 MySQL tests. AC-01/02/05/18 UI sub-scopes only; no public assignment/takeover/AI/session qualification or M2 full gate.

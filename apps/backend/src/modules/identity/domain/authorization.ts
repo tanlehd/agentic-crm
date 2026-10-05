@@ -33,6 +33,7 @@ const matrix: Record<string, Partial<Record<string, Capability>>> = {
   role: {read:'configure',create:'configure',update:'configure'},
   team: {read:'configure',create:'configure',update:'configure'},
   agent: {read:'configure',create:'configure',update:'configure'},
+  integration: {read:'configure',retry:'configure'},
   conversation: {read:'read',reply:'chat',note:'chat',update:'chat',assign:'chat',takeover:'chat'},
 };
 export function permits(access: Access, resource: string, action: string, record?: RecordAccess): boolean {

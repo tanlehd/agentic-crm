@@ -53,3 +53,17 @@ export async function requireActiveTenant(scope:TransactionScope,exclusive=false
   const [tenant]=await scope.query(`SELECT status FROM tenant WHERE id=? ${exclusive?'FOR UPDATE':'FOR SHARE'}`,[scope.context.tenantId]);
   if(tenant?.status!=='active')throw new AccessError('FORBIDDEN');
 }
+
+// Internal Channels authorization port. Tenant lock covers service-role revocation.
+export async function requireService(scope:TransactionScope,id:string,resource:string,action:string){
+  await requireActiveTenant(scope);
+  const [actor]=await scope.query('SELECT s.auth_revision,r.permissions FROM service_actor s JOIN `role` r ON r.tenant_id=s.tenant_id AND r.id=s.role_id WHERE s.tenant_id=? AND s.id=? AND s.active=1',[scope.context.tenantId,id]);
+  if(!actor||!parseGrants(actor.permissions).some(g=>g.resource===resource&&g.action===action&&g.scope==='all'))throw new AccessError('FORBIDDEN');
+  return {id,revision:String(actor.auth_revision)};
+}
+
+// Tenant-scoped identity projection for authorized Conversation readers.
+export async function conversationOwnerKind(scope:TransactionScope,id:string|null):Promise<'human'|'ai'|null>{
+  if(!id)return null;const [row]=await scope.query('SELECT kind FROM principal WHERE tenant_id=? AND id=?',[scope.context.tenantId,id]);
+  return row?.kind==='human'||row?.kind==='ai'?row.kind:null;
+}

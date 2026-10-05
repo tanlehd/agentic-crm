@@ -15,3 +15,9 @@ Internal intake port nhận TransactionScope + identity ID, provider message ID,
 Outbound commit queued trước I/O; worker lock registry Conversation rồi intent, kiểm live seat/grants/owner_revision/connection, sending với dispatch token/started_at. I/O bên ngoài transaction. Result CAS token, update intent/message/event/audit atomic. Timeout hoặc crash sending quá60s→unknown; tuyệt đối không auto resend. Explicit internal retry chỉ failed trước dispatch; internal reconcile chỉ lookup receipt, không send. Mock receipt lưu tenant+intent, deterministic fake provider ID; fault modes chỉ test constructor, không HTTP. Queued cancel khi close/owner hook; sending giữ nguyên qua close/handoff. Future orchestration close hook cùng UoW; chưa có session để dừng ở SRC-014.
 
 Errors theo API chung: 400 invalid input/cursor, 403 forbidden, 404 inaccessible, 409 owner/version/transition/idempotency conflict, 422 validation, 428 missing If-Match, 503 transient. Notes/intent receipt max7 ngày theo kernel; outbound intent key durable unique riêng không hết hạn.
+
+## SRC-016 compatible inbox projection
+
+Detail/list add optional `latest_message` (id/status/direction/received_at/text?; null if empty; text follows Conversation field ACL), `owner_kind` (human/ai/null) from Identity and `allowed_actions` (reply/note/update). Actions apply live seat, scoped grants, field ACL, owner and closed-state checks; commands still authorize independently.
+
+GET `/conversations/{id}/notes?limit=50&cursor=<UUID>` returns `{data:[{id,created_at,body?}],next_cursor,meta}`. Requires Conversation read; only non-archived Activity kind note linked to this Conversation and independently readable by caller are returned. Body omitted when activity.body read denied. Ascending note ID cursor, limit 1–100; UI sorts loaded notes chronologically and polls loaded pages. No new persisted schema or changes to existing note creation.

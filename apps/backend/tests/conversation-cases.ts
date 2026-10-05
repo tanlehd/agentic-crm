@@ -40,7 +40,7 @@ export function conversationCases(isolated:(name:string)=>Promise<DataSource>){d
     for(const key of ['contact','activity','conversation'])await ds.query("INSERT INTO object_type(id,tenant_id,`key`,label,kind,created_at,updated_at) VALUES (?,?,?,?,'standard',UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[randomUUID(),tenant,key,key]);
     records=new CrmRecords(ds,'synthetic',coreDomains(),undefined,[conversationArchiveGuard]);
     contact=String((await records.mutate(account,tenant,{object:'contact',kind:'records'},{fields:{display_name:'Synthetic contact'}},randomUUID(),undefined,'synthetic')).body.data.id);
-    const before=await ds.query('SELECT * FROM contact'),journal=await ds.query('SELECT * FROM schema_migration ORDER BY version');expect(await migrate(ds)).toBe(1);expect(await ds.query('SELECT * FROM contact')).toEqual(before);expect((await ds.query('SELECT * FROM schema_migration ORDER BY version')).slice(0,8)).toEqual(journal);expect(await migrate(ds)).toBe(0);
+    const before=await ds.query('SELECT * FROM contact'),journal=await ds.query('SELECT * FROM schema_migration ORDER BY version');expect(await migrate(ds)).toBe(migrations.length-8);expect(await ds.query('SELECT * FROM contact')).toEqual(before);expect((await ds.query('SELECT * FROM schema_migration ORDER BY version')).slice(0,8)).toEqual(journal);expect(await migrate(ds)).toBe(0);
     await ds.query("INSERT INTO channel_connection(id,tenant_id,provider,external_account_id,team_id) VALUES (?,?,'mock_messenger','synthetic-page',?)",[connection,tenant,team]);
     await ds.query("INSERT INTO contact_identity(id,tenant_id,connection_id,contact_id,external_subject_id) VALUES (?,?,?,?,'synthetic-subject')",[identity,tenant,connection,contact]);
     app=new Conversations(ds,'conversation-test');dispatcher=new OutboundDispatcher(ds,new MockSender(ds));
@@ -79,16 +79,33 @@ export function conversationCases(isolated:(name:string)=>Promise<DataSource>){d
     const before=await ds.query('SELECT id FROM message');const result=await mutate('notes',{text:'Synthetic internal note'},randomUUID(),undefined,otherAccount);
     expect(result.status).toBe(201);expect(await ds.query('SELECT id FROM message')).toEqual(before);expect((await ds.query('SELECT kind,body,related_record_id FROM activity WHERE record_id=?',[result.body.data.id]))[0]).toMatchObject({kind:'note',related_record_id:id,body:'Synthetic internal note'});
   });
+  it('SRC-016 notes and action projection enforce live scopes, fields and tenant',async()=>{
+    expect((await app.read(account,tenant,id)).data).toMatchObject({owner_kind:'human',allowed_actions:['reply','note','update']});
+    expect(((await app.read(otherAccount,tenant,id)).data as any).allowed_actions).not.toContain('reply');
+    expect((await app.read(account,tenant,id,'notes')).data).toEqual([]);
+    const activityGrant={resource:'activity',action:'read',scope:'all'};
+    await ds.query('UPDATE `role` SET permissions=? WHERE id=?',[JSON.stringify([...grants,activityGrant]),role]);
+    await mutate('notes',{text:'Synthetic second note'});
+    const first:any=await app.read(account,tenant,id,'notes',{limit:'1'}),second:any=await app.read(account,tenant,id,'notes',{limit:'1',cursor:first.next_cursor});
+    expect(first.data).toHaveLength(1);expect(first.data[0]).toHaveProperty('body');expect(second.data[0].id).not.toBe(first.data[0].id);
+    const [type]=await ds.query("SELECT id FROM object_type WHERE tenant_id=? AND `key`='activity'",[tenant]),policy=randomUUID();
+    await ds.query("INSERT INTO field_policy(id,tenant_id,role_id,object_type_id,property_key,denied_actions,created_at,updated_at) VALUES (?,?,?,?,'body',JSON_ARRAY('read'),UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[policy,tenant,role,type.id]);
+    expect(((await app.read(account,tenant,id,'notes')).data as any[])[0]).not.toHaveProperty('body');expect(((await app.read(account,tenant,id)).data as any).allowed_actions).not.toContain('note');
+    await expect(app.read(account,beta,id,'notes')).rejects.toThrow('NOT_FOUND');await expect(app.read(account,tenant,id,'notes',{cursor:'invalid'})).rejects.toThrow('INVALID_REQUEST');
+    await ds.query('DELETE FROM field_policy WHERE id=?',[policy]);await ds.query('UPDATE `role` SET permissions=? WHERE id=?',[JSON.stringify(grants),role]);
+  });
   it('timeline signed cursor stable, rejects tampering/context, field projection and scoped queue',async()=>{
     const first:any=await app.read(account,tenant,id,'messages',{limit:'1'});const second:any=await app.read(account,tenant,id,'messages',{limit:'1',cursor:first.next_cursor});expect(first.data[0].id).not.toBe(second.data[0].id);
     await expect(app.read(otherAccount,tenant,id,'messages',{cursor:first.next_cursor})).rejects.toThrow('INVALID_CURSOR');await expect(app.read(account,tenant,id,'messages',{cursor:first.next_cursor+'x'})).rejects.toThrow('INVALID_CURSOR');
     const [type]=await ds.query("SELECT id FROM object_type WHERE tenant_id=? AND `key`='conversation'",[tenant]),policy=randomUUID();await ds.query("INSERT INTO field_policy(id,tenant_id,role_id,object_type_id,property_key,denied_actions,created_at,updated_at) VALUES (?,?,?,?,'text',JSON_ARRAY('read','write'),UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[policy,tenant,role,type.id]);
-    expect(((await app.read(account,tenant,id,'messages')).data as any[])[0]).not.toHaveProperty('text');await expect(send()).rejects.toThrow('FIELD_FORBIDDEN');await ds.query('DELETE FROM field_policy WHERE id=?',[policy]);
+    expect(((await app.read(account,tenant,id,'messages')).data as any[])[0]).not.toHaveProperty('text');expect(((await app.read(account,tenant,id)).data as any).latest_message).not.toHaveProperty('text');expect(((await app.read(account,tenant,id)).data as any).allowed_actions).not.toContain('reply');await expect(send()).rejects.toThrow('FIELD_FORBIDDEN');await ds.query('DELETE FROM field_policy WHERE id=?',[policy]);
     const ownGrants=grants.map(g=>g.resource==='conversation'?{...g,scope:'own'}:g);await ds.query('UPDATE `role` SET permissions=? WHERE id=?',[JSON.stringify(ownGrants),role]);expect((await app.read(otherAccount,tenant)).data).toEqual([]);await expect(app.read(otherAccount,tenant,id)).rejects.toThrow('NOT_FOUND');await ds.query('UPDATE `role` SET permissions=? WHERE id=?',[JSON.stringify(grants),role]);
   });
   it('transition receipt cannot replay a now-denied Contact summary',async()=>{
     const detail:any=(await app.read(account,tenant,id)).data,key=randomUUID(),body={target_status:'pending',reason:'Synthetic replay'};
     const result=await mutate('transition',body,key,detail.version);expect(result.body.data.contact).not.toBeNull();
+    const [type]=await ds.query("SELECT id FROM object_type WHERE tenant_id=? AND `key`='conversation'",[tenant]),policy=randomUUID();await ds.query("INSERT INTO field_policy(id,tenant_id,role_id,object_type_id,property_key,denied_actions,created_at,updated_at) VALUES (?,?,?,?,'text',JSON_ARRAY('read'),UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[policy,tenant,role,type.id]);
+    await expect(mutate('transition',body,key,detail.version)).rejects.toThrow('FORBIDDEN');await ds.query('DELETE FROM field_policy WHERE id=?',[policy]);
     const restricted=grants.filter(g=>g.resource!=='contact'||g.action!=='read');await ds.query('UPDATE `role` SET permissions=? WHERE id=?',[JSON.stringify(restricted),role]);
     await expect(mutate('transition',body,key,detail.version)).rejects.toThrow('FORBIDDEN');
     expect(((await app.read(account,tenant,id)).data as any).contact).toBeNull();await ds.query('UPDATE `role` SET permissions=? WHERE id=?',[JSON.stringify(grants),role]);await inbound();

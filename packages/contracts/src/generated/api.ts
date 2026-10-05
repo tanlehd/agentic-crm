@@ -614,7 +614,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        get: operations["conversation-get-conversations-id-notes"];
         put?: never;
         post: operations["conversation-post-conversations-id-notes"];
         delete?: never;
@@ -633,6 +633,54 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["conversation-post-conversations-id-transition"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/integrations/mock-messenger/deliveries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["intake-request"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/integrations/deliveries/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["intake-status"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/integrations/deliveries/{id}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["intake-retry"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1353,6 +1401,26 @@ export interface components {
                 normalized_phone?: string | null;
                 normalized_email?: string | null;
             } | null;
+            attribution?: {
+                /** @enum {unknown} */
+                source: "unknown" | "ctm";
+                ad_id: string | null;
+                campaign_id: string | null;
+            };
+            /** @enum {unknown} */
+            owner_kind?: "human" | "ai" | null;
+            allowed_actions?: ("reply" | "note" | "update")[];
+            latest_message?: {
+                /** Format: uuid */
+                id: string;
+                text?: string;
+                /** @enum {unknown} */
+                status: "received" | "queued" | "sending" | "sent" | "failed" | "unknown" | "cancelled";
+                /** @enum {unknown} */
+                direction: "inbound" | "outbound";
+                /** Format: date-time */
+                received_at: string;
+            } | null;
         };
         "conversation-message": {
             /** Format: uuid */
@@ -1439,6 +1507,74 @@ export interface components {
                 correlation_id: string;
             };
         };
+        "conversation-notes": {
+            data: {
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                created_at: string;
+                body?: string | null;
+            }[];
+            next_cursor: string | null;
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "intake-request": {
+            provider_event_id: string;
+            provider_message_id: string;
+            external_subject_id: string;
+            /** Format: date-time */
+            occurred_at: string;
+            display_label?: string;
+            message: {
+                /** @constant */
+                type: "text";
+                text: string;
+            };
+            referral?: {
+                /** @constant */
+                source: "ctm";
+                ad_id?: string | null;
+                campaign_id?: string | null;
+            };
+        };
+        "intake-status": {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            connection_id: string;
+            /** @enum {unknown} */
+            status: "received" | "processed" | "failed";
+            attempts: number;
+            error_code: string | null;
+            conversation_id: string | null;
+            message_id: string | null;
+            duplicate: boolean;
+            /** @enum {unknown} */
+            attribution: "unknown" | "ctm";
+            /** Format: date-time */
+            received_at: string;
+            processed_at: string | null;
+        };
+        "intake-ack": {
+            data: {
+                /** Format: uuid */
+                delivery_id: string;
+                /** @constant */
+                status: "received";
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "intake-response": {
+            data: components["schemas"]["intake-status"];
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "intake-retry": Record<string, never>;
     };
     responses: never;
     parameters: never;
@@ -6242,6 +6378,105 @@ export interface operations {
             };
         };
     };
+    "conversation-get-conversations-id-notes": {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized Conversation result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["conversation-notes"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
     "conversation-post-conversations-id-notes": {
         parameters: {
             query?: never;
@@ -6373,6 +6608,304 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["conversation-response"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "intake-request": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Connection-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["intake-request"];
+            };
+        };
+        responses: {
+            /** @description Durable mock intake result; no raw payload */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["intake-ack"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "intake-status": {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Connection-Id"?: string;
+                "X-Tenant-Id"?: string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Durable mock intake result; no raw payload */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["intake-response"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "intake-retry": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["intake-retry"];
+            };
+        };
+        responses: {
+            /** @description Durable mock intake result; no raw payload */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["intake-response"];
                 };
             };
             /** @description Sanitized identity failure */
