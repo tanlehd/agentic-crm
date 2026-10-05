@@ -93,3 +93,7 @@ AC-06 routing/assignment/takeover: live target eligibility, atomic round-robin c
 ## SRC-018 sub-scope
 
 AC-07 runtime boundary implemented: exact schema/allowlist, live field/auth/policy/owner checks, transactional tool replay, queue30s/execution deadline, takeover/close/disable cancellation, released capacity, late-result rejection and sanitized audit. Durable synthetic ChatflowSessionPort proves draft preservation/handoff transaction effects; production port fails closed. Full Human session form, consent, Chatflow orchestration and M2 end-to-end remain SRC-020; full AC-07/08 is not closed. [Evidence SRC-018](../tracking/details/SRC-018.md).
+
+## SRC-019 sub-scope
+
+AC-08 engine: DAG publish/version pinning, duplicate starter selection, same action key after effect/step crash gap, five bounded retries and live-role/fencing rejection. AC-16 Workflow waits: persisted child predicate at registration, missed/early signal, concurrent event/timeout one transition, timer recovery without Redis. Cancellation preserves committed effects and records bounded child retry attention. Synthetic child port proves engine boundary only; real first-message/Chatflow/Sales remains SRC-020/021, full M2 gate remains open. Chrome/OIDC API and mock intake→worker→timer verified. [Evidence SRC-019](../tracking/details/SRC-019.md).

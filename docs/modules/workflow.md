@@ -1,6 +1,6 @@
 # MOD-08 — Workflow
 
-Status: Ready for implementation primitive engine M2; visual builder Draft M5. Requirements: REQ-08, REQ-09.
+Status: Primitive engine M2 implemented SRC-019; visual builder Draft M5. Requirements: REQ-08, REQ-09.
 
 ## Mục tiêu và phạm vi
 
@@ -12,7 +12,7 @@ Designer cần automation.design; publisher cần automation.publish; run dùng 
 
 ## Use case và state machine
 
-Version draft → published bất biến; sửa tạo version mới. Run `queued → running ↔ waiting → completed|failed|cancelled`; terminal không tự reopen. Step pending → running → succeeded/failed; retry transient giữ action key. Cancel ngăn step chưa chạy và cancel child best effort; không đảo tác dụng đã commit.
+Version draft → published bất biến; sửa tạo version mới. Run `queued → running ↔ waiting → completed|failed|cancelled`; terminal không tự reopen. Step pending → running → succeeded/failed; retry transient giữ action key. Cancel ngăn step chưa chạy và ghi durable child-cancel request; worker retry tối đa5 lần/15s, attention giữ khi hết retry; không đảo tác dụng đã commit.
 
 Graph có shape `{trigger,entry_node,nodes:[{key,type,config,next?}]}`. Key unique, mọi node reachable, graph acyclic, tối đa 50 nodes. M2 không parallel branches/loop/subworkflow/arbitrary code. Condition node có `on_true/on_false`; end không next. Binding chỉ path trong `trigger` hoặc output node trước đó; không expression eval.
 
@@ -74,3 +74,5 @@ Retry policy chung 5 lần; permission/validation → failed và attention. Redi
 ## Mở rộng còn Draft
 
 Graph loop/parallel, nested workflow, compensation, version migration run, visual builder và lựa chọn engine khác cần ADR trước thêm capability.
+
+SRC-019 triển khai graph/definition/version APIs, durable starter selection, action ledger, leased/fenced steps và predicate polling. [Exact contract](../contracts/workflow.md). Chatflow/Sales ports mặc định fail closed tới SRC-020/021; test harness riêng không vào production. Run scanning bỏ lease/retry chưa due; wait polling xoay theo last_checked_at để tránh starvation.

@@ -40,7 +40,7 @@ Ngày baseline: 2026-10-02. Trạng thái phản ánh độ sâu thiết kế, k
 | MOD-05 | [Lead/Opportunity & Sale Workspace](modules/sales.md) | Lead core/draft/qualification implemented SRC-012/013; queue/handoff/accept M2 Ready; Deal/customer production Draft |
 | MOD-06 | [Ticket System](modules/ticket.md) | Draft: blueprint M4 |
 | MOD-07 | [Agent & Routing](modules/agents.md) | Routing/assignment/takeover implemented SRC-017; private mock runtime SRC-018 implemented; session integration SRC-020 |
-| MOD-08 | [Workflow](modules/workflow.md) | Ready for implementation: fixed primitive graph M2; visual builder Draft |
+| MOD-08 | [Workflow](modules/workflow.md) | Primitive graph/version/run/wait engine + API implemented SRC-019; child Chatflow/Sales integration SRC-020/021; visual builder Draft |
 | MOD-09 | [Chatflow](modules/chatflow.md) | Ready for implementation: qualification flow M2; visual builder Draft |
 | MOD-10 | [Reporting & Dashboard](modules/reporting.md) | Ready for implementation: KPI semantics; report builder/API Draft |
 | MOD-11 | [Audit & Operations](modules/operations.md) | Outbox/inbox, audit, replay foundation implemented SRC-008; operations M2 tiếp tục |

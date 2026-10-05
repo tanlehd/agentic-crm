@@ -1,3 +1,4 @@
+import { workflowMigration } from './workflow-migration.js';
 import { agentRuntimeMigration } from './agent-runtime-migration.js';
 import { routingMigration } from './routing-migration.js';
 import { intakeMigration } from './intake-migration.js';
@@ -22,5 +23,5 @@ export const migrations: readonly Migration[] = [{
   version: 4, name: 'outbox_positive_versions', statements: [
     'ALTER TABLE outbox_event ADD CONSTRAINT ck_outbox_schema_version CHECK (schema_version >= 1), ADD CONSTRAINT ck_outbox_aggregate_version CHECK (aggregate_version >= 1)',
   ],
-}, deliveryMigration, registryMigration, propertiesMigration, crmCoreMigration, conversationMigration, intakeMigration, routingMigration, agentRuntimeMigration];
+}, deliveryMigration, registryMigration, propertiesMigration, crmCoreMigration, conversationMigration, intakeMigration, routingMigration, agentRuntimeMigration, workflowMigration];
 export const checksum = (m: Migration) => createHash('sha256').update(JSON.stringify([m.version, m.name, m.statements])).digest('hex');

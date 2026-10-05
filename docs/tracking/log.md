@@ -277,3 +277,23 @@ Docs synchronized README/index, Agent/Conversation modules, runtime contract, di
 ## S-20261005-07 — Git handoff SRC-018
 
 Người dùng yêu cầu commit và push Git. Snapshot source/contracts/tests/docs SRC-018 DONE trên main; target origin/main, không force push/deploy. Kiểm tra working tree, whitespace và credential local/private-key marker trước staging; .env/artifacts/dependencies không đưa vào Git. Evidence application giữ tại S-20261005-06 (115 MySQL tests,9 verify gates, Chrome/OIDC regression), không chạy lại application suite chỉ cho Git handoff. Commit chứa entry này là snapshot bàn giao; hash và kết quả remote được kiểm tra sau thao tác. SRC-019 dependency READY, chưa claim.
+
+## S-20261005-08 — SRC-019
+
+Claim SRC-019 IN_PROGRESS, Codex 2026-10-05; SRC-018 DONE, clean working tree. No parallel agents/automation/commit/push/deploy.
+
+CHG-20261005-05 (C2, design refinement): additive v13 Workflow storage, exact automation wire contract, typed DAG validation, execution-role pinning, durable action ledger and wait predicate port. Definition/event selection tombstone prevents replay selecting a newer version. Child ports fail closed until SRC-020/021; synthetic child state is test-only. Compatibility: v1–v12 immutable; new tables/routes only. Tests pending. See workflow contract and physical schema.
+
+Tiếp tục S-20261005-08 theo yêu cầu người dùng; giữ nguyên bản nháp chưa commit, sửa checkpoint stale. CHG-20261005-05 refinement: child cancellation durable request + worker UoW retry tối đa5 lần/15s, attention giữ sau exhaustion; v13 thêm cancel_attempts/cancel_retry_at trước lần áp dụng đầu. Bổ sung API/schema/client, worker consumers, graph checks và MySQL synthetic child harness. Host typecheck/lint/schema và4 graph tests PASS diagnostic Node25; canonical Docker đang chạy, chưa DONE.
+
+S-20261005-08 hoàn tất SRC-019 DONE,19/25; SRC-020 READY chưa claim. CHG-20261005-05 resolved. [Evidence SRC-019](details/SRC-019.md): v13 seven Workflow tables, exact typed DAG/schema/OpenAPI/client, API session/CSRF/ACL/CAS/receipt, durable starter/version pinning/action ledger, fenced steps, wait predicate polling and bounded child cancel. Production child ports fail closed; no Chatflow/Sales fake implementation.
+
+Final MySQL132/132 PASS (17 Workflow +115 regression),9 verify gates PASS (54 unit/contract +7 tooling), Linux ARM64 Node24.21.0/pnpm10.33.0/MySQL8.4.11. Registry metadata stalled normal builds; interrupted commands NOT PASS, fallback cached pinned dependency image plus current source with unchanged lockfile, no install/network. Release backend built from final source; Compose no-build upgrade v13/grants PASS, fingerprint13 exact count/hash. Chrome154/OIDC Workflow API and intake→worker→timer smoke PASS, fixture role detached and definitions disabled. Test harness corrected membership role route and cookie-free bearer intake; source unchanged after final canonical tests.
+
+Artifacts local ignored `artifacts/SRC-019/`: integration-final.log, verify-final.log/summary, offline/release Dockerfiles and build logs, exact offline runner, preview-up.log, upgrade-check, API E2E/facts, services/worker/migration-status, docs-final.log. Standard Docker socket access required escalation; one combined preview action automatic approval review timed out before execution, split retry succeeded. No unresolved block or pending decision.
+
+Docs sync README/index, Workflow/API/events, dictionary/model/physical schema, migration runbook, acceptance/detail/tracker/checkpoint. Main HEAD a34e3bc, working tree dirty SRC-019; no commit/push/deploy. Seven preview services retained healthy; disposable tests cleaned, no agent/automation or database reset/volume deletion. Remote CI/native AMD64/Windows/production provider NOT_RUN. Next only: SRC-020 Chatflow/session/turn/Human completion.
+
+## S-20261005-09 — Git handoff SRC-019
+
+Người dùng yêu cầu commit và push SRC-019. Kiểm tra44 candidate files trên main: diff whitespace và quét credential local/private-key marker PASS; .env/artifacts/dependencies ngoài Git. Gom source/contracts/generated/tests/docs đã nghiệm thu SRC-019 trong một commit; target origin/main, không force push/deploy. Evidence chức năng giữ tại S-20261005-08 và task detail (132 MySQL tests,9 verify gates, Chrome/OIDC Workflow smoke); không chạy lại suite chỉ cho Git handoff. Commit chứa entry này là snapshot bàn giao; hash và trạng thái remote kiểm tra sau thao tác. SRC-020 READY chưa claim, không task active.

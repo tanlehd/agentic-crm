@@ -29,6 +29,7 @@ export function seatCapabilities(seat: string): readonly Capability[] {
 // Initial Identity/Conversation matrix. Future CRM modules register a reviewed
 // capability mapping before exposing actions; unknown operations fail closed.
 const matrix: Record<string, Partial<Record<string, Capability>>> = {
+  automation: {read:'read',design:'configure',publish:'configure',operate:'configure'},
   membership: {read:'configure',create:'configure',update:'configure'},
   role: {read:'configure',create:'configure',update:'configure'},
   team: {read:'configure',create:'configure',update:'configure'},

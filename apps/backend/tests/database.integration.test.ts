@@ -1,3 +1,4 @@
+import { workflowCases } from './workflow-cases.js';
 import { runtimeCases } from './runtime-cases.js';
 import { routingCases } from './routing-cases.js';
 import { intakeCases } from './intake-cases.js';
@@ -185,6 +186,7 @@ describe.skipIf(!enabled)('SRC-004 real MySQL', () => {
   conversationCases(isolated);
   routingCases(isolated);
   runtimeCases(isolated);
+  workflowCases(isolated);
   intakeCases(isolated);
   it('runtime user can perform DML but cannot execute DDL', async () => {
     const user=process.env.MYSQL_USER!, password=process.env.MYSQL_PASSWORD!;
