@@ -120,3 +120,5 @@ SRC-017 physical v11: routing_cursor references team/principal by tenant; agent_
 SRC-018 physical v12: agent_execution has same-tenant Conversation/principal/service_actor/policy references; tool_execution references execution by tenant. Session binding uses an application port until SRC-020 adds its table/FK. Capacity slot reservation/release is atomic with execution state. No cross-module direct session/Contact writes.
 
 SRC-019 physical v13 adds Workflow definition/version/run/step/wait/action/trigger_selection with same-tenant FKs; immutable version and service role pinning, stable action ledger and durable child-cancel request. Children stay behind owning-module UoW ports; production Chatflow/Sales integration follows SRC-020/021.
+
+SRC-020: Chatflow physical session/turn/node state and Lead session binding are implemented by v14–v16; see [dictionary](dictionary.md) and [Chatflow contract](../contracts/chatflow.md). Workflow/Runtime use owning-module ports; Human completion commits Lead+session+event together.

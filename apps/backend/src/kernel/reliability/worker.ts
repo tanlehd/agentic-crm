@@ -1,5 +1,5 @@
+import { ChatflowEngine } from '../../modules/chatflow/engine.js';
 import { WorkflowEngine } from '../../modules/workflow/engine.js';
-import { AgentExecutions } from '../../modules/agents/executions.js';
 import { runtimeAccessConsumer } from '../../modules/agents/runtime-consumer.js';
 import { Routing } from '../../modules/agents/routing.js';
 import { routingAccessConsumer } from '../../modules/agents/access-consumer.js';
@@ -14,8 +14,9 @@ import { identityAccessConsumer } from '../../modules/identity/access-consumer.j
 @Injectable()
 class DeliveryWorker implements OnModuleInit, OnModuleDestroy {
   private readonly source = databaseSource();
-  private readonly workflow = new WorkflowEngine(this.source);
-  private readonly runtime = new AgentExecutions(this.source);
+  private readonly chatflow = new ChatflowEngine(this.source);
+  private readonly workflow = new WorkflowEngine(this.source,this.chatflow.children());
+  private readonly runtime = this.chatflow.runtime;
   private readonly runtimeConsumer = runtimeAccessConsumer(this.runtime);
   private readonly routingConsumer = routingAccessConsumer(new Routing(this.source));
   private readonly intake = new MessengerIntake(this.source);
@@ -44,6 +45,7 @@ class DeliveryWorker implements OnModuleInit, OnModuleDestroy {
       await this.delivery.expireReceipts();
       await this.outbound.tick();
       await this.intake.tick();
+      await this.chatflow.tick();
       await this.runtime.tick();
       await this.workflow.tick();
     } catch { console.warn('RELIABILITY_TICK_FAILED'); }

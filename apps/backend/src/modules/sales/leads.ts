@@ -1,3 +1,4 @@
+import { requireInactiveSession } from '../chatflow/lifecycle.js';
 import type { DataSource } from 'typeorm';
 import type { TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
 import { CommandError,DurableCommands } from '../../kernel/reliability/commands.js';
@@ -46,7 +47,7 @@ export function leadDomain(contacts:ContactReferencePort):RecordDomain{
     },exists:async(s,id)=>!!(await s.query('SELECT record_id FROM `lead` WHERE tenant_id=? AND record_id=?',[s.context.tenantId,id]))[0],eligible:async()=>{},assigned:async()=>{}},
     read:async(s,r)=>{const data=await row(s,r.id);return {contact_id:data.contact_id,conversation_id:data.conversation_id,qualification_session_id:data.qualification_session_id,source_touchpoint_id:data.source_touchpoint_id,status:data.status,qualification:json(data.qualification),qualified_at:stamp(data.qualified_at),accepted_at:stamp(data.accepted_at)};},
     update:async(s,r,fields,a)=>{
-      const b=object(fields,['qualification']);if(!Object.hasOwn(b,'qualification'))throw new CommandError(400,'INVALID_REQUEST');const data=await row(s,r.id);if(!['new','qualifying'].includes(data.status))throw new CommandError(409,'INVALID_TRANSITION');
+      const b=object(fields,['qualification']);if(!Object.hasOwn(b,'qualification'))throw new CommandError(400,'INVALID_REQUEST');const data=await row(s,r.id);await requireInactiveSession(s,data.qualification_session_id);if(!['new','qualifying'].includes(data.status))throw new CommandError(409,'INVALID_TRANSITION');
       const q=qualification(b.qualification,a,false,json(data.qualification));await s.query("UPDATE `lead` SET qualification=?,status=? WHERE tenant_id=? AND record_id=?",[JSON.stringify(q),Object.keys(q).length?'qualifying':'new',s.context.tenantId,r.id]);
     },archive:async()=>{throw new CommandError(422,'OBJECT_NOT_IMPLEMENTED');},
   };
@@ -73,7 +74,7 @@ export class LeadService {
       const cmd={actorId:access.principalId,correlationId:correlation,route:`POST /api/v1/leads/${id}/${action}`,key,body,version};
       const replay=await this.commands.replay(scope,cmd,async response=>{for(const field of Object.keys(object(response.body.data.fields)))checkField(access,'lead',field,'read');});if(replay)return replay;
       const [lead]=await scope.query('SELECT * FROM `lead` WHERE tenant_id=? AND record_id=?',[tenant,id]);if(!lead||record.archived||!['new','qualifying'].includes(lead.status))throw new CommandError(409,'INVALID_TRANSITION');
-      await registry.bump(scope,record,version);
+      await requireInactiveSession(scope,lead.qualification_session_id);await registry.bump(scope,record,version);
       if(action==='qualification'){
         await this.contacts.requireActive(scope,access,lead.contact_id);
         const q=qualification(body.qualification,access,true);await scope.query("UPDATE `lead` SET qualification=?,status='qualified',qualified_at=UTC_TIMESTAMP(6) WHERE tenant_id=? AND record_id=?",[JSON.stringify(q),tenant,id]);

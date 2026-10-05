@@ -2,7 +2,7 @@
 
 Nền tảng conversational CRM dạng SaaS multi-tenant, nơi Human Agent và AI Agent cùng xử lý hội thoại, lead, cơ hội bán hàng và yêu cầu hỗ trợ.
 
-**Trạng thái:** Base CRM M1 có OIDC, tenant isolation, Identity Admin UI, Contact/Company/Activity, Lead draft/consent/qualification và custom object CRUD. Metadata/property/form/view, typed query/index, association, audit/idempotency/outbox đã có; migration v1–v13 và seed Alpha/Beta; Conversation backend/notes/outbound mock SRC-014 và mock intake/identity/CTM SRC-015 và inbox UI SRC-016; routing/assignment/takeover SRC-017 và private deterministic Agent Runtime SRC-018 và durable Workflow engine/API SRC-019. Trạng thái nghiệm thu và evidence xem [task tracker](docs/tracking/tasks.md).
+**Trạng thái:** Base CRM M1 có OIDC, tenant isolation, Identity Admin UI, Contact/Company/Activity, Lead draft/consent/qualification và custom object CRUD. Metadata/property/form/view, typed query/index, association, audit/idempotency/outbox đã có; migration source v1–v16 và seed Alpha/Beta; Conversation backend/notes/outbound mock SRC-014 và mock intake/identity/CTM SRC-015 và inbox UI SRC-016; routing/assignment/takeover SRC-017 và private deterministic Agent Runtime SRC-018 và durable Workflow engine/API SRC-019. SRC-020 Chatflow/session/Human completion DONE; preview schema16 đã qua Chrome Human completion, runtime theo checkpoint. Trạng thái nghiệm thu và evidence xem [task tracker](docs/tracking/tasks.md).
 
 Mở [ứng dụng local](http://localhost:8080) sau khi khởi động theo [hướng dẫn chạy](docs/development/local.md).
 

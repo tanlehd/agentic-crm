@@ -44,7 +44,7 @@ Close Conversation hoặc cancel parent → cancel session, queued prompts và p
 
 ## API và event
 
-[Automation API](../contracts/api.md), [Agent contract](../contracts/agent-runtime.md); consume message.received/record.assigned/principal.access_changed; emit chatflow.completed/handoff_required/execution.failed. message.received đến trước start không mất vì đọc message store.
+[Exact Chatflow contract](../contracts/chatflow.md), [Automation API](../contracts/api.md), [Agent contract](../contracts/agent-runtime.md); consume message.received/record.assigned/principal.access_changed; emit chatflow.completed/handoff_required/execution.failed. message.received đến trước start không mất vì đọc message store.
 
 ## UI
 
@@ -61,3 +61,7 @@ Không giải mã output LLM thành tool command khi schema sai. Timeout/forbidd
 ## Mở rộng còn Draft
 
 Multimodal, knowledge retrieval, intent branching mở, localization authoring, reusable subflows và experimentation; mọi node mới cần schema/tool permission trước builder UI.
+
+## SRC-020 source implementation
+
+Definition/version/publish/read API and inbox Human panel use exact [contract](../contracts/chatflow.md). V14–v16 add session/node/turn, nullable-FK guard and private runtime proposal. Worker polls MySQL with60s fenced claims; each node commits effects and progress atomically. Actual Workflow child and Runtime session ports are composed in API/worker; Sales handoff remains unavailable until SRC-021. Takeover/close hooks pause/cancel atomically, preserving draft/validated provenance. Qualification is single Lead/session with bound evidence and current Human owner/CAS guards. Acceptance and browser/preview verification status follow [SRC-020 evidence](../tracking/details/SRC-020.md).

@@ -1,3 +1,4 @@
+import { stopSessions } from '../chatflow/lifecycle.js';
 import { cancelAgentExecutions } from '../agents/cancellation.js';
 import { randomUUID,createHmac,timingSafeEqual } from 'node:crypto';
 import type { DataSource } from 'typeorm';
@@ -118,7 +119,7 @@ export class Conversations {
         if(typeof b.reason!=='string'||!b.reason.trim()||b.reason.length>1000||!['open','pending','closed'].includes(b.target_status))throw new CommandError(422,'VALIDATION_FAILED');
         if(c.status==='closed'||c.status===b.target_status)throw new CommandError(409,'INVALID_TRANSITION');
         await this.registry.bump(s,r,version);await s.query('UPDATE conversation SET status=?,closed_at=IF(?=\'closed\',UTC_TIMESTAMP(6),NULL) WHERE tenant_id=? AND record_id=?',[b.target_status,b.target_status,tenant,id]);
-        if(b.target_status==='closed'){await cancelQueued(s,id);await cancelAgentExecutions(s,id);await this.onClose(s,id);}data=await this.output(s,a,id);
+        if(b.target_status==='closed'){await cancelQueued(s,id);await cancelAgentExecutions(s,id);await stopSessions(s,id,true);await this.onClose(s,id);}data=await this.output(s,a,id);
       }
       await this.commands.audit(s,a.principalId,correlation,'conversation',id,kind,Object.keys(b));const response={status,body:{data,meta:{correlation_id:correlation}}};await this.commands.complete(s,command,response);return response;
     });}catch(e){if(actor&&e instanceof CommandError&&[403,409].includes(e.status))await this.uow.run({tenantId:tenant},s=>this.commands.audit(s,actor!,correlation,'conversation',id,kind,[],'denied',e.code));throw e;}

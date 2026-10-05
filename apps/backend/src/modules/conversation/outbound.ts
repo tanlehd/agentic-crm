@@ -1,3 +1,4 @@
+import { chatflowOutboundAccess } from '../chatflow/outbound-port.js';
 import { randomUUID } from 'node:crypto';
 import type { DataSource } from 'typeorm';
 import { UnitOfWork } from '../../kernel/tenancy/unit-of-work.js';
@@ -13,11 +14,11 @@ export class OutboundDispatcher {
   async dispatch(tenant:string,conversationId:string,intentId:string){
     const prepared=await this.uow.run({tenantId:tenant},async s=>{
       // Tenant -> registry -> intent lock order shared by commands/assignment.
-      let access;const [candidate]=await s.query('SELECT account_id FROM outbound_intent WHERE tenant_id=? AND id=? AND conversation_id=?',[tenant,intentId,conversationId]);if(!candidate)return null;
-      try{access=await withFieldPolicies(s,await this.auth.loadHuman(s,candidate.account_id));}catch(e){if(!(e instanceof AccessError))throw e;}
+      let access;const [candidate]=await s.query('SELECT * FROM outbound_intent WHERE tenant_id=? AND id=? AND conversation_id=?',[tenant,intentId,conversationId]);if(!candidate)return null;
+      try{access=candidate.actor_kind==='ai'?await chatflowOutboundAccess(s,candidate):await withFieldPolicies(s,await this.auth.loadHuman(s,candidate.account_id));}catch(e){if(!(e instanceof AccessError)&&!(e instanceof CommandError))throw e;}
       const c=await conversation(s,conversationId,true);
       const [intent]=await s.query('SELECT * FROM outbound_intent WHERE tenant_id=? AND id=? AND conversation_id=? FOR UPDATE',[tenant,intentId,conversationId]);if(!intent||intent.status!=='queued')return null;
-      let allowed=!!access&&intent.actor_kind==='human'&&access.principalId===intent.actor_id&&c.record.ownerPrincipalId===intent.actor_id&&c.record.ownerRevision===String(intent.owner_revision)&&c.row.status!=='closed'&&permits(access,'conversation','reply',c.record)&&permits(access,'conversation','read',c.record)&&fieldAllowed(access,'conversation','text','write')&&fieldAllowed(access,'conversation','text','read');
+      let allowed=!!access&&['human','ai'].includes(intent.actor_kind)&&access.principalId===intent.actor_id&&c.record.ownerPrincipalId===intent.actor_id&&c.record.ownerRevision===String(intent.owner_revision)&&c.row.status!=='closed'&&permits(access,'conversation','reply',c.record)&&permits(access,'conversation','read',c.record)&&fieldAllowed(access,'conversation','text','write')&&fieldAllowed(access,'conversation','text','read');
       try{await this.channels.connection(s,c.row.connection_id);}catch(e){if(!(e instanceof CommandError))throw e;allowed=false;}
       if(!allowed){await s.query("UPDATE outbound_intent SET status='cancelled',error_code='AUTHORIZATION_REVOKED' WHERE tenant_id=? AND id=?",[tenant,intentId]);await s.query("UPDATE message SET status='cancelled' WHERE tenant_id=? AND outbound_intent_id=?",[tenant,intentId]);await this.commands.systemAudit(s,intentId,'conversation',conversationId,'outbound.cancel',['status']);return null;}
       const token=randomUUID();await s.query("UPDATE outbound_intent SET status='sending',dispatch_token=?,sending_at=UTC_TIMESTAMP(6),error_code=NULL WHERE tenant_id=? AND id=?",[token,tenant,intentId]);await s.query("UPDATE message SET status='sending' WHERE tenant_id=? AND outbound_intent_id=?",[tenant,intentId]);

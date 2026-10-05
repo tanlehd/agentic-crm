@@ -97,3 +97,7 @@ AC-07 runtime boundary implemented: exact schema/allowlist, live field/auth/poli
 ## SRC-019 sub-scope
 
 AC-08 engine: DAG publish/version pinning, duplicate starter selection, same action key after effect/step crash gap, five bounded retries and live-role/fencing rejection. AC-16 Workflow waits: persisted child predicate at registration, missed/early signal, concurrent event/timeout one transition, timer recovery without Redis. Cancellation preserves committed effects and records bounded child retry attention. Synthetic child port proves engine boundary only; real first-message/Chatflow/Sales remains SRC-020/021, full M2 gate remains open. Chrome/OIDC API and mock intake→worker→timer verified. [Evidence SRC-019](../tracking/details/SRC-019.md).
+
+## SRC-020 completed scope (S-20261005-10)
+
+Initial A parser evidence was extended by actual durable engine/ports and Human completion.150 MySQL integration tests pass (18 Chatflow +132 regression), including first input, fenced/restarted work, proposal-only runtime, takeover/late callback, live outbound auth, one Lead/session, atomic rollback and Human race/evidence/CAS.66 unit/contract tests and9 canonical gates pass. Preview schema16 upgrade retained count/hash across13 pre-existing tables. Chrome154 real OIDC/mock intake/Workflow/Chatflow/Human takeover and consent form PASS; qualified Lead and parent completion verified with Human owner retained. Final status and evidence at [SRC-020 detail](../tracking/details/SRC-020.md). Full M2/Sales acceptance is not closed.

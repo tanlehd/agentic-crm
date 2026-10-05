@@ -5,3 +5,6 @@ export type { AuthErrorResponse } from './generated/auth-error.js';
 export { identitySchema } from './generated/identity-schema.js';
 
 export { runtimeSchema } from './generated/runtime-schema.js';
+
+export { chatflowSchema } from './generated/chatflow-schema.js';
+export type { ChatflowGraph } from './generated/chatflow-graph.js';

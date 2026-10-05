@@ -1,4 +1,5 @@
 'use client';
+import { Qualification } from './qualification';
 import { Ownership } from './ownership';
 import { useEffect,useRef,useState } from 'react';
 import { useInfiniteQuery,useQuery } from '@tanstack/react-query';
@@ -37,7 +38,7 @@ function Detail({tenant,context,id,keys,reviews,pending,setPending,drafts,setDra
   const r=detail.data.data as Conversation;
   return <div className="chat-detail"><section className="crm-card chat-thread"><div className="crm-detail-heading"><h3>{name(r)}</h3><span className="crm-badge">{labels[r.status]}</span><p>{owner(r,context)}</p><small className="crm-record-id">Nhóm: {r.team_id??'Chưa có'} · {r.id}</small></div>
     {r.status!=='closed'&&r.allowed_actions?.some(a=>a==='assign'||a==='takeover')&&<Ownership tenant={tenant} record={r} reload={()=>void detail.refetch()}/>}
-    <Timeline tenant={tenant} id={id}/><Composer tenant={tenant} record={r} keys={keys} reviews={reviews} pending={pending} setPending={setPending} draft={drafts[id+':reply']??''} note={drafts[id+':note']??''} setDraft={(mode,value)=>setDraft(id+':'+mode,value)} reload={()=>void detail.refetch()}/>
+    <Qualification tenant={tenant} conversation={id}/><Timeline tenant={tenant} id={id}/><Composer tenant={tenant} record={r} keys={keys} reviews={reviews} pending={pending} setPending={setPending} draft={drafts[id+':reply']??''} note={drafts[id+':note']??''} setDraft={(mode,value)=>setDraft(id+':'+mode,value)} reload={()=>void detail.refetch()}/>
   </section><details ref={contextPanel} className="crm-card chat-context"><summary>Thông tin liên hệ & nguồn</summary><h3>Liên hệ</h3>{r.contact?<><p>{r.contact.display_name??'Tên không nằm trong quyền đọc'}</p>{r.contact.normalized_phone&&<p>{r.contact.normalized_phone}</p>}{r.contact.normalized_email&&<p>{r.contact.normalized_email}</p>}</>:<p>Không có quyền đọc thông tin liên hệ.</p>}<h4>Nguồn hội thoại</h4>{r.attribution?<><p>{r.attribution.source==='ctm'?'Click-to-Messenger':'Chưa xác định'}</p>{r.attribution.ad_id&&<p>Quảng cáo: {r.attribution.ad_id}</p>}{r.attribution.campaign_id&&<p>Chiến dịch: {r.attribution.campaign_id}</p>}</>:<p>Nguồn không nằm trong quyền đọc.</p>}</details></div>;
 }
 function Timeline({tenant,id}:{tenant:string;id:string}){

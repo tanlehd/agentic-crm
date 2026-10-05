@@ -847,6 +847,102 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/chatflows": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["chatflow-get-chatflows"];
+        put?: never;
+        post: operations["chatflow-post-chatflows"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/chatflows/{id}/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["chatflow-get-chatflows-id-versions"];
+        put?: never;
+        post: operations["chatflow-post-chatflows-id-versions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/chatflows/{id}/versions/{version}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["chatflow-post-chatflows-id-versions-version-publish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/chatflow-sessions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["chatflow-get-chatflow-sessions-id"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversations/{id}/chatflow-session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["chatflow-get-conversations-id-chatflow-session"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/chatflow-sessions/{id}/complete-qualification": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["chatflow-post-chatflow-sessions-id-complete-qualification"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1992,6 +2088,388 @@ export interface components {
                     resume_at: string;
                 }[];
             };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "chatflow-create": {
+            key: string;
+            name: string;
+        };
+        "chatflow-version-create": {
+            graph: {
+                entry_node: string;
+                nodes: ({
+                    key: string;
+                    /** @constant */
+                    type: "send_prompt";
+                    config: {
+                        text: string;
+                        variable_refs: ("service_interest" | "need_summary" | "preferred_contact_method" | "phone" | "contact_permission")[];
+                    };
+                    next: string;
+                } | {
+                    key: string;
+                    /** @constant */
+                    type: "collect";
+                    config: {
+                        /** @constant */
+                        variable_key: "service_interest";
+                        /** @constant */
+                        value_type: "string";
+                        /** @constant */
+                        required: true;
+                        prompt: string;
+                    } | {
+                        /** @constant */
+                        variable_key: "need_summary";
+                        /** @constant */
+                        value_type: "string";
+                        /** @constant */
+                        required: true;
+                        prompt: string;
+                    } | {
+                        /** @constant */
+                        variable_key: "preferred_contact_method";
+                        /** @constant */
+                        value_type: "enum";
+                        /** @constant */
+                        required: true;
+                        prompt: string;
+                        choices: ("messenger" | "phone")[];
+                    } | {
+                        /** @constant */
+                        variable_key: "phone";
+                        /** @constant */
+                        value_type: "string";
+                        required: boolean;
+                        prompt: string;
+                    } | {
+                        /** @constant */
+                        variable_key: "contact_permission";
+                        /** @constant */
+                        value_type: "boolean";
+                        /** @constant */
+                        required: true;
+                        prompt: string;
+                    };
+                    next: string;
+                } | {
+                    key: string;
+                    /** @constant */
+                    type: "invoke_agent";
+                    config: {
+                        /** @enum {unknown} */
+                        instruction: "ask_need" | "ask_contact_method" | "confirm_contact_permission";
+                        allowed_tools: ("crm.read_contact" | "qualification.save" | "conversation.propose_reply" | "routing.request_human")[];
+                    };
+                    next: string;
+                } | {
+                    key: string;
+                    /** @constant */
+                    type: "validate_qualification";
+                    config: {
+                        on_valid: string;
+                        on_invalid: string;
+                    };
+                } | {
+                    key: string;
+                    /** @constant */
+                    type: "upsert_lead";
+                    config: Record<string, never>;
+                    next: string;
+                } | {
+                    key: string;
+                    /** @constant */
+                    type: "request_human";
+                    config: {
+                        /** @enum {unknown} */
+                        reason: "request_human" | "invalid_answers" | "qualification_incomplete";
+                        /** Format: uuid */
+                        target_chat_team: string;
+                    };
+                    next: string;
+                } | {
+                    key: string;
+                    /** @constant */
+                    type: "end";
+                    config: {
+                        /** @enum {unknown} */
+                        outcome: "qualified" | "disqualified" | "needs_attention";
+                    };
+                })[];
+            };
+        };
+        "chatflow-publish": Record<string, never>;
+        "chatflow-complete": {
+            qualification: {
+                service_interest: string;
+                need_summary: string;
+                /** @enum {unknown} */
+                preferred_contact_method: "messenger" | "phone";
+                phone?: string | null;
+                contact_permission: boolean;
+            };
+            /** Format: uuid */
+            consent_message_id: string;
+            owner_revision: string;
+        };
+        "chatflow-session": {
+            data: {
+                /** Format: uuid */
+                id: string;
+                version: string;
+                /** Format: uuid */
+                version_id: string;
+                /** Format: uuid */
+                parent_run_id: string;
+                /** Format: uuid */
+                conversation_id: string;
+                /** @enum {unknown} */
+                status: "running" | "waiting_message" | "paused_human" | "completed" | "failed" | "cancelled";
+                node_key: string;
+                owner_revision: string;
+                /** @enum {unknown} */
+                outcome: "qualified" | "disqualified" | "needs_attention" | null;
+                error_code: string | null;
+                lead_id: string | null;
+                draft: {
+                    service_interest?: string;
+                    need_summary?: string;
+                    /** @enum {unknown} */
+                    preferred_contact_method?: "messenger" | "phone";
+                    phone?: string | null;
+                };
+                variables: {
+                    service_interest?: string;
+                    need_summary?: string;
+                    /** @enum {unknown} */
+                    preferred_contact_method?: "messenger" | "phone";
+                    phone?: string | null;
+                    contact_permission?: boolean;
+                };
+                provenance: {
+                    service_interest?: {
+                        /** @constant */
+                        kind: "message";
+                        /** Format: uuid */
+                        message_id: string;
+                        node_key: string;
+                    } | {
+                        /** @constant */
+                        kind: "human";
+                        /** Format: uuid */
+                        principal_id: string;
+                    };
+                    need_summary?: {
+                        /** @constant */
+                        kind: "message";
+                        /** Format: uuid */
+                        message_id: string;
+                        node_key: string;
+                    } | {
+                        /** @constant */
+                        kind: "human";
+                        /** Format: uuid */
+                        principal_id: string;
+                    };
+                    preferred_contact_method?: {
+                        /** @constant */
+                        kind: "message";
+                        /** Format: uuid */
+                        message_id: string;
+                        node_key: string;
+                    } | {
+                        /** @constant */
+                        kind: "human";
+                        /** Format: uuid */
+                        principal_id: string;
+                    };
+                    phone?: {
+                        /** @constant */
+                        kind: "message";
+                        /** Format: uuid */
+                        message_id: string;
+                        node_key: string;
+                    } | {
+                        /** @constant */
+                        kind: "human";
+                        /** Format: uuid */
+                        principal_id: string;
+                    };
+                    contact_permission?: {
+                        /** @constant */
+                        kind: "message";
+                        /** Format: uuid */
+                        message_id: string;
+                        node_key: string;
+                    } | {
+                        /** @constant */
+                        kind: "human";
+                        /** Format: uuid */
+                        principal_id: string;
+                    };
+                };
+                can_complete: boolean;
+                nodes: {
+                    node_key: string;
+                    /** @enum {unknown} */
+                    status: "pending" | "running" | "waiting" | "succeeded" | "cancelled";
+                    invalid_attempts: number;
+                }[];
+                turns: {
+                    /** Format: uuid */
+                    message_id: string;
+                    node_key: string;
+                    /** @enum {unknown} */
+                    status: "validated" | "invalid" | "runtime";
+                }[];
+            } | null;
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "chatflow-mutation": {
+            data: {
+                /** Format: uuid */
+                id: string;
+                version?: string;
+                number?: number;
+                /** @enum {unknown} */
+                state?: "draft";
+                /** @enum {unknown} */
+                status?: "running" | "waiting_message" | "paused_human" | "completed" | "failed" | "cancelled";
+                /** @enum {unknown} */
+                outcome?: "qualified" | "disqualified" | "needs_attention" | null;
+                lead_id?: string | null;
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "chatflow-list": {
+            data: {
+                /** Format: uuid */
+                id: string;
+                key: string;
+                name: string;
+                active_version_id: string | null;
+                version: string;
+            }[];
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "chatflow-versions": {
+            data: {
+                /** Format: uuid */
+                id: string;
+                number: number;
+                /** @enum {unknown} */
+                state: "draft" | "published";
+                graph: {
+                    entry_node: string;
+                    nodes: ({
+                        key: string;
+                        /** @constant */
+                        type: "send_prompt";
+                        config: {
+                            text: string;
+                            variable_refs: ("service_interest" | "need_summary" | "preferred_contact_method" | "phone" | "contact_permission")[];
+                        };
+                        next: string;
+                    } | {
+                        key: string;
+                        /** @constant */
+                        type: "collect";
+                        config: {
+                            /** @constant */
+                            variable_key: "service_interest";
+                            /** @constant */
+                            value_type: "string";
+                            /** @constant */
+                            required: true;
+                            prompt: string;
+                        } | {
+                            /** @constant */
+                            variable_key: "need_summary";
+                            /** @constant */
+                            value_type: "string";
+                            /** @constant */
+                            required: true;
+                            prompt: string;
+                        } | {
+                            /** @constant */
+                            variable_key: "preferred_contact_method";
+                            /** @constant */
+                            value_type: "enum";
+                            /** @constant */
+                            required: true;
+                            prompt: string;
+                            choices: ("messenger" | "phone")[];
+                        } | {
+                            /** @constant */
+                            variable_key: "phone";
+                            /** @constant */
+                            value_type: "string";
+                            required: boolean;
+                            prompt: string;
+                        } | {
+                            /** @constant */
+                            variable_key: "contact_permission";
+                            /** @constant */
+                            value_type: "boolean";
+                            /** @constant */
+                            required: true;
+                            prompt: string;
+                        };
+                        next: string;
+                    } | {
+                        key: string;
+                        /** @constant */
+                        type: "invoke_agent";
+                        config: {
+                            /** @enum {unknown} */
+                            instruction: "ask_need" | "ask_contact_method" | "confirm_contact_permission";
+                            allowed_tools: ("crm.read_contact" | "qualification.save" | "conversation.propose_reply" | "routing.request_human")[];
+                        };
+                        next: string;
+                    } | {
+                        key: string;
+                        /** @constant */
+                        type: "validate_qualification";
+                        config: {
+                            on_valid: string;
+                            on_invalid: string;
+                        };
+                    } | {
+                        key: string;
+                        /** @constant */
+                        type: "upsert_lead";
+                        config: Record<string, never>;
+                        next: string;
+                    } | {
+                        key: string;
+                        /** @constant */
+                        type: "request_human";
+                        config: {
+                            /** @enum {unknown} */
+                            reason: "request_human" | "invalid_answers" | "qualification_incomplete";
+                            /** Format: uuid */
+                            target_chat_team: string;
+                        };
+                        next: string;
+                    } | {
+                        key: string;
+                        /** @constant */
+                        type: "end";
+                        config: {
+                            /** @enum {unknown} */
+                            outcome: "qualified" | "disqualified" | "needs_attention";
+                        };
+                    })[];
+                };
+            }[];
             meta: {
                 correlation_id: string;
             };
@@ -8535,6 +9013,805 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["workflow-mutation"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "chatflow-get-chatflows": {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized Chatflow result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["chatflow-list"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "chatflow-post-chatflows": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["chatflow-create"];
+            };
+        };
+        responses: {
+            /** @description Authorized Chatflow result */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["chatflow-mutation"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "chatflow-get-chatflows-id-versions": {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized Chatflow result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["chatflow-versions"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "chatflow-post-chatflows-id-versions": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["chatflow-version-create"];
+            };
+        };
+        responses: {
+            /** @description Authorized Chatflow result */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["chatflow-mutation"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "chatflow-post-chatflows-id-versions-version-publish": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+                version: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["chatflow-publish"];
+            };
+        };
+        responses: {
+            /** @description Authorized Chatflow result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["chatflow-mutation"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "chatflow-get-chatflow-sessions-id": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized Chatflow result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["chatflow-session"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "chatflow-get-conversations-id-chatflow-session": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized Chatflow result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["chatflow-session"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "chatflow-post-chatflow-sessions-id-complete-qualification": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["chatflow-complete"];
+            };
+        };
+        responses: {
+            /** @description Authorized Chatflow result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["chatflow-mutation"];
                 };
             };
             /** @description Sanitized identity failure */

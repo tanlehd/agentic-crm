@@ -9534,6 +9534,1141 @@
           }
         }
       }
+    },
+    "/api/v1/chatflows": {
+      "get": {
+        "operationId": "chatflow-get-chatflows",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized Chatflow result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/chatflow-list"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "chatflow-post-chatflows",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/chatflow-create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Authorized Chatflow result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/chatflow-mutation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/chatflows/{id}/versions": {
+      "get": {
+        "operationId": "chatflow-get-chatflows-id-versions",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized Chatflow result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/chatflow-versions"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "chatflow-post-chatflows-id-versions",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/chatflow-version-create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Authorized Chatflow result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/chatflow-mutation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/chatflows/{id}/versions/{version}/publish": {
+      "post": {
+        "operationId": "chatflow-post-chatflows-id-versions-version-publish",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/chatflow-publish"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized Chatflow result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/chatflow-mutation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/chatflow-sessions/{id}": {
+      "get": {
+        "operationId": "chatflow-get-chatflow-sessions-id",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized Chatflow result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/chatflow-session"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/conversations/{id}/chatflow-session": {
+      "get": {
+        "operationId": "chatflow-get-conversations-id-chatflow-session",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized Chatflow result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/chatflow-session"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/chatflow-sessions/{id}/complete-qualification": {
+      "post": {
+        "operationId": "chatflow-post-chatflow-sessions-id-complete-qualification",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/chatflow-complete"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized Chatflow result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/chatflow-mutation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -14491,6 +15626,1843 @@
               "steps",
               "waits"
             ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "chatflow-create": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{0,63}$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          }
+        },
+        "required": [
+          "key",
+          "name"
+        ]
+      },
+      "chatflow-version-create": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "graph": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "entry_node",
+              "nodes"
+            ],
+            "properties": {
+              "entry_node": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                "not": {
+                  "enum": [
+                    "constructor",
+                    "prototype",
+                    "__proto__"
+                  ]
+                }
+              },
+              "nodes": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 30,
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                          "not": {
+                            "enum": [
+                              "constructor",
+                              "prototype",
+                              "__proto__"
+                            ]
+                          }
+                        },
+                        "type": {
+                          "const": "send_prompt"
+                        },
+                        "config": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "text": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 4000,
+                              "pattern": "\\S"
+                            },
+                            "variable_refs": {
+                              "type": "array",
+                              "maxItems": 5,
+                              "uniqueItems": true,
+                              "items": {
+                                "enum": [
+                                  "service_interest",
+                                  "need_summary",
+                                  "preferred_contact_method",
+                                  "phone",
+                                  "contact_permission"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "text",
+                            "variable_refs"
+                          ]
+                        },
+                        "next": {
+                          "type": "string",
+                          "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                          "not": {
+                            "enum": [
+                              "constructor",
+                              "prototype",
+                              "__proto__"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "key",
+                        "type",
+                        "config",
+                        "next"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                          "not": {
+                            "enum": [
+                              "constructor",
+                              "prototype",
+                              "__proto__"
+                            ]
+                          }
+                        },
+                        "type": {
+                          "const": "collect"
+                        },
+                        "config": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "variable_key": {
+                                  "const": "service_interest"
+                                },
+                                "value_type": {
+                                  "const": "string"
+                                },
+                                "required": {
+                                  "const": true
+                                },
+                                "prompt": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 4000,
+                                  "pattern": "\\S"
+                                }
+                              },
+                              "required": [
+                                "variable_key",
+                                "value_type",
+                                "required",
+                                "prompt"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "variable_key": {
+                                  "const": "need_summary"
+                                },
+                                "value_type": {
+                                  "const": "string"
+                                },
+                                "required": {
+                                  "const": true
+                                },
+                                "prompt": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 4000,
+                                  "pattern": "\\S"
+                                }
+                              },
+                              "required": [
+                                "variable_key",
+                                "value_type",
+                                "required",
+                                "prompt"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "variable_key": {
+                                  "const": "preferred_contact_method"
+                                },
+                                "value_type": {
+                                  "const": "enum"
+                                },
+                                "required": {
+                                  "const": true
+                                },
+                                "prompt": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 4000,
+                                  "pattern": "\\S"
+                                },
+                                "choices": {
+                                  "type": "array",
+                                  "minItems": 2,
+                                  "maxItems": 2,
+                                  "uniqueItems": true,
+                                  "items": {
+                                    "enum": [
+                                      "messenger",
+                                      "phone"
+                                    ]
+                                  }
+                                }
+                              },
+                              "required": [
+                                "variable_key",
+                                "value_type",
+                                "required",
+                                "prompt",
+                                "choices"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "variable_key": {
+                                  "const": "phone"
+                                },
+                                "value_type": {
+                                  "const": "string"
+                                },
+                                "required": {
+                                  "type": "boolean"
+                                },
+                                "prompt": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 4000,
+                                  "pattern": "\\S"
+                                }
+                              },
+                              "required": [
+                                "variable_key",
+                                "value_type",
+                                "required",
+                                "prompt"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "variable_key": {
+                                  "const": "contact_permission"
+                                },
+                                "value_type": {
+                                  "const": "boolean"
+                                },
+                                "required": {
+                                  "const": true
+                                },
+                                "prompt": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 4000,
+                                  "pattern": "\\S"
+                                }
+                              },
+                              "required": [
+                                "variable_key",
+                                "value_type",
+                                "required",
+                                "prompt"
+                              ]
+                            }
+                          ]
+                        },
+                        "next": {
+                          "type": "string",
+                          "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                          "not": {
+                            "enum": [
+                              "constructor",
+                              "prototype",
+                              "__proto__"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "key",
+                        "type",
+                        "config",
+                        "next"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                          "not": {
+                            "enum": [
+                              "constructor",
+                              "prototype",
+                              "__proto__"
+                            ]
+                          }
+                        },
+                        "type": {
+                          "const": "invoke_agent"
+                        },
+                        "config": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "instruction": {
+                              "enum": [
+                                "ask_need",
+                                "ask_contact_method",
+                                "confirm_contact_permission"
+                              ]
+                            },
+                            "allowed_tools": {
+                              "type": "array",
+                              "maxItems": 4,
+                              "uniqueItems": true,
+                              "items": {
+                                "enum": [
+                                  "crm.read_contact",
+                                  "qualification.save",
+                                  "conversation.propose_reply",
+                                  "routing.request_human"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "instruction",
+                            "allowed_tools"
+                          ]
+                        },
+                        "next": {
+                          "type": "string",
+                          "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                          "not": {
+                            "enum": [
+                              "constructor",
+                              "prototype",
+                              "__proto__"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "key",
+                        "type",
+                        "config",
+                        "next"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                          "not": {
+                            "enum": [
+                              "constructor",
+                              "prototype",
+                              "__proto__"
+                            ]
+                          }
+                        },
+                        "type": {
+                          "const": "validate_qualification"
+                        },
+                        "config": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "on_valid": {
+                              "type": "string",
+                              "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                              "not": {
+                                "enum": [
+                                  "constructor",
+                                  "prototype",
+                                  "__proto__"
+                                ]
+                              }
+                            },
+                            "on_invalid": {
+                              "type": "string",
+                              "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                              "not": {
+                                "enum": [
+                                  "constructor",
+                                  "prototype",
+                                  "__proto__"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "on_valid",
+                            "on_invalid"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "key",
+                        "type",
+                        "config"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                          "not": {
+                            "enum": [
+                              "constructor",
+                              "prototype",
+                              "__proto__"
+                            ]
+                          }
+                        },
+                        "type": {
+                          "const": "upsert_lead"
+                        },
+                        "config": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {},
+                          "required": []
+                        },
+                        "next": {
+                          "type": "string",
+                          "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                          "not": {
+                            "enum": [
+                              "constructor",
+                              "prototype",
+                              "__proto__"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "key",
+                        "type",
+                        "config",
+                        "next"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                          "not": {
+                            "enum": [
+                              "constructor",
+                              "prototype",
+                              "__proto__"
+                            ]
+                          }
+                        },
+                        "type": {
+                          "const": "request_human"
+                        },
+                        "config": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "reason": {
+                              "enum": [
+                                "request_human",
+                                "invalid_answers",
+                                "qualification_incomplete"
+                              ]
+                            },
+                            "target_chat_team": {
+                              "type": "string",
+                              "format": "uuid"
+                            }
+                          },
+                          "required": [
+                            "reason",
+                            "target_chat_team"
+                          ]
+                        },
+                        "next": {
+                          "type": "string",
+                          "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                          "not": {
+                            "enum": [
+                              "constructor",
+                              "prototype",
+                              "__proto__"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "key",
+                        "type",
+                        "config",
+                        "next"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                          "not": {
+                            "enum": [
+                              "constructor",
+                              "prototype",
+                              "__proto__"
+                            ]
+                          }
+                        },
+                        "type": {
+                          "const": "end"
+                        },
+                        "config": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "outcome": {
+                              "enum": [
+                                "qualified",
+                                "disqualified",
+                                "needs_attention"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "outcome"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "key",
+                        "type",
+                        "config"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "graph"
+        ]
+      },
+      "chatflow-publish": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {},
+        "required": []
+      },
+      "chatflow-complete": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "qualification": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "service_interest": {
+                "type": "string",
+                "maxLength": 255
+              },
+              "need_summary": {
+                "type": "string",
+                "maxLength": 4000
+              },
+              "preferred_contact_method": {
+                "enum": [
+                  "messenger",
+                  "phone"
+                ]
+              },
+              "phone": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 32
+              },
+              "contact_permission": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "service_interest",
+              "need_summary",
+              "preferred_contact_method",
+              "contact_permission"
+            ]
+          },
+          "consent_message_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "owner_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$"
+          }
+        },
+        "required": [
+          "qualification",
+          "consent_message_id",
+          "owner_revision"
+        ]
+      },
+      "chatflow-session": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "version": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "version_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "parent_run_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "conversation_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "status": {
+                    "enum": [
+                      "running",
+                      "waiting_message",
+                      "paused_human",
+                      "completed",
+                      "failed",
+                      "cancelled"
+                    ]
+                  },
+                  "node_key": {
+                    "type": "string"
+                  },
+                  "owner_revision": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "outcome": {
+                    "enum": [
+                      "qualified",
+                      "disqualified",
+                      "needs_attention",
+                      null
+                    ]
+                  },
+                  "error_code": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "lead_id": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "draft": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "service_interest": {
+                        "type": "string",
+                        "maxLength": 255
+                      },
+                      "need_summary": {
+                        "type": "string",
+                        "maxLength": 4000
+                      },
+                      "preferred_contact_method": {
+                        "enum": [
+                          "messenger",
+                          "phone"
+                        ]
+                      },
+                      "phone": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "maxLength": 32
+                      }
+                    },
+                    "required": []
+                  },
+                  "variables": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "service_interest": {
+                        "type": "string",
+                        "maxLength": 255
+                      },
+                      "need_summary": {
+                        "type": "string",
+                        "maxLength": 4000
+                      },
+                      "preferred_contact_method": {
+                        "enum": [
+                          "messenger",
+                          "phone"
+                        ]
+                      },
+                      "phone": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "maxLength": 32
+                      },
+                      "contact_permission": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": []
+                  },
+                  "provenance": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "service_interest": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "kind": {
+                                "const": "message"
+                              },
+                              "message_id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "node_key": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "kind",
+                              "message_id",
+                              "node_key"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "kind": {
+                                "const": "human"
+                              },
+                              "principal_id": {
+                                "type": "string",
+                                "format": "uuid"
+                              }
+                            },
+                            "required": [
+                              "kind",
+                              "principal_id"
+                            ]
+                          }
+                        ]
+                      },
+                      "need_summary": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "kind": {
+                                "const": "message"
+                              },
+                              "message_id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "node_key": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "kind",
+                              "message_id",
+                              "node_key"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "kind": {
+                                "const": "human"
+                              },
+                              "principal_id": {
+                                "type": "string",
+                                "format": "uuid"
+                              }
+                            },
+                            "required": [
+                              "kind",
+                              "principal_id"
+                            ]
+                          }
+                        ]
+                      },
+                      "preferred_contact_method": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "kind": {
+                                "const": "message"
+                              },
+                              "message_id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "node_key": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "kind",
+                              "message_id",
+                              "node_key"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "kind": {
+                                "const": "human"
+                              },
+                              "principal_id": {
+                                "type": "string",
+                                "format": "uuid"
+                              }
+                            },
+                            "required": [
+                              "kind",
+                              "principal_id"
+                            ]
+                          }
+                        ]
+                      },
+                      "phone": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "kind": {
+                                "const": "message"
+                              },
+                              "message_id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "node_key": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "kind",
+                              "message_id",
+                              "node_key"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "kind": {
+                                "const": "human"
+                              },
+                              "principal_id": {
+                                "type": "string",
+                                "format": "uuid"
+                              }
+                            },
+                            "required": [
+                              "kind",
+                              "principal_id"
+                            ]
+                          }
+                        ]
+                      },
+                      "contact_permission": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "kind": {
+                                "const": "message"
+                              },
+                              "message_id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "node_key": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "kind",
+                              "message_id",
+                              "node_key"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "kind": {
+                                "const": "human"
+                              },
+                              "principal_id": {
+                                "type": "string",
+                                "format": "uuid"
+                              }
+                            },
+                            "required": [
+                              "kind",
+                              "principal_id"
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "required": []
+                  },
+                  "can_complete": {
+                    "type": "boolean"
+                  },
+                  "nodes": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "node_key",
+                        "status",
+                        "invalid_attempts"
+                      ],
+                      "properties": {
+                        "node_key": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "pending",
+                            "running",
+                            "waiting",
+                            "succeeded",
+                            "cancelled"
+                          ]
+                        },
+                        "invalid_attempts": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 3
+                        }
+                      }
+                    }
+                  },
+                  "turns": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "message_id",
+                        "node_key",
+                        "status"
+                      ],
+                      "properties": {
+                        "message_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "node_key": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "validated",
+                            "invalid",
+                            "runtime"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "id",
+                  "version",
+                  "version_id",
+                  "parent_run_id",
+                  "conversation_id",
+                  "status",
+                  "node_key",
+                  "owner_revision",
+                  "outcome",
+                  "error_code",
+                  "lead_id",
+                  "draft",
+                  "variables",
+                  "provenance",
+                  "can_complete",
+                  "nodes",
+                  "turns"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "chatflow-mutation": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "version": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$"
+              },
+              "number": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "state": {
+                "enum": [
+                  "draft"
+                ]
+              },
+              "status": {
+                "enum": [
+                  "running",
+                  "waiting_message",
+                  "paused_human",
+                  "completed",
+                  "failed",
+                  "cancelled"
+                ]
+              },
+              "outcome": {
+                "enum": [
+                  "qualified",
+                  "disqualified",
+                  "needs_attention",
+                  null
+                ]
+              },
+              "lead_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "chatflow-list": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "key": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "active_version_id": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "version": {
+                  "type": "string",
+                  "pattern": "^[1-9][0-9]{0,19}$"
+                }
+              },
+              "required": [
+                "id",
+                "key",
+                "name",
+                "active_version_id",
+                "version"
+              ]
+            }
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "chatflow-versions": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "number": {
+                  "type": "integer"
+                },
+                "state": {
+                  "enum": [
+                    "draft",
+                    "published"
+                  ]
+                },
+                "graph": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "entry_node",
+                    "nodes"
+                  ],
+                  "properties": {
+                    "entry_node": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                      "not": {
+                        "enum": [
+                          "constructor",
+                          "prototype",
+                          "__proto__"
+                        ]
+                      }
+                    },
+                    "nodes": {
+                      "type": "array",
+                      "minItems": 1,
+                      "maxItems": 30,
+                      "items": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "key": {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                                "not": {
+                                  "enum": [
+                                    "constructor",
+                                    "prototype",
+                                    "__proto__"
+                                  ]
+                                }
+                              },
+                              "type": {
+                                "const": "send_prompt"
+                              },
+                              "config": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "text": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 4000,
+                                    "pattern": "\\S"
+                                  },
+                                  "variable_refs": {
+                                    "type": "array",
+                                    "maxItems": 5,
+                                    "uniqueItems": true,
+                                    "items": {
+                                      "enum": [
+                                        "service_interest",
+                                        "need_summary",
+                                        "preferred_contact_method",
+                                        "phone",
+                                        "contact_permission"
+                                      ]
+                                    }
+                                  }
+                                },
+                                "required": [
+                                  "text",
+                                  "variable_refs"
+                                ]
+                              },
+                              "next": {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                                "not": {
+                                  "enum": [
+                                    "constructor",
+                                    "prototype",
+                                    "__proto__"
+                                  ]
+                                }
+                              }
+                            },
+                            "required": [
+                              "key",
+                              "type",
+                              "config",
+                              "next"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "key": {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                                "not": {
+                                  "enum": [
+                                    "constructor",
+                                    "prototype",
+                                    "__proto__"
+                                  ]
+                                }
+                              },
+                              "type": {
+                                "const": "collect"
+                              },
+                              "config": {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "variable_key": {
+                                        "const": "service_interest"
+                                      },
+                                      "value_type": {
+                                        "const": "string"
+                                      },
+                                      "required": {
+                                        "const": true
+                                      },
+                                      "prompt": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 4000,
+                                        "pattern": "\\S"
+                                      }
+                                    },
+                                    "required": [
+                                      "variable_key",
+                                      "value_type",
+                                      "required",
+                                      "prompt"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "variable_key": {
+                                        "const": "need_summary"
+                                      },
+                                      "value_type": {
+                                        "const": "string"
+                                      },
+                                      "required": {
+                                        "const": true
+                                      },
+                                      "prompt": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 4000,
+                                        "pattern": "\\S"
+                                      }
+                                    },
+                                    "required": [
+                                      "variable_key",
+                                      "value_type",
+                                      "required",
+                                      "prompt"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "variable_key": {
+                                        "const": "preferred_contact_method"
+                                      },
+                                      "value_type": {
+                                        "const": "enum"
+                                      },
+                                      "required": {
+                                        "const": true
+                                      },
+                                      "prompt": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 4000,
+                                        "pattern": "\\S"
+                                      },
+                                      "choices": {
+                                        "type": "array",
+                                        "minItems": 2,
+                                        "maxItems": 2,
+                                        "uniqueItems": true,
+                                        "items": {
+                                          "enum": [
+                                            "messenger",
+                                            "phone"
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "variable_key",
+                                      "value_type",
+                                      "required",
+                                      "prompt",
+                                      "choices"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "variable_key": {
+                                        "const": "phone"
+                                      },
+                                      "value_type": {
+                                        "const": "string"
+                                      },
+                                      "required": {
+                                        "type": "boolean"
+                                      },
+                                      "prompt": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 4000,
+                                        "pattern": "\\S"
+                                      }
+                                    },
+                                    "required": [
+                                      "variable_key",
+                                      "value_type",
+                                      "required",
+                                      "prompt"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "variable_key": {
+                                        "const": "contact_permission"
+                                      },
+                                      "value_type": {
+                                        "const": "boolean"
+                                      },
+                                      "required": {
+                                        "const": true
+                                      },
+                                      "prompt": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 4000,
+                                        "pattern": "\\S"
+                                      }
+                                    },
+                                    "required": [
+                                      "variable_key",
+                                      "value_type",
+                                      "required",
+                                      "prompt"
+                                    ]
+                                  }
+                                ]
+                              },
+                              "next": {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                                "not": {
+                                  "enum": [
+                                    "constructor",
+                                    "prototype",
+                                    "__proto__"
+                                  ]
+                                }
+                              }
+                            },
+                            "required": [
+                              "key",
+                              "type",
+                              "config",
+                              "next"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "key": {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                                "not": {
+                                  "enum": [
+                                    "constructor",
+                                    "prototype",
+                                    "__proto__"
+                                  ]
+                                }
+                              },
+                              "type": {
+                                "const": "invoke_agent"
+                              },
+                              "config": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "instruction": {
+                                    "enum": [
+                                      "ask_need",
+                                      "ask_contact_method",
+                                      "confirm_contact_permission"
+                                    ]
+                                  },
+                                  "allowed_tools": {
+                                    "type": "array",
+                                    "maxItems": 4,
+                                    "uniqueItems": true,
+                                    "items": {
+                                      "enum": [
+                                        "crm.read_contact",
+                                        "qualification.save",
+                                        "conversation.propose_reply",
+                                        "routing.request_human"
+                                      ]
+                                    }
+                                  }
+                                },
+                                "required": [
+                                  "instruction",
+                                  "allowed_tools"
+                                ]
+                              },
+                              "next": {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                                "not": {
+                                  "enum": [
+                                    "constructor",
+                                    "prototype",
+                                    "__proto__"
+                                  ]
+                                }
+                              }
+                            },
+                            "required": [
+                              "key",
+                              "type",
+                              "config",
+                              "next"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "key": {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                                "not": {
+                                  "enum": [
+                                    "constructor",
+                                    "prototype",
+                                    "__proto__"
+                                  ]
+                                }
+                              },
+                              "type": {
+                                "const": "validate_qualification"
+                              },
+                              "config": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "on_valid": {
+                                    "type": "string",
+                                    "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                                    "not": {
+                                      "enum": [
+                                        "constructor",
+                                        "prototype",
+                                        "__proto__"
+                                      ]
+                                    }
+                                  },
+                                  "on_invalid": {
+                                    "type": "string",
+                                    "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                                    "not": {
+                                      "enum": [
+                                        "constructor",
+                                        "prototype",
+                                        "__proto__"
+                                      ]
+                                    }
+                                  }
+                                },
+                                "required": [
+                                  "on_valid",
+                                  "on_invalid"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "key",
+                              "type",
+                              "config"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "key": {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                                "not": {
+                                  "enum": [
+                                    "constructor",
+                                    "prototype",
+                                    "__proto__"
+                                  ]
+                                }
+                              },
+                              "type": {
+                                "const": "upsert_lead"
+                              },
+                              "config": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {},
+                                "required": []
+                              },
+                              "next": {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                                "not": {
+                                  "enum": [
+                                    "constructor",
+                                    "prototype",
+                                    "__proto__"
+                                  ]
+                                }
+                              }
+                            },
+                            "required": [
+                              "key",
+                              "type",
+                              "config",
+                              "next"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "key": {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                                "not": {
+                                  "enum": [
+                                    "constructor",
+                                    "prototype",
+                                    "__proto__"
+                                  ]
+                                }
+                              },
+                              "type": {
+                                "const": "request_human"
+                              },
+                              "config": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "reason": {
+                                    "enum": [
+                                      "request_human",
+                                      "invalid_answers",
+                                      "qualification_incomplete"
+                                    ]
+                                  },
+                                  "target_chat_team": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  }
+                                },
+                                "required": [
+                                  "reason",
+                                  "target_chat_team"
+                                ]
+                              },
+                              "next": {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                                "not": {
+                                  "enum": [
+                                    "constructor",
+                                    "prototype",
+                                    "__proto__"
+                                  ]
+                                }
+                              }
+                            },
+                            "required": [
+                              "key",
+                              "type",
+                              "config",
+                              "next"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "key": {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_]{0,47}$",
+                                "not": {
+                                  "enum": [
+                                    "constructor",
+                                    "prototype",
+                                    "__proto__"
+                                  ]
+                                }
+                              },
+                              "type": {
+                                "const": "end"
+                              },
+                              "config": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "outcome": {
+                                    "enum": [
+                                      "qualified",
+                                      "disqualified",
+                                      "needs_attention"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "outcome"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "key",
+                              "type",
+                              "config"
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "number",
+                "state",
+                "graph"
+              ]
+            }
           },
           "meta": {
             "type": "object",
