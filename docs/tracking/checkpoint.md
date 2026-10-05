@@ -1,21 +1,21 @@
 # Checkpoint — điểm tiếp tục
 
-Updated 2026-10-05, S-20261005-11 (SRC-021 DONE).
+Updated2026-10-05, S-20261005-12 (SRC-022 DONE).
 
-## Trạng thái
+## Trạng thái thực tế
 
-SRC-001…021 DONE (21/25), M1 gate PASS. SRC-022 READY, chưa claim; không task active. [SRC-021 evidence](details/SRC-021.md) · [tracker](tasks.md).
+SRC-001…022 DONE (22/25), M1 gate PASS. SRC-023 READY, chưa claim; không task active. [SRC-022 detail](details/SRC-022.md) · [tracker](tasks.md).
 
-Sales handoff/acceptance API, Contact read-only share, Human Sales routing/queue,15min durable attention, actual Workflow action/predicate implemented. Migration17 additive source; v1–16 preserved.166 MySQL tests PASS (15 Sales +1 cross-module +150 regression), final verify9/9 PASS (66 unit/contract +7 tooling), full workspace build/typecheck. Linux ARM64 Node24.21.0/pnpm10.33.0/MySQL8.4.11.
+Sales queue/detail/accept/CRM links, Operations failed inbound retry/Workflow run timeline/Agent Runtime attention/read-only versions implemented.171 MySQL integration tests PASS, final canonical verify9/9 PASS (66 unit/contract+7 tooling), release backend/web PASS. Chrome154 OIDC Sales/Operations browser gate PASS, screenshots reviewed. Linux ARM64 Node24.21.0/pnpm10.33.0/MySQL8.4.11; host Node25 orchestrates tests only.
 
-## Git và runtime
+## Preview và Git
 
-User requested commit/push before continuing: SRC-020 `69ce348` pushed successfully origin/main (from f4a6c27). SRC-021 source/docs/generated changes retained uncommitted on main; no second commit/push or deployment. No secrets/test credentials in tracked files.
+User requested Git sync then selected SRC-022. SRC-021 commit `8497cf2` pushed origin/main (from69ce348). SRC-022 source/docs/generated dirty retained on main8497cf2, no second commit/push. No production deployment.
 
-Preview retains SRC-020/schema16 and existing seven services; this session did not migrate/rebuild preview, reset database or delete volumes. New schema17 exercised only in disposable project agentic-crm-src021-test, cleaned containers/network afterward. New Sales browser/OIDC E2E, preview migration17, release images/rollout and remote CI NOT_RUN. Existing SRC-020 preview evidence retained in previous task detail.
+Preview localhost:8080 upgraded to SRC-022 images/schema17 (migration from SRC-021).13 pre-existing table count/hash fingerprints equal before/after migration before fixture creation. Seven services healthy, volumes retained, no reset/deletion. Synthetic test roles/team memberships detached, actors/workflows disabled; history retained. Test containers/network/runners cleaned; no automation/subagent.
 
-## Evidence và bước tiếp tục
+## Evidence và next action
 
-Artifacts ignored `artifacts/SRC-021/`: integration-final.log (166 PASS), verify-final/summary.json and gate logs, compatibility.log, build-final.log, docs-final.log, whitespace.log, services.log, working-tree.log. Failure history in task detail; no failed result counted PASS. No running test runner, subagent or automation; no blocker or pending decision.
+`artifacts/SRC-022/`: integration-final.log171 PASS, verify-final/summary.json9 PASS, release-backend/web-final.log, preview-final.log, upgrade-before/after/check.json, browser-e2e.log, browser-facts.json, screenshots, cleanup-check.json, compatibility.log, services.log, migration-status.log, worker.log, docs-final.log, whitespace.log, working-tree.log. Failures and exact commands documented in task detail. Remote CI/native AMD64/Windows/production provider NOT_RUN.
 
-Next action: read SRC-022 Sale queue/detail + operations/run UI design/contracts/acceptance, claim task then implement. Coordinate local schema17 upgrade with actual preview rollout, preserving volumes and verifying migration/data retention. Full M2 gate remains SRC-022…025.
+Next action: read and claim SRC-023 Healthcare fixtures xuyên luồng + metric queries (12/4/3 and2/3 KPI, deterministic clock, cold-volume walkthrough). No blocker or pending decision; full M2 gate awaits SRC-023…025.

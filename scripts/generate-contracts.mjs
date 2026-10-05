@@ -123,6 +123,13 @@ for(const [method,path,input,output] of [['get','leads/{id}/handoffs',null,'list
  const parameters=[tenantHeader,...[...path.matchAll(/\{(\w+)\}/g)].map(m=>({name:m[1],in:'path',required:true,schema:{type:'string',format:'uuid'}})),...(input?[...mutationHeaders,{name:'If-Match',in:'header',required:true,schema:{type:'string'}}]:[])];
  (spec.paths[`/api/v1/${path}`]??={})[method]={operationId:`sales-handoff-${input??output}`,security:[{sessionCookie:[]}],parameters,...(input?{requestBody:{required:true,content:{'application/json':{schema:{$ref:`#/components/schemas/sales-handoff-${input}`}}}}}:{}),responses:{...adminErrors,200:{...response(`sales-handoff-${output}`,'Authorized Sales result'),...(input?{headers:{ETag:{schema:{type:'string'}}}}:{})}}};
 }
+const m2=JSON.parse(await readFile('packages/contracts/schemas/workspaces-m2.json','utf8'));
+for(const [name,definition] of Object.entries(m2.definitions))spec.components.schemas[name]=JSON.parse(JSON.stringify(definition).replaceAll('#/definitions/','#/components/schemas/'));
+for(const [path,output] of [['sales/leads','m2-sales-list'],['sales/leads/{id}','m2-sales-detail'],['operations/failed-deliveries','m2-deliveries-list'],['operations/workflow-runs','m2-runs-list'],['operations/agent-executions','m2-agents-list']]){
+ const parameters=[tenantHeader,...(path.includes('{id}')?[{name:'id',in:'path',required:true,schema:{type:'string',format:'uuid'}}]:[{name:'limit',in:'query',schema:{type:'integer',minimum:1,maximum:50,default:25}},{name:'cursor',in:'query',schema:{type:'string',format:'uuid'}}]),...(path==='sales/leads'?['status','owner','team','source'].map(name=>({name,in:'query',schema:{type:'string'}})):[])];
+ spec.paths[`/api/v1/${path}`]={get:{operationId:`m2-${path.replaceAll(/[{}]/g,'').replaceAll('/','-')}`,security:[{sessionCookie:[]}],parameters,responses:{...adminErrors,200:response(output,'Authorized workspace projection')}}};
+}
+spec.paths['/api/v1/operations/deliveries/{id}/retry']={post:{operationId:'m2-delivery-retry',security:[{sessionCookie:[]}],parameters:[tenantHeader,...mutationHeaders,{name:'id',in:'path',required:true,schema:{type:'string',format:'uuid'}}],requestBody:{required:true,content:{'application/json':{schema:{$ref:'#/components/schemas/m2-retry'}}}},responses:{...adminErrors,200:response('intake-response','Scheduled same delivery')}}};
 const runtime=JSON.parse(await readFile('packages/contracts/schemas/agent-runtime.json','utf8'));
 const chatflow=JSON.parse(await readFile('packages/contracts/schemas/chatflow.json','utf8'));
 const outputs = {
@@ -130,6 +137,7 @@ const outputs = {
   'packages/contracts/openapi.json': JSON.stringify(spec, null, 2) + '\n',
   'packages/contracts/src/generated/api.ts': astToString(await openapiTS(spec)),
 };
+for(const [name,definition] of Object.entries(m2.definitions)) outputs[`packages/contracts/src/generated/${name}.ts`]=await compile({...definition,definitions:m2.definitions},name,{bannerComment:'/* Generated. Do not edit. */'});
 for(const [name,definition] of Object.entries(salesHandoff.definitions)) outputs[`packages/contracts/src/generated/${name}.ts`]=await compile({...definition,definitions:salesHandoff.definitions},name,{bannerComment:'/* Generated. Do not edit. */'});
 for(const [name,definition] of Object.entries(chatflowApi.definitions)) outputs[`packages/contracts/src/generated/${name}.ts`]=await compile({...definition,definitions:chatflowApi.definitions},name,{bannerComment:'/* Generated. Do not edit. */'});
 outputs['packages/contracts/src/generated/chatflow-graph.ts']=await compile(chatflow,'ChatflowGraph',{bannerComment:'/* Generated. Do not edit. */'});

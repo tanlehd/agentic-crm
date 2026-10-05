@@ -6,14 +6,14 @@ import { useApi,useCommand,ErrorNotice,can,type Context } from './api';
 interface Field {key:string;label:string;type:string;required?:boolean;options?:string[];default_value?:unknown;writable:boolean;immutable?:boolean;indexed?:boolean}
 interface Descriptor {standard:Field[];custom:Field[];order:string[]}
 const label=(r:any)=>r.fields?.display_name??r.fields?.name??r.fields?.subject??r.fields?.qualification?.service_interest??r.custom_values?.title??r.custom_values?.name_label??r.custom_values?.name??Object.values(r.custom_values??{}).find(v=>typeof v==='string')??r.id.slice(0,8);
-export function Records({tenant,context}:{tenant:string;context:Context}){
+export function Records({tenant,context,initial}:{tenant:string;context:Context;initial?:{object:string;id:string}}){
   const objects=context.objects.filter(o=>o.kind==='custom'||['contact','company','activity','lead'].includes(o.key));
-  const [object,setObject]=useState(objects[0]?.key??'contact');
+  const [object,setObject]=useState(initial?.object??objects[0]?.key??'contact');
   if(!objects.length)return <div className="crm-card"><h3>Chưa có quyền đọc dữ liệu CRM</h3><p>Quản trị viên cần cấp quyền theo đối tượng và phạm vi làm việc.</p></div>;
-  return <><div className="crm-object-nav" aria-label="Đối tượng CRM">{objects.map(o=><Button key={o.id} variant={object===o.key?'default':'outline'} onClick={()=>setObject(o.key)}>{o.label}</Button>)}</div><RecordCollection key={object} tenant={tenant} context={context} object={object}/></>;
+  return <><div className="crm-object-nav" aria-label="Đối tượng CRM">{objects.map(o=><Button key={o.id} variant={object===o.key?'default':'outline'} onClick={()=>setObject(o.key)}>{o.label}</Button>)}</div><RecordCollection key={object} tenant={tenant} context={context} object={object} initialId={initial?.object===object?initial.id:undefined}/></>;
 }
-function RecordCollection({tenant,context,object}:{tenant:string;context:Context;object:string}){
-  const [id,setId]=useState<string|null>(null),[creating,setCreating]=useState(false),[cursor,setCursor]=useState<string|null>(null),[filter,setFilter]=useState(''),[sort,setSort]=useState('');
+function RecordCollection({tenant,context,object,initialId}:{tenant:string;context:Context;object:string;initialId?:string}){
+  const [id,setId]=useState<string|null>(initialId??null),[creating,setCreating]=useState(false),[cursor,setCursor]=useState<string|null>(null),[filter,setFilter]=useState(''),[sort,setSort]=useState('');
   const descriptor=useApi(tenant,`/api/v1/objects/${object}/descriptor`),query=new URLSearchParams({limit:'20',...(cursor?{cursor}:{}),...(filter?{filter}:{}),...(sort?{sort}:{})});
   const list=useApi(tenant,`/api/v1/objects/${object}/records?${query}`),name=context.objects.find(o=>o.key===object)?.label??object;
   const savedView=useApi(tenant,`/api/v1/object-types/${object}/views/default`,can(context,'schema','read'));

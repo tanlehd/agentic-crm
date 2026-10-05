@@ -9,6 +9,7 @@ export class ChannelReferences {
     const connection=await this.connection(s,row.connection_id);
     return {id:row.id,contactId:row.contact_id,connectionId:row.connection_id,teamId:connection.team_id};
   }
+  async leadSource(s:TransactionScope,id:string|null){if(!id)return 'unknown';const [r]=await s.query('SELECT source FROM touchpoint WHERE tenant_id=? AND id=?',[s.context.tenantId,id]);return r?.source==='ctm'?'ctm':'unknown';}
   async firstTouchpoint(s:TransactionScope,conversation:string){const [r]=await s.query('SELECT id FROM touchpoint WHERE tenant_id=? AND conversation_id=? ORDER BY received_at,id LIMIT 1',[s.context.tenantId,conversation]);return r?.id as string|undefined;}
   async attribution(s:TransactionScope,conversationId:string){
     const [row]=await s.query('SELECT source,ad_id,campaign_id FROM touchpoint WHERE tenant_id=? AND conversation_id=? ORDER BY received_at,id LIMIT 1',[s.context.tenantId,conversationId]);

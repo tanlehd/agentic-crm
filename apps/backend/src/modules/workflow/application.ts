@@ -1,3 +1,4 @@
+import { page } from '../operations/paging.js';
 import { randomUUID } from 'node:crypto';
 import type { DataSource } from 'typeorm';
 import { CommandError,DurableCommands } from '../../kernel/reliability/commands.js';
@@ -26,6 +27,11 @@ export class Workflows {
     if(kind==='run'){const r=await this.readableRun(s,a,id!);return {data:{id:r.id,definition_id:r.definition_id,version_id:r.version_id,status:r.status,current_node:r.current_node,error_code:r.error_code,attention:!!r.attention,cancel_pending:!!r.cancel_pending,steps:await s.query('SELECT node_key,status,attempt,error_code FROM workflow_step_run WHERE tenant_id=? AND run_id=? ORDER BY node_key',[tenant,id]),waits:await s.query('SELECT node_key,kind,status,resume_at FROM workflow_wait WHERE tenant_id=? AND run_id=? ORDER BY node_key',[tenant,id])}};}
     this.permission(a,'design');if(kind==='versions'){await this.definition(s,id!);return {data:(await s.query('SELECT id,number,state,graph,execution_role_id FROM workflow_version WHERE tenant_id=? AND definition_id=? ORDER BY number DESC LIMIT ?',[tenant,id,limit])).map((v:any)=>({...v,graph:json(v.graph)}))};}
     return {data:(await s.query('SELECT id,`key`,name,service_actor_id,active_version_id,enabled,version FROM workflow_definition WHERE tenant_id=? ORDER BY id LIMIT ?',[tenant,limit])).map((d:any)=>({...d,enabled:!!d.enabled,version:String(d.version)}))};
+  });}
+  listRuns(account:string,tenant:string,query:Record<string,unknown>){return this.auth.runHuman(account,tenant,async(s,raw)=>{
+    const a=await withFieldPolicies(s,raw),{limit,cursor}=page(query);if(!a.grants.some(g=>g.resource==='automation'&&g.action==='read')||!a.capabilities.includes('read'))throw new CommandError(403,'FORBIDDEN');const rows=await s.query('SELECT id,status,current_node,attention,started_at,context FROM workflow_run WHERE tenant_id=? AND id>? ORDER BY id LIMIT 201',[tenant,cursor]),data=[];let scanned=cursor;
+    for(const r of rows.slice(0,200)){scanned=r.id;const cid=json(r.context).trigger.aggregate_id;try{const c=await conversation(s,cid);requirePermission(a,c.record,'read');if(!permits(a,'automation','read',c.record))continue;data.push({id:r.id,status:r.status,current_node:r.current_node,attention:!!r.attention,started_at:new Date(r.started_at).toISOString(),conversation_id:cid});}catch(e){if(!(e instanceof CommandError&&[403,404].includes(e.status)))throw e;}if(data.length===limit)break;}
+    return {data,next_cursor:rows.some((r:any)=>r.id>scanned)?scanned:null};
   });}
   mutate(account:string,tenant:string,op:Operation,body:unknown,key:string,correlation:string,id?:string,number?:number,version?:string){return this.engine.uow.run({tenantId:tenant},async s=>{const a=await this.auth.loadHuman(s,account,undefined,true);
     this.permission(a,op==='publish'?'publish':op==='cancel'?'operate':'design');

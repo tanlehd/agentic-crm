@@ -1,0 +1,15 @@
+# M2 Sales và Operations workspace — SRC-022
+
+Status: Ready for implementation.
+
+Sales GET `/sales/leads` parameters status handed_off(default)/accepted, owner all(default)/mine/unassigned, optional team UUID, source all/ctm/unknown and cursor UUID, limit1..50(default25). Scan tenant Lead candidates by ID, filter current record/field ACL and source through owning ports; bounded scan with next_cursor for continued pages, no global counts. Source refers pinned Lead source_touchpoint_id. GET `/sales/leads/{id}` returns authorized Lead record fields, handoff, can_accept and optional authorized Contact/Conversation links. Field-denied qualification subkeys are removed independently. Read-only screens never mutate ownership. Missing/unreadable detail404; UI replaces cached forbidden content.
+
+POST accept remains SRC-021 command with Lead If-Match and owner revision. Network ambiguity retries same payload/version/key; race409 refreshes detail and requires explicit review before another accept. Tenant switch clears selected record, drafts and queries. Queue polls5s when visible; source/team/owner filters apply on backend, explicit load more follows cursor.
+
+GET `/operations/failed-deliveries`: inbound only, integration.read/all and configure capability, limit1..50 and cursor UUID; response metadata id/status/attempts/error_code/next_attempt_at/received_at/connection_id, no raw body/provider identity. POST `/operations/deliveries/{id}/retry` body `{reason:"operator_retry"}`, session/Origin/CSRF/Idempotency-Key; require integration.read/retry/all, same delivery/key, atomic audit reason+receipt+schedule, only terminal failed (no scheduled retry/lease). Existing `/integrations/deliveries/{id}/retry` remains compatible. Unknown outbound is never included or retryable here.
+
+GET `/operations/workflow-runs`: limit/cursor, current automation.read + Conversation read for each run, no totals/context/input. Sanitized summary id/status/current_node/attention/started_at/conversation_id. Detail reuses GET `/workflow-runs/{id}` with sanitized steps/waits, no raw execution payload. Definition/version views use existing read-only GET APIs and their design permission; no builder. Operations UI exposes integration and workflow tabs independently under server authorization; no audit viewer or raw event replayer added in this task.
+
+Cross-module access only owning application ports. Additive API/schema/generated client and no database migration. Acceptance: real accept CAS, authorized links, filtered queue/pagination/field/tenant denial, failed delivery retry once with stable receipt, run redaction, loading/error/empty/stale and tenant switch, browser E2E.
+
+Runtime attention promised by SRC-018 is included: GET `/operations/agent-executions` uses the same bounded cursor/read authorization as Workflow runs, scoped to current Conversation read + automation.read. Projection id/conversation_id/status/error_code/attention/created_at only; no request/result/tool arguments/transcript. Read-only UI separates runtime alerts from inbound retry; no runtime restart or outbound resend button.

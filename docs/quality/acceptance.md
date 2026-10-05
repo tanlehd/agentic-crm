@@ -105,3 +105,7 @@ Initial A parser evidence was extended by actual durable engine/ports and Human 
 ## SRC-021 backend Sales sub-scope
 
 AC-09 backend Chatflow→Workflow handoff→Sale accept PASS with unchanged Conversation ownership and Lead source/session snapshot; AC-15 handoff/accept concurrent commands one winner PASS. Contact share read-only/field denial, no eligible queue,15min attention, ACL revoke, replay/CAS, atomic rollback and actual Workflow fence/crash/early signal/timeout/cancel covered.166 MySQL tests and9 canonical gates PASS; [evidence SRC-021](../tracking/details/SRC-021.md). Sales browser UI and full M2 fixture/KPI/release gate remain SRC-022…025. Preview still schema16; no browser/preview upgrade17 claim.
+
+## SRC-022 Sales và Operations UI
+
+Sales queue/detail + real accept command + authorized CRM link, stale race UI and Operations reason-coded inbound retry/run timeline/runtime attention PASS.171 MySQL regression/integration, canonical verify9/9 and real Chrome154/OIDC browser gate; [evidence SRC-022](../tracking/details/SRC-022.md). Negative403 cached-detail and409 browser conflict use explicit injection; actual permission/race behavior independently covered in MySQL. Preview schema17 upgrade data check and fixture cleanup verified. Full M2 healthcare KPI/chaos/release remains SRC-023…025.

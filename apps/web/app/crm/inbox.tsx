@@ -14,8 +14,8 @@ const name=(r:Conversation)=>r.contact?.display_name??`Hội thoại ${r.id.slic
 const owner=(r:Conversation,context:Context)=>!r.owner_principal_id?'Chưa phân công':`${r.owner_kind==='human'?'Human':r.owner_kind==='ai'?'AI':'Owner'} · ${r.owner_principal_id===context.principal_id?'Bạn':r.owner_principal_id}`;
 function usePoll(tenant:string,path:string){return useQuery({queryKey:[tenant,path],queryFn:({signal})=>request(tenant,path,{signal}),refetchInterval:5000,retry:false,refetchOnWindowFocus:true});}
 function usePages(tenant:string,path:string){return useInfiniteQuery({queryKey:[tenant,path],initialPageParam:null as string|null,queryFn:({signal,pageParam})=>request(tenant,path+(pageParam?`&cursor=${encodeURIComponent(pageParam)}`:''),{signal}),getNextPageParam:page=>page.next_cursor??undefined,refetchInterval:5000,retry:false,refetchOnWindowFocus:true});}
-export function Inbox({tenant,context}:{tenant:string;context:Context}){
-  const [state,setState]=useState('open'),[scope,setScope]=useState('all'),[team,setTeam]=useState(''),[teamInput,setTeamInput]=useState(''),[search,setSearch]=useState(''),[id,setId]=useState<string|null>(null);
+export function Inbox({tenant,context,initialId}:{tenant:string;context:Context;initialId?:string}){
+  const [state,setState]=useState('open'),[scope,setScope]=useState('all'),[team,setTeam]=useState(''),[teamInput,setTeamInput]=useState(''),[search,setSearch]=useState(''),[id,setId]=useState<string|null>(initialId??null);
   const [drafts,setDrafts]=useState<Record<string,string>>({}),keys=useRef(new Map<string,string>()),reviews=useRef(new Map<string,string>()),[pending,setPending]=useState<Record<string,PendingSend|undefined>>({});
   const params=new URLSearchParams({limit:'30',...(state?{state}:{}),...(scope==='mine'?{owner:context.principal_id}:scope==='unassigned'?{owner:'unassigned'}:{}),...(team?{team}:{})});
   const queue=usePages(tenant,`/api/v1/conversations?${params}`);

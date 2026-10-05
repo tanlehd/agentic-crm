@@ -975,6 +975,102 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/sales/leads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["m2-sales-leads"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sales/leads/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["m2-sales-leads-id"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/operations/failed-deliveries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["m2-operations-failed-deliveries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/operations/workflow-runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["m2-operations-workflow-runs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/operations/agent-executions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["m2-operations-agent-executions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/operations/deliveries/{id}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["m2-delivery-retry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2539,6 +2635,153 @@ export interface components {
         };
         "sales-handoff-list": {
             data: components["schemas"]["sales-handoff-data"][];
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "m2-sales-detail": {
+            data: {
+                record: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    tenant_id: string;
+                    object_key: string;
+                    version: string;
+                    owner_revision: string;
+                    owner_principal_id: string | null;
+                    team_id: string | null;
+                    archived: boolean;
+                    fields: {
+                        [key: string]: unknown;
+                    };
+                    custom_values: {
+                        [key: string]: unknown;
+                    };
+                };
+                handoff: {
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {unknown} */
+                    status: "pending" | "accepted" | "cancelled";
+                    /** Format: date-time */
+                    due_at: string;
+                    accepted_at: string | null;
+                    attention: boolean;
+                } | null;
+                /** @enum {unknown} */
+                source: "ctm" | "unknown" | null;
+                can_accept: boolean;
+                contact: {
+                    /** Format: uuid */
+                    id: string;
+                    label: string;
+                } | null;
+                conversation_id: string | null;
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "m2-sales-list": {
+            data: {
+                record: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    tenant_id: string;
+                    object_key: string;
+                    version: string;
+                    owner_revision: string;
+                    owner_principal_id: string | null;
+                    team_id: string | null;
+                    archived: boolean;
+                    fields: {
+                        [key: string]: unknown;
+                    };
+                    custom_values: {
+                        [key: string]: unknown;
+                    };
+                };
+                handoff: {
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {unknown} */
+                    status: "pending" | "accepted" | "cancelled";
+                    /** Format: date-time */
+                    due_at: string;
+                    accepted_at: string | null;
+                    attention: boolean;
+                } | null;
+                /** @enum {unknown} */
+                source: "ctm" | "unknown" | null;
+                can_accept: boolean;
+                contact: {
+                    /** Format: uuid */
+                    id: string;
+                    label: string;
+                } | null;
+                conversation_id: string | null;
+            }[];
+            next_cursor: string | null;
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "m2-deliveries-list": {
+            data: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                connection_id: string;
+                /** @constant */
+                status: "failed";
+                attempts: number;
+                error_code: string | null;
+                next_attempt_at: string | null;
+                /** Format: date-time */
+                received_at: string;
+                can_retry: boolean;
+            }[];
+            next_cursor: string | null;
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "m2-runs-list": {
+            data: {
+                /** Format: uuid */
+                id: string;
+                status: string;
+                current_node: string;
+                attention: boolean;
+                /** Format: date-time */
+                started_at: string;
+                /** Format: uuid */
+                conversation_id: string;
+            }[];
+            next_cursor: string | null;
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "m2-retry": {
+            /** @constant */
+            reason: "operator_retry";
+        };
+        "m2-agents-list": {
+            data: {
+                /** Format: uuid */
+                id: string;
+                status: string;
+                attention: boolean;
+                /** Format: uuid */
+                conversation_id: string;
+                /** Format: date-time */
+                created_at: string;
+                error_code: string | null;
+            }[];
+            next_cursor: string | null;
             meta: {
                 correlation_id: string;
             };
@@ -10188,6 +10431,597 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["sales-handoff-response"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "m2-sales-leads": {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+                status?: string;
+                owner?: string;
+                team?: string;
+                source?: string;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized workspace projection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["m2-sales-list"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "m2-sales-leads-id": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized workspace projection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["m2-sales-detail"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "m2-operations-failed-deliveries": {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized workspace projection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["m2-deliveries-list"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "m2-operations-workflow-runs": {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized workspace projection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["m2-runs-list"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "m2-operations-agent-executions": {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized workspace projection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["m2-agents-list"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "m2-delivery-retry": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["m2-retry"];
+            };
+        };
+        responses: {
+            /** @description Scheduled same delivery */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["intake-response"];
                 };
             };
             /** @description Sanitized identity failure */

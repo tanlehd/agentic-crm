@@ -1,3 +1,4 @@
+import { page } from '../operations/paging.js';
 import { createHash,randomUUID,timingSafeEqual } from 'node:crypto';
 import type { DataSource } from 'typeorm';
 import { UnitOfWork,type TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
@@ -47,14 +48,15 @@ export class MessengerIntake {
   async readCredential(connectionId:unknown,authorization:unknown,id:string){const ctx=await this.authenticated(connectionId,authorization);return this.uow.run({tenantId:ctx.tenantId},async s=>{await this.connection(s,ctx.connectionId,ctx.hash);const row=await this.row(s,id);if(row.connection_id!==ctx.connectionId)throw new CommandError(404,'NOT_FOUND');return this.output(row);});}
   private operator(access:Access,action:'read'|'retry'){if(!permits(access,'integration',action))throw new CommandError(403,'FORBIDDEN');}
   readHuman(account:string,tenant:string,id:string){return this.auth.runHuman(account,tenant,async(s,a)=>{this.operator(a,'read');return this.output(await this.row(s,id));});}
-  retry(account:string,tenant:string,id:string,input:unknown,key:string,correlation:string){
-    if(!/^[\x21-\x7e]{1,128}$/.test(key))throw new CommandError(400,'INVALID_REQUEST');const body=object(input,[]);
+  failedDeliveries(account:string,tenant:string,query:Record<string,unknown>){return this.auth.runHuman(account,tenant,async(s,a)=>{this.operator(a,'read');const {limit,cursor}=page(query),rows=await s.query("SELECT id,connection_id,status,attempts,last_error_code,next_attempt_at,received_at FROM inbound_delivery WHERE tenant_id=? AND status='failed' AND id>? ORDER BY id LIMIT ?",[tenant,cursor,limit+1]);return {data:rows.slice(0,limit).map((r:any)=>({id:r.id,connection_id:r.connection_id,status:r.status,attempts:Number(r.attempts),error_code:r.last_error_code,next_attempt_at:stamp(r.next_attempt_at),received_at:stamp(r.received_at),can_retry:permits(a,'integration','retry')&&r.next_attempt_at===null})),next_cursor:rows.length>limit?rows[limit-1].id:null};});}
+  retry(account:string,tenant:string,id:string,input:unknown,key:string,correlation:string,operations=false){
+    if(!/^[\x21-\x7e]{1,128}$/.test(key))throw new CommandError(400,'INVALID_REQUEST');const body=object(input,operations?['reason']:[]);if(operations&&body.reason!=='operator_retry')throw new CommandError(400,'INVALID_REQUEST');
     return this.uow.run({tenantId:tenant},async s=>{
       const a=await this.auth.loadHuman(s,account,undefined,true);this.operator(a,'read');this.operator(a,'retry');const row=await this.row(s,id);
-      const command={actorId:a.principalId,correlationId:correlation,route:`POST /api/v1/integrations/deliveries/${id}/retry`,key,body};const replay=await this.commands.replay(s,command,async()=>{this.operator(a,'read');});if(replay)return replay;
-      if(row.status!=='failed')throw new CommandError(409,'INVALID_TRANSITION');
+      const command={actorId:a.principalId,correlationId:correlation,route:`POST /api/v1/${operations?'operations':'integrations'}/deliveries/${id}/retry`,key,body};const replay=await this.commands.replay(s,command,async()=>{this.operator(a,'read');});if(replay)return replay;
+      if(row.status!=='failed'||operations&&(row.next_attempt_at!==null||row.lease_until!==null))throw new CommandError(409,'INVALID_TRANSITION');
       await s.query("UPDATE inbound_delivery SET status='received',attempts=0,next_attempt_at=NULL,lease_until=NULL,fencing_token=fencing_token+1,last_error_code=NULL WHERE tenant_id=? AND id=?",[tenant,id]);
-      await this.commands.audit(s,a.principalId,correlation,'inbound_delivery',id,'intake.retry',['status']);const result={status:200,body:{data:this.output(await this.row(s,id)),meta:{correlation_id:correlation}}};await this.commands.complete(s,command,result);return result;
+      await this.commands.audit(s,a.principalId,correlation,'inbound_delivery',id,'intake.retry',['status'],'accepted',operations?'operator_retry':null);const result={status:200,body:{data:this.output(await this.row(s,id)),meta:{correlation_id:correlation}}};await this.commands.complete(s,command,result);return result;
     });
   }
   async claim():Promise<IntakeClaim[]>{

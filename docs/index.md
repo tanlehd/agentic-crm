@@ -51,4 +51,6 @@ Mọi mục `Ready` có phạm vi giới hạn như trên. Không suy diễn m�
 
 [Auth transport](contracts/auth.md), [physical schema](data/physical-schema.md) và [toolchain manifest](../infra/toolchain.json) là baseline SRC-001. Exact image digest được khóa tại SRC-003 trước build image; không suy diễn metadata package pass thành runtime build pass.
 
-SRC-021 Sales handoff/acceptance backend DONE; [exact contract](contracts/sales-handoff.md), [execution evidence](tracking/details/SRC-021.md). Preview remains schema16 until next rollout.
+SRC-021 Sales handoff/acceptance backend DONE; [exact contract](contracts/sales-handoff.md), [execution evidence](tracking/details/SRC-021.md). Preview nâng schema17 trong SRC-022.
+
+SRC-022 Sales/Operations UI DONE: [workspace contract](contracts/workspaces-m2.md), [evidence](tracking/details/SRC-022.md). SRC-023 READY.

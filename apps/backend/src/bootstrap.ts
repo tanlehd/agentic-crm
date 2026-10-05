@@ -1,3 +1,4 @@
+import { OperationsModule } from './modules/operations/http.js';
 import { ChatflowModule } from './modules/chatflow/http.js';
 import { WorkflowModule } from './modules/workflow/http.js';
 import { RoutingModule } from './modules/agents/http.js';
@@ -14,7 +15,7 @@ import { ApplicationModule } from './health.js';
 
 export async function bootstrap(role: 'api' | 'worker'): Promise<void> {
   process.env.SERVICE_ROLE = role;
-  @Module({ imports: role === 'api' && process.env.MYSQL_HOST ? [ApplicationModule, AuthModule, IdentityModule, CrmModule, ConversationModule, ChannelsModule, RoutingModule, WorkflowModule, ChatflowModule] : process.env.MYSQL_HOST && role === 'worker' ? [ApplicationModule, ReliabilityWorkerModule] : [ApplicationModule] })
+  @Module({ imports: role === 'api' && process.env.MYSQL_HOST ? [ApplicationModule, AuthModule, IdentityModule, CrmModule, ConversationModule, ChannelsModule, RoutingModule, WorkflowModule, ChatflowModule, OperationsModule] : process.env.MYSQL_HOST && role === 'worker' ? [ApplicationModule, ReliabilityWorkerModule] : [ApplicationModule] })
   class RuntimeModule {}
   const app = await NestFactory.create(RuntimeModule, { logger: ['error', 'warn', 'log'] });
   app.enableShutdownHooks();

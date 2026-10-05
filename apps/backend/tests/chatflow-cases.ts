@@ -1,3 +1,4 @@
+import { AgentOperations } from '../src/modules/agents/operations-port.js';
 import { SalesHandoffs } from '../src/modules/sales/handoff.js';
 import { workflowChildren } from '../src/modules/workflow/children.js';
 import { describe,it,expect } from 'vitest';
@@ -130,5 +131,11 @@ export function chatflowCases(isolated:(name:string)=>Promise<DataSource>){descr
    const wait=(await workflows.engine.claim()).find(c=>c.runId===f.run)!;await workflows.engine.finish(wait);const handoff=(await workflows.engine.claim()).find(c=>c.runId===f.run)!;await workflows.engine.effect(handoff);await workflows.engine.finish(handoff);const sales=new SalesHandoffs(ds),h=(await sales.read(account,tenant,r.lead_id)).data[0]!;expect(h.owner_principal_id).toBe(human);await sales.mutate(account,tenant,r.lead_id,h.handoff_id,{owner_revision:h.owner_revision},randomUUID(),h.version,'synthetic');await workflows.engine.finish((await workflows.engine.claim()).find(c=>c.runId===f.run)!);await workflows.engine.finish((await workflows.engine.claim()).find(c=>c.runId===f.run)!);
    expect((await ds.query('SELECT status FROM workflow_run WHERE id=?',[f.run]))[0].status).toBe('completed');expect((await ds.query('SELECT status FROM `lead` WHERE record_id=?',[r.lead_id]))[0].status).toBe('accepted');expect(await ds.query('SELECT owner_principal_id,owner_revision,team_id,version FROM crm_record WHERE id=?',[f.c])).toEqual(before);expect(await ds.query('SELECT contact_id,source_touchpoint_id,qualification_session_id FROM `lead` WHERE record_id=?',[r.lead_id])).toEqual(source);
   }finally{await ds.query('UPDATE `role` SET permissions=? WHERE id=?',[JSON.stringify(grants),role]);}
+ });
+ it('SRC-022 run list respects related Conversation permission and excludes raw context',async()=>{
+  const f=await start(graph(),human,'yes'),list=await workflows.listRuns(account,tenant,{limit:'50'});expect(list.data.some(r=>r.id===f.run)).toBe(true);const serialized=JSON.stringify(list);expect(serialized).not.toContain('outputs');expect(serialized).not.toContain('Synthetic service');await ds.query('UPDATE `role` SET permissions=? WHERE id=?',[JSON.stringify(grants.filter(g=>g.resource!=='conversation')),role]);try{expect((await workflows.listRuns(account,tenant,{limit:'50'})).data).toHaveLength(0);}finally{await ds.query('UPDATE `role` SET permissions=? WHERE id=?',[JSON.stringify(grants),role]);}await engine.uow.run({tenantId:tenant},s=>engine.children().cancel(s,f.run));
+ });
+ it('SRC-022 Agent Operations only exposes authorized sanitized metadata',async()=>{
+  const ops=new AgentOperations(ds),result=await ops.list(account,tenant,{limit:'50'});expect(result.data.length).toBeGreaterThan(0);for(const r of result.data){expect(Object.keys(r).sort()).toEqual(['attention','conversation_id','created_at','error_code','id','status']);}await ds.query('UPDATE `role` SET permissions=? WHERE id=?',[JSON.stringify(grants.filter(g=>g.resource!=='conversation')),role]);try{expect((await ops.list(account,tenant,{})).data).toHaveLength(0);}finally{await ds.query('UPDATE `role` SET permissions=? WHERE id=?',[JSON.stringify(grants),role]);}
  });
 });}
