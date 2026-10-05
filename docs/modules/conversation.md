@@ -49,3 +49,5 @@ Domain/API text, internal note Activity, signed timeline/queue cursor, owner-onl
 SRC-015 đã nối `Conversations.receive` từ durable intake worker; inbound events/history mang actor service ingress. `findInbound` là port đọc reference phục vụ dedup trước identity creation. Detail bổ sung attribution optional qua ChannelReferences, áp dụng conversation field deny và live authorization khi replay. Inbox UI được nối tại SRC-016.
 
 SRC-016: inbox queue/detail/messages/notes polling 5 giây, owner kind và allowed_actions từ backend. Notes port kiểm Conversation read rồi Activity scope/field ACL riêng. Khi mất ACK, giữ nguyên payload/key và chỉ kiểm tra lại yêu cầu cũ; owner revision đổi chặn composer đến khi người dùng xem lại phân công. Context Contact/CTM có thật; chưa session qualification/attention/routing UI.
+
+SRC-017 integrates actual assignment/takeover with queued cancellation in one UoW, version/owner_revision checks, eligible owner selector and history in inbox. Sending intents retain real completion/reconciliation behavior. Active session/tool cancellation hooks bind in SRC-018/020, whose engines do not exist yet.

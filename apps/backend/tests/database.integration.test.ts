@@ -1,3 +1,4 @@
+import { routingCases } from './routing-cases.js';
 import { intakeCases } from './intake-cases.js';
 import { conversationCases } from './conversation-cases.js';
 import { crmCoreCases } from './crm-core-cases.js';
@@ -181,6 +182,7 @@ describe.skipIf(!enabled)('SRC-004 real MySQL', () => {
   propertiesCases(isolated);
   crmCoreCases(isolated);
   conversationCases(isolated);
+  routingCases(isolated);
   intakeCases(isolated);
   it('runtime user can perform DML but cannot execute DDL', async () => {
     const user=process.env.MYSQL_USER!, password=process.env.MYSQL_PASSWORD!;

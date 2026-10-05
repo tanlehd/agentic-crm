@@ -135,3 +135,9 @@ Worker claim25/tick1s, lease60s/fencing; crash reclaim, DB transient delay1/5/30
 Sau seed M1 và Channels, chạy `pnpm seed:inbox` để cấp role local cho Alpha/Beta admin (repeat no-op, không khôi phục quyền đã thu hồi). Rebuild `pnpm preview:up`, đăng nhập `alpha_admin`, chọn tenant rồi tab **Chat**. Inbound synthetic từ `pnpm test:intake` hiển thị unassigned; có thể ghi chú, chưa gửi khi chưa owner. Public assignment/takeover thuộc SRC-017.
 
 `pnpm test:inbox` chạy Chrome/OIDC với Alpha/Beta/read_only, tạo inbound qua HTTP/worker và dùng harness ownership chỉ cho identity `src016-synthetic-`; giữ synthetic records. Harness không phải API nghiệp vụ. Test mất ACK kiểm đúng một message khi retry cùng key; 403/unknown bổ sung bằng browser fault injection. Artifact `artifacts/SRC-016/`. Không lưu credential hoặc transcript thật.
+
+## SRC-017 — Phân công và tiếp quản
+
+Sau `pnpm preview:up`, chạy `pnpm seed:routing` (cần các seed Identity/CRM/channels/inbox trước). Role routing_operator bổ sung conversation read/assign/takeover cho Alpha/Beta admins, repeat không khôi phục quyền đã thu hồi. Không bật AI policy mặc định.
+
+Tab Chat → chọn Conversation → **Phân công & lịch sử**: chọn owner đủ điều kiện hoặc để hàng chờ, lưu bằng version hiện tại; **Tiếp quản hội thoại** gán caller. Khi dữ liệu đổi, xem lại phân công; nếu mất ACK, **Kiểm tra lại phân công** dùng đúng payload/version/key cũ. Reply composer vẫn yêu cầu xem owner revision mới trước khi gửi. `pnpm test:routing` chạy Chrome/OIDC với synthetic intake, không cần Meta/LLM token thật. Internal round-robin/capacity phục vụ Workflow/Runtime SRC-018/019; chưa tự route inbound qua workflow chưa có.

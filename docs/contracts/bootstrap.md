@@ -19,3 +19,5 @@ Bootstrap ghi system audit + principal.access_changed v1 qua reliability applica
 Hai tenant chung transaction, tenant locks theo Alpha→Beta. Repeat không regrant role assignment/permissions, không reset connection status/token; mapping/hash khác hoặc fixture thiếu fail closed. Không HTTP provision/rotate token. Connector thật vẫn Draft.
 
 SRC-016 `pnpm seed:inbox` adds local `inbox_operator` role (conversation read/reply/note/update/assign all) to Alpha/Beta admins, once. Repeat preserves role permissions and revoked membership. Requires prior Identity/M1/channel seed; does not assign live conversations. Browser-only ownership fixture restricted to `src016-synthetic-` identities; uses registry assignment with audit/outbox and cancellation hook, no public API.
+
+SRC-017 `pnpm seed:routing` adds routing_operator (conversation read/assign/takeover all) for Alpha/Beta admins once; does not change inbox_operator or restore revoked existing permissions. Requires Identity/inbox fixtures; no AI policy enabled implicitly.

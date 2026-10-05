@@ -1,3 +1,4 @@
+import { seedRouting } from '../src/modules/identity/routing-fixture.js';
 import { seedInbox } from '../src/modules/identity/inbox-fixture.js';
 import { seedChannels } from '../src/modules/channels/seed.js';
 import { randomBytes } from 'node:crypto';
@@ -85,6 +86,14 @@ export function seedCases(isolated:(name:string)=>Promise<DataSource>){
       const role=fixtureId('alpha:role:inbox_operator'),principal=fixtureId('alpha:human:alpha_admin');
       await ds.query('DELETE FROM principal_role WHERE principal_id=? AND role_id=?',[principal,role]);await ds.query("UPDATE `role` SET permissions=JSON_ARRAY() WHERE id=?",[role]);
       expect(await seedInbox(ds,env)).toEqual({created:0,existing:2});expect(await ds.query('SELECT * FROM principal_role WHERE principal_id=? AND role_id=?',[principal,role])).toEqual([]);
+      const [row]=await ds.query('SELECT permissions FROM `role` WHERE id=?',[role]);expect(typeof row.permissions==='string'?JSON.parse(row.permissions):row.permissions).toEqual([]);
+    });
+    it('SRC-017 routing fixture is additive and preserves revoked grants on repeat',async()=>{
+      await expect(seedRouting(ds,{...env,APP_ENV:'production'})).rejects.toThrow();
+      expect(await seedRouting(ds,env)).toEqual({created:2,existing:0});
+      const role=fixtureId('alpha:role:routing_operator'),principal=fixtureId('alpha:human:alpha_admin');
+      await ds.query('DELETE FROM principal_role WHERE principal_id=? AND role_id=?',[principal,role]);await ds.query("UPDATE `role` SET permissions=JSON_ARRAY() WHERE id=?",[role]);
+      expect(await seedRouting(ds,env)).toEqual({created:0,existing:2});expect(await ds.query('SELECT * FROM principal_role WHERE principal_id=? AND role_id=?',[principal,role])).toEqual([]);
       const [row]=await ds.query('SELECT permissions FROM `role` WHERE id=?',[role]);expect(typeof row.permissions==='string'?JSON.parse(row.permissions):row.permissions).toEqual([]);
     });
     it('rerun preserves revocation and refuses changed provider mapping or incomplete fixture',async()=>{

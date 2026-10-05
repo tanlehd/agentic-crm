@@ -158,3 +158,5 @@ Exact SRC-011 metadata/custom-record contract: [CRM records](crm-records.md).
 Exact SRC-012: [CRM core](crm-core.md).
 
 SRC-016 bổ sung GET `/conversations/{id}/notes` và optional owner_kind/allowed_actions cho detail/list theo [exact Conversation contract](conversation.md). Không đổi mutation DTO hoặc schema persisted.
+
+SRC-017 exact assignment/takeover DTO, eligible target/history reads, capability mapping and internal route primitive: [routing contract](routing.md). Reason codes replace the previously unspecified reason shape before the endpoints' first implementation.

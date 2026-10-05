@@ -43,3 +43,5 @@ Stale owner kết quả runtime bị discard có audit. Runtime timeout/forbidde
 ## Mở rộng còn Draft
 
 Routing theo hiệu suất cần metric window/minimum sample/cold start và policy giải thích được; cost budget theo tenant, knowledge/RAG, skill catalog và agent marketplace thiết kế ở milestone sau.
+
+SRC-017 implementation binding: [routing contract](../contracts/routing.md), physical v11. Ownership cancellation/session callback is composed through UoW ports; runtime/session engines remain SRC-018/020.

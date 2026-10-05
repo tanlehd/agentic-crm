@@ -36,10 +36,10 @@ Ngày baseline: 2026-10-02. Trạng thái phản ánh độ sâu thiết kế, k
 | MOD-01 | [Identity & Administration](modules/identity.md) | OIDC, membership/seat/role/team và local seed implemented SRC-006/007/009; Admin UI implemented SRC-013 |
 | MOD-02 | [CRM & Object Platform](modules/crm.md) | Registry/association, properties/custom CRUD, Contact/Company/Activity và UI implemented SRC-010…013; advanced builder Draft |
 | MOD-03 | [Channels & Acquisition](modules/channels.md) | Mock Messenger durable intake/identity/CTM implemented SRC-015; connector thật/Google Ads Draft |
-| MOD-04 | [Conversation & Chat Workspace](modules/conversation.md) | Domain/API/notes/mock outbound SRC-014 và inbox UI SRC-016 implemented; routing/handoff tiếp tục SRC-017…021 |
+| MOD-04 | [Conversation & Chat Workspace](modules/conversation.md) | Domain/API/notes/mock outbound SRC-014 và inbox UI SRC-016 implemented; routing/takeover SRC-017 implemented; session/Sales handoff SRC-020/021 |
 | MOD-05 | [Lead/Opportunity & Sale Workspace](modules/sales.md) | Lead core/draft/qualification implemented SRC-012/013; queue/handoff/accept M2 Ready; Deal/customer production Draft |
 | MOD-06 | [Ticket System](modules/ticket.md) | Draft: blueprint M4 |
-| MOD-07 | [Agent & Routing](modules/agents.md) | Ready for implementation: rule-based routing, mock AI, handoff |
+| MOD-07 | [Agent & Routing](modules/agents.md) | Routing/assignment/takeover implemented SRC-017; mock runtime SRC-018 Ready |
 | MOD-08 | [Workflow](modules/workflow.md) | Ready for implementation: fixed primitive graph M2; visual builder Draft |
 | MOD-09 | [Chatflow](modules/chatflow.md) | Ready for implementation: qualification flow M2; visual builder Draft |
 | MOD-10 | [Reporting & Dashboard](modules/reporting.md) | Ready for implementation: KPI semantics; report builder/API Draft |

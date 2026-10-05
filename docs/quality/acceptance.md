@@ -85,3 +85,7 @@ Evidence [SRC-014](../tracking/details/SRC-014.md): AC-05 business-message dedup
 ## SRC-016 — Inbox UI sub-scope
 
 [Evidence SRC-016](../tracking/details/SRC-016.md): queue/detail/Contact/CTM, real timeline and Activity notes, quick reply insertion, 5-second polling with cursor pagination, owner-revision review, lost-ACK retry same payload/key with exactly one Message, read-only and tenant switch. Chrome154 E2E PASS; 403 detail cache removal and unknown delivery display tested by explicit browser fault injection. Backend note scope/field/tenant and latest-message receipt replay regressions included in 82 MySQL tests. AC-01/02/05/18 UI sub-scopes only; no public assignment/takeover/AI/session qualification or M2 full gate.
+
+## SRC-017 sub-scope
+
+AC-06 routing/assignment/takeover: live target eligibility, atomic round-robin cursor, queue fallback/attention, independent Lead owner, CAS/history/audit/outbox. AC-18 actual queued cancellation and in-flight completion after takeover. AC-01/02 tenant/seat/role/team/policy/field negative checks and receipt replay revocation. Capacity reservation concurrency and disable attention tested through MySQL ports/durable inbox. Runtime execution/queued30s, session pause and tools remain SRC-018/020; full AC-07/08 and M2 gate are not closed. [Evidence SRC-017](../tracking/details/SRC-017.md).

@@ -17,3 +17,5 @@ Fixture extension registry v2 tạo bảy standard types cho Alpha/Beta bằng C
 Migration v6 giữ nguyên checksum v1–v5, forward-only. Upgrade giữ Identity/seed và volumes; app chỉ ready khi schema manifest đầy đủ.
 
 M1 HTTP mutations serialize trên tenant exclusive lock với Identity/config và receipt writes, rồi lock endpoint IDs theo thứ tự; internal registry ports giữ shared authorization lock và row CAS. Chưa tối ưu throughput cùng tenant. Create port ghi registry/subtype/history/audit; domain adapter chịu trách nhiệm phát event creation tương ứng trong cùng UoW khi module được triển khai. Metadata/association chưa phát arbitrary workflow event.
+
+SRC-017 exposes [assignment/target/history APIs](routing.md) over installed subtype adapters. Conversation assigned callback cancels queued outbound; takeover uses its own permission, no implicit assign grant. Reason codes, service actor attribution and eligibility ports are implemented; older SRC-010 notes above describe that earlier release only.

@@ -1,32 +1,33 @@
 # Checkpoint — điểm tiếp tục
 
-Updated 2026-10-05, S-20261005-03 (Git handoff sau S-20261005-02).
+Updated 2026-10-05, S-20261005-05 (Git handoff sau SRC-017).
 
 ## Trạng thái thực tế
 
-**SRC-001…016 DONE (16/25), M1 gate PASS. SRC-017 READY, chưa claim; không task active.** [SRC-016 evidence](details/SRC-016.md), [tracker](tasks.md).
+**SRC-001…017 DONE (17/25), M1 gate PASS. SRC-018 READY, chưa claim; không task active.** [SRC-017 evidence](details/SRC-017.md), [tracker](tasks.md).
 
-Preview [localhost:8080](http://localhost:8080) có OIDC/Identity Admin/CRM UI và tab **Chat**: queue, timeline, Activity notes, quick reply, Contact/CTM context, Human/AI owner và polling5s. Mock Messenger intake/worker/outbound thật trong local; chưa Meta/AI production hoặc full M2/Workflow/Sales.
+Preview [localhost:8080](http://localhost:8080) có OIDC/Identity Admin/CRM, mock intake/Chat inbox và **Phân công & lịch sử**: eligible Human/AI selector, team/capability, disabled reasons, assignment, takeover, history và stale review. Không Meta/AI runtime production hoặc full M2/Workflow/Sales.
 
-V1–v10 immutable; SRC-016 không có migration. Seed `pnpm seed:inbox` first2/repeat0 thêm inbox_operator cho Alpha/Beta admins, không phục hồi quyền đã thu hồi. Channel seed/token giữ nguyên. Credentials private .env, không in/copy vào log.
+Schema v11 routing_capacity applied; v1–v10 immutable. Fingerprint13 existing tables exact before/after upgrade, trước seed. Routing seed first2/repeat0 thêm role routing_operator cho Alpha/Beta admins, không phục hồi quyền bị thu hồi; AI fixture policy vẫn fail closed. Credentials chỉ private .env.
 
-Validation PASS: 82 MySQL integration; 9 canonical verify gates (44 unit/contract +7 tooling); release preview build; Chrome154 E2E Alpha/Beta/read_only. Linux ARM64 Node24.21.0/pnpm10.33.0/MySQL8.4.11. Full verify trước one-line textarea aria-label fix; fix cuối đã qua canonical preview build/browser và host lint/typecheck. Host Node25 chỉ driver/diagnostic. Artifacts local ignored `artifacts/SRC-016/`.
+Validation PASS: 96 MySQL integration; 9 canonical verify gates (46 unit/contract +7 tooling); release preview build; Chrome154/OIDC real API E2E Alpha/Beta/viewer. Linux ARM64 Node24.21.0/pnpm10.33.0/MySQL8.4.11; host Node25 chỉ driver/diagnostic. Artifacts local ignored `artifacts/SRC-017/`.
 
 ## Điểm nối source
 
-- `apps/web/app/crm/inbox.tsx`: real cursor queues/messages/notes; loaded pages poll5s, paused background. Prefix search in loaded pages, explicit team-ID filter. Drafts/keys/pending exact send payload/review revisions live in tenant memory; tenant switch destroys workspace/cache. Ambiguous send checks original payload/key. Closed read-only, unknown no resend. No dummy takeover/qualification buttons.
-- Conversation optional `owner_kind`, `allowed_actions`, `latest_message`; current seat/scope/field/owner enforced at API and mutation. Latest-message snapshot receipt replay also checks current text read permission. Contact and attribution are projected by ports.
-- GET `/conversations/{id}/notes`: Conversation read then independent Activity scope/field ACL; UUID cursor ASC ID; UI sorts loaded notes by time. CRM owns SQL; Identity port supplies owner kind. Contracts/schema/generated synchronized.
-- `pnpm seed:inbox` and `pnpm test:inbox` available. Browser-only runtime fixture restricts assignment to identity `src016-synthetic-`, uses registry/UoW/audit/outbox and cancelQueued hook, no public assignment API. Synthetic records retained; `browser-facts.json` gives refs. Fault-injected unknown/403 checks are distinct from real worker/send/ownership/tenant checks.
-- SRC-015 intake retains durable ACK, canonical hash/event dedup, message dedup before Contact creation, worker claim/fencing/backoff, atomic identity/contact/conversation/message/touchpoint. [Intake contract](../contracts/mock-intake.md), [SRC-015 evidence](details/SRC-015.md).
-- `cancelQueued` awaits actual assignment integration SRC-017; `onClose` orchestration SRC-020; AI send fail closed until SRC-018. Lead M2 references guarded. Domain outbox consumers still pending according to ADR-014.
+- `modules/agents/routing.ts`: Human assignment/takeover receipt/CAS; internal route UoW primitive và routeService live role allowlist; UUID round-robin tenant/team/capability; unassigned fallback/attention. Internal Human route caller phải loadHuman exclusive trong cùng UoW trước record lock. Không public route execution endpoint; workflow chưa được xây.
+- `modules/identity/routing-port.ts`: live candidate projection (active/availability/membership/seat/role/team/AI policy). Field policies qua CRM port. Conversation tool conversation.propose_reply, Lead qualification.save; allowed_actions resource.action. Không generic AI SQL/tools.
+- `modules/agents/capacity.ts`: principal lock + execution UUID reservation ledger, idempotent không gia hạn, released/expired không tái dùng, max30s. SRC-018 phải reserve cùng transaction chuyển agent_execution running và release terminal; queue30s/deadline/fencing/late output vẫn chưa triển khai.
+- `modules/conversation/ownership-port.ts`: cancelQueued cùng assignment UoW, giữ sending. `OwnershipChanged` callback để nối pause session/cancel tool/runtime ở SRC-018/020; không fake engine. Lead owner độc lập. Existing onClose hook vẫn chờ SRC-020.
+- `modules/agents/access-consumer.ts`: routing.access.v1 durable principal.access_changed consumer; attention owner_ineligible dựa live state, không tự reassign. Capacity bận không đánh owner revoked. record.assigned consumers cho runtime/session/projection vẫn pending theo ADR-014; cancellation queued đồng bộ không phụ thuộc outbox delivery.
+- `apps/web/app/crm/ownership.tsx`: API-backed current-team target selector/history/takeover, exact key/payload/version khi mất ACK; version changed bắt review. Inbox drafts/reply owner_revision review tiếp tục SRC-016. Cross-team assignment hiện API-only.
+- `pnpm seed:routing`, `pnpm test:routing`; synthetic browser intake records retained, refs trong browser-facts.json. No test-only ownership fixture used by SRC-017 E2E.
 
 ## Bước tiếp theo
 
-Claim **SRC-017 — Routing/capability/capacity, assignment/takeover**. Dependency SRC-016 DONE; Agent/Routing M2 design Ready. Read module, assignment contracts, dictionary, acceptance AC-06/18 and current owner ports before code. Implement actual eligibility/capacity/round-robin, fallback and independent Conversation ownership; cancel queued intents in same assignment UoW, leave sending results accurate. Do not treat browser fixture as production routing. One task active; no parallel agents/background schedule.
+Claim **SRC-018 — Agent Runtime adapter + deterministic mock + tools**. SRC-017 DONE; mock M2 runtime design Ready. Đọc Agent Runtime contract, Agents/Chatflow design, dictionary và AC-07 trước code. Nối actual execution với capacity ledger/cancellation hook; giữ tool allowlist/deadline/live auth-owner revision, late-result reject, private deterministic harness. Chưa implement Chatflow engine thay SRC-020. Một task active; không agent song song/lịch nền.
 
 ## Workspace / runtime
 
-`main`: snapshot SRC-015/016 được gom vào commit chứa checkpoint này theo yêu cầu người dùng (parent `8cceb22`). Hash thực xem `git log -1`; kiểm tra working tree sau commit bằng `git status`. Không push/deploy; không blocker hoặc pending decision. Evidence chức năng vẫn theo các task, Git handoff ghi S-20261005-03.
+Branch main: snapshot SRC-017 được commit/push theo yêu cầu người dùng trong S-20261005-05 (parent153a1e4). Hash/trạng thái thực kiểm tra git log/status và remote sau thao tác; không deploy. Người dùng yêu cầu tiếp tục SRC-019, nhưng SRC-018 chưa DONE: đang xác nhận thứ tự 018→019 hoặc chỉ018; chưa claim task mới. Evidence chức năng giữ ở SRC-017.
 
-Seven preview services gateway/web/API/worker/MySQL/Redis/Keycloak healthy; one-shots complete; schema v10 unchanged. Worker sampled tail has no tick error. Disposable MySQL test projects cleaned up; browser/verify runners completed, no automation active. Remote CI/native AMD64/Windows/production Meta NOT_RUN. No database/volume reset; recovery per [runbook](../development/migrations.md).
+Seven preview services gateway/web/API/worker/MySQL/Redis/Keycloak healthy; one-shots complete. Worker sampled tail không tick error. Disposable test projects cleanup; verify/browser runners completed, không automation. Remote CI/native AMD64/Windows/production provider NOT_RUN. Không reset database/volume; recovery theo [runbook](../development/migrations.md).

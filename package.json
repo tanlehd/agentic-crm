@@ -45,7 +45,9 @@
     "seed:channels": "node scripts/seed-channels.mjs",
     "test:intake": "node scripts/intake-e2e.mjs",
     "seed:inbox": "node scripts/seed-inbox.mjs",
-    "test:inbox": "node scripts/inbox-e2e.mjs"
+    "test:inbox": "node scripts/inbox-e2e.mjs",
+    "seed:routing": "node scripts/seed-routing.mjs",
+    "test:routing": "node scripts/routing-e2e.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.58.2",

@@ -2,6 +2,7 @@ import type { TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
 import { CommandError, DurableCommands } from '../../kernel/reliability/commands.js';
 import { validateOwnershipTarget } from '../identity/authorization.js';
 import type { Access, RecordAccess } from '../identity/domain/authorization.js';
+import { permits } from '../identity/domain/authorization.js';
 import { allows } from './access.js';
 import { registryId } from './ids.js';
 export interface RegistryRecord extends RecordAccess { id:string; objectTypeId:string; objectKey:string; kind:'standard'|'custom'; version:string; ownerRevision:string; archived:boolean }
@@ -52,9 +53,9 @@ export class RecordRegistry {
     const result=await scope.query('UPDATE crm_record SET version=version+1,updated_at=UTC_TIMESTAMP(6) WHERE tenant_id=? AND id=? AND version=?',[scope.context.tenantId,record.id,version]);
     if(result.affectedRows!==1)throw new CommandError(409,'VERSION_CONFLICT');
   }
-  async assign(scope:TransactionScope,access:Access,id:string,version:string,owner:string|null,team:string|null,correlation:string):Promise<RegistryRecord>{
+  async assign(scope:TransactionScope,access:Access,id:string,version:string,owner:string|null,team:string|null,correlation:string,options:{reason?:string;takeover?:boolean;actorKind?:'human'|'service'}={}):Promise<RegistryRecord>{
     const record=await this.get(scope,id,true);this.read(access,record);
-    if(!allows(access,record.objectKey,'assign',record)||team===null&&record.teamId!==null&&!access.capabilities.includes('configure'))throw new CommandError(403,'FORBIDDEN');
+    if(!(options.takeover?record.objectKey==='conversation'&&owner===access.principalId&&permits(access,'conversation','takeover',record):record.objectKey==='conversation'?permits(access,'conversation','assign',record):allows(access,record.objectKey,'assign',record))||team===null&&record.teamId!==null&&!access.capabilities.includes('configure'))throw new CommandError(403,'FORBIDDEN');
     if(record.archived)throw new CommandError(409,'INVALID_TRANSITION');
     const adapter=this.adapter(record.objectKey);
     await validateOwnershipTarget(scope,owner,team);await adapter.eligible(scope,record,owner,team);
@@ -63,13 +64,14 @@ export class RecordRegistry {
     await scope.query('UPDATE crm_record SET owner_principal_id=?,team_id=?,owner_revision=owner_revision+1 WHERE tenant_id=? AND id=?',[owner,team,scope.context.tenantId,id]);
     const current=await this.get(scope,id);
     await adapter.assigned(scope,current);
-    await this.history(scope,access,current,record.ownerPrincipalId,record.teamId,'assigned');
-    await this.commands.audit(scope,access.principalId,correlation,record.objectKey,id,'assign',['owner_principal_id','team_id','owner_revision']);
-    await this.commands.recordAssigned(scope,access.principalId,correlation,id,current.version,{record_id:id,object_type:record.objectKey,from_owner_id:record.ownerPrincipalId,to_owner_id:owner,team_id:team,owner_revision:current.ownerRevision,reason:'assigned'});
+    await this.history(scope,access,current,record.ownerPrincipalId,record.teamId,options.reason??'assigned',options.actorKind);
+    if(options.actorKind==='service')await this.commands.systemAudit(scope,correlation,record.objectKey,id,'assign',['owner_principal_id','team_id','owner_revision'],{kind:'service',id:access.principalId});
+    else await this.commands.audit(scope,access.principalId,correlation,record.objectKey,id,'assign',['owner_principal_id','team_id','owner_revision']);
+    await this.commands.recordAssigned(scope,access.principalId,correlation,id,current.version,{record_id:id,object_type:record.objectKey,from_owner_id:record.ownerPrincipalId,to_owner_id:owner,team_id:team,owner_revision:current.ownerRevision,reason:options.reason??'assigned'},options.actorKind);
     return current;
   }
-  private async history(scope:TransactionScope,access:Access,r:RegistryRecord,fromOwner:string|null,fromTeam:string|null,reason:string){
+  private async history(scope:TransactionScope,access:Access,r:RegistryRecord,fromOwner:string|null,fromTeam:string|null,reason:string,actorKind:'human'|'service'='human'){
     if(access.tenantId!==scope.context.tenantId)throw new CommandError(403,'FORBIDDEN');
-    await scope.query("INSERT INTO ownership_history(id,tenant_id,record_id,from_owner_id,to_owner_id,from_team_id,to_team_id,owner_revision,reason,actor_kind,actor_id,created_at) VALUES (?,?,?,?,?,?,?,?,?,'human',?,UTC_TIMESTAMP(6))",[registryId(),scope.context.tenantId,r.id,fromOwner,r.ownerPrincipalId,fromTeam,r.teamId,r.ownerRevision,reason,access.principalId]);
+    await scope.query("INSERT INTO ownership_history(id,tenant_id,record_id,from_owner_id,to_owner_id,from_team_id,to_team_id,owner_revision,reason,actor_kind,actor_id,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,UTC_TIMESTAMP(6))",[registryId(),scope.context.tenantId,r.id,fromOwner,r.ownerPrincipalId,fromTeam,r.teamId,r.ownerRevision,reason,actorKind,access.principalId]);
   }
 }

@@ -31,8 +31,8 @@ export class DurableCommands {
   async registryBootstrapExists(scope: TransactionScope): Promise<boolean> {
     return !!(await scope.query("SELECT id FROM audit_entry WHERE tenant_id=? AND action='registry.bootstrap.v2' AND actor_kind='system' AND actor_id=?",[scope.context.tenantId,scope.context.tenantId]))[0];
   }
-  async recordAssigned(scope: TransactionScope, actorId:string, correlationId:string, recordId:string, version:string, payload:Record<string,unknown>) {
-    await scope.query("INSERT INTO outbox_event(id,tenant_id,event_type,schema_version,aggregate_type,aggregate_id,aggregate_version,payload,correlation_id,actor_kind,actor_id,occurred_at,created_at,status) VALUES (?,?,'record.assigned',1,'crm_record',?,?,?,?,'human',?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6),'pending')",[randomUUID(),scope.context.tenantId,recordId,version,JSON.stringify(payload),correlationId,actorId]);
+  async recordAssigned(scope: TransactionScope, actorId:string, correlationId:string, recordId:string, version:string, payload:Record<string,unknown>,actorKind:'human'|'service'='human') {
+    await scope.query("INSERT INTO outbox_event(id,tenant_id,event_type,schema_version,aggregate_type,aggregate_id,aggregate_version,payload,correlation_id,actor_kind,actor_id,occurred_at,created_at,status) VALUES (?,?,'record.assigned',1,'crm_record',?,?,?,?,?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6),'pending')",[randomUUID(),scope.context.tenantId,recordId,version,JSON.stringify(payload),correlationId,actorKind,actorId]);
   }
   async bootstrapRecorded(scope: TransactionScope, correlationId: string, principals: string[]) {
     const tenant=scope.context.tenantId;

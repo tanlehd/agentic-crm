@@ -114,3 +114,5 @@ Chi tiết field và constraint nằm trong [dictionary](dictionary.md).
 Migration v9 thêm channel_connection → contact_identity → conversation (registry subtype), outbound_intent → message và mock_outbound_receipt. Composite tenant FK bảo đảm identity/contact/connection đồng nhất; generated active_identity_key unique. Chi tiết [physical schema](physical-schema.md), [dictionary](dictionary.md). Inbound delivery/touchpoint chưa triển khai; Lead/session refs vẫn fail closed.
 
 SRC-015 v10 bổ sung channel_connection credential/service actor → inbound_delivery → identity/Conversation qua ports và touchpoint CTM. Worker transaction commit Message/touchpoint/processed cùng nhau; event-key và message-key dedup riêng. Không thêm FK Lead/session hoặc Workflow tables.
+
+SRC-017 physical v11: routing_cursor references team/principal by tenant; agent_capacity_slot references principal with execution UUID reserved for SRC-018; routing_attention references crm_record. Ownership remains in crm_record/history, with no cascading owner change from Conversation to Lead. [Exact routing contract](../contracts/routing.md).

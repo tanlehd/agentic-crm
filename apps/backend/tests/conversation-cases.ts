@@ -80,7 +80,7 @@ export function conversationCases(isolated:(name:string)=>Promise<DataSource>){d
     expect(result.status).toBe(201);expect(await ds.query('SELECT id FROM message')).toEqual(before);expect((await ds.query('SELECT kind,body,related_record_id FROM activity WHERE record_id=?',[result.body.data.id]))[0]).toMatchObject({kind:'note',related_record_id:id,body:'Synthetic internal note'});
   });
   it('SRC-016 notes and action projection enforce live scopes, fields and tenant',async()=>{
-    expect((await app.read(account,tenant,id)).data).toMatchObject({owner_kind:'human',allowed_actions:['reply','note','update']});
+    expect((await app.read(account,tenant,id)).data).toMatchObject({owner_kind:'human',allowed_actions:['reply','note','update','assign']});
     expect(((await app.read(otherAccount,tenant,id)).data as any).allowed_actions).not.toContain('reply');
     expect((await app.read(account,tenant,id,'notes')).data).toEqual([]);
     const activityGrant={resource:'activity',action:'read',scope:'all'};

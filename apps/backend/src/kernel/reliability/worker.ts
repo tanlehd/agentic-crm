@@ -1,3 +1,5 @@
+import { Routing } from '../../modules/agents/routing.js';
+import { routingAccessConsumer } from '../../modules/agents/access-consumer.js';
 import { MessengerIntake } from '../../modules/channels/intake.js';
 import { OutboundDispatcher } from '../../modules/conversation/outbound.js';
 import { MockSender } from '../../modules/channels/mock-sender.js';
@@ -9,6 +11,7 @@ import { identityAccessConsumer } from '../../modules/identity/access-consumer.j
 @Injectable()
 class DeliveryWorker implements OnModuleInit, OnModuleDestroy {
   private readonly source = databaseSource();
+  private readonly routingConsumer = routingAccessConsumer(new Routing(this.source));
   private readonly intake = new MessengerIntake(this.source);
   private readonly delivery = new DurableDelivery(this.source);
   private readonly outbound = new OutboundDispatcher(this.source,new MockSender(this.source));
@@ -30,7 +33,7 @@ class DeliveryWorker implements OnModuleInit, OnModuleDestroy {
       const claims = await this.delivery.claim();
       // Bounded concurrency below DB pool size; no overlapping ticks.
       for (let offset=0; offset<claims.length; offset+=4) {
-        await Promise.all(claims.slice(offset,offset+4).map(claim=>this.delivery.dispatch(claim,[identityAccessConsumer])));
+        await Promise.all(claims.slice(offset,offset+4).map(claim=>this.delivery.dispatch(claim,[identityAccessConsumer,this.routingConsumer])));
       }
       await this.delivery.expireReceipts();
       await this.outbound.tick();

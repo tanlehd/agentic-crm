@@ -31,7 +31,7 @@ export interface ConversationEntity {
     campaign_id: string | null;
   };
   owner_kind?: "human" | "ai" | null;
-  allowed_actions?: ("reply" | "note" | "update")[];
+  allowed_actions?: ("reply" | "note" | "update" | "assign" | "takeover")[];
   latest_message?: {
     id: string;
     text?: string;

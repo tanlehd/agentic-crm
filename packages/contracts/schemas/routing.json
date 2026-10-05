@@ -1,0 +1,279 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://agentic-crm.invalid/schemas/routing.json",
+  "title": "RoutingSchema",
+  "definitions": {
+    "routing-assignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "owner_principal_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        },
+        "team_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        },
+        "reason": {
+          "enum": [
+            "manual",
+            "handoff"
+          ]
+        }
+      },
+      "required": [
+        "owner_principal_id",
+        "reason"
+      ]
+    },
+    "routing-takeover": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "const": "human_takeover"
+        }
+      },
+      "required": [
+        "reason"
+      ]
+    },
+    "routing-entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "tenant_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "object_key": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        },
+        "owner_revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        },
+        "owner_principal_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        },
+        "team_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "id",
+        "tenant_id",
+        "object_key",
+        "version",
+        "owner_revision",
+        "owner_principal_id",
+        "team_id"
+      ]
+    },
+    "routing-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/routing-entity"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "routing-target": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "kind": {
+          "enum": [
+            "human",
+            "ai"
+          ]
+        },
+        "eligible": {
+          "type": "boolean"
+        },
+        "reason": {
+          "enum": [
+            null,
+            "unavailable",
+            "team",
+            "capability",
+            "role",
+            "field",
+            "policy",
+            "capacity"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "eligible",
+        "reason"
+      ]
+    },
+    "routing-targets": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/routing-target"
+          }
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "routing-history-entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "from_owner_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        },
+        "to_owner_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        },
+        "from_team_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        },
+        "to_team_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        },
+        "owner_revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "actor_kind": {
+          "enum": [
+            "human",
+            "ai",
+            "service",
+            "system"
+          ]
+        },
+        "actor_id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "from_owner_id",
+        "to_owner_id",
+        "from_team_id",
+        "to_team_id",
+        "owner_revision",
+        "reason",
+        "actor_kind",
+        "actor_id"
+      ]
+    },
+    "routing-history": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/routing-history-entry"
+          },
+          "maxItems": 100
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    }
+  }
+}

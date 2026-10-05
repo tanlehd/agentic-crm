@@ -21,3 +21,5 @@ Errors theo API chung: 400 invalid input/cursor, 403 forbidden, 404 inaccessible
 Detail/list add optional `latest_message` (id/status/direction/received_at/text?; null if empty; text follows Conversation field ACL), `owner_kind` (human/ai/null) from Identity and `allowed_actions` (reply/note/update). Actions apply live seat, scoped grants, field ACL, owner and closed-state checks; commands still authorize independently.
 
 GET `/conversations/{id}/notes?limit=50&cursor=<UUID>` returns `{data:[{id,created_at,body?}],next_cursor,meta}`. Requires Conversation read; only non-archived Activity kind note linked to this Conversation and independently readable by caller are returned. Body omitted when activity.body read denied. Ascending note ID cursor, limit 1–100; UI sorts loaded notes chronologically and polls loaded pages. No new persisted schema or changes to existing note creation.
+
+SRC-017 adds optional allowed_actions entries assign/takeover according to current seat/scope; ownership UI/API follows [routing contract](routing.md). Existing reply/note/update behavior and message schemas are unchanged.

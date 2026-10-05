@@ -240,3 +240,23 @@ Docs sync: README/index, Conversation/UX, API/Conversation/bootstrap contracts, 
 ## S-20261005-03 — Git handoff SRC-015/016
 
 Người dùng yêu cầu commit Git. Gom source/contracts/tests/docs SRC-015 và SRC-016 đã nghiệm thu vào một commit trên main; không push/deploy. Trước staging: 70 candidate files, whitespace check và đối chiếu credential local/private-key marker PASS; .env/artifacts/dependencies ngoài Git. Evidence chức năng giữ ở SRC-015/016; không chạy lại application suite chỉ cho thao tác Git. Commit chứa entry này là snapshot handoff; hash thực lấy từ `git log -1`, trạng thái được kiểm tra sau commit.
+
+
+## S-20261005-04 — SRC-017
+
+Claim SRC-017 IN_PROGRESS, Codex 2026-10-05; dependency SRC-016 DONE; working tree clean. No parallel agents, commit/push/deploy.
+
+CHG-20261005-03 (C2, resolved design): assignment wire contract, additive v11 routing cursor/capacity reservations/attention. Identity-owned eligibility projection, CRM ownership UoW port, Conversation cancellation port. Session/runtime cancellation hooks integrate at SRC-018/020; no fabricated engine state. See routing contract and physical schema. Tests pending.
+
+
+S-20261005-04 hoàn tất SRC-017 DONE; SRC-018 READY, 17/25 DONE. CHG-20261005-03 resolved. Source/API/UI routing/assignment/takeover, v11 cursor/capacity/attention; Identity/CRM/Conversation UoW ports; service actor history; durable owner-revocation attention consumer. Seed routing additive, no AI policy auto-enable. Runtime/session hooks remain SRC-018/020.
+
+[Evidence SRC-017](details/SRC-017.md): `pnpm test:integration` PASS96; `pnpm verify:container` PASS9 gates/46 unit+7 tooling, Linux ARM64 Node24.21.0/pnpm10.33.0/MySQL8.4.11. Preview v11 build/migrate/grants PASS, fingerprint13 existing tables exact count/hash before seed, routing seed first2/repeat0. `pnpm test:routing` Chrome154/OIDC PASS takeover/assignment, disabled eligibility, lost ACK same key/version one ownership revision, stale review, viewer403/cross-tenant404 and responsive viewport. No fabricated session/AI execution validation; capacity tested through real DB reservation port. First integration failure exposed string numeric expiry truthiness; corrected Number(live) and expired/released regression; test-order assertion and upgrade-count assumptions corrected.
+
+Artifacts `artifacts/SRC-017/`: integration.log, verify.log/verify-summary.json, preview-build.log, upgrade-{before,after,check}.json, seed-{first,repeat}.log, e2e.log/browser-facts.json/screenshots, services.log/worker.log/migration-status.log/docs-final.log. Worker sample no tick failure; seven preview services healthy. Docker socket/Chrome require sandbox escalation, no automatic approval rejection. Test projects cleaned, no automation. No volume reset or v1–v10 changes.
+
+Docs sync: README/index, Agents/Conversation, routing/API/events/registry/bootstrap/Conversation contracts, model/dictionary/physical schema, local/migration runbooks, acceptance, tracker/detail/checkpoint. Main HEAD153a1e4; working tree dirty SRC-017, no commit/push/deploy. No blocker/pending decision. Next only: claim SRC-018 and integrate deterministic Agent Runtime using capacity/cancellation ports.
+
+## S-20261005-05 — Git handoff SRC-017
+
+Người dùng yêu cầu commit/push SRC-017 và tiếp tục SRC-019. Trước Git: 64 candidate files, diff whitespace và quét credential local/private-key marker PASS; .env/artifacts/dependencies ignored. Evidence application giữ theo S-20261005-04, không chạy lại suite chỉ để đồng bộ Git. Commit chứa entry này gom SRC-017 trên main, target origin/main (không force push/deploy); kết quả push được kiểm tra sau thao tác. SRC-019 vẫn TODO do dependency SRC-018 READY chưa DONE; đang xác nhận phạm vi tiếp tục 018 trước 019, chưa claim task sai dependency.

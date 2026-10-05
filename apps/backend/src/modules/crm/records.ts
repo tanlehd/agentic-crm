@@ -25,7 +25,7 @@ export class CrmRecords {
   constructor(source:DataSource,private readonly secret:string|Buffer,private readonly domains:ReadonlyMap<string,RecordDomain>=new Map(),private readonly commands=new DurableCommands(),private readonly archiveGuards:readonly ArchiveGuard[]=[]){
     this.uow=new UnitOfWork(source);this.authorization=new IdentityAuthorization(this.uow);
   }
-  private registry(key:string,custom:boolean){
+  registry(key:string,custom:boolean){
     const adapter:SubtypeAdapter={insert:async(s,id,input)=>{if(Object.keys(object(input)).length)throw new CommandError(422,'VALIDATION_FAILED');await s.query('INSERT INTO custom_record VALUES (?,?)',[s.context.tenantId,id]);},exists:async(s,id)=>!!(await s.query('SELECT record_id FROM custom_record WHERE tenant_id=? AND record_id=?',[s.context.tenantId,id]))[0],eligible:async()=>{},assigned:async()=>{}};
     return new RecordRegistry(new Map(custom?[[key,adapter]]:this.domains.has(key)?[[key,this.domains.get(key)!.adapter]]:[]));
   }

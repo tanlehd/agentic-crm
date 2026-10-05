@@ -119,3 +119,5 @@ SRC-011: property/form/view có created_at/updated_at/version; custom_record và
 SRC-012 v8 Contact/Company/Activity/Lead theo [CRM core](../contracts/crm-core.md); M2 refs nullable CHECK IS NULL, future FK forward migration.
 
 SRC-016 không thêm persisted field/migration. Conversation `owner_kind` là projection từ Identity; `allowed_actions` tính live theo seat/scope/field/owner. Internal notes vẫn là Activity và GET notes tuân quyền Activity riêng.
+
+SRC-017 v11 adds `routing_cursor`, `agent_capacity_slot` (execution_id,principal_id,expires_at,released_at) and `routing_attention` (record_id,reason,active,updated_at). Capacity reservations are internal runtime ports, not Conversation ownership counts. [Routing contract](../contracts/routing.md) defines exact eligibility, locks, wire DTOs and future engine integration.
