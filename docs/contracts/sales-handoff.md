@@ -1,0 +1,15 @@
+# Sales handoff — SRC-021
+
+Status: Ready for implementation, M2.
+
+POST `/leads/{id}/handoffs` body `{target_team_id:uuid}`; POST `/leads/{id}/handoffs/{handoffId}/accept` body `{owner_revision:positive-decimal-string}`. Both require authenticated session, active tenant, Origin/CSRF, Idempotency-Key and quoted If-Match Lead version. Return 200 envelope data `{id,version,owner_revision,owner_principal_id,team_id,handoff_id,status,due_at,accepted_at,attention}` (id is Lead ID, status is handoff status). GET `/leads/{id}/handoffs` returns bounded latest 100 handoffs under Lead read permission, with same projection. No qualification or Contact fields in receipts. Replay rechecks current read/action/seat/team/field rights; changed request/key conflicts.
+
+Handoff requires qualified active Lead, lead.read/handoff, active Contact, active Sales team (purpose sales), current If-Match. Command owns a single UoW: create pending handoff, mark Lead handed_off, grant Contact team read, route Human using read+accept/sales eligibility or retain owner NULL with attention, write audit/outbox/ownership history and receipt. Contact share does not grant update or bypass field denial. Contact owner and Conversation owner unchanged. No extra lead.assign required to execute the ownership effect already authorized by handoff.
+
+Accept requires sales capability, active target team membership, lead.read/accept; caller is assigned owner or record unassigned, otherwise lead.assign required. Validate Lead version and owner_revision under same lock; set owner caller, handoff accepted and Lead accepted timestamps atomically, clear attention, emit lead.accepted exactly once. Unavailable Human may explicitly accept if membership/seat/role remains active; availability only affects automatic routing. No AI public acceptance.
+
+Pending due_at=requested_at+15 minutes elapsed UTC. No eligible assignee sets attention immediately; worker persists attention once due, with sanitized audit, without reassigning or accepting. Attention is a handoff boolean available in GET; operations UI follows SRC-022. Accepted clears attention.
+
+Workflow action has exact parent_run_id and start_action_key, unique tenant/action; pinned graph supplies literal target team. Child predicate validates exact parent and handoff ID. Accepted returns outcome accepted + lead_id, pending returns null. Cancel/timeout parent preserves committed handoff pending; no cancellation policy is introduced. Durable Workflow action result and Sales mutation share UoW and fencing; read predicate handles early/missed signals.
+
+Migration17 adds lead_handoff only: UUID ASCII IDs, composite tenant FKs to Lead/team/principal/Workflow run, pending active_lead_key unique, requested actor kind human/service and ID, parent/action nullable pair unique, status pending/accepted/cancelled, due/created/accepted timestamps, accepted principal and attention. CHECKs prohibit NULL bypass of pending/accepted state. Existing migration checksums unchanged; upgrade additive with no data rewrite or production integration.

@@ -135,3 +135,5 @@ V14 drops the v8 null-only checks for Lead conversation/session/source_touchpoin
 V15 follow-up (same CHG): MySQL skips composite FK when any member is NULL; `ck_lead_session_conversation` requires non-null conversation whenever qualification_session_id is non-null. V14 preserved after first disposable application. Outbound v14 adds nullable chatflow_session_id composite FK including conversation; AI dispatcher requires this session binding and checks live owner, service role and AI policy immediately before send. Lead source touchpoint is the earliest Conversation touchpoint via Channels port.
 
 V16 follow-up preserves applied v14/v15 and adds private `chatflow_node_run.proposed_reply TEXT NULL` bounded4000. Runtime proposal/tool only stores text there; no outbound intent until the exact execution completes successfully under live guards. Takeover/failed/cancelled executions leave proposals inert; session read projections exclude this field.
+
+SRC-021: lead_handoff exact fields and state/parent/action constraints follow [Sales handoff contract](../contracts/sales-handoff.md); attention persists no eligible/15-minute alert.

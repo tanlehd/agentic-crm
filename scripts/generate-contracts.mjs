@@ -117,6 +117,12 @@ for(const [method,path,input,output,match] of [['get','chatflows',null,'list'],[
  const parameters=[tenantHeader,...[...path.matchAll(/\{(\w+)\}/g)].map(m=>({name:m[1],in:'path',required:true,schema:m[1]==='version'?{type:'integer',minimum:1}:{type:'string',format:'uuid'}})),...(input?mutationHeaders:[]),...(match?[{name:'If-Match',in:'header',required:true,schema:{type:'string'}}]:[]),...(['list','versions'].includes(output)?[{name:'limit',in:'query',schema:{type:'integer',minimum:1,maximum:100,default:50}}]:[])];
  (spec.paths[`/api/v1/${path}`]??={})[method]={operationId:`chatflow-${method}-${path.replaceAll(/[{}]/g,'').replaceAll('/','-')}`,security:[{sessionCookie:[]}],parameters,...(input?{requestBody:{required:true,content:{'application/json':{schema:{$ref:`#/components/schemas/chatflow-${input}`}}}}}:{}),responses:{...adminErrors,[input==='create'||input==='version-create'?201:200]:response(`chatflow-${output}`,'Authorized Chatflow result')}};
 }
+const salesHandoff=JSON.parse(await readFile('packages/contracts/schemas/sales-handoff.json','utf8'));
+for(const [name,definition] of Object.entries(salesHandoff.definitions))spec.components.schemas[name]=JSON.parse(JSON.stringify(definition).replaceAll('#/definitions/','#/components/schemas/'));
+for(const [method,path,input,output] of [['get','leads/{id}/handoffs',null,'list'],['post','leads/{id}/handoffs','request','response'],['post','leads/{id}/handoffs/{handoffId}/accept','accept','response']]){
+ const parameters=[tenantHeader,...[...path.matchAll(/\{(\w+)\}/g)].map(m=>({name:m[1],in:'path',required:true,schema:{type:'string',format:'uuid'}})),...(input?[...mutationHeaders,{name:'If-Match',in:'header',required:true,schema:{type:'string'}}]:[])];
+ (spec.paths[`/api/v1/${path}`]??={})[method]={operationId:`sales-handoff-${input??output}`,security:[{sessionCookie:[]}],parameters,...(input?{requestBody:{required:true,content:{'application/json':{schema:{$ref:`#/components/schemas/sales-handoff-${input}`}}}}}:{}),responses:{...adminErrors,200:{...response(`sales-handoff-${output}`,'Authorized Sales result'),...(input?{headers:{ETag:{schema:{type:'string'}}}}:{})}}};
+}
 const runtime=JSON.parse(await readFile('packages/contracts/schemas/agent-runtime.json','utf8'));
 const chatflow=JSON.parse(await readFile('packages/contracts/schemas/chatflow.json','utf8'));
 const outputs = {
@@ -124,6 +130,7 @@ const outputs = {
   'packages/contracts/openapi.json': JSON.stringify(spec, null, 2) + '\n',
   'packages/contracts/src/generated/api.ts': astToString(await openapiTS(spec)),
 };
+for(const [name,definition] of Object.entries(salesHandoff.definitions)) outputs[`packages/contracts/src/generated/${name}.ts`]=await compile({...definition,definitions:salesHandoff.definitions},name,{bannerComment:'/* Generated. Do not edit. */'});
 for(const [name,definition] of Object.entries(chatflowApi.definitions)) outputs[`packages/contracts/src/generated/${name}.ts`]=await compile({...definition,definitions:chatflowApi.definitions},name,{bannerComment:'/* Generated. Do not edit. */'});
 outputs['packages/contracts/src/generated/chatflow-graph.ts']=await compile(chatflow,'ChatflowGraph',{bannerComment:'/* Generated. Do not edit. */'});
 outputs['packages/contracts/src/generated/chatflow-schema.ts']='/* Generated. Do not edit. */\nexport const chatflowSchema = '+JSON.stringify(chatflow,null,2)+';\n';

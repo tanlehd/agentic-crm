@@ -116,3 +116,5 @@ Add workflow_definition/version/run/step_run/wait/action/trigger_selection. UUID
 ## SRC-020 v14–v16 Chatflow
 
 V14 adds definition/version/session/node_run/turn and session-bound outbound intent FK. Tenant composite FKs, immutable graph snapshots, unique active Conversation and start key; node lease/token and prompt attempt, turn session/message dedup; variables/draft/provenance JSON. Lead null-only v8 guards lifted for Conversation/session/touchpoint and replaced with tenant FKs; unique session Lead retained. V15 CHECK prevents null conversation bypassing the composite session FK. V16 stores a private proposed reply on node; only successful runtime completion creates outbound. Source SQL files are separate immutable migrations; v1–v13 unchanged. Details: [dictionary](dictionary.md), [Chatflow contract](../contracts/chatflow.md). Runtime execution session is an application-port-bound reference; private legacy runtime harness rows are not retroactively converted into production sessions.
+
+SRC-021 migration17: additive lead_handoff as specified in [Sales contract](../contracts/sales-handoff.md); v1–16 preserved.

@@ -101,3 +101,7 @@ AC-08 engine: DAG publish/version pinning, duplicate starter selection, same act
 ## SRC-020 completed scope (S-20261005-10)
 
 Initial A parser evidence was extended by actual durable engine/ports and Human completion.150 MySQL integration tests pass (18 Chatflow +132 regression), including first input, fenced/restarted work, proposal-only runtime, takeover/late callback, live outbound auth, one Lead/session, atomic rollback and Human race/evidence/CAS.66 unit/contract tests and9 canonical gates pass. Preview schema16 upgrade retained count/hash across13 pre-existing tables. Chrome154 real OIDC/mock intake/Workflow/Chatflow/Human takeover and consent form PASS; qualified Lead and parent completion verified with Human owner retained. Final status and evidence at [SRC-020 detail](../tracking/details/SRC-020.md). Full M2/Sales acceptance is not closed.
+
+## SRC-021 backend Sales sub-scope
+
+AC-09 backend Chatflow→Workflow handoff→Sale accept PASS with unchanged Conversation ownership and Lead source/session snapshot; AC-15 handoff/accept concurrent commands one winner PASS. Contact share read-only/field denial, no eligible queue,15min attention, ACL revoke, replay/CAS, atomic rollback and actual Workflow fence/crash/early signal/timeout/cancel covered.166 MySQL tests and9 canonical gates PASS; [evidence SRC-021](../tracking/details/SRC-021.md). Sales browser UI and full M2 fixture/KPI/release gate remain SRC-022…025. Preview still schema16; no browser/preview upgrade17 claim.

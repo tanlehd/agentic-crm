@@ -1,3 +1,4 @@
+import { SalesHandoffs } from '../sales/handoff.js';
 import { conversationArchiveGuard } from '../conversation/domain.js';
 import { Controller,Get,Post,Patch,Put,Req,Res,Inject,Module,type OnModuleDestroy } from '@nestjs/common';
 import type { IncomingMessage,ServerResponse } from 'node:http';
@@ -16,7 +17,7 @@ import { FieldError } from './properties.js';
 import { CrmPlatform,type MetadataRoute } from './platform.js';
 interface Request extends IncomingMessage {query:Record<string,unknown>;params:Record<string,string>;body:unknown}
 export class CrmRuntime implements OnModuleDestroy {
-  private readonly source=databaseSource();private initialized:Promise<unknown>|undefined;readonly platform:CrmPlatform;readonly records:CrmRecords;readonly leads:LeadService;readonly ui:CrmUi;
+  private readonly source=databaseSource();private initialized:Promise<unknown>|undefined;readonly platform:CrmPlatform;readonly records:CrmRecords;readonly leads:LeadService;readonly handoffs=new SalesHandoffs(this.source);readonly ui:CrmUi;
   constructor(@Inject(AuthRuntime) auth:AuthRuntime){this.platform=new CrmPlatform(this.source,createHmac('sha256',auth.service.config.encryptionKey).update('registry-pagination-v1').digest());const domains=coreDomains();domains.set('lead',leadDomain(contactReferences));this.records=new CrmRecords(this.source,createHmac('sha256',auth.service.config.encryptionKey).update('records-pagination-v1').digest(),domains,undefined,[leadArchiveGuard,conversationArchiveGuard]);this.leads=new LeadService(this.records,contactReferences);this.ui=new CrmUi(this.records);}
   async ready(){if(!this.initialized)this.initialized=this.source.initialize().catch(e=>{this.initialized=undefined;throw e;});await this.initialized;}
   async onModuleDestroy(){await this.initialized?.catch(()=>{});if(this.source.isInitialized)await this.source.destroy();}
@@ -62,16 +63,16 @@ export class CrmController {
       res.statusCode=failure.status;res.end(JSON.stringify({error:{code:failure.code,message:'Không thể hoàn tất yêu cầu.',fields:error instanceof FieldError?[{path:error.field,code:error.code}]:[],retryable:failure.status===503},meta:{correlation_id:correlation}}));
     }
   }
-  private async leadResponse(req:Request,res:ServerResponse,action:'read'|'create'|'qualification'|'disqualify'){
+  private async leadResponse(req:Request,res:ServerResponse,action:'read'|'create'|'qualification'|'disqualify'|'handoff'|'accept'|'handoffs'){
     const correlation=randomUUID();res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json');
     try{
-      const mutation=action!=='read',session=mutation?await this.auth.service.requireMutation(cookie(req,'crm_session'),req.headers.origin,req.headers['x-csrf-token']):await this.auth.service.session(cookie(req,'crm_session'),true);
+      const mutation=!['read','handoffs'].includes(action),session=mutation?await this.auth.service.requireMutation(cookie(req,'crm_session'),req.headers.origin,req.headers['x-csrf-token']):await this.auth.service.session(cookie(req,'crm_session'),true);
       const tenant=req.headers['x-tenant-id'];if(!uuid(tenant)||req.params.id!==undefined&&!uuid(req.params.id))throw new CommandError(400,'INVALID_REQUEST');
       if(Object.keys(req.query).length&&(mutation||req.params.id))throw new CommandError(400,'INVALID_REQUEST');await this.runtime.ready();
-      if(!mutation){const result=await this.runtime.leads.read(session.account_id,tenant,req.params.id,req.query);if(!Array.isArray(result.data)&&result.data.version)res.setHeader('ETag',`"${result.data.version}"`);res.end(JSON.stringify({...result,meta:{correlation_id:correlation}}));return;}
+      if(!mutation){const result=action==='handoffs'?await this.runtime.handoffs.read(session.account_id,tenant,req.params.id!):await this.runtime.leads.read(session.account_id,tenant,req.params.id,req.query);if(!Array.isArray(result.data)&&result.data.version)res.setHeader('ETag',`"${result.data.version}"`);res.end(JSON.stringify({...result,meta:{correlation_id:correlation}}));return;}
       const key=req.headers['idempotency-key'],match=req.headers['if-match'];
       if(typeof key!=='string'||!/^application\/json(?:;|$)/i.test(req.headers['content-type']??'')||match!==undefined&&(typeof match!=='string'||!/^"[1-9][0-9]{0,19}"$/.test(match)))throw new CommandError(400,'INVALID_REQUEST');
-      const result=action==='create'?await this.runtime.leads.create(session.account_id,tenant,req.body,key,correlation):await this.runtime.leads.command(session.account_id,tenant,req.params.id!,action as 'qualification'|'disqualify',req.body,key,typeof match==='string'?match.slice(1,-1):undefined,correlation);
+      const result=action==='handoff'||action==='accept'?await this.runtime.handoffs.mutate(session.account_id,tenant,req.params.id!,action==='accept'?req.params.handoffId:undefined,req.body,key,typeof match==='string'?match.slice(1,-1):undefined,correlation):action==='create'?await this.runtime.leads.create(session.account_id,tenant,req.body,key,correlation):await this.runtime.leads.command(session.account_id,tenant,req.params.id!,action as 'qualification'|'disqualify',req.body,key,typeof match==='string'?match.slice(1,-1):undefined,correlation);
       res.statusCode=result.status;res.setHeader('ETag',`"${result.body.data.version}"`);res.end(JSON.stringify(result.body));
     }catch(error){const failure=error instanceof CommandError||error instanceof AuthError?error:error instanceof AccessError?new CommandError(403,error.code):new CommandError(503,'TEMPORARILY_UNAVAILABLE');res.statusCode=failure.status;res.end(JSON.stringify({error:{code:failure.code,message:'Không thể hoàn tất yêu cầu.',fields:error instanceof FieldError?[{path:error.field,code:error.code}]:[],retryable:failure.status===503},meta:{correlation_id:correlation}}));}
   }
@@ -82,6 +83,9 @@ export class CrmController {
   }
   @Get('crm/context') context(@Req() q:Request,@Res() s:ServerResponse){return this.uiResponse(q,s);}
   @Get('objects/:key/descriptor') descriptor(@Req() q:Request,@Res() s:ServerResponse){return this.uiResponse(q,s,true);}
+  @Get('leads/:id/handoffs') handoffs(@Req() q:Request,@Res() s:ServerResponse){return this.leadResponse(q,s,'handoffs');}
+  @Post('leads/:id/handoffs') handoff(@Req() q:Request,@Res() s:ServerResponse){return this.leadResponse(q,s,'handoff');}
+  @Post('leads/:id/handoffs/:handoffId/accept') accept(@Req() q:Request,@Res() s:ServerResponse){return this.leadResponse(q,s,'accept');}
   @Get('leads') leads(@Req() q:Request,@Res() s:ServerResponse){return this.leadResponse(q,s,'read');}
   @Get('leads/:id') lead(@Req() q:Request,@Res() s:ServerResponse){return this.leadResponse(q,s,'read');}
   @Post('leads') createLead(@Req() q:Request,@Res() s:ServerResponse){return this.leadResponse(q,s,'create');}

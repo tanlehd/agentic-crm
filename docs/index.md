@@ -50,3 +50,5 @@ Mọi mục `Ready` có phạm vi giới hạn như trên. Không suy diễn m�
 ## Refinement khi bắt đầu source
 
 [Auth transport](contracts/auth.md), [physical schema](data/physical-schema.md) và [toolchain manifest](../infra/toolchain.json) là baseline SRC-001. Exact image digest được khóa tại SRC-003 trước build image; không suy diễn metadata package pass thành runtime build pass.
+
+SRC-021 Sales handoff/acceptance backend DONE; [exact contract](contracts/sales-handoff.md), [execution evidence](tracking/details/SRC-021.md). Preview remains schema16 until next rollout.

@@ -122,3 +122,5 @@ SRC-018 physical v12: agent_execution has same-tenant Conversation/principal/ser
 SRC-019 physical v13 adds Workflow definition/version/run/step/wait/action/trigger_selection with same-tenant FKs; immutable version and service role pinning, stable action ledger and durable child-cancel request. Children stay behind owning-module UoW ports; production Chatflow/Sales integration follows SRC-020/021.
 
 SRC-020: Chatflow physical session/turn/node state and Lead session binding are implemented by v14–v16; see [dictionary](dictionary.md) and [Chatflow contract](../contracts/chatflow.md). Workflow/Runtime use owning-module ports; Human completion commits Lead+session+event together.
+
+SRC-021 migration17 implements lead_handoff with composite tenant FKs, generated pending active_lead_key, parent/action replay binding, accepted principal/time state checks and durable attention. [Exact Sales contract](../contracts/sales-handoff.md).

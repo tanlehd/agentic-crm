@@ -6,6 +6,7 @@ export interface RoutingPrincipal { id:string;kind:'human'|'ai';available:boolea
 // Identity owns all SQL for principal/membership/team/policy projections.
 export class RoutingIdentityPort {
   async team(s:TransactionScope,id:string|null){await validateOwnershipTarget(s,null,id);}
+  async salesTeam(s:TransactionScope,id:string){await this.team(s,id);const [t]=await s.query('SELECT purpose FROM team WHERE tenant_id=? AND id=?',[s.context.tenantId,id]);if(t?.purpose!=='sales')throw new CommandError(422,'SALES_TEAM_REQUIRED');}
   async chatTeam(s:TransactionScope,id:string){await this.team(s,id);const [t]=await s.query('SELECT purpose FROM team WHERE tenant_id=? AND id=?',[s.context.tenantId,id]);if(!['chat','general'].includes(t?.purpose))throw new CommandError(422,'CHAT_TEAM_REQUIRED');}
   async candidates(s:TransactionScope,team:string|null):Promise<string[]>{return (await s.query(`SELECT p.id FROM principal p ${team?'JOIN team_member tm ON tm.tenant_id=p.tenant_id AND tm.principal_id=p.id AND tm.team_id=? AND tm.active=1':''} WHERE p.tenant_id=? ORDER BY p.id`,team?[team,s.context.tenantId]:[s.context.tenantId])).map((r:any)=>r.id);}
   async principal(s:TransactionScope,id:string,lock=false):Promise<RoutingPrincipal|null>{

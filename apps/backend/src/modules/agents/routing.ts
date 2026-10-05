@@ -11,7 +11,7 @@ import { uuid } from '../identity/admin.js';
 import { RecordRegistry,type RegistryRecord } from '../crm/registry.js';
 import { CrmRecords } from '../crm/records.js';
 import { coreDomains,contactReferences } from '../crm/core.js';
-import { leadDomain } from '../sales/leads.js';
+import { leadDomain,leadRoutingAction } from '../sales/leads.js';
 import { allows,withFieldPolicies } from '../crm/access.js';
 import { object } from '../crm/properties.js';
 import { conversationOwnership,type OwnershipChanged } from '../conversation/ownership-port.js';
@@ -29,11 +29,11 @@ export class Routing {
   async eligibility(s:TransactionScope,r:RegistryRecord,owner:string,team:string|null,checkCapacity=true):Promise<string|null>{
     const p=await this.identity.principal(s,owner,true);if(!p||!p.available)return 'unavailable';
     if(team&&!p.access.teamIds.includes(team))return 'team';
-    const a=await withFieldPolicies(s,p.access),target={...r,ownerPrincipalId:owner,teamId:team},action=r.objectKey==='conversation'?'reply':r.objectKey==='lead'?'qualify':'update';
+    const a=await withFieldPolicies(s,p.access),target={...r,ownerPrincipalId:owner,teamId:team},action=r.objectKey==='conversation'?'reply':r.objectKey==='lead'?await leadRoutingAction(s,r.id):'update';
     const capability=r.objectKey==='conversation'?'chat':r.objectKey==='lead'?'sales':null;
     if(capability?!a.capabilities.includes(capability):!a.capabilities.some(c=>['chat','sales','service'].includes(c)))return 'capability';
     if(!allows(a,r.objectKey,'read',target)||!(r.objectKey==='conversation'?permits(a,r.objectKey,action,target):allows(a,r.objectKey,action,target)))return 'role';
-    const field=r.objectKey==='conversation'?'text':r.objectKey==='lead'?'qualification':null;
+    const field=r.objectKey==='conversation'?'text':r.objectKey==='lead'&&action==='qualify'?'qualification':null;
     if(field&&(!fieldAllowed(a,r.objectKey,field,'read')||!fieldAllowed(a,r.objectKey,field,'write')))return 'field';
     if(p.kind==='ai'){
       const tool=r.objectKey==='conversation'?'conversation.propose_reply':r.objectKey==='lead'?'qualification.save':null;

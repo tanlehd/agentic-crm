@@ -1,4 +1,4 @@
-import { ChatflowEngine } from '../chatflow/engine.js';
+import { workflowChildren } from './children.js';
 import { Controller,Get,Post,Patch,Req,Res,Inject,Module,type OnModuleDestroy } from '@nestjs/common';
 import type { IncomingMessage,ServerResponse } from 'node:http';
 import { randomUUID } from 'node:crypto';
@@ -11,7 +11,7 @@ import { CommandError } from '../../kernel/reliability/commands.js';
 import { Workflows,type Operation } from './application.js';
 interface Request extends IncomingMessage {query:Record<string,unknown>;params:Record<string,string>;body:unknown}
 export class WorkflowRuntime implements OnModuleDestroy {
-  private readonly source=databaseSource();private initialized?:Promise<unknown>;readonly workflows=new Workflows(this.source,new ChatflowEngine(this.source).children());
+  private readonly source=databaseSource();private initialized?:Promise<unknown>;readonly workflows=new Workflows(this.source,workflowChildren(this.source));
   async ready(){if(!this.initialized)this.initialized=this.source.initialize().catch(e=>{this.initialized=undefined;throw e;});await this.initialized;}
   async onModuleDestroy(){await this.initialized?.catch(()=>{});if(this.source.isInitialized)await this.source.destroy();}
 }

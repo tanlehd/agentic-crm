@@ -163,4 +163,4 @@ SRC-017 exact assignment/takeover DTO, eligible target/history reads, capability
 
 SRC-019 exact Workflow transport: [contract](workflow.md); definition creation includes configured service_actor_id, version includes execution_role_id.
 
-SRC-020 implements Chatflow definition/version/publish/list, session detail and GET `/conversations/{id}/chatflow-session` (latest retained session or null), plus Human completion. Exact DTOs/guards at [Chatflow contract](chatflow.md); generated OpenAPI includes these routes. Sales handoff/acceptance remains SRC-021.
+SRC-020 implements Chatflow definition/version/publish/list, session detail and GET `/conversations/{id}/chatflow-session` (latest retained session or null), plus Human completion. Exact DTOs/guards at [Chatflow contract](chatflow.md); generated OpenAPI includes these routes. SRC-021 adds handoff/acceptance and GET `/leads/{id}/handoffs`; exact DTOs, read scope and errors follow [Sales contract](sales-handoff.md).

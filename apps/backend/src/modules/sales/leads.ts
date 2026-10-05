@@ -98,3 +98,5 @@ export class LeadService {
     return this.records.read(account,tenant,{object:'lead',kind:'records',...(id?{id}:{})},rest);
   }
 }
+
+export async function leadRoutingAction(s:TransactionScope,id:string){const [r]=await s.query('SELECT status FROM `lead` WHERE tenant_id=? AND record_id=?',[s.context.tenantId,id]);return ['handed_off','accepted'].includes(r?.status)?'accept':'qualify';}

@@ -42,4 +42,6 @@ Thiếu consent/nhu cầu → validation error, giữ draft. Hai sales nhận đ
 
 Deal pipeline configurable, currency/forecast, lost reason, reopen/correction, task cadence, meeting conflict, customer lifecycle correction và approval cho hành động bán hàng cần đặc tả trước M4.
 
-SRC-012 triển khai manual Lead create/draft/qualification/disqualify và session creation interface fail closed M1. [Exact core contract](../contracts/crm-core.md). SRC-013 có UI Lead qualification, không handoff/acceptance; Sales queue và workflow handoff vẫn SRC-021/022.
+SRC-012 triển khai manual Lead create/draft/qualification/disqualify và session creation interface fail closed M1. [Exact core contract](../contracts/crm-core.md). SRC-013 có UI Lead qualification, không handoff/acceptance; Workflow handoff/acceptance đã có ở SRC-021; Sales queue UI còn SRC-022.
+
+SRC-021 exact commands, transaction authorization and durable attention: [Sales handoff contract](../contracts/sales-handoff.md).

@@ -1,0 +1,156 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://agentic-crm.local/schemas/sales-handoff.json",
+  "definitions": {
+    "sales-handoff-request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_team_id"
+      ],
+      "properties": {
+        "target_team_id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    },
+    "sales-handoff-accept": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "owner_revision"
+      ],
+      "properties": {
+        "owner_revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        }
+      }
+    },
+    "sales-handoff-data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "owner_revision",
+        "owner_principal_id",
+        "team_id",
+        "handoff_id",
+        "status",
+        "due_at",
+        "accepted_at",
+        "attention"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        },
+        "owner_revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        },
+        "owner_principal_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "team_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "handoff_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "accepted",
+            "cancelled"
+          ]
+        },
+        "due_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "accepted_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "attention": {
+          "type": "boolean"
+        }
+      }
+    },
+    "sales-handoff-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "data",
+        "meta"
+      ],
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/sales-handoff-data"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "correlation_id"
+          ],
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "sales-handoff-list": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "data",
+        "meta"
+      ],
+      "properties": {
+        "data": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/sales-handoff-data"
+          }
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "correlation_id"
+          ],
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

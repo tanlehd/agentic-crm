@@ -51,3 +51,5 @@ SRC-019 adds v13 workflow_engine (seven tables); v1–v12 unchanged. Run migrati
 ## SRC-020 v14–v16 upgrade
 
 Apply with the migration runner and then runtime grants; do not reset database/volumes. V14 creates Chatflow tables and Lead/outbound bindings, v15 closes nullable composite-FK bypass, v16 stores inert runtime proposals. Historical v1–v13 checksums remain unchanged; v14/v15 preserved after initial disposable test application. Existing null Lead references stay null. Pre/post count+hash evidence for existing data is required before browser fixtures. MySQL integration covers v13 upgrade/no-op and tenant constraints. Application/worker must run compatible source after migration; do not roll back schema by editing journal or historical statements. Preserve failed migration status and follow the existing repair runbook. Preview application requires any environment-specific approval noted in the checkpoint.
+
+SRC-021 v17 source and disposable upgrade verified: additive lead_handoff, composite tenant FKs, active pending uniqueness, Workflow action binding and durable attention. No historical migration rewrite.

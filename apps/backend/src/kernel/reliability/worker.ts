@@ -1,3 +1,5 @@
+import { workflowChildren } from '../../modules/workflow/children.js';
+import { SalesHandoffs } from '../../modules/sales/handoff.js';
 import { ChatflowEngine } from '../../modules/chatflow/engine.js';
 import { WorkflowEngine } from '../../modules/workflow/engine.js';
 import { runtimeAccessConsumer } from '../../modules/agents/runtime-consumer.js';
@@ -15,7 +17,8 @@ import { identityAccessConsumer } from '../../modules/identity/access-consumer.j
 class DeliveryWorker implements OnModuleInit, OnModuleDestroy {
   private readonly source = databaseSource();
   private readonly chatflow = new ChatflowEngine(this.source);
-  private readonly workflow = new WorkflowEngine(this.source,this.chatflow.children());
+  private readonly workflow = new WorkflowEngine(this.source,workflowChildren(this.source));
+  private readonly sales = new SalesHandoffs(this.source);
   private readonly runtime = this.chatflow.runtime;
   private readonly runtimeConsumer = runtimeAccessConsumer(this.runtime);
   private readonly routingConsumer = routingAccessConsumer(new Routing(this.source));
@@ -48,6 +51,7 @@ class DeliveryWorker implements OnModuleInit, OnModuleDestroy {
       await this.chatflow.tick();
       await this.runtime.tick();
       await this.workflow.tick();
+      await this.sales.tick();
     } catch { console.warn('RELIABILITY_TICK_FAILED'); }
   }
   async onModuleDestroy() {
