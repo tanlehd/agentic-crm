@@ -1,6 +1,6 @@
 # Checkpoint — điểm tiếp tục
 
-Updated2026-10-06, S-20261006-03 (SRC-024 Git sync; SRC-025 completed).
+Updated2026-10-06, S-20261006-04 (SRC-025 Git sync).
 
 ## Trạng thái
 
@@ -10,7 +10,7 @@ Release backend/web đã build và chạy ARM64 native + AMD64 emulated. Actual 
 
 ## Git và file
 
-Branch main, HEAD `34767074b8927a93e63c64c1704cf53277347e3a`. SRC-024 commit3476707 đã push origin/main từ d4a4506 theo user. SRC-025 chưa commit/push; working tree dirty gồm package.json, compose.release-smoke.yaml, scripts/release-{build,smoke,fixture,demo}.mjs, release runbook/matrix/detail, README/index/acceptance/migration/Docker/verify docs và tracking. Không product source/schema/API/event/migration change, không production deploy.
+Branch main. SRC-024 commit3476707 và SRC-025 commit `f35ea60` đã push origin/main theo user. Checkpoint/log/evidence Git sync được ghi trong docs commit tiếp theo. Không product source/schema/API/event/migration change, không production deploy.
 
 ## Evidence
 
