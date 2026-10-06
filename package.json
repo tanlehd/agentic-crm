@@ -48,7 +48,8 @@
     "seed:inbox": "node scripts/seed-inbox.mjs",
     "test:inbox": "node scripts/inbox-e2e.mjs",
     "seed:routing": "node scripts/seed-routing.mjs",
-    "test:routing": "node scripts/routing-e2e.mjs"
+    "test:routing": "node scripts/routing-e2e.mjs",
+    "release:smoke": "node scripts/release-build.mjs && node scripts/release-smoke.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.58.2",

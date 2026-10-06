@@ -2,7 +2,7 @@
 
 Nền tảng conversational CRM dạng SaaS multi-tenant, nơi Human Agent và AI Agent cùng xử lý hội thoại, lead, cơ hội bán hàng và yêu cầu hỗ trợ.
 
-**Trạng thái:** Base CRM M1 có OIDC, tenant isolation, Identity Admin UI, Contact/Company/Activity, Lead draft/consent/qualification và custom object CRUD. Metadata/property/form/view, typed query/index, association, audit/idempotency/outbox đã có; migration source v1–v17 và seed Alpha/Beta; Conversation backend/notes/outbound mock SRC-014 và mock intake/identity/CTM SRC-015 và inbox UI SRC-016; routing/assignment/takeover SRC-017 và private deterministic Agent Runtime SRC-018 và durable Workflow engine/API SRC-019. SRC-020 Chatflow/session/Human completion và SRC-021 Sales handoff/acceptance backend DONE; SRC-022 Sales/Operations UI DONE; preview schema17 đã qua Chrome Sales accept/retry/run, runtime theo checkpoint. Trạng thái nghiệm thu và evidence xem [task tracker](docs/tracking/tasks.md).
+**Trạng thái:** 25/25 source tasks M1–M2 DONE; M1 và M2 local/mock release gates PASS. CRM/Identity, Conversation/Inbox, routing/Human takeover, deterministic Agent Runtime, durable Workflow/Chatflow và Sales/Operations UI đã có. Release đã qua cold start, nâng schema8→17 giữ dữ liệu, restart và demo OIDC→CTM→Lead→Sales trên ARM64 native và AMD64 emulated. [Tracker](docs/tracking/tasks.md) · [Release/runbook](docs/development/m2-release.md). Connector Meta/AI thật và M3–M5 chưa triển khai.
 
 Mở [ứng dụng local](http://localhost:8080) sau khi khởi động theo [hướng dẫn chạy](docs/development/local.md).
 
@@ -34,6 +34,6 @@ Mỗi phiên cập nhật tracker, evidence và checkpoint; thay đổi thiết 
 
 Blueprint toàn platform; đặc tả chi tiết nền móng và case Facebook Messenger CTM giả lập → nhận diện Contact → Conversation → phân công → qualify Lead → bàn giao Sale. Connector thật, AI thật, builder nâng cao, Google Ads và custom report đầy đủ nằm ở milestone sau.
 
-Tài liệu bằng tiếng Việt; tên entity, API, event, field và requirement ID bằng tiếng Anh. CRM M1 đã có source và kiểm thử; Conversation/message domain và outbound mock SRC-014 đã có; mock Messenger intake SRC-015 đã có; inbox UI SRC-016 đã có; routing/assignment/takeover SRC-017 đã có; private mock runtime SRC-018 đã có; Workflow engine SRC-019 đã có; Chatflow/Sales handoff backend SRC-020/021 đã có; Sale/Operations UI SRC-022 đã có; healthcare fixture và metric queries SRC-023 đã có; fault/regression suite SRC-024 đạt180 integration tests; release M2 gate tiếp tục SRC-025.
+Tài liệu bằng tiếng Việt; tên entity, API, event, field và requirement ID bằng tiếng Anh. CRM M1 đã có source và kiểm thử; Conversation/message domain và outbound mock SRC-014 đã có; mock Messenger intake SRC-015 đã có; inbox UI SRC-016 đã có; routing/assignment/takeover SRC-017 đã có; private mock runtime SRC-018 đã có; Workflow engine SRC-019 đã có; Chatflow/Sales handoff backend SRC-020/021 đã có; Sale/Operations UI SRC-022 đã có; healthcare fixture và metric queries SRC-023 đã có; fault/regression suite SRC-024 đạt180 integration tests; release M2 gate SRC-025 đã PASS (local/mock).
 
 Healthcare M2 fixture/query walkthrough: [test:healthcare](docs/development/healthcare-demo.md), chạy độc lập trong MySQL test trống.

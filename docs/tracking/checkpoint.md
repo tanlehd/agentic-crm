@@ -1,25 +1,29 @@
 # Checkpoint — điểm tiếp tục
 
-Updated2026-10-06, S-20261006-02 (SRC-024 completed).
+Updated2026-10-06, S-20261006-03 (SRC-024 Git sync; SRC-025 completed).
 
-## Trạng thái thực tế
+## Trạng thái
 
-SRC-001…024 DONE (24/25), M1 gate PASS. SRC-024 regression/fault gate PASS; full M2 release gate còn mở. SRC-025 READY, chưa claim; không task active. [SRC-024 detail](details/SRC-024.md) · [tracker](tasks.md).
+SRC-001…025 DONE (25/25). M1 và M2 local/mock release gates PASS. Không task active. [Tracker](tasks.md) · [SRC-025 evidence](details/SRC-025.md) · [release runbook](../development/m2-release.md).
 
-Four new fault cases: real Redis TCP disconnect/HTTP503, recovery200 and lost-session401 with durable bearer intake202; actual SIGKILL after assignment action commit, Workflow consumer commit and mock provider receipt. Restart/replay preserves one effect/run and pinned version; takeover/unknown/reconcile never resends. Existing races/ACL/out-of-order/runtime/Chatflow/Sales and healthcare regression all pass. No production code/schema/API/event/migration changes.
+Release backend/web đã build và chạy ARM64 native + AMD64 emulated. Actual M1 baseline f575a8e/schema8→17 giữ31 bảng cũ/10 CRM records, journal checksum và migration no-op. Whole-stack stop/start giữ all-table hashes; timer đã persist hoàn tất đúng một lần. Hai architecture đều qua cold database + real Chrome/OIDC/API/worker CTM→AI-owned qualification→Sales UI accept; Human takeover/form/completion/handoff, owner independence/prospect và tenant denial.
 
-## Working tree và services
+## Git và file
 
-Branch main, HEAD `d4a4506`; SRC-024 tests, Compose test config, integration runner, docs/README/tracker changes are uncommitted. No commit/push/deploy in this session. Previous SRC-023 implementation was committed/pushed as `92d3ed6` at user request; current base includes subsequent docs sync.
+Branch main, HEAD `34767074b8927a93e63c64c1704cf53277347e3a`. SRC-024 commit3476707 đã push origin/main từ d4a4506 theo user. SRC-025 chưa commit/push; working tree dirty gồm package.json, compose.release-smoke.yaml, scripts/release-{build,smoke,fixture,demo}.mjs, release runbook/matrix/detail, README/index/acceptance/migration/Docker/verify docs và tracking. Không product source/schema/API/event/migration change, không production deploy.
 
-Preview remains SRC-022/schema17. Fresh check2026-10-06:7 services healthy (`artifacts/SRC-024/services-final.log`); no preview stop/start or volume mutation. Dedicated SRC-024 MySQL/Redis/test containers and network cleaned. No background jobs, automation or subagents started.
+## Evidence
 
-## Evidence và giới hạn
+`artifacts/SRC-025/arm64-final/release-summary.json` và `amd64/release-summary.json`: PASS; image IDs/platform, actual runtime arch/uid, upgrade/restart fingerprints, demo trace IDs và screenshots theo thư mục. `regression-final.log`:180/180 PASS (gồm healthcare12/4/3 và2/3, fault/ACL/races). `verify-final/summary.json`:9/9 PASS (66 unit/contract+7 tooling/build/typecheck/smoke). Final harness refinements validated by both release gates and final lint; final docs status checked separately (`lint-final.log`, `docs-final.log`, `whitespace.log`). Exact commands in task detail.
 
-`artifacts/SRC-024/`: integration-final.log180/180 PASS; verify-final/summary.json9/9 PASS (66 unit/contract+7 tooling, build/typecheck/smoke); build-final.log; services-final.log; docs-final.log; whitespace.log. Initial179 PASS/1 test-SQL failure retained in integration-first.log and corrected. Final docs-only closeout follows canonical verify; docs/whitespace rerun on final tree.
+Linux app/build Node24.21.0/pnpm10.33.0, MySQL8.4.11/Redis7.4.11; host Node25 only Docker/Chrome orchestration. Native AMD64 hardware/Windows/production NOT_RUN; remote CI NOT_VERIFIED. AMD64 app uses emulation, native infrastructure and ARM64 M1 baseline.
 
-Linux ARM64 Node24.21.0/pnpm10.33.0/MySQL8.4.11/Redis7.4.11; host Node orchestrates only. Offline cache image builds current test source; commands in [detail](details/SRC-024.md). Standard runner: `pnpm test:integration`, now compiles backend and provisions ephemeral Redis as well as MySQL.
+Initial Docker disk100% issue: removed only unused build cache older1h; no database volume/image tag deleted. Existing test DB/OIDC recovered without reset. Earlier harness selector/unique-credential failures retained; final named runs PASS. No blocker/unresolved decision.
 
-Redis fault is an actual TCP cut, not container restart. Process tests run compiled application services, not Nest worker bootstrap. Lease expiry is accelerated using test SQL; OIDC exchange/account resolution synthetic, session service/Redis/HTTP real. No BullMQ or Meta/LLM production evidence claimed. Remote CI/native AMD64/Windows and SRC-025 release/upgrade/demo NOT_RUN. No blocker or unresolved decision.
+## Services và bàn giao
 
-Next action: read SRC-025 release/upgrade requirements and claim SRC-025 for release images, M1→M2 smoke and M2 demo/handoff.
+Preview localhost8080 remains existing SRC-022 application/schema17; no preview build/stop/restart/deploy by SRC-025. Final7 services healthy (`services-final.log`), no running test containers. Test containers/networks cleaned; named test volumes deliberately retained (all runs in `retained-test-volumes.log`, successful run/private credential directory in each release-summary.json). No background job/automation/subagent started.
+
+Run `pnpm release:smoke` for fresh isolated reproduction; it requires local Chrome, dependencies, Docker space and Git history including f575a8e. Real Meta/LLM, production ops, M4 Deal/won/Customer/appointments and M5 builders/report engine remain outside this release.
+
+Next action: review/prioritize M3 design requirements before claiming any real Meta/AI integration task; no further M1–M2 source task remains.

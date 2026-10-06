@@ -61,3 +61,5 @@ SRC-013: `pnpm test:integration` cho MySQL tenant/record/index/Lead/seed/ACL; `p
 ## SRC-024 fault regression
 
 `pnpm test:integration` compiles backend services, then runs the full MySQL suite with a dedicated ephemeral Redis. The [fault matrix](../quality/m2-fault-suite.md) adds test-local TCP disconnection and process SIGKILL after committed boundaries. No preview ports/volumes are used. Redis session service and HTTP error handling are real; OIDC exchange/account resolution are synthetic in this fault test. Real OIDC/browser evidence stays in previous task gates and the SRC-025 release demo.
+
+SRC-025 adds `pnpm release:smoke` for historical M1 release build→schema17 preservation, current cold start, whole-stack restart, durable timer resume and real browser/API/worker M2 demo. Native ARM64 and emulated AMD64 PASS; commands/platform limits and retained test volume cleanup at [release runbook](m2-release.md). Remote CI remains unverified in this session.

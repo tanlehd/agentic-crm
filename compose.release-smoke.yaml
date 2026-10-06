@@ -1,0 +1,4 @@
+# Dedicated release gate project; never run this override on the preview project.
+services:
+  gateway:
+    ports: !override [127.0.0.1:18080:8080]

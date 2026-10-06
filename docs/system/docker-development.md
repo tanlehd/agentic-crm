@@ -65,6 +65,8 @@ SRC-003/004: compose config hợp lệ, secrets không hard-code, containers hea
 
 ## Trạng thái command scaffold
 
-Đã có env:init, dev:up/status/logs/down, preview:up, test:container, db:migrate/status test:integration và verify/verify:container. seed:dev và test:seed đã có SRC-009; test:e2e xuyên CRM và release:smoke vẫn là kế hoạch. [Verification runbook](../development/verification.md). Migration gate/readiness và local privilege provisioning xem [runbook](../development/migrations.md).
+Đã có env:init, dev:up/status/logs/down, preview:up, test:container, db:migrate/status test:integration và verify/verify:container. seed:dev và test:seed đã có SRC-009; release:smoke đã có SRC-025; test:e2e umbrella xuyên CRM chưa có (các script E2E riêng đã có). [Verification runbook](../development/verification.md). Migration gate/readiness và local privilege provisioning xem [runbook](../development/migrations.md).
 
 SRC-006: base Compose API nhận client secret/session encryption key từ .env private; worker không nhận các secret này. `pnpm auth:provision` cập nhật client/user trên Keycloak realm có sẵn, không thay volume. Auth-only fixture không có membership. Gateway ngừng access log /auth/ và /identity/ để không lưu tham số OIDC; sửa nginx.conf cần restart gateway. [Auth runbook](../development/local.md).
+
+SRC-025 release gate PASS: [release runbook](../development/m2-release.md) · [evidence](../tracking/details/SRC-025.md). `pnpm release:smoke` builds isolated app tags and tests historical M1→M2 plus cold/restart/browser flows. ARM64 native and AMD64 emulated app images tested; no native AMD64/production claim. Existing preview tags/volumes are not changed. Test containers/network cleanup retains named volumes with an explicit inventory. Current M2 worker polls MySQL durable backlog directly; Redis provides session/readiness, no BullMQ transport is claimed.

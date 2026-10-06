@@ -1,0 +1,10 @@
+import { spawnSync } from 'node:child_process';
+import { mkdtemp } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const root=fileURLToPath(new URL('../',import.meta.url));
+const run=(cmd,args,options={})=>{const r=spawnSync(cmd,args,{cwd:root,stdio:'inherit',...options});if(r.error||r.status!==0)throw new Error('RELEASE_BUILD_FAILED');return r.stdout;};
+const directory=await mkdtemp(join(tmpdir(),'agentic-crm-m1-build-'));
+const archive=run('git',['archive','f575a8e'],{stdio:['ignore','pipe','inherit'],maxBuffer:32*1024*1024});run('tar',['-x','-C',directory],{input:archive,stdio:['pipe','inherit','inherit']});
+for(const [target,tag,context]of [['backend','agentic-crm-src025-m1:local',directory],['backend','agentic-crm-src025-backend:local',root],['web','agentic-crm-src025-web:local',root]])run('docker',['build','--pull=false','-f',join(context,'infra/docker/Dockerfile'),'--target',target,'-t',tag,context]);
