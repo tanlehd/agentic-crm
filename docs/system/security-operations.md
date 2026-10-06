@@ -54,3 +54,7 @@ Một membership có một seat trong M1; người cần nhiều workspace dùng
 Mutation record dùng `If-Match` row version; assignment còn tăng `owner_revision`. Worker kiểm tra owner/policy tại lúc nhận job, ngay trước tool side effect và lúc commit. Disable actor hoặc handoff làm các turn AI cũ stale.
 
 Outbound đang `queued` bị hủy khi owner thay đổi. Nếu request provider đã thực sự bắt đầu, không thể thu hồi chắc chắn: lưu `sending/unknown`, reconcile, hiển thị lịch sử; không gửi lại mù. UI không được tuyên bố đã ngăn mọi message đang in-flight.
+
+## UX-002 — Workspace permission extension
+
+[Workspace authorization matrix](../contracts/agent-chat-workspace.md) bổ sung chat_inbox.manage/share, conversation_tag.manage, chat_snippet.read/manage và conversation.tags field policy. Read marker chỉ Human principal của session; admin entitlement có chat capability vẫn phải có grants. Own chat_inbox nghĩa creator; share grant chỉ definition, không Conversation/Contact/run access. Metrics/filter/sort/tags/search đều apply viewer ACL trước query; không lộ count global. Snooze/update không tự cấp reply/ownership; notes/run sources authorize độc lập khi hydrate activity. Role fixture grants phải explicit ở implementation, không auto-grant toàn bộ tenant roles.

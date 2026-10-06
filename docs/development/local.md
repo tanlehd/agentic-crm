@@ -1,6 +1,25 @@
 # Chạy bộ khung local
 
-Updated: 2026-10-04. Foundation preview có OIDC, Identity admin, outbox/inbox worker và seed Identity Alpha/Beta. Chưa có CRM nghiệp vụ hoặc seed ngành xuyên luồng.
+Updated: 2026-10-06. Local stack có OIDC, Identity/CRM, Inbox, Workflow/Chatflow và Sales theo tracker; Facebook configuration có source nhưng live Meta cần cấu hình riêng. M3 overall chưa hoàn tất.
+
+## Windows setup — ENV-001
+
+Máy này dùng Docker Desktop Linux/AMD64, URL [http://localhost:18080](http://localhost:18080) do Windows chặn bind8080. `.env` private đặt `LOCAL_GATEWAY_PORT=18080` và `APP_ORIGIN=http://localhost:18080`; mặc định Compose vẫn8080. Khi đổi cổng, đổi cả hai giá trị, recreate stack và chạy lại `auth:provision` để đồng bộ OIDC. Node 24.21.0 portable và pnpm 10.33.0 nằm trong `.local` (Git/Docker ignore), không thay phiên bản toàn máy. Mỗi terminal PowerShell mới tại repository chạy:
+
+```powershell
+. ./scripts/dev-shell.ps1
+node --version
+pnpm --version
+pnpm dev:up
+```
+
+Dot-source chỉ cập nhật PATH của terminal hiện tại. Toolchain private phải tồn tại trước khi dùng; checkout mới cần tải archive `node-v24.21.0-win-x64.zip` từ release chính thức Node, đối chiếu SHA256 với `SHASUMS256.txt`, giải nén vào `.local`, rồi dùng Node đó cài `pnpm@10.33.0` với npm prefix `.local/tooling`. Có thể chạy `pnpm install --frozen-lockfile` cho editor/host tooling; canonical verification trên Windows vẫn dùng `pnpm verify:container`.
+
+Generated contracts/OpenAPI cần LF để kiểm byte-for-byte; `.gitattributes` cố định các đường dẫn này. Với checkout cũ còn CRLF, chuẩn hóa line endings của đúng file generated hoặc checkout lại chúng sau khi bảo toàn thay đổi hiện có; không regenerate để che drift nội dung, không normalize snapshot nguồn bên ngoài.
+
+Stack phát triển dùng `compose.yaml` + `compose.dev.yaml`, tự reload backend/web source được mount; thay dependency/config cần rebuild. Khởi tạo lần đầu theo thứ tự `pnpm env:init`, `pnpm dev:up`, `pnpm auth:provision`, `pnpm seed:dev`, `pnpm seed:registry`, `pnpm seed:m1`, `pnpm seed:channels`, `pnpm seed:inbox`, `pnpm seed:routing`. Các seed idempotent, không reset dữ liệu/quyền đã thay đổi. Mở URL theo `APP_ORIGIN`, đăng nhập `alpha_admin`; mật khẩu ở `SEED_ALPHA_ADMIN_PASSWORD` trong `.env` private, chỉ xem bằng editor local.
+
+`pnpm dev:status` kiểm services; `pnpm dev:down` dừng và giữ volumes. Independent Connector là opt-in theo [runbook](../../services/crm-connector/README.md), không cần bật để phát triển baseline. `.env` không chứa credential Meta thật khi init; Connect Facebook cần [cấu hình riêng](facebook-configuration.md).
 
 ## Khởi động
 
@@ -143,3 +162,11 @@ Sau `pnpm preview:up`, chạy `pnpm seed:routing` (cần các seed Identity/CRM/
 Tab Chat → chọn Conversation → **Phân công & lịch sử**: chọn owner đủ điều kiện hoặc để hàng chờ, lưu bằng version hiện tại; **Tiếp quản hội thoại** gán caller. Khi dữ liệu đổi, xem lại phân công; nếu mất ACK, **Kiểm tra lại phân công** dùng đúng payload/version/key cũ. Reply composer vẫn yêu cầu xem owner revision mới trước khi gửi. `pnpm test:routing` chạy Chrome/OIDC với synthetic intake, không cần Meta/LLM token thật. Internal round-robin/capacity phục vụ Workflow/Runtime SRC-018/019; chưa tự route inbound qua workflow chưa có.
 
 SRC-018 private runtime is composed into worker (schema12), with deterministic mock adapter and a fail-closed Chatflow session port. No public execute/tools/fixture endpoint or UI auto-run exists. `pnpm test:integration` exercises runtime through a durable synthetic session harness; `pnpm test:unit` validates protocol/mock. SRC-020 supplies real sessions, consent processing and authorized outbound orchestration.
+
+## Workspace schema20/21 — local upgrade
+
+Schema20 captures an immutable Human cohort and Conversation inbound cutoff. Before upgrading an existing database, build current backend/development images, stop both API and worker, and create a restricted local backup. Keep writers stopped through migration and backfill; never run a volume reset. `pnpm db:migrate` applies forward DDL, resumable workspace backfill and technical runtime table grants, but does not rebuild its image. `pnpm db:status` validates checksums/journal against the current image.
+
+Compare pre/post checksums of existing application tables, core row counts, workspace sidecar completeness, inbound sequences and rollout cutoffs before restarting writers. Repeating migration must apply zero versions and backfill zero completed Conversations. Recreate API/worker/web from current images, then verify readiness and web HTTP status. On a migration failure keep writers stopped and inspect the journal; do not blindly retry partially applied DDL or edit migration history. A backup restore is an explicit recovery operation, not the normal startup procedure.
+
+Existing stored business roles are preserved: new fixture permissions do not automatically regrant existing users. SRC-032/033 provide backend foundations only; the sample UI and remaining features require SRC-034…037. Local execution evidence: [ENV-002](../tracking/details/ENV-002.md).

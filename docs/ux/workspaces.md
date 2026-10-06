@@ -10,7 +10,13 @@ Typography dùng system sans-serif, body 14px, heading 20/24px; spacing scale 4/
 
 Record cards dùng cùng pattern cho standard/custom object: header identity + owner/team + status, property sections, associations và activity timeline. Hiển thị Human/AI bằng badge có text, không giả AI thành tài khoản người thật.
 
-## Chat Workspace — M2
+## Chat Workspace — UX rebuild
+
+Đặc tả chuẩn cho lần build lại: [Agent Chat Workspace](agent-chat-workspace.md), UX-002 / CHG-20261006-19, kế thừa layout UX-001. [Contract mở rộng](../contracts/agent-chat-workspace.md) chốt per-agent unread/counts/waiting metrics, custom/shared inbox, server search/sort, tags hội thoại, durable snooze, activity feed, snippets và Contact channels. Bố cục theo ảnh gồm app rail, Inbox sidebar, list/search/filter, actions, console và context drawer/rail. Ready về thiết kế; source/API/migration mới chưa triển khai. Media/provider receipts/call/control vẫn có gate riêng; không giới hạn product design chỉ vì API cũ còn thiếu.
+
+Wireframe ba cột dưới đây là **baseline M2 lịch sử**, được thay thế về bố cục bởi đặc tả trên; business rules và evidence implementation bên dưới vẫn giữ hiệu lực.
+
+### Baseline M2 trước rebuild
 
 ```text
 ┌ Tenant / Chat / Sales / Admin ───────────────────────────────┐

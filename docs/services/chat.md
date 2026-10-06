@@ -63,3 +63,7 @@ Chat ingress caches confirmed CRM mappings after commit, checks active Contact s
 ## SRC-031 Facebook configuration and channel dimensions
 
 [Exact OAuth/Page/schema19 contract](../contracts/facebook-configuration.md) and [operator runbook](../development/facebook-configuration.md) define Admin→Channels→Facebook, session/state-bound OAuth, encrypted DB Page credentials and manual verified token replacement. Baseline Channels remains sole writer of catalog/credentials; independent Connector capture is unchanged until API-based extraction/provisioning. Conversation channel and generated channel_id retain existing connection IDs, with Page metadata and tenant/field-authorized filters/options. Messaging activation and real sandbox acceptance remain separate.
+
+## UX-002 — Agent workspace product design
+
+[Workspace contract](../contracts/agent-chat-workspace.md) và [data model](../data/agent-chat-workspace.md) bổ sung Chat-owned unread/count/query, inbox/share, conversation tags, durable snooze, snippets và activity index. Snooze deadline worker dùng MySQL CAS, không Redis-only; read marker per Human không gọi provider seen. Metrics/read/tag writes không đổi owner_revision. Activity hydrates CRM notes và checks source-run ACL qua ports/API, không copy transcript hay run state authority. Source TODO theo [build plan](../planning/agent-chat-workspace.md); không thay trạng thái extraction/deployment.

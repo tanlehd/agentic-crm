@@ -16,13 +16,13 @@ export class TransactionScope {
 }
 export class UnitOfWork {
   constructor(private readonly source: DataSource) {}
-  async run<T>(context: TenantContext, work: (scope: TransactionScope) => Promise<T>): Promise<T> {
+  async run<T>(context: TenantContext, work: (scope: TransactionScope) => Promise<T>, isolation:'READ COMMITTED'|'REPEATABLE READ'='READ COMMITTED'): Promise<T> {
     const runner = this.source.createQueryRunner();
     let scope: TransactionScope | undefined;
     try {
       await runner.connect();
       scope = new TransactionScope(context, runner);
-      await runner.startTransaction('READ COMMITTED');
+      await runner.startTransaction(isolation);
       const result = await work(scope);
       await runner.commitTransaction();
       return result;

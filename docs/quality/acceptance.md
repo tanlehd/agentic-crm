@@ -169,3 +169,15 @@ SRC-030 sub-scope: real local HTTP/MySQL tests verify lookup/resolve replay/conc
 ## SRC-031 Facebook configuration and channel dimensions
 
 [Exact OAuth/Page/schema19 contract](../contracts/facebook-configuration.md) and [operator runbook](../development/facebook-configuration.md) define Admin→Channels→Facebook, session/state-bound OAuth, encrypted DB Page credentials and manual verified token replacement. Baseline Channels remains sole writer of catalog/credentials; independent Connector capture is unchanged until API-based extraction/provisioning. Conversation channel and generated channel_id retain existing connection IDs, with Page metadata and tenant/field-authorized filters/options. Messaging activation and real sandbox acceptance remain separate.
+
+## Agent Chat rebuild — UX-001
+
+[Đặc tả và scenarios UX-CHAT-01…12](../ux/agent-chat-workspace.md) là gate cho lần build lại giao diện theo ảnh mẫu. Bao gồm responsive/scroll, filters/cursor, reply/note, owner revision, unknown send, tenant/field ACL, rich passive renderer, qualification và accessibility. UX-001 chỉ nghiệm thu tài liệu (AC-14 sub-scope); mọi runtime/browser case của layout mới NOT_RUN, không kế thừa PASS từ SRC-016/031.
+
+## UX-002 — Extended Agent Chat product acceptance
+
+[Contract cases UX-CHAT-13…22](../contracts/agent-chat-workspace.md) bổ sung per-agent/multi-tab read markers, exact ACL counts/waiting coverage, server query/cursor, shared inbox revoke/transfer, tag concurrency, durable snooze races, source-authorized activity, snippets/contact navigation và migration/rollback. Kết hợp UX-CHAT-01…12 đã cập nhật trong UX. Mapping AC-01/02 privacy/ACL, AC-06/18 ownership/dispatch, AC-12/15/17 idempotency/race/restart, AC-14 design. Tất cả runtime của scope mới NOT_RUN; UX-002 chỉ kiểm tài liệu, không dùng PASS M2 để đóng gate mới.
+
+SRC-032 backend sub-scope of UX-CHAT-13/14/15/19/22:203 MySQL regression and canonical9/9 PASS;99 unit tests. [Evidence](../tracking/details/SRC-032.md). Covers marker/sequence/ACL query/waiting coverage and schema19 upgrade/backfill. Does not close browser layout, full feature rollout/rollback or SRC-033…037 scenarios.
+
+SRC-033 backend sub-scope UX-CHAT-16/17/21 PASS: full209 MySQL tests, final13 workspace cases (196 intentionally skipped),102 unit tests and canonical9/9. [Evidence](../tracking/details/SRC-033.md). Shared-view ACL/revoke/team/transfer/quota, Conversation tag concurrency/archive/field policies and snippet catalog/HTTP schemas verified; keyboard/composer and full UI remain SRC-036, deployment/rollback remains SRC-037.

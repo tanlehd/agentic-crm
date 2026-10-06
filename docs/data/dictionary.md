@@ -170,3 +170,7 @@ Existing contact_identity remains canonical CRM-owned identity mapping in schema
 ## SRC-031 Facebook configuration and channel dimensions
 
 [Exact OAuth/Page/schema19 contract](../contracts/facebook-configuration.md) and [operator runbook](../development/facebook-configuration.md) define Admin→Channels→Facebook, session/state-bound OAuth, encrypted DB Page credentials and manual verified token replacement. Baseline Channels remains sole writer of catalog/credentials; independent Connector capture is unchanged until API-based extraction/provisioning. Conversation channel and generated channel_id retain existing connection IDs, with Page metadata and tenant/field-authorized filters/options. Messaging activation and real sandbox acceptance remain separate.
+
+## UX-002 — Agent workspace entities (design Ready, not migrated)
+
+[Dictionary extension](agent-chat-workspace.md) chốt conversation_workspace/message_workspace sequence và coverage, conversation_read_state, conversation_snooze, chat_inbox/share, conversation_tag/link, chat_snippet, conversation_activity/counter và rollout/cohort/cutoff tables. Chat là writer; metrics tính theo viewer ACL, không global count. CRM thêm optional Contact address/preferred_language qua property metadata hiện hữu; Contact identity authority giữ nguyên. Keys/types/indexes/backfill ở extension; migration numbers chỉ cấp khi implement, không sửa schema1–19.

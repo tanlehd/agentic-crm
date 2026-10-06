@@ -162,3 +162,7 @@ erDiagram
 ```
 
 [Schema19 and OAuth](../contracts/facebook-configuration.md): channel_id is a stored generated alias of connection_id; tenant/connection/channel composite FK prevents provider mismatch. Page metadata/token ownership remains Channels until extraction, not shared SQL access from independent Connector. OAuth attempt stores state/session hashes, no code or token.
+
+## UX-002 — Workspace logical extension
+
+[Workspace ERD và keys](agent-chat-workspace.md) bổ sung Chat-owned per-Human read state, saved inbox/share, tags links, snooze schedule, activity refs và message coverage. Conversation lifecycle vẫn open/pending/closed; snooze là overlay, tags là của Conversation. Contact/note vẫn CRM, Human/team vẫn Identity, run vẫn Workflow/Chatflow. Không cross-service FK; chưa tạo database objects. Đọc contract cùng ERD trước SRC-032…037.

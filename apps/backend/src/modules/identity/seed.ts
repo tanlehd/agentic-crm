@@ -23,10 +23,10 @@ export function seedGuard(env: NodeJS.ProcessEnv): string {
 }
 const grants=(resource:string, actions:string[], scope='team')=>actions.map(action=>({resource,action,scope}));
 const roles={
-  tenant_admin: [...['membership','role','team','agent'].flatMap(r=>grants(r,['read','create','update'],'all')),...grants('integration',['read','configure'],'all')],
-  chat_agent: [...grants('conversation',['read','reply','note','takeover']),...grants('contact',['read']),...grants('lead',['create','qualify','handoff'])],
+  tenant_admin: [...['membership','role','team','agent'].flatMap(r=>grants(r,['read','create','update'],'all')),...grants('integration',['read','configure'],'all'),...grants('chat_inbox',['manage','share'],'all'),...grants('conversation_tag',['manage'],'all'),...grants('chat_snippet',['read','manage'],'all')],
+  chat_agent: [...grants('chat_inbox',['manage','share'],'own'),...grants('chat_snippet',['read'],'all'),...grants('conversation',['update']),...grants('conversation',['read','reply','note','takeover']),...grants('contact',['read']),...grants('lead',['create','qualify','handoff'])],
   sales_agent: [...grants('lead',['read','accept']),...grants('contact',['read'])],
-  supervisor: [...grants('conversation',['read','reply','note','takeover','assign']),...grants('lead',['read','assign']),...grants('contact',['read'])],
+  supervisor: [...grants('chat_inbox',['manage','share'],'own'),...grants('conversation_tag',['manage'],'all'),...grants('chat_snippet',['read','manage'],'all'),...grants('conversation',['update']),...grants('conversation',['read','reply','note','takeover','assign']),...grants('lead',['read','assign']),...grants('contact',['read'])],
   viewer: ['contact','lead','conversation'].flatMap(r=>grants(r,['read'])),
   intake_ai: [...grants('conversation',['read','reply'],'own'),...grants('contact',['read']),...grants('lead',['create','qualify'],'own')],
   ctm_automation: [...grants('conversation',['route','start_session']),...grants('lead',['create','qualify','handoff']),...grants('contact',['share'])],

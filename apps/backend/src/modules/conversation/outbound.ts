@@ -8,6 +8,7 @@ import { fieldAllowed,permits } from '../identity/domain/authorization.js';
 import { withFieldPolicies } from '../crm/access.js';
 import { ChannelReferences,type Sender,type SendResult,type SendInput } from '../channels/ports.js';
 import { conversation } from './domain.js';
+import { workspaceSent } from './workspace-storage.js';
 export class OutboundDispatcher {
   private readonly uow:UnitOfWork;private readonly auth:IdentityAuthorization;private readonly commands=new DurableCommands();
   constructor(private readonly source:DataSource,private readonly sender:Sender,private readonly channels=new ChannelReferences()){this.uow=new UnitOfWork(source);this.auth=new IdentityAuthorization(this.uow);}
@@ -39,6 +40,7 @@ export class OutboundDispatcher {
     await s.query('UPDATE outbound_intent SET status=?,provider_message_id=?,error_code=? WHERE tenant_id=? AND id=?',[result.status,provider,error,tenant,intentId]);
     await s.query('UPDATE message SET status=?,provider_message_id=? WHERE tenant_id=? AND outbound_intent_id=?',[result.status,provider,tenant,intentId]);
     const [message]=await s.query('SELECT id FROM message WHERE tenant_id=? AND outbound_intent_id=?',[tenant,intentId]);
+    if(result.status==='sent')await workspaceSent(s,conversationId,message.id);
     await this.commands.systemAudit(s,intentId,'conversation',conversationId,'outbound.result',['status','error_code']);
     await this.commands.conversationEvent(s,intentId,result.status==='sent'?'message.sent':'message.delivery_failed',conversationId,c.record.version,result.status==='sent'?{conversation_id:conversationId,message_id:message.id,outbound_intent_id:intentId}:{conversation_id:conversationId,outbound_intent_id:intentId,error_code:error});
   });}

@@ -51,3 +51,7 @@ Rollback/cutover tuân [migration plan](../planning/microservices-migration.md):
 ## Acceptance trước service Ready
 
 Own DB credentials không đọc được DB khác; API/consumer schemas và tenant ACL negative tests; duplicate/out-of-order/lost ACK; crash sau remote effect; permission/owner revoked; broker/downstream outage; poison event/DLQ replay; migrate/restore và compatibility với client/run phiên bản cũ. Thêm domain cases ở module hiện hữu; với Draft module phải chốt domain AC trước code. Chưa test service phân tán, tất cả gates này NOT_RUN.
+
+## UX-002 — Conversation activity projection
+
+Run có Conversation binding verified phát automation.conversation_activity.v1 qua source outbox theo [workspace contract](../contracts/agent-chat-workspace.md), dùng pinned definition version/run revision và sanitized state. Chat không ghi run state, không dừng Workflow khi snooze. Source read permission vẫn bắt buộc trước khi hiển thị activity. Contract Ready, producer/consumer implementation thuộc SRC-034.

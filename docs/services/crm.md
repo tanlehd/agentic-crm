@@ -60,3 +60,7 @@ PLAN-006C: expose read-only LookupContactIdentity independently of ResolveContac
 ## SRC-030 scoped implementation
 
 CRM application port owns immutable contact_identity lookup and atomic resolve/create with service idempotency receipt. Existing schema18 is reused; no cross-service SQL access. See [compatibility contract](../contracts/contact-resolution-local.md).
+
+## UX-002 — Contact context và note notifications
+
+[Workspace contract](../contracts/agent-chat-workspace.md) bổ sung authorized Contact channel-identities read, optional address/preferred_language standard properties qua metadata, và crm.conversation_note.changed notification từ CRM outbox. CRM vẫn giữ note body và Contact identity authority; Chat chỉ index refs, đọc qua authorized ports/API. Conversation tags thuộc Chat, không tự trở thành Contact tags. Thiết kế Ready, SRC-034/035 chưa triển khai.

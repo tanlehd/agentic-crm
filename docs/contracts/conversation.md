@@ -31,3 +31,7 @@ SRC-017 adds optional allowed_actions entries assign/takeover according to curre
 
 
 GET message-envelopes bổ sung read-only theo [envelope v2](message-envelope-v2.md); routes/DTO v1 messages không đổi.
+
+## UX-002 — Workspace product extension
+
+[Contract Agent Chat Workspace](agent-chat-workspace.md) bổ sung namespace `/api/v1/chat-workspace`: unread/metrics/query, saved/shared inbox, tags, snooze overlay, activity và snippets. Legacy DTOs/routes/status giữ nguyên; backend writer mới phải duy trì sidecar sequence/coverage cùng message transaction kể cả request từ client cũ. Snooze không pause AI hoặc đổi pending; assignment/inbound mới wake, close cancel. Thiết kế Ready, source/migrations TODO theo SRC-032…037.

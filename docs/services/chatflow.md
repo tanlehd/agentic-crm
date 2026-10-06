@@ -51,3 +51,7 @@ Rollback/cutover tuân [migration plan](../planning/microservices-migration.md):
 ## Acceptance trước service Ready
 
 Own DB credentials không đọc được DB khác; API/consumer schemas và tenant ACL negative tests; duplicate/out-of-order/lost ACK; crash sau remote effect; permission/owner revoked; broker/downstream outage; poison event/DLQ replay; migrate/restore và compatibility với client/run phiên bản cũ. Thêm domain cases ở module hiện hữu; với Draft module phải chốt domain AC trước code. Chưa test service phân tán, tất cả gates này NOT_RUN.
+
+## UX-002 — Conversation activity projection
+
+Chatflow run/session binding đã verify phát automation.conversation_activity.v1 theo [workspace contract](../contracts/agent-chat-workspace.md); source_service=chatflow, run_id là session ID, source_revision là session version, definition_version_id là pinned Chatflow version. Chat chỉ hiển thị event có source read permission; không lộ variables/consent/private proposal. Snooze không pause session; Human takeover vẫn theo contract cũ. Producer implementation thuộc SRC-034, chưa triển khai.

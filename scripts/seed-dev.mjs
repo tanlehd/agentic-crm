@@ -12,7 +12,7 @@ async function main(){
   for(const user of users)if(!env[`SEED_${user.toUpperCase()}_PASSWORD`])throw new Error('Run env:init');
   const composeEnv={...process.env,...env};
   stage='schema preflight';
-  const preflight=spawnSync('docker',['compose','run','--rm','--no-deps','-T','migrate','node','dist/kernel/database/cli.js','status'],{env:composeEnv,encoding:'utf8',timeout:30000});
+  const preflight=spawnSync('docker',['compose','run','--rm','--no-deps','-T','migrate','node','dist/kernel/database/cli.js','status'],{env:composeEnv,encoding:'utf8',timeout:120000});
   if(preflight.status!==0)throw new Error('Schema not ready');
   const base=`${origin.origin}/identity`;
   stage='IdP authentication';

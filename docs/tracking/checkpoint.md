@@ -1,27 +1,25 @@
 # Checkpoint — điểm tiếp tục
 
-Updated2026-10-06, S-20261006-15. SRC-001…031 DONE; PLAN-004D scoped design DONE. M3 overall/local release incomplete. [Tracker](tasks.md) · [Evidence](details/SRC-031.md). No task active, no background agents/automation.
+Updated 2026-10-06, S-20261006-21. SRC-032/033 DONE. ENV-002 local database upgrade DONE, Codex. User authorized migration and committing completed changes; no push requested. Full Agent Chat remains incomplete: SRC-034…037 TODO, sample UI not rebuilt. No background agents or automation. [Tracker](tasks.md) · [ENV-002](details/ENV-002.md).
 
-## User objective and decisions
+## Current delivery
 
-Hoàn thiện M3 local; no Meta sandbox. Latest priority: Admin configuration→Channels→Facebook Page list and Connect Facebook, real OAuth discovery (explicitly selected by user), DB-managed Page tokens; user may replace token manually later for demo. Unified conversations need channel/icon/channel_id and filtering/report dimensions by Page ID. CRM DB remains SoT for canonical identity→Contact; Connector/Chat cache-aside and crm_contact_id contracts from SRC-030 retained.
+SRC-032: schema20 sequence/read cutoff/coverage, atomic writer hooks, resumable backfill, per-Human read markers, server queries/counts and signed cursors. PASS203 MySQL,99 unit, canonical9/9. [Evidence](details/SRC-032.md), CHG-20261006-20.
 
-## Delivered this session
+SRC-033: schema21 saved/shared inbox, Conversation tags/links, snippets, versioned/idempotent CRUD, Identity target port, strict schemas/generated contracts, events and queue/sidebar filters. PASS209 full MySQL,13 final workspace cases (196 intentionally skipped),102 unit,7 tooling and canonical9/9. [Evidence](details/SRC-033.md), CHG-20261006-21. No open test failure.
 
-SRC-031 implements OAuth state/session/tenant binding, fixed Graph v26.0 code exchange and bounded Page discovery, encrypted Page credentials and verified manual stdin token CLI. Admin UI and callback return to selected tenant, Page list and configuration state. Migration19 adds Page/OAuth tables, channel provider extension, Conversation channel and generated channel_id, FK/indexes. Inbox Messenger icon and channel/channel_id/page_id filters honor tenant/field/record ACL. [Contract](../contracts/facebook-configuration.md) · [Runbook](../development/facebook-configuration.md).
+ENV-002: current backend/dev images built. API/worker quiesced before backup and schema20 cutoff. Forward19→21 applied,0 Conversations backfilled; repeated migration applied0/backfilled0. All60 existing business-table checksums unchanged (journal excluded);9 principals,0 Conversations/0 Messages retained. Sidecar/sequence/cutoff/cohort inconsistency counts0. Existing business roles preserved. Restricted ignored backup and command evidence under artifacts/ENV-002. No reset, volume deletion or production access. Runtime verification PASS: seven development services healthy; API readiness and web HTTP200. Initial Compose wait reported API unhealthy and first gateway request502 during startup; later logs confirmed successful startup and fresh health/HTTP checks passed without source/config changes. No known remaining failure.
 
-Baseline Channels module owns configuration; independent Connector DB/capture remains unchanged. Page token stored does not activate receive/send: transport stays disabled, no real Page relabelled as mock. Real capture→Chat, subscription/send/control and provider profile enrichment are pending. Existing event/envelope versions unchanged.
+Files: workspace source/migrations/tests; Identity port/grants/fixtures; generated contracts; ENV config/scripts; UX/contract/data/module/service/acceptance/planning/tracking documentation and user-provided reference PNG. All completed changes selected for authorized commit on main, parent1531c2a; delivery revision is the Git commit containing this checkpoint (resolve with git log). Private .env, backups, dependencies and artifacts excluded. No push/deploy requested. Preserve this distinction from historical source-task evidence written before local migration.
 
-## Verification / workspace
+## Development environment
 
-Main HEAD1111839 dirty, pre-existing work preserved; no commit/push/deploy/preview migration. Canonical Node24.21.0/pnpm10.33.0 Linux arm649/9 PASS (96 unit/contract/renderer +7 tooling). MySQL196/196 PASS including upgrade18→19, OAuth replay/supersession/revocation/cross-tenant rollback/encryption, channel filter/field ACL/cursor. Next+Chrome desktop/mobile synthetic browser smoke PASS; current nginx config syntax PASS. Screenshots inspected. Artifacts `artifacts/SRC-031/{verify-final.log,verify-summary.json,integration-complete.log,ui-smoke-final.log,gateway-config.log,docs-check.log,whitespace.log,services.log}`.
+Open [local app](http://localhost:18080). Docker local MySQL schema21; Redis/Keycloak and existing fixtures preserved. Windows bind8080 restriction: private .env uses LOCAL_GATEWAY_PORT18080 and matching APP_ORIGIN; shared default8080. Credentials remain private in .env, never copied into logs/chat. New workspace grants in seed code do not automatically modify existing stored roles.
 
-All disposable containers cleaned exit0. Isolated Next3101 test server stopped; seven existing preview containers healthy and still old schema17, not updated. Host Node25 orchestration/preflight/UI only. Full-stack release smoke expected schema19 but not rerun. Live Meta OAuth NOT_RUN; needs App ID/secret/key/valid redirect and eligible app account. No real secret read or stored during this task.
+Portable Node24.21.0/pnpm10.33.0 in ignored .local; host defaults unchanged. Run `. ./scripts/dev-shell.ps1` in new PowerShell terminals. [Runbook](../development/local.md). Before any future schema20 upgrade of another existing database, stop writers and back up before cutoff capture. This local empty-chat upgrade does not substitute nonempty upgrade regression or full SRC-037 release gates.
 
 ## Next action
 
-Complete exact provider-ingestion/provisioning contract, then connect configured Facebook Pages and independent signed capture to CRM resolve/cache→Chat delivery as the next scoped source task. Keep subscription/send/control/profile enrichment and local M3 release explicit; do not bypass mock guards or give services direct SQL to the catalog. Real setup is documented; no unresolved business decision blocks the next design/source gate.
+Read SRC-034 contract/data/module/service acceptance, claim SRC-034 (dependency SRC-033 DONE), then implement durable snooze/activity/source notifications. Continue SRC-035 Contact context, SRC-036 UI and SRC-037 release sequentially. Do not restart completed SRC-032/033 or report the sample UI complete. Earlier screenshot request produced no capture; no new browser acceptance claimed.
 
-## Git handoff — S-20261006-16
-
-User authorized committing/pushing accumulated SRC-026…031 work to origin/main. This checkpoint is included in that handoff commit; resolve its actual hash with Git history. Earlier uncommitted references describe implementation/test sessions. Preview remains old and Channels is not visible there until explicit preview update; admin still requires configured integration.read/configure grants, no username bypass. User will continue remaining tasks individually.
+M3 continuation remains pending after UX priority: configured Pages/signed capture via CRM Contact resolution to Chat, actual provider ingestion/provisioning and release gates. Live Meta credentials not initialized; independent Connector not started. Baseline Channels remains source owner until extraction tasks DONE. No task/schedule started automatically.

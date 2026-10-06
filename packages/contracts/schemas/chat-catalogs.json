@@ -1,0 +1,1006 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://agentic-crm.local/schemas/chat-catalogs.json",
+  "title": "ChatWorkspaceCatalogs",
+  "definitions": {
+    "catalog-predicate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scope": {
+          "enum": [
+            "all",
+            "mine",
+            "unassigned",
+            "team"
+          ]
+        },
+        "team_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "status": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "open",
+              "pending",
+              "closed"
+            ]
+          },
+          "maxItems": 3,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "snooze": {
+          "enum": [
+            "exclude",
+            "include",
+            "only"
+          ]
+        },
+        "unread": {
+          "enum": [
+            "any",
+            "only"
+          ]
+        },
+        "channel": {
+          "enum": [
+            "messenger",
+            "mock_messenger"
+          ]
+        },
+        "channel_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "tag_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "maxItems": 10,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "scope",
+        "status",
+        "snooze",
+        "unread"
+      ]
+    },
+    "catalog-predicate-input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scope": {
+          "enum": [
+            "all",
+            "mine",
+            "unassigned",
+            "team"
+          ]
+        },
+        "team_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "status": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "open",
+              "pending",
+              "closed"
+            ]
+          },
+          "maxItems": 3,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "snooze": {
+          "enum": [
+            "exclude",
+            "include",
+            "only"
+          ]
+        },
+        "unread": {
+          "enum": [
+            "any",
+            "only"
+          ]
+        },
+        "channel": {
+          "enum": [
+            "messenger",
+            "mock_messenger"
+          ]
+        },
+        "channel_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "tag_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "maxItems": 10,
+          "uniqueItems": true
+        }
+      },
+      "required": []
+    },
+    "catalog-tag-create": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "color": {
+          "enum": [
+            "gray",
+            "blue",
+            "green",
+            "amber",
+            "red",
+            "purple"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "color"
+      ]
+    },
+    "catalog-tag-patch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "color": {
+          "enum": [
+            "gray",
+            "blue",
+            "green",
+            "amber",
+            "red",
+            "purple"
+          ]
+        }
+      },
+      "required": [],
+      "minProperties": 1
+    },
+    "catalog-tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "color": {
+          "enum": [
+            "gray",
+            "blue",
+            "green",
+            "amber",
+            "red",
+            "purple"
+          ]
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "allowed_actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "color",
+        "version",
+        "archived",
+        "allowed_actions"
+      ]
+    },
+    "catalog-snippet-create": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "shortcut": {
+          "type": "string",
+          "pattern": "^[a-z0-9_-]{1,32}$"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        }
+      },
+      "required": [
+        "title",
+        "shortcut",
+        "text"
+      ]
+    },
+    "catalog-snippet-patch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "shortcut": {
+          "type": "string",
+          "pattern": "^[a-z0-9_-]{1,32}$"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        }
+      },
+      "required": [],
+      "minProperties": 1
+    },
+    "catalog-snippet": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "shortcut": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "allowed_actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32
+          }
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "shortcut",
+        "text",
+        "version",
+        "archived",
+        "allowed_actions"
+      ]
+    },
+    "catalog-inbox-create": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "predicate_schema_version": {
+          "const": 1
+        },
+        "predicate": {
+          "$ref": "#/definitions/catalog-predicate-input"
+        },
+        "sort": {
+          "enum": [
+            "latest_message_desc",
+            "latest_message_asc",
+            "waiting_longest"
+          ]
+        },
+        "shares": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "principal",
+                  "team"
+                ]
+              },
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "required": [
+              "kind",
+              "id"
+            ]
+          },
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "name",
+        "predicate_schema_version",
+        "predicate",
+        "sort",
+        "shares"
+      ]
+    },
+    "catalog-inbox-patch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "predicate_schema_version": {
+          "const": 1
+        },
+        "predicate": {
+          "$ref": "#/definitions/catalog-predicate-input"
+        },
+        "sort": {
+          "enum": [
+            "latest_message_desc",
+            "latest_message_asc",
+            "waiting_longest"
+          ]
+        },
+        "creator_principal_id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [],
+      "minProperties": 1
+    },
+    "catalog-inbox-shares": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "shares": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "principal",
+                  "team"
+                ]
+              },
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "required": [
+              "kind",
+              "id"
+            ]
+          },
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "shares"
+      ]
+    },
+    "catalog-inbox": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "creator_principal_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "predicate_schema_version": {
+          "const": 1
+        },
+        "predicate": {
+          "$ref": "#/definitions/catalog-predicate"
+        },
+        "sort": {
+          "enum": [
+            "latest_message_desc",
+            "latest_message_asc",
+            "waiting_longest"
+          ]
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "shared": {
+          "type": "boolean"
+        },
+        "shares": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "principal",
+                  "team"
+                ]
+              },
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "required": [
+              "kind",
+              "id"
+            ]
+          },
+          "maxItems": 50
+        },
+        "allowed_actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "creator_principal_id",
+        "predicate_schema_version",
+        "predicate",
+        "sort",
+        "version",
+        "archived",
+        "shared",
+        "allowed_actions"
+      ]
+    },
+    "catalog-archive": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "archived": {
+              "const": true
+            }
+          },
+          "required": [
+            "id",
+            "archived"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            },
+            "as_of": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "allowed_actions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32
+              }
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "catalog-tag-links": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "conversation_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "tag_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "maxItems": 20
+            },
+            "tag_set_revision": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,19})$"
+            },
+            "version": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}$"
+            }
+          },
+          "required": [
+            "conversation_id",
+            "tag_ids",
+            "tag_set_revision",
+            "version"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            },
+            "as_of": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "allowed_actions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32
+              }
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "catalog-empty": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {},
+      "required": []
+    },
+    "catalog-tag-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/catalog-tag"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            },
+            "as_of": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "allowed_actions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32
+              }
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "catalog-tag-list": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/catalog-tag"
+          }
+        },
+        "next_cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            },
+            "as_of": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "allowed_actions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32
+              }
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "next_cursor",
+        "meta"
+      ]
+    },
+    "catalog-snippet-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/catalog-snippet"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            },
+            "as_of": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "allowed_actions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32
+              }
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "catalog-snippet-list": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/catalog-snippet"
+          }
+        },
+        "next_cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            },
+            "as_of": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "allowed_actions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32
+              }
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "next_cursor",
+        "meta"
+      ]
+    },
+    "catalog-inbox-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/catalog-inbox"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            },
+            "as_of": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "allowed_actions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32
+              }
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "catalog-inbox-list": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/catalog-inbox"
+          }
+        },
+        "next_cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            },
+            "as_of": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "allowed_actions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32
+              }
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "next_cursor",
+        "meta"
+      ]
+    },
+    "catalog-inbox-event": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "inbox_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "operation": {
+          "enum": [
+            "created",
+            "updated",
+            "shared",
+            "archived",
+            "transferred"
+          ]
+        }
+      },
+      "required": [
+        "inbox_id",
+        "operation"
+      ]
+    },
+    "catalog-snippet-event": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "snippet_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "operation": {
+          "enum": [
+            "created",
+            "updated",
+            "archived"
+          ]
+        }
+      },
+      "required": [
+        "snippet_id",
+        "operation"
+      ]
+    },
+    "catalog-tag-event": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tag_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "operation": {
+          "enum": [
+            "created",
+            "updated",
+            "archived"
+          ]
+        }
+      },
+      "required": [
+        "tag_id",
+        "operation"
+      ]
+    },
+    "catalog-tag-link-event": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "conversation_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "tag_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "operation": {
+          "enum": [
+            "attached",
+            "detached"
+          ]
+        },
+        "tag_set_revision": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        }
+      },
+      "required": [
+        "conversation_id",
+        "tag_id",
+        "operation",
+        "tag_set_revision"
+      ]
+    }
+  }
+}

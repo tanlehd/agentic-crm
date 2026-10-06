@@ -1,4 +1,5 @@
 import { facebookCases } from './facebook-cases.js';
+import { workspaceCases } from './workspace-cases.js';
 import { messengerIngressCases } from './messenger-ingress-cases.js';
 import { healthcareCases } from './healthcare-cases.js';
 import { salesHandoffCases } from './sales-handoff-cases.js';
@@ -189,6 +190,7 @@ describe.skipIf(!enabled)('SRC-004 real MySQL', () => {
   propertiesCases(isolated);
   crmCoreCases(isolated);
   facebookCases(isolated);
+  workspaceCases(isolated);
   conversationCases(isolated);
   routingCases(isolated);
   runtimeCases(isolated);

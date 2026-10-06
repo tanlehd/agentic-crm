@@ -1,0 +1,12 @@
+import type { Migration } from './migrations.js';
+const id='CHAR(36) CHARACTER SET ascii COLLATE ascii_bin';
+const engine='ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_as_cs';
+const common='version BIGINT UNSIGNED NOT NULL DEFAULT 1,archived_at DATETIME(6) NULL,created_at DATETIME(6) NOT NULL,updated_at DATETIME(6) NOT NULL,CHECK(version>0)';
+export const workspaceCatalogMigration:Migration={version:21,name:'chat_workspace_catalogs',statements:[
+  `CREATE TABLE chat_inbox(tenant_id ${id} NOT NULL,id ${id} NOT NULL,creator_principal_id ${id} NOT NULL,name VARCHAR(80) NOT NULL,predicate_schema_version SMALLINT NOT NULL DEFAULT 1,predicate JSON NOT NULL,sort VARCHAR(32) NOT NULL,${common},PRIMARY KEY(tenant_id,id),CHECK(predicate_schema_version=1),CHECK(sort IN ('latest_message_desc','latest_message_asc','waiting_longest')),INDEX inbox_creator(tenant_id,creator_principal_id,archived_at,id)) ${engine}`,
+  `CREATE TABLE chat_inbox_share(tenant_id ${id} NOT NULL,inbox_id ${id} NOT NULL,target_kind VARCHAR(16) NOT NULL,target_id ${id} NOT NULL,created_at DATETIME(6) NOT NULL,PRIMARY KEY(tenant_id,inbox_id,target_kind,target_id),FOREIGN KEY(tenant_id,inbox_id) REFERENCES chat_inbox(tenant_id,id),CHECK(target_kind IN ('principal','team')),INDEX inbox_recipient(tenant_id,target_kind,target_id,inbox_id)) ${engine}`,
+  `CREATE TABLE conversation_tag(tenant_id ${id} NOT NULL,id ${id} NOT NULL,name VARCHAR(40) NOT NULL,normalized_name VARBINARY(256) NOT NULL,color VARCHAR(16) NOT NULL,${common},PRIMARY KEY(tenant_id,id),UNIQUE(tenant_id,normalized_name),CHECK(color IN ('gray','blue','green','amber','red','purple'))) ${engine}`,
+  `CREATE TABLE conversation_tag_link(tenant_id ${id} NOT NULL,conversation_id ${id} NOT NULL,tag_id ${id} NOT NULL,actor_principal_id ${id} NOT NULL,created_at DATETIME(6) NOT NULL,PRIMARY KEY(tenant_id,conversation_id,tag_id),FOREIGN KEY(tenant_id,conversation_id) REFERENCES conversation(tenant_id,record_id),FOREIGN KEY(tenant_id,tag_id) REFERENCES conversation_tag(tenant_id,id),INDEX tag_conversations(tenant_id,tag_id,conversation_id)) ${engine}`,
+  `ALTER TABLE conversation_workspace ADD tag_set_revision BIGINT UNSIGNED NOT NULL DEFAULT 0`,
+  `CREATE TABLE chat_snippet(tenant_id ${id} NOT NULL,id ${id} NOT NULL,title VARCHAR(80) NOT NULL,shortcut VARCHAR(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,text TEXT NOT NULL,${common},PRIMARY KEY(tenant_id,id),UNIQUE(tenant_id,shortcut),CHECK(CHAR_LENGTH(text) BETWEEN 1 AND 4000)) ${engine}`,
+]};

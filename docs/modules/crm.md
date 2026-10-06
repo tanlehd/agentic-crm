@@ -58,3 +58,7 @@ ADR-019 target: CRM owns canonical external identity→Contact mapping and atomi
 ## SRC-030 scoped implementation
 
 ContactIdentities application port owns canonical mapping reads and atomic Contact+identity creation; service-scoped durable operation receipt preserves replay result. No migration required. See [compatibility contract](../contracts/contact-resolution-local.md).
+
+## UX-002 — Agent Contact drawer extension
+
+Contact drawer dùng optional address/preferred_language properties và channel-identities theo [workspace contract](../contracts/agent-chat-workspace.md); cùng field read/write ACL, If-Match và Human-edit precedence. Contact channel click chỉ tìm/navigate Conversation có quyền; không tạo/send/merge identity ngầm. CRM note commits phát notification để Chat activity projection hydrate body có quyền; không đổi Note thành outbound. Thiết kế Ready, chưa có API/seed mới.

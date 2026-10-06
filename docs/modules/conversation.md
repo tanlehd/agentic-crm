@@ -29,7 +29,7 @@ Inbound handler phải lock identity để tránh hai Conversation active. Send 
 
 ## UI
 
-[Wireframe](../ux/workspaces.md): queue trái, timeline giữa, Contact/Lead/qualification phải. Có badge Human/AI, owner và team, ad source, trạng thái bàn giao, send pending/unknown. Owner thay đổi hiển thị banner và reload controls; không để stale composer tiếp tục gửi.
+[Đặc tả UX rebuild](../ux/agent-chat-workspace.md) thay bố cục wireframe M2: app rail, Inbox sidebar, danh sách + search/filter, header actions, timeline/composer và context drawer/rail. UX-002 bổ sung [product contract](../contracts/agent-chat-workspace.md): unread theo Human principal, metrics có ACL, custom/shared saved query, conversation tags, durable snooze overlay, activity feed và snippets. Snooze không phải lifecycle state hoặc pause automation; wake do deadline/inbound mới/assignment, close cancel. Read marker không phải customer receipt. Contact/qualification/history theo quyền; owner change vẫn chặn stale composer. Thiết kế Ready, source mới chưa triển khai; [baseline/evidence](../ux/workspaces.md) giữ nguyên.
 
 ## Failure handling
 

@@ -2,7 +2,7 @@
 
 Nguồn chuẩn trạng thái công việc. Updated: 2026-10-06. Thiết kế có thể Ready nhưng source task vẫn TODO; hai trạng thái không đồng nghĩa.
 
-**Hiện tại:** SRC-001…031 DONE (M1–M2:25; M3 foundation:2; independent ingress:1; signed Messenger capture:1; contact cache compatibility:1; Facebook configuration:1); M1 và M2 local/mock release gates PASS. Preview localhost:8080 có OIDC, Identity Admin/CRM UI, standard/custom CRUD, Lead qualification, metadata/form/view và association. SRC-014/015 Conversation và mock intake, SRC-016 inbox UI DONE; SRC-017 routing/assignment/takeover DONE; SRC-018 private mock runtime DONE; SRC-019 durable Workflow DONE; SRC-020 DONE, Codex 2026-10-05; SRC-021 DONE, Codex 2026-10-05; SRC-022 DONE, Codex 2026-10-05; SRC-023 DONE, Codex 2026-10-05; SRC-024 DONE, Codex 2026-10-06; SRC-025 DONE, Codex 2026-10-06; PLAN-005/006A DONE (architecture/doc-only); SRC-028 DONE; SRC-029 DONE; PLAN-006B DONE (design-only); PLAN-006C/006D DONE (scoped design); SRC-030/031 DONE; không task active, M3 local completion requested; sandbox unavailable. PLAN-002/003/004A/004B DONE; PLAN-004 remaining TODO. [Checkpoint](checkpoint.md) · [Execution log](log.md) · [Build plan](../planning/build-plan.md).
+**Hiện tại:** SRC-001…031 DONE (M1–M2:25; M3 foundation:2; independent ingress:1; signed Messenger capture:1; contact cache compatibility:1; Facebook configuration:1); M1 và M2 local/mock release gates PASS. Preview localhost:8080 có OIDC, Identity Admin/CRM UI, standard/custom CRUD, Lead qualification, metadata/form/view và association. SRC-014/015 Conversation và mock intake, SRC-016 inbox UI DONE; SRC-017 routing/assignment/takeover DONE; SRC-018 private mock runtime DONE; SRC-019 durable Workflow DONE; SRC-020 DONE, Codex 2026-10-05; SRC-021 DONE, Codex 2026-10-05; SRC-022 DONE, Codex 2026-10-05; SRC-023 DONE, Codex 2026-10-05; SRC-024 DONE, Codex 2026-10-06; SRC-025 DONE, Codex 2026-10-06; PLAN-005/006A DONE (architecture/doc-only); SRC-028 DONE; SRC-029 DONE; PLAN-006B DONE (design-only); PLAN-006C/006D DONE (scoped design); SRC-030/031 DONE; SRC-032/033 DONE (Codex 2026-10-06), chưa có task tiếp theo active; Agent Chat rebuild còn SRC-034…037. PLAN-002/003/004A/004B DONE; PLAN-004 remaining TODO. [Checkpoint](checkpoint.md) · [Execution log](log.md) · [Build plan](../planning/build-plan.md).
 
 Owner `—` nghĩa chưa claim. Evidence `—` nghĩa chưa kiểm thử/hoàn thành, không phải pass. Chỉ promote TODO→READY khi tất cả dependency DONE và thiết kế đúng phạm vi Ready. Một task active tại một thời điểm theo mặc định.
 
@@ -170,3 +170,33 @@ Remaining M3 local work: versioned Chat ingestion and dispatch/control fences (P
 |---|---|---|---|---|---|
 | PLAN-004D | Exact OAuth/Page credential catalog and conversation channel contract | SRC-030; PLAN-003 | DONE | Codex 2026-10-06 | [Contract](../contracts/facebook-configuration.md) |
 | SRC-031 | Facebook OAuth/Page admin, encrypted credentials and channel-aware inbox | PLAN-004D; SRC-030 | DONE | Codex 2026-10-06 | [Evidence](details/SRC-031.md);196 MySQL,96 unit,9 gates, browser/gateway PASS; live Meta NOT_RUN |
+
+## Local development environment
+
+| ID | Deliverable | Deps | Status | Owner | Evidence |
+|---|---|---|---|---|---|
+| ENV-001 | Initialize Windows local development stack and verify toolchain, migration, fixtures and health | SRC-031 | DONE | Codex 2026-10-06 | [Evidence](details/ENV-001.md); S-20261006-17 |
+
+## Agent Chat workspace redesign
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| UX-001 | Viết lại đặc tả UX Chat theo ảnh layout người dùng cung cấp | SRC-031 | DONE | Codex 2026-10-06 | [Evidence](details/UX-001.md); design-only, layout Ready trên API hiện có; UI chưa rebuild |
+| UX-002 | Hoàn thiện product/contract/data design cho metrics, unread, custom inbox, snooze, tags và activity theo sample | UX-001; SRC-031 | DONE | Codex 2026-10-06 | [Evidence](details/UX-002.md); contract/data/UX Ready design, SRC-032…037 TODO; runtime NOT_RUN |
+
+Source backlog dưới đây theo [workspace build plan](../planning/agent-chat-workspace.md); SRC-032/033 DONE, tiếp theo SRC-034; các task sau chờ dependency. Không thay evidence của SRC-001…031.
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| SRC-032 | Workspace sequence/read-state, queue query và ACL metrics | SRC-031; UX-002 | DONE | Codex 2026-10-06 | [Evidence](details/SRC-032.md);203 MySQL,99 unit, canonical9/9 PASS; backend sub-scope UX-CHAT-13/14/15/19/22 |
+| SRC-033 | Saved/shared inbox, conversation tags và snippets | SRC-032 | DONE | Codex 2026-10-06 | [Evidence](details/SRC-033.md);209 MySQL +13 final workspace/102 unit/canonical9/9 PASS; UX-CHAT-16/17/21 backend |
+| SRC-034 | Durable snooze, activity projection và source notifications | SRC-033 | TODO | unassigned | UX-CHAT-18/20/22; runtime NOT_RUN |
+| SRC-035 | CRM Contact context metadata và channel identities/navigation | SRC-034 | TODO | unassigned | UX-CHAT-21, field/tenant ACL; runtime NOT_RUN |
+| SRC-036 | Agent Chat UI rebuild và tích hợp workspace contracts | SRC-035 | TODO | unassigned | UX-CHAT-01…22; runtime NOT_RUN |
+| SRC-037 | Workspace upgrade/regression/restart và local release gate | SRC-036 | TODO | unassigned | Data preservation/flags/rollback/synthetic demo; runtime NOT_RUN |
+
+## Local workspace database upgrade
+
+| ID | Deliverable | Deps | Status | Owner | Evidence |
+|---|---|---|---|---|---|
+| ENV-002 | Backup, quiesced local schema19 to21 upgrade and runtime verification | SRC-033; ENV-001 | DONE | Codex 2026-10-06 | [Evidence](details/ENV-002.md); local only, not SRC-037 release |

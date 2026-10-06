@@ -4,6 +4,7 @@ import { mkdtemp, mkdir, writeFile, cp, rm, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
 const root = new URL('../../', import.meta.url);
 async function fixture(run) {
@@ -15,7 +16,7 @@ async function fixture(run) {
   } finally { await rm(directory, { recursive: true, force: true }); }
 }
 function invoke(script, cwd) {
-  return spawnSync(process.execPath, [new URL(`scripts/${script}`, root).pathname], { cwd, encoding: 'utf8' });
+  return spawnSync(process.execPath, [fileURLToPath(new URL(`scripts/${script}`, root))], { cwd, encoding: 'utf8' });
 }
 test('docs gate rejects broken links, malformed JSON, invalid task states and unfinished dependencies', async () => {
   await fixture(async cwd => {
@@ -57,7 +58,7 @@ test('contract drift check fails without rewriting stale generated files', async
     const generated = join(cwd, 'packages/contracts/src/generated/health.ts');
     const stale = '// stale generated contract\n';
     await writeFile(generated, stale);
-    const result = spawnSync(process.execPath, [new URL('scripts/generate-contracts.mjs', root).pathname, '--check'], { cwd, encoding: 'utf8' });
+    const result = spawnSync(process.execPath, [fileURLToPath(new URL('scripts/generate-contracts.mjs', root)), '--check'], { cwd, encoding: 'utf8' });
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /Contract drift/);
     assert.equal(await readFile(generated, 'utf8'), stale);

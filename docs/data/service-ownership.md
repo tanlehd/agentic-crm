@@ -51,3 +51,7 @@ SRC-030 moves lookup/create SQL behind CRM ContactIdentities application port in
 ## SRC-031 Facebook configuration and channel dimensions
 
 [Exact OAuth/Page/schema19 contract](../contracts/facebook-configuration.md) and [operator runbook](../development/facebook-configuration.md) define Admin→Channels→Facebook, session/state-bound OAuth, encrypted DB Page credentials and manual verified token replacement. Baseline Channels remains sole writer of catalog/credentials; independent Connector capture is unchanged until API-based extraction/provisioning. Conversation channel and generated channel_id retain existing connection IDs, with Page metadata and tenant/field-authorized filters/options. Messaging activation and real sandbox acceptance remain separate.
+
+## UX-002 — Workspace ownership extension
+
+Chat sở hữu read state/unread sequence, response coverage, queue metrics query, saved inbox/share, conversation tag catalog/links, snippets, snooze/deadline worker và activity reference projection theo [data design](agent-chat-workspace.md). Shared inbox không grant Conversation ACL. CRM sở hữu Contact address/language/identities và Activity note body; Workflow/Chatflow sở hữu source run states. Chỉ trao đổi versioned ports/API/events, không shared SQL/UoW giữa services. Thiết kế Ready, migration/source TODO.

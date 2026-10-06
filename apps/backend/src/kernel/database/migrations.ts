@@ -1,3 +1,4 @@
+import { workspaceCatalogMigration } from './workspace-catalog-migration.js';
 import { facebookMigration } from './facebook-migration.js';
 import { messageContentMigration } from './message-content-migration.js';
 import { salesHandoffMigration } from './sales-handoff-migration.js';
@@ -16,6 +17,7 @@ import { deliveryMigration } from './delivery-migration.js';
 import { adminReliabilityMigration } from './admin-reliability-migration.js';
 import { identityMigration } from './identity-migration.js';
 import { createHash } from 'node:crypto';
+import { workspaceMigration } from './workspace-migration.js';
 export interface Migration { version: number; name: string; statements: readonly string[] }
 const id = 'CHAR(36) CHARACTER SET ascii COLLATE ascii_bin';
 const timestamps = 'created_at DATETIME(6) NOT NULL, updated_at DATETIME(6) NOT NULL';
@@ -29,5 +31,5 @@ export const migrations: readonly Migration[] = [{
   version: 4, name: 'outbox_positive_versions', statements: [
     'ALTER TABLE outbox_event ADD CONSTRAINT ck_outbox_schema_version CHECK (schema_version >= 1), ADD CONSTRAINT ck_outbox_aggregate_version CHECK (aggregate_version >= 1)',
   ],
-}, deliveryMigration, registryMigration, propertiesMigration, crmCoreMigration, conversationMigration, intakeMigration, routingMigration, agentRuntimeMigration, workflowMigration, chatflowMigration, chatflowBindingMigration, chatflowProposalMigration, salesHandoffMigration, messageContentMigration, facebookMigration];
+}, deliveryMigration, registryMigration, propertiesMigration, crmCoreMigration, conversationMigration, intakeMigration, routingMigration, agentRuntimeMigration, workflowMigration, chatflowMigration, chatflowBindingMigration, chatflowProposalMigration, salesHandoffMigration, messageContentMigration, facebookMigration, workspaceMigration, workspaceCatalogMigration];
 export const checksum = (m: Migration) => createHash('sha256').update(JSON.stringify([m.version, m.name, m.statements])).digest('hex');

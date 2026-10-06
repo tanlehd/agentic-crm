@@ -179,3 +179,7 @@ Additive contact lookup/resolve, contact-bound deliveries-v2 and messages-v2 end
 ## SRC-031 Facebook configuration and channel dimensions
 
 [Exact OAuth/Page/schema19 contract](../contracts/facebook-configuration.md) and [operator runbook](../development/facebook-configuration.md) define Admin→Channels→Facebook, session/state-bound OAuth, encrypted DB Page credentials and manual verified token replacement. Baseline Channels remains sole writer of catalog/credentials; independent Connector capture is unchanged until API-based extraction/provisioning. Conversation channel and generated channel_id retain existing connection IDs, with Page metadata and tenant/field-authorized filters/options. Messaging activation and real sandbox acceptance remain separate.
+
+## UX-002 — Additive Agent Chat workspace APIs
+
+[Exact workspace contract](agent-chat-workspace.md) định nghĩa routes mới dưới `/api/v1/chat-workspace`, CRM `/contacts/{id}/channel-identities`, DTO/filter/count/permission/cursor/error và compatibility. Generic API conventions vẫn áp dụng, exceptions monotonic read marker/tag set operations được ghi rõ. Thiết kế chưa là OpenAPI/generated client đã triển khai; schema/migration đi trước source task phụ thuộc.

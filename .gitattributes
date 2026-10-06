@@ -1,0 +1,3 @@
+# Generated contracts are compared byte-for-byte against LF generator output.
+packages/contracts/src/generated/** text eol=lf
+packages/contracts/openapi.json text eol=lf

@@ -1,4 +1,5 @@
 import { messageContent,legacyContentText } from './content.js';
+import { prepareWorkspace,workspaceInbound,workspaceOutbound,workspaceClosed } from './workspace-storage.js';
 import { stopSessions } from '../chatflow/lifecycle.js';
 import { cancelAgentExecutions } from '../agents/cancellation.js';
 import { randomUUID,createHmac,timingSafeEqual } from 'node:crypto';
@@ -45,7 +46,9 @@ export class Conversations {
     let id:string,version:string;
     if(active){id=active.record_id;const c=await conversation(s,id,true);await this.registry.bump(s,c.record,c.record.version);version=String(BigInt(c.record.version)+1n);await s.query("UPDATE conversation SET status='open' WHERE tenant_id=? AND record_id=?",[tenant,id]);}
     else {id=await this.crm.createUnassigned(s,identity.teamId,input.correlation,input.actor);version='1';await s.query("INSERT INTO conversation(tenant_id,record_id,contact_id,contact_identity_id,connection_id,opened_at) VALUES (?,?,?,?,?,UTC_TIMESTAMP(6))",[tenant,id,identity.contactId,identity.id,identity.connectionId]);await this.commands.conversationEvent(s,input.correlation,'conversation.created',id,version,{contact_id:identity.contactId,connection_id:identity.connectionId},input.actor);}
+    await prepareWorkspace(s,id);
     const messageId=randomUUID();await s.query("INSERT INTO message(id,tenant_id,conversation_id,connection_id,provider_message_id,direction,text,occurred_at,received_at,status) VALUES (?,?,?,?,?,'inbound',?,?,UTC_TIMESTAMP(6),'received')",[messageId,tenant,id,identity.connectionId,input.providerMessageId,input.text,new Date(input.occurredAt)]);
+    await workspaceInbound(s,id,messageId);
     if(content)await s.query('INSERT INTO message_content(tenant_id,message_id,content) VALUES (?,?,?)',[tenant,messageId,JSON.stringify(content)]);
     await this.commands.systemAudit(s,input.correlation,'conversation',id,'message.receive',['message_id'],input.actor);
     await this.commands.conversationEvent(s,input.correlation,'message.received',id,version,{conversation_id:id,message_id:messageId,connection_id:identity.connectionId},input.actor);
@@ -63,6 +66,7 @@ export class Conversations {
   private async intent(s:TransactionScope,id:string,intent:string){
     if(!uuid(intent))throw new CommandError(400,'INVALID_REQUEST');const [r]=await s.query('SELECT i.id,i.conversation_id,m.id message_id,i.status,i.provider_message_id,i.error_code FROM outbound_intent i JOIN message m ON m.tenant_id=i.tenant_id AND m.outbound_intent_id=i.id WHERE i.tenant_id=? AND i.conversation_id=? AND i.id=?',[s.context.tenantId,id,intent]);if(!r)throw new CommandError(404,'NOT_FOUND');return r;
   }
+  project(s:TransactionScope,a:Access,id:string){return this.output(s,a,id);}
   read(account:string,tenant:string,id?:string,kind:'detail'|'messages'|'envelopes'|'rich'|'intent'|'notes'='detail',query:Record<string,unknown>={},intentId?:string){return this.auth.runHuman(account,tenant,async(s,raw)=>{
     const a=await withFieldPolicies(s,raw);
     if(id){const {record}=await conversation(s,id);requirePermission(a,record,'read');if(kind==='notes'){const limit=query.limit===undefined?50:Number(query.limit);if(Object.keys(query).some(k=>!['limit','cursor'].includes(k))||!Number.isInteger(limit)||limit<1||limit>100||typeof query.limit==='object'||query.cursor!==undefined&&!uuid(query.cursor))throw new CommandError(400,'INVALID_REQUEST');return this.crm.notes(s,a,id,limit,query.cursor as string|undefined);}if(kind!=='messages'&&kind!=='envelopes'&&kind!=='rich'&&Object.keys(query).length)throw new CommandError(400,'INVALID_REQUEST');if(kind==='detail')return {data:await this.output(s,a,id)};if(kind==='intent')return {data:await this.intent(s,id,intentId!)};}
@@ -148,10 +152,12 @@ export class Conversations {
         if(old){if(old.conversation_id!==id||old.text!==b.text||String(old.owner_revision)!==rev)throw new CommandError(409,'IDEMPOTENCY_CONFLICT');data={...await this.intent(s,id,old.id),status_url:`/api/v1/conversations/${id}/outbound-intents/${old.id}`};}
         else {
           if(r.ownerPrincipalId!==a.principalId||r.ownerRevision!==rev)throw new CommandError(409,'OWNER_CONFLICT');if(c.status==='closed')throw new CommandError(409,'INVALID_TRANSITION');await this.channels.connection(s,c.connection_id);
+          await prepareWorkspace(s,id);
           const intentId=randomUUID(),messageId=randomUUID();
           await s.query("INSERT INTO outbound_intent(id,tenant_id,conversation_id,actor_kind,actor_id,account_id,owner_revision,text,status,idempotency_key,created_at) VALUES (?,?,?,'human',?,?,?,?,'queued',?,UTC_TIMESTAMP(6))",[intentId,tenant,id,a.principalId,account,rev,b.text,key]);
           await s.query("INSERT INTO message(id,tenant_id,conversation_id,connection_id,outbound_intent_id,direction,text,occurred_at,received_at,status) VALUES (?,?,?,?,?,'outbound',?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6),'queued')",[messageId,tenant,id,c.connection_id,intentId,b.text]);
           data={id:intentId,conversation_id:id,message_id:messageId,status:'queued',status_url:`/api/v1/conversations/${id}/outbound-intents/${intentId}`};
+          await workspaceOutbound(s,id,messageId);
         }status=202;
       }else if(kind==='notes'){
         checkField(a,'activity','body','write');checkField(a,'activity','body','read');data={id:await this.crm.note(s,a,id,b.text,correlation),conversation_id:id};status=201;
@@ -160,7 +166,7 @@ export class Conversations {
         if(typeof b.reason!=='string'||!b.reason.trim()||b.reason.length>1000||!['open','pending','closed'].includes(b.target_status))throw new CommandError(422,'VALIDATION_FAILED');
         if(c.status==='closed'||c.status===b.target_status)throw new CommandError(409,'INVALID_TRANSITION');
         await this.registry.bump(s,r,version);await s.query('UPDATE conversation SET status=?,closed_at=IF(?=\'closed\',UTC_TIMESTAMP(6),NULL) WHERE tenant_id=? AND record_id=?',[b.target_status,b.target_status,tenant,id]);
-        if(b.target_status==='closed'){await cancelQueued(s,id);await cancelAgentExecutions(s,id);await stopSessions(s,id,true);await this.onClose(s,id);}data=await this.output(s,a,id);
+        if(b.target_status==='closed'){await workspaceClosed(s,id);await cancelQueued(s,id);await cancelAgentExecutions(s,id);await stopSessions(s,id,true);await this.onClose(s,id);}data=await this.output(s,a,id);
       }
       await this.commands.audit(s,a.principalId,correlation,'conversation',id,kind,Object.keys(b));const response={status,body:{data,meta:{correlation_id:correlation}}};await this.commands.complete(s,command,response);return response;
     });}catch(e){if(actor&&e instanceof CommandError&&[403,409].includes(e.status))await this.uow.run({tenantId:tenant},s=>this.commands.audit(s,actor!,correlation,'conversation',id,kind,[],'denied',e.code));throw e;}
