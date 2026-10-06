@@ -1,5 +1,6 @@
 # MOD-06 — Ticket System
 
+> Kiến trúc đích microservice theo ADR-017: [Ticket / Service Desk](../services/ticket.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.
 Status: Draft M4. Requirements: REQ-06, REQ-10.
 
 ## Mục tiêu và phạm vi

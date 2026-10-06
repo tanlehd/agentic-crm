@@ -1,0 +1,375 @@
+
+
+# Agent Knowledge - Files
+
+Manage file-based knowledge sources for the AI agent on a specific entity.
+
+This endpoint provides operations for managing file-based knowledge sources in the AI agent knowledge base for a specific entity. Files such as PDFs, text documents, or other supported formats can be uploaded to supplement the agent&#039;s knowledge. Supports uploading, listing, retrieving, and deleting files. Every operation on this resource shares a budget of 1000 requests per hour; once it is exhausted, further requests return `429` until the limit resets.
+
+## Base URL
+
+| URL | Description |
+|-----|-------------|
+| https://api.facebook.com/&#123;entity_id&#125;/agent_config/files |  |
+
+## Authorization
+
+This API requires:
+
+any of the following
+  - Capability: bizai_wa_enterprise_api_3p_access
+  - Permission: whatsapp_business_messaging
+
+## APIs
+
+| Method | Endpoint |
+|--------|----------|
+| DELETE | [/&#123;file_id&#125;](#delete-file-id) |
+| GET | [/](#get) |
+| GET | [/&#123;file_id&#125;](#get-file-id) |
+| POST | [/](#post) |
+
+&lt;jumplink id=&quot;delete-file-id&quot;&gt;&lt;/jumplink&gt;
+## DELETE /&#123;file_id&#125;
+
+Delete a knowledge file
+
+Delete a file from the knowledge base by its ID. The agent stops drawing on its contents. Other knowledge sources for the entity are unaffected.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID or Instagram business account ID for the Meta Business Agent. |
+| file_id | string | ✓ | The identifier of the file, as returned in the `id` field when the file was uploaded or listed. Pass that value through unchanged. |
+
+### Responses
+
+**204**
+
+File successfully deleted
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;get&quot;&gt;&lt;/jumplink&gt;
+## GET /
+
+List knowledge files
+
+Retrieve every file in the agent&#039;s knowledge base for the specified entity. Each entry returns the file&#039;s identifier and name, not its contents.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID or Instagram business account ID for the Meta Business Agent. |
+
+### Responses
+
+**200**
+
+A list of all knowledge base files
+
+**Content Type**: `application/json`
+
+**Schema**: array of [BizAIOmniChannelKnowledgeFileResponse](#bizaiomnichannelknowledgefileresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;get-file-id&quot;&gt;&lt;/jumplink&gt;
+## GET /&#123;file_id&#125;
+
+Get a knowledge file
+
+Retrieve a single knowledge base file entry by its ID. Returns the file&#039;s identifier and name, not its contents.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID or Instagram business account ID for the Meta Business Agent. |
+| file_id | string | ✓ | The identifier of the file, as returned in the `id` field when the file was uploaded or listed. Pass that value through unchanged. |
+
+### Responses
+
+**200**
+
+The requested file metadata
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelKnowledgeFileResponse](#bizaiomnichannelknowledgefileresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;post&quot;&gt;&lt;/jumplink&gt;
+## POST /
+
+Upload a knowledge file
+
+Upload a document to the agent&#039;s knowledge base. Use files for unstructured reference material that is too long or too varied to express as FAQ entries, such as product guides, policy documents, and price lists. The agent draws on file contents when no FAQ entry matches the customer&#039;s question. See the `file` field for the supported formats and the maximum file size.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID or Instagram business account ID for the Meta Business Agent. |
+
+### Request Body (Required)
+
+**Content Type**: `multipart/form-data`
+
+**Schema**: [BizAIOmniChannelKnowledgeFileRequest](#bizaiomnichannelknowledgefilerequest)
+
+### Responses
+
+**201**
+
+The newly uploaded file metadata
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelKnowledgeFileResponse](#bizaiomnichannelknowledgefileresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**409**
+
+Conflict
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**503**
+
+Service unavailable
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+# Components
+
+## Schemas
+
+&lt;jumplink id=&quot;bizaiomnichannelknowledgefilerequest&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelKnowledgeFileRequest
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| file_name | string | ✓ | The name of the file being uploaded. Include the file extension. The extension must match the content of the uploaded file, and it selects the type for file formats that cannot be identified from their content, such as .csv, .doc, .docx, and .xlsx. A request whose extension contradicts the uploaded content is rejected, and so is a request whose extension names an unsupported type. If you omit the extension and the content identifies the format, the response returns the name with the matching extension added. Use the returned name when you read or delete the file. |
+| file | string (binary) | ✓ | The file to be uploaded. The content is checked against the extension declared in file_name. Maximum file size: 100000000 bytes. Supported file types: - .pdf - .doc - .docx - .png - .jpg - .jpeg - .csv, when CSV extraction is enabled for the WhatsApp asset - .xlsx, when XLSX extraction is enabled for the WhatsApp asset |
+
+&lt;jumplink id=&quot;bizaiomnichannelknowledgefileresponse&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelKnowledgeFileResponse
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| id | string | ✓ | The unique identifier for this file. Pass this value unchanged as the `file_id` path parameter to read or delete the file. |
+| file_name | string | ✓ | The name of the file |
+
+&lt;jumplink id=&quot;standarderror&quot;&gt;&lt;/jumplink&gt;
+### StandardError
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| title | string | ✓ |  |
+| detail | string | ✓ |  |
+| type | string |  |  |
+| status | integer |  |  |
+
+## Authentication
+
+| Scheme | Type | Location |
+|--------|------|----------|
+| OAuthToken__Authorization | HTTP Bearer | Header: `Authorization` |
+
+### Usage Examples
+
+- **OAuthToken__Authorization**: Include `Authorization: Bearer your-token-here` in request headers
+
+### Global Authentication Requirements
+
+All endpoints require: OAuthToken__Authorization
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/meta-business-agent/llms.txt

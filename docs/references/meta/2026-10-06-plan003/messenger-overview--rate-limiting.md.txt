@@ -1,0 +1,72 @@
+# Messenger Platform rate limits
+
+
+
+Rate limits for the Messenger Platform depend on the API used and, in some cases, the message content.
+
+## Messenger API
+
+Requests made by your app are counted against the number of calls your app can make in a rolling 24-hour period, calculated as follows:
+
+```
+Calls within 24 hours = 200 * Number of Engaged Users
+```
+
+The **Number of Engaged Users** is the number of people the business can message through Messenger.
+
+### Conversations API
+
+* Your app can make 2 calls per second per Facebook Page.
+
+### Send API
+
+* Your app can make 300 calls per second per Facebook Page for messages that contain text, links, reactions, and stickers.
+* Your app can make 10 calls per second per Facebook Page for messages that contain audio or video content.
+* Your app may be rate limited if too many messages are sent to a single thread.
+
+### Private Replies API
+
+* Your app can make 750 calls per hour per Facebook Page for private replies to comments on Instagram posts and reels.
+
+## Messenger API for Instagram
+
+Requests made by your app are counted against the number of calls your app can make per Instagram Professional account and the API used.
+
+### Conversations API
+
+* Your app can make 2 calls per second per Instagram Professional account.
+
+### Send API
+
+* Your app can make 300 calls per second per Instagram Professional account for messages that contain text, links, reactions, and stickers.
+* Your app can make 10 calls per second per Instagram Professional account for messages that contain audio or video content.
+* Your app may be rate limited if too many messages are sent to a single thread.
+
+### Private Replies API
+
+* Your app can make 100 calls per second per Instagram Professional account for private replies to Instagram Live comments.
+* Your app can make 750 calls per hour per Instagram Professional account for private replies to comments on Instagram posts and reels.
+
+## High-volume messaging
+
+If your app user&#039;s Page or Instagram Professional account sends or receives a high volume of messages, the inbox can no longer display or send new messages until the volume decreases.
+
+### Messenger
+
+If a Page sends more than 40 messages per second or constantly sends or receives messages in a large number of conversations at the same time, new messages are not displayed in the Page Inbox and the Page cannot send new messages until the volume decreases.
+
+If a Page hits the high-volume limit, API calls to get all conversations fail. You can still call a single conversation to get new messages for that conversation.
+
+### Instagram
+
+If an Instagram Professional account sends and receives more than 72,000 messages, new messages are not displayed in the Instagram Inbox and the account cannot send new messages until the volume decreases.
+
+Banners are displayed in the conversation indicating the limit has been reached. These banners stop showing when the message volume decreases.
+
+* **Your Message May Be Delayed** -- Your message may take longer than usual to be delivered because [your-account-name] is receiving a large number of messages.
+* **Your Message Wasn&#039;t Delivered** -- Your message wasn&#039;t delivered because [your-account-name] is receiving a large number of messages. Please try again later.
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/business-messaging/messenger-platform/llms.txt

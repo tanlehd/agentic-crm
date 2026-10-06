@@ -16,6 +16,7 @@ export function CrmWorkspace({tenant}:{tenant:string}){
 }
 function Workspace({tenant}:{tenant:string}){
   const context=useApi(tenant,'/api/v1/crm/context'),[tab,setTab]=useState('crm'),[target,setTarget]=useState<{kind:'contact'|'lead'|'conversation';id:string}|null>(null);
+  useEffect(()=>{if(new URLSearchParams(window.location.search).has('facebook'))setTab('admin');},[]);
   if(context.isPending)return <section className="crm-card" role="status">Đang tải workspace…</section>;
   if(context.error)return <ErrorNotice error={context.error} reload={()=>void context.refetch()}/>;
   const data=context.data.data as Context;

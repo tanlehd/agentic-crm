@@ -11,6 +11,7 @@ export function TenantPanel(){
       const response=await fetch(`/api/v1/me/memberships?limit=100${next?'&cursor='+encodeURIComponent(next):''}`,{cache:'no-store'});
       if(!response.ok)throw new Error();const body=await response.json();
       setMembers(previous=>next?[...previous,...body.data]:body.data);setCursor(body.next_cursor);
+      if(new URLSearchParams(window.location.search).has('facebook')){const wanted=sessionStorage.getItem('facebook_config_tenant');if(body.data.some((m:Membership)=>m.tenant_id===wanted)){setSelected(wanted!);sessionStorage.removeItem('facebook_config_tenant');}}
       if(!next)setMessage(body.data.length?'Chọn tổ chức để làm việc.':'Tài khoản chưa được cấp quyền vào tổ chức nào.');
     }catch{setError(true);setMessage('Không thể tải tổ chức. Vui lòng thử lại.');}finally{setLoading(false);}
   }

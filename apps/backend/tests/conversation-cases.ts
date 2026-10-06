@@ -1,3 +1,6 @@
+import { ChatflowConversationPort } from '../src/modules/conversation/chatflow-port.js';
+import { legacyContentText } from '../src/modules/conversation/content.js';
+import type { MessageContent } from '@agentic-crm/contracts';
 import { describe,it,expect } from 'vitest';
 import { randomUUID } from 'node:crypto';
 import type { DataSource } from 'typeorm';
@@ -40,19 +43,26 @@ export function conversationCases(isolated:(name:string)=>Promise<DataSource>){d
     for(const key of ['contact','activity','conversation'])await ds.query("INSERT INTO object_type(id,tenant_id,`key`,label,kind,created_at,updated_at) VALUES (?,?,?,?,'standard',UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[randomUUID(),tenant,key,key]);
     records=new CrmRecords(ds,'synthetic',coreDomains(),undefined,[conversationArchiveGuard]);
     contact=String((await records.mutate(account,tenant,{object:'contact',kind:'records'},{fields:{display_name:'Synthetic contact'}},randomUUID(),undefined,'synthetic')).body.data.id);
-    const before=await ds.query('SELECT * FROM contact'),journal=await ds.query('SELECT * FROM schema_migration ORDER BY version');expect(await migrate(ds)).toBe(migrations.length-8);expect(await ds.query('SELECT * FROM contact')).toEqual(before);expect((await ds.query('SELECT * FROM schema_migration ORDER BY version')).slice(0,8)).toEqual(journal);expect(await migrate(ds)).toBe(0);
+    const before=await ds.query('SELECT * FROM contact'),journal=await ds.query('SELECT * FROM schema_migration ORDER BY version');expect(await migrate(ds,migrations.slice(0,17))).toBe(9);expect(await ds.query('SELECT * FROM contact')).toEqual(before);expect((await ds.query('SELECT * FROM schema_migration ORDER BY version')).slice(0,8)).toEqual(journal);expect(await migrate(ds,migrations.slice(0,17))).toBe(0);
     await ds.query("INSERT INTO channel_connection(id,tenant_id,provider,external_account_id,team_id) VALUES (?,?,'mock_messenger','synthetic-page',?)",[connection,tenant,team]);
     await ds.query("INSERT INTO contact_identity(id,tenant_id,connection_id,contact_id,external_subject_id) VALUES (?,?,?,?,'synthetic-subject')",[identity,tenant,connection,contact]);
     app=new Conversations(ds,'conversation-test');dispatcher=new OutboundDispatcher(ds,new MockSender(ds));
+    await inbound('synthetic-pre18');const history=await ds.query('SELECT * FROM message'),oldJournal=await ds.query('SELECT * FROM schema_migration ORDER BY version');expect(await migrate(ds)).toBe(migrations.length-17);expect(await ds.query('SELECT * FROM message')).toEqual(history);expect((await ds.query('SELECT * FROM schema_migration ORDER BY version')).slice(0,17)).toEqual(oldJournal);expect(await migrate(ds)).toBe(0);
   });
   it('concurrent inbound serializes identity; duplicate no-op; payload conflict; atomic rollback',async()=>{
     const results=await Promise.all([inbound(),inbound()]);expect(new Set(results.map(r=>r.conversationId)).size).toBe(1);id=results[0]!.conversationId;
     const key=randomUUID(),first=await inbound(key);expect(await inbound(key)).toEqual({...first,duplicate:true});await expect(inbound(key,'different')).rejects.toThrow('MESSAGE_PAYLOAD_CONFLICT');
-    expect(await ds.query('SELECT * FROM conversation')).toHaveLength(1);expect(await ds.query('SELECT * FROM message')).toHaveLength(3);
+    expect(await ds.query('SELECT * FROM conversation')).toHaveLength(1);expect(await ds.query('SELECT * FROM message')).toHaveLength(4);
     const count=(await ds.query('SELECT COUNT(*) n FROM outbox_event'))[0].n;
     await expect(app.uow.run({tenantId:tenant},async s=>{await app.receive(s,{identityId:identity,providerMessageId:randomUUID(),text:'Rollback synthetic',occurredAt:'2026-10-04T01:00:00Z',correlation:'synthetic'});throw new Error('rollback');})).rejects.toThrow('rollback');
-    expect((await ds.query('SELECT COUNT(*) n FROM outbox_event'))[0].n).toBe(count);expect(await ds.query('SELECT * FROM message')).toHaveLength(3);
+    expect((await ds.query('SELECT COUNT(*) n FROM outbox_event'))[0].n).toBe(count);expect(await ds.query('SELECT * FROM message')).toHaveLength(4);
     await expect(records.mutate(account,tenant,{object:'contact',kind:'archive',id:contact},{reason:'Synthetic'},randomUUID(),'1','synthetic')).rejects.toThrow('ACTIVE_DEPENDENCY');
+  });
+  it('SRC-030 outbound v2 requires customer Contact and retains legacy permission/owner guards',async()=>{
+    const [row]=await ds.query('SELECT contact_id FROM conversation WHERE tenant_id=? AND record_id=?',[tenant,id]);
+    for(const crm_contact_id of [undefined,randomUUID()])await expect(app.mutate(account,tenant,id,'messages',{text:'Synthetic v2',owner_revision:'2',...(crm_contact_id?{crm_contact_id}:{})},randomUUID(),undefined,'synthetic',true)).rejects.toThrow('CONTACT_BINDING_STALE');
+    // Valid customer context advances to the existing owner check (fixture still unassigned).
+    await expect(app.mutate(account,tenant,id,'messages',{text:'Synthetic v2',owner_revision:'1',crm_contact_id:row.contact_id},randomUUID(),undefined,'synthetic',true)).rejects.toThrow('OWNER_CONFLICT');
   });
   it('tenant/coherence FK rejects cross references and duplicate active identity',async()=>{
     await expect(app.read(account,beta,id)).rejects.toThrow('FORBIDDEN');
@@ -67,6 +77,38 @@ export function conversationCases(isolated:(name:string)=>Promise<DataSource>){d
     await expect(ds.query('INSERT INTO conversation(tenant_id,record_id,contact_id,contact_identity_id,connection_id,opened_at) VALUES (?,?,?,?,?,UTC_TIMESTAMP(6))',[tenant,r,contact,identity,connection])).rejects.toThrow();
     await ds.query('DELETE FROM crm_record WHERE id=?',[r]);
   });
+  it('SRC-026 envelope preserves history, cursor and tenant binding including inactive connection',async()=>{
+    const legacy:any=await app.read(account,tenant,id,'messages',{limit:'1'});
+    const first:any=await app.read(account,tenant,id,'envelopes',{limit:'1'});
+    const {provider_message_id,...wire}=legacy.data[0];
+    expect(first.data[0]).toEqual({...wire,schema_version:2,connection_id:connection,platform:'mock_messenger',message_type:'text',external_msg_id:provider_message_id,reply_to:null,attachment:null});
+    expect(first.next_cursor).toBe(legacy.next_cursor);
+    const second:any=await app.read(account,tenant,id,'envelopes',{limit:'1',cursor:first.next_cursor});expect(second.data[0].id).not.toBe(first.data[0].id);
+    await expect(app.read(otherAccount,tenant,id,'envelopes',{cursor:first.next_cursor})).rejects.toThrow('INVALID_CURSOR');
+    await expect(app.read(account,tenant,id,'envelopes',{cursor:first.next_cursor+'x'})).rejects.toThrow('INVALID_CURSOR');
+    await expect(app.read(account,beta,id,'envelopes')).rejects.toThrow('NOT_FOUND');
+    await expect(app.read(account,tenant,id,'envelopes',{platform:'messenger'})).rejects.toThrow('INVALID_REQUEST');
+    await ds.query("UPDATE channel_connection SET status='disabled' WHERE id=?",[connection]);
+    try{expect((await app.read(account,tenant,id,'envelopes',{limit:'1'})).data).toEqual(first.data);}finally{await ds.query("UPDATE channel_connection SET status='active' WHERE id=?",[connection]);}
+  });
+  it('SRC-027 rich storage/reply/compatibility/atomicity and Chatflow isolation',async()=>{
+    const replyKey=randomUUID();
+    const media:MessageContent={version:1,message_type:'media',text:null,reply_to:{external_msg_id:replyKey},attachment:{version:1,kind:'media',items:[{media_type:'image',external_media_id:'synthetic-image',name:'Synthetic.png'},{media_type:'file',external_media_id:'synthetic-file',name:null}]}};
+    const receive=(content:MessageContent,key=randomUUID())=>app.uow.run({tenantId:tenant},s=>app.receive(s,{identityId:identity,providerMessageId:key,text:legacyContentText(content),content,occurredAt:'2026-10-06T01:00:00Z',correlation:'synthetic'}));
+    const key=randomUUID(),received=await receive(media,key);
+    expect(await receive(media,key)).toEqual({...received,duplicate:true});await expect(receive({...media,text:'Changed'},key)).rejects.toThrow('MESSAGE_PAYLOAD_CONFLICT');
+    const rich=async()=>((await app.read(account,tenant,id,'rich')).data as any[]).find(m=>m.id===received.messageId);
+    expect(await rich()).toMatchObject({schema_version:3,message_type:'media',text:legacyContentText(media),text_source:'preview',attachment:media.attachment,reply_to:{external_msg_id:replyKey,internal_message_id:null}});
+    const target=await inbound(replyKey);expect((await rich()).reply_to.internal_message_id).toBe(target.messageId);
+    for(const kind of ['messages','envelopes'] as const){const old:any=(await app.read(account,tenant,id,kind)).data;expect(old.find((m:any)=>m.id===received.messageId).text).toBe(legacyContentText(media));if(kind==='envelopes')expect(old.find((m:any)=>m.id===received.messageId)).toMatchObject({schema_version:2,reply_to:null,attachment:null});}
+    const port=new ChatflowConversationPort();await expect(app.uow.run({tenantId:tenant},s=>port.inbound(s,id,received.messageId))).rejects.toThrow('CONSENT_MESSAGE_INVALID');
+    const variants:MessageContent[]=[{...media,text:'Synthetic extracted document',text_source:'extracted'},{version:1,message_type:'template',text:'yes',reply_to:null,attachment:{version:1,kind:'csat',title:'Synthetic CSAT',prompt:'Synthetic prompt'}},{version:1,message_type:'template',text:null,reply_to:null,attachment:{version:1,kind:'gallery',cards:[{title:'Synthetic card',subtitle:null,buttons:[{label:'View'}]}]}},{version:1,message_type:'unsupported',text:null,reply_to:null,attachment:{version:1,kind:'unsupported',label:'Synthetic unsupported'}}];
+    for(const content of variants){const r=await receive(content);expect(((await app.read(account,tenant,id,'rich')).data as any[]).find(m=>m.id===r.messageId)).toMatchObject({text:legacyContentText(content),attachment:content.attachment});expect(await app.uow.run({tenantId:tenant},s=>port.inbound(s,id,r.messageId,'inference'))).toMatchObject({text:legacyContentText(content)});if(content.message_type==='media'&&content.text_source==='extracted')expect(((await app.read(account,tenant,id,'rich')).data as any[]).find(m=>m.id===r.messageId).text_source).toBe('extracted');await expect(app.uow.run({tenantId:tenant},s=>port.inbound(s,id,r.messageId))).rejects.toThrow('CONSENT_MESSAGE_INVALID');}
+    const used=(await ds.query('SELECT id FROM message WHERE tenant_id=? AND conversation_id=? AND id NOT IN (SELECT message_id FROM message_content WHERE tenant_id=?)',[tenant,id,tenant])).map((m:any)=>m.id);expect(await app.uow.run({tenantId:tenant},s=>port.next(s,id,used,'consent'))).toBeUndefined();expect(await app.uow.run({tenantId:tenant},s=>port.next(s,id,used))).toMatchObject({id:received.messageId,text:legacyContentText(media)});expect(await app.uow.run({tenantId:tenant},s=>port.inbound(s,id,received.messageId,'inference'))).toMatchObject({text:legacyContentText(media)});
+    await expect(ds.query('INSERT INTO message_content(tenant_id,message_id,content) VALUES (?,?,?)',[beta,received.messageId,JSON.stringify(media)])).rejects.toThrow();
+    const before=await ds.query('SELECT * FROM message_content');await expect(app.uow.run({tenantId:tenant},async s=>{await app.receive(s,{identityId:identity,providerMessageId:randomUUID(),text:legacyContentText(media),content:media,occurredAt:'2026-10-06T01:00:00Z',correlation:'synthetic'});throw new Error('synthetic rollback');})).rejects.toThrow('synthetic rollback');expect(await ds.query('SELECT * FROM message_content')).toEqual(before);
+    await expect(app.read(account,beta,id,'rich')).rejects.toThrow('NOT_FOUND');
+  });
   it('owner-only send, stale revision, immutable receipt and concurrent same-key request',async()=>{
     await expect(send()).rejects.toThrow('OWNER_CONFLICT');await own();
     await expect(send('Synthetic',randomUUID(),'1')).rejects.toThrow('OWNER_CONFLICT');
@@ -74,6 +116,13 @@ export function conversationCases(isolated:(name:string)=>Promise<DataSource>){d
     const key=randomUUID(),result=await send('Synthetic receipt',key);expect(await send('Synthetic receipt',key)).toEqual(result);await expect(send('Changed',key)).rejects.toThrow('IDEMPOTENCY_CONFLICT');
     const raceKey=randomUUID(),race=await Promise.all([send('Synthetic race',raceKey),send('Synthetic race',raceKey)]);expect(race[0]).toEqual(race[1]);
     const intent=String(result.body.data.id);await Promise.all([dispatcher.dispatch(tenant,id,intent),dispatcher.dispatch(tenant,id,intent)]);expect(await state(intent)).toBe('sent');expect(await ds.query('SELECT * FROM mock_outbound_receipt WHERE intent_id=?',[intent])).toHaveLength(1);
+    const envelope:any=await app.read(account,tenant,id,'envelopes');expect(envelope.data.find((m:any)=>m.outbound_intent_id===intent)).toMatchObject({status:'sent',external_msg_id:expect.any(String)});expect(envelope.data.find((m:any)=>m.outbound_intent_id===race[0]!.body.data.id)).toMatchObject({status:'queued',external_msg_id:null});
+  });
+  it('SRC-030 valid contact-bound send is durable and replayable',async()=>{
+    const key=randomUUID(),body={text:'Synthetic contact-bound outbound',owner_revision:'2',crm_contact_id:contact};
+    const sendV2=()=>app.mutate(account,tenant,id,'messages',body,key,undefined,'synthetic',true);
+    const result=await sendV2();expect(result.status).toBe(202);expect(await sendV2()).toEqual(result);
+    const intent=String(result.body.data.id);await dispatcher.dispatch(tenant,id,intent);expect(await state(intent)).toBe('sent');
   });
   it('note allowed to non-owner without activity.create, no outbound side effect',async()=>{
     const before=await ds.query('SELECT id FROM message');const result=await mutate('notes',{text:'Synthetic internal note'},randomUUID(),undefined,otherAccount);
@@ -98,6 +147,8 @@ export function conversationCases(isolated:(name:string)=>Promise<DataSource>){d
     const first:any=await app.read(account,tenant,id,'messages',{limit:'1'});const second:any=await app.read(account,tenant,id,'messages',{limit:'1',cursor:first.next_cursor});expect(first.data[0].id).not.toBe(second.data[0].id);
     await expect(app.read(otherAccount,tenant,id,'messages',{cursor:first.next_cursor})).rejects.toThrow('INVALID_CURSOR');await expect(app.read(account,tenant,id,'messages',{cursor:first.next_cursor+'x'})).rejects.toThrow('INVALID_CURSOR');
     const [type]=await ds.query("SELECT id FROM object_type WHERE tenant_id=? AND `key`='conversation'",[tenant]),policy=randomUUID();await ds.query("INSERT INTO field_policy(id,tenant_id,role_id,object_type_id,property_key,denied_actions,created_at,updated_at) VALUES (?,?,?,?,'text',JSON_ARRAY('read','write'),UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[policy,tenant,role,type.id]);
+    const richHidden:any=await app.read(account,tenant,id,'rich');for(const message of richHidden.data)for(const field of ['text','reply_to','attachment'])expect(message).not.toHaveProperty(field);
+    const hidden:any=await app.read(account,tenant,id,'envelopes');for(const message of hidden.data)for(const field of ['text','reply_to','attachment'])expect(message).not.toHaveProperty(field);
     expect(((await app.read(account,tenant,id,'messages')).data as any[])[0]).not.toHaveProperty('text');expect(((await app.read(account,tenant,id)).data as any).latest_message).not.toHaveProperty('text');expect(((await app.read(account,tenant,id)).data as any).allowed_actions).not.toContain('reply');await expect(send()).rejects.toThrow('FIELD_FORBIDDEN');await ds.query('DELETE FROM field_policy WHERE id=?',[policy]);
     const ownGrants=grants.map(g=>g.resource==='conversation'?{...g,scope:'own'}:g);await ds.query('UPDATE `role` SET permissions=? WHERE id=?',[JSON.stringify(ownGrants),role]);expect((await app.read(otherAccount,tenant)).data).toEqual([]);await expect(app.read(otherAccount,tenant,id)).rejects.toThrow('NOT_FOUND');await ds.query('UPDATE `role` SET permissions=? WHERE id=?',[JSON.stringify(grants),role]);
   });
@@ -136,12 +187,25 @@ export function conversationCases(isolated:(name:string)=>Promise<DataSource>){d
     class TestModule{}Module({controllers:[ConversationController],providers:[{provide:ConversationRuntime,useValue:{ready:async()=>{},conversations:app}},{provide:AuthRuntime,useValue:{service:{session:async()=>({account_id:account}),requireMutation:async()=>({account_id:account})}}}]})(TestModule);
     const server=await NestFactory.create(TestModule,{logger:false});server.setGlobalPrefix('api/v1');await server.listen(0,'127.0.0.1');
     try{const base=await server.getUrl(),headers={'X-Tenant-Id':tenant,'Content-Type':'application/json','Idempotency-Key':randomUUID()};const get=await fetch(`${base}/api/v1/conversations/${id}`,{headers});expect(get.status).toBe(200);expect(get.headers.get('etag')).toBeTruthy();
+      const rich=await fetch(`${base}/api/v1/conversations/${id}/message-envelopes-v3`,{headers});expect(rich.status).toBe(200);expect((await rich.json() as any).data[0].schema_version).toBe(3);
+      const envelopes=await fetch(`${base}/api/v1/conversations/${id}/message-envelopes`,{headers});expect(envelopes.status).toBe(200);expect(envelopes.headers.get('cache-control')).toBe('no-store');const page:any=await envelopes.json();expect(page.data[0]).toMatchObject({schema_version:2,platform:'mock_messenger'});expect(page.meta.correlation_id).toEqual(expect.any(String));expect((await fetch(`${base}/api/v1/conversations/${id}/message-envelopes?limit=0`,{headers})).status).toBe(400);
       const missing=await fetch(`${base}/api/v1/conversations/${id}/transition`,{method:'POST',headers,body:JSON.stringify({target_status:'pending',reason:'Synthetic'})});expect(missing.status).toBe(428);
       const invalid=await fetch(`${base}/api/v1/conversations/${id}/messages`,{method:'POST',headers,body:JSON.stringify({text:' ',owner_revision:'3'})});expect(invalid.status).toBe(422);
       const intent=await fetch(`${base}/api/v1/conversations/${id}/outbound-intents/${randomUUID()}`,{headers});expect(intent.status).toBe(404);
       const note=await fetch(`${base}/api/v1/conversations/${id}/notes`,{method:'POST',headers,body:JSON.stringify({text:'HTTP synthetic note'})});expect(note.status).toBe(201);
       expect((await fetch(`${base}/api/v1/conversations`,{method:'POST',headers,body:'{}'})).status).toBe(404);
     }finally{await server.close();}
+  });
+  it('SRC-031 channel projection/filter/options preserve tenant, fields, history and cursor binding',async()=>{
+    const detail:any=(await app.read(account,tenant,id)).data;expect(detail).toMatchObject({channel:'mock_messenger',channel_id:connection,page_id:'synthetic-page'});
+    expect((await ds.query('SELECT channel,channel_id FROM conversation WHERE tenant_id=? AND record_id=?',[tenant,id]))[0]).toEqual({channel:'mock_messenger',channel_id:connection});
+    await expect(ds.query("UPDATE conversation SET channel='messenger' WHERE tenant_id=? AND record_id=?",[tenant,id])).rejects.toThrow();
+    for(const query of [{channel:'messenger'},{channel_id:randomUUID()},{page_id:'other-page'}])expect((await app.read(account,tenant,undefined,'detail',query)).data).toEqual([]);
+    const filtered:any=await app.read(account,tenant,undefined,'detail',{channel_id:connection,page_id:'synthetic-page',limit:1});expect(filtered.data).toHaveLength(1);expect(filtered.next_cursor).toBeTruthy();await expect(app.read(account,tenant,undefined,'detail',{channel_id:connection,page_id:'different',limit:1,cursor:filtered.next_cursor})).rejects.toThrow('INVALID_CURSOR');
+    expect((await app.channelOptions(account,tenant,{})).data).toEqual([{id:connection,channel:'mock_messenger',channel_id:connection,page_id:'synthetic-page',channel_name:'synthetic-page'}]);expect((await app.channelOptions(account,beta,{})).data).toEqual([]);
+    await ds.query("UPDATE channel_connection SET status='disabled' WHERE id=?",[connection]);try{expect((await app.read(account,tenant,id)).data).toMatchObject({channel_id:connection});}finally{await ds.query("UPDATE channel_connection SET status='active' WHERE id=?",[connection]);}
+    const [type]=await ds.query("SELECT id FROM object_type WHERE tenant_id=? AND `key`='conversation'",[tenant]),policy=randomUUID();await ds.query("INSERT INTO field_policy(id,tenant_id,role_id,object_type_id,property_key,denied_actions,created_at,updated_at) VALUES (?,?,?,?,'page_id',JSON_ARRAY('read'),UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[policy,tenant,role,type.id]);
+    try{expect((await app.read(account,tenant,id)).data).not.toHaveProperty('page_id');await expect(app.read(account,tenant,undefined,'detail',{page_id:'synthetic-page'})).rejects.toThrow('FIELD_FORBIDDEN');await expect(app.channelOptions(account,tenant,{})).rejects.toThrow('FIELD_FORBIDDEN');}finally{await ds.query('DELETE FROM field_policy WHERE id=?',[policy]);}
   });
   it('audit and events contain no synthetic bodies or raw reason',async()=>{const logs=JSON.stringify(await ds.query('SELECT * FROM audit_entry')),events=JSON.stringify(await ds.query('SELECT payload FROM outbox_event'));for(const text of ['Synthetic inbound','Synthetic outbound','Synthetic internal note','Synthetic close']){expect(logs).not.toContain(text);expect(events).not.toContain(text);}});
 });}

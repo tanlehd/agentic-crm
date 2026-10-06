@@ -1,0 +1,26 @@
+# Cache-aside compatibility implementation v1
+
+PLAN-006D, CHG-20261006-12. Scoped Ready: existing mock_messenger connections, immutable contact_identity mapping, monolith CRM/Chat application ports and independent Connector HTTP caller. [Target semantics](contact-resolution.md). No provider relabel, Meta enrichment or physical extraction. Existing migrations1–18/Connector1–2 unchanged; contact_identity SQL now owned by CRM resolver port, with legacy Channels reference lock retained for transaction safety.
+
+## API and transaction
+
+All integration POST endpoints reject query/Cookie/Origin/X-Tenant-Id, require JSON (new POST routes enforce <=64KiB serialized payload, framework raw parser cap100KiB), existing connection Bearer64hex + X-Connection-Id. Tenant and platform derive from authenticated active connection; active tenant/service_actor integration.deliver rechecked each call under tenant/connection locks. Error envelope matches intake. No global unauthenticated identity lookup.
+
+- POST `/api/v1/integrations/contact-identities/lookup`: `{external_subject_id}`; response200 `data:{mapping:null|Mapping}`. Only absence returns null. Subject nonblank<=255, no control chars. Disabled/archived/forbidden errors are not absence.
+- POST `/api/v1/integrations/contact-identities/resolve`: `{external_subject_id,operation_id,display_label?}`. UUID operation key; optional label same bounds. Returns200 `data:{mapping,created}`. CRM locks authenticated connection (serializes same-connection create), rechecks DB, atomically creates Contact+identity+audit/outbox+service idempotency receipt. Same operation/digest returns original created flag and IDs; changed body409. Team from connection, never client. Receipt key includes connection and service actor; existing idempotency_record supports actor_kind service. No external I/O in SQL transaction.
+- POST `/api/v1/integrations/mock-messenger/deliveries-v2`: `{crm_contact_id,crm_identity_id,intake}` where intake is unchanged strict v1 DTO. Required UUIDs; Chat validates cache/DB mapping against intake external_subject_id and connection, refresh once on mismatch, rejects409 without creating substitute. Active Contact is checked separately. Stores version2 wrapper in inbound_delivery JSON after validation; same event key conflicts if a legacy payload already exists. Worker validates contact again in the message transaction; no Contact creation for v2. Old endpoint remains unchanged.
+- POST `/api/v1/conversations/{id}/messages-v2`: old send DTO plus required crm_contact_id. Existing Human session/CSRF/permission/owner-revision required. Check Contact matches conversation in same transaction before command receipt/send intent. Separate route idempotency namespace. Returns old send receipt; no real provider dispatch added.
+
+Mapping: tenant_id, connection_id, external_subject_id, crm_contact_id, crm_identity_id, mapping_revision=`1`. Identity immutable in this slice; merge/rebinding disabled, no misleading revision mutation protocol. Never archive-check using cache alone. Future mapping mutation requires revisioned invalidation before enable.
+
+## Caches and compatibility
+
+Connector worker maintains bounded per-process cache (max1000, TTL5min, non-sliding), key tenant+remote connection+subject. Valid hit skips CRM lookup/resolve, but live remote connection binding checks remain each dispatch. Miss calls lookup; only mapping=null permits resolve with stable operation_id=delivery UUID. Cache populated only from validated successful remote reply. Timeout/error not cached; restart reads canonical DB. Remote replies validate IDs, tenant/connection/subject/revision before use. No cross-service SQL.
+
+Chat ingress has independent bounded cache with same TTL/key. CRM lookup result cached only after successful outer transaction commit. Never cache a newly created mapping before commit. Miss checks DB; absent or mismatch409, no implicit create. Processor still locks identity/Contact for local integrity and security; that is separate from cache-aside API lookup. Cache is not authority. Public cache invalidation test seam supported; no runtime mapping mutations introduced.
+
+Legacy monolith intake also delegates lookup/create to CRM port, preserving ACK-before-Contact behavior and business transaction atomicity. Old APIs, events, envelope2/3 and migration history unchanged. New required-contact commands implemented here; full new contact-bearing domain event family/renderer version remains separate machine-contract gate to avoid breaking existing consumers. Raw Messenger capture rows untouched. Profile API/avatar async enrichment remains PLAN-004; display_label is synthetic authorized input in this scope.
+
+## Acceptance
+
+Actual MySQL/HTTP: cache hit skips lookup/resolve; cache clear/restart DB-hit does not create; DB-miss resolves once; concurrent first creates only one Contact/identity; resolve lost-ACK replay stable created; changed operation payload409; foreign tenant/contact/identity denied; DB error not null; revoked connection and archived Contact denied even on cached hits; rollback no cache poisoning; v2 durable ingress→Chat message uses supplied contact; outbound missing/wrong contact rejected. Existing full regression and independent bridge smoke. Source evidence separate from design checks; no sandbox or preview changes.

@@ -1,3 +1,6 @@
+import { ContactIdentities,identityLabel,type ContactMapping } from '../crm/contact-identity.js';
+import { ChatContactCache } from '../conversation/contact-cache.js';
+import { legacyContentText } from '../conversation/content.js';
 import { page } from '../operations/paging.js';
 import { createHash,randomUUID,timingSafeEqual } from 'node:crypto';
 import type { DataSource } from 'typeorm';
@@ -15,6 +18,7 @@ export interface IntakeClaim {tenantId:string;connectionId:string;id:string;toke
 export class IntakeLeaseLost extends Error {constructor(){super('INTAKE_LEASE_LOST');}}
 const delays=[1,5,30,120,600];
 export class MessengerIntake {
+  readonly contactCache=new ChatContactCache();private readonly identities=new ContactIdentities();
   readonly uow:UnitOfWork;private readonly auth:IdentityAuthorization;private readonly commands=new DurableCommands();
   constructor(private readonly source:DataSource,private readonly conversations=new Conversations(source,'internal-intake-no-pagination'),private readonly crm=new ConversationCrmPort()) {this.uow=new UnitOfWork(source);this.auth=new IdentityAuthorization(this.uow);}
   private async authenticated(connectionId:unknown,authorization:unknown){
@@ -32,16 +36,34 @@ export class MessengerIntake {
     if(!row||row.provider!=='mock_messenger'||row.status!=='active'||!row.service_actor_id||!row.credential_hash||hash!==undefined&&row.credential_hash!==hash)throw new CommandError(403,'INTEGRATION_FORBIDDEN');
     await requireService(s,row.service_actor_id,'integration','deliver');return row;
   }
-  async accept(connectionId:unknown,authorization:unknown,input:unknown,correlation:string){
-    const ctx=await this.authenticated(connectionId,authorization),payload=normalized(input),hash=createHash('sha256').update(canonical(payload)).digest('hex');
+  async binding(connectionId:unknown,authorization:unknown){
+    const ctx=await this.authenticated(connectionId,authorization);
+    return this.uow.run({tenantId:ctx.tenantId},async s=>{await this.connection(s,ctx.connectionId,ctx.hash);return {tenant_id:ctx.tenantId,connection_id:ctx.connectionId,platform:'mock_messenger' as const};});
+  }
+  async identity(connectionId:unknown,authorization:unknown,input:unknown,resolve:boolean,correlation:string){
+    const ctx=await this.authenticated(connectionId,authorization),b=object(input,resolve?['external_subject_id','operation_id','display_label']:['external_subject_id']),subject=identityLabel(b.external_subject_id);
+    if(resolve&&!uuid(b.operation_id))throw new CommandError(422,'VALIDATION_FAILED');
+    const label=b.display_label===undefined?undefined:identityLabel(b.display_label);
+    return this.uow.run({tenantId:ctx.tenantId},async s=>{const c=await this.connection(s,ctx.connectionId,ctx.hash);return resolve?this.identities.resolveCommand(s,c,{external_subject_id:subject,operation_id:b.operation_id as string,...(label===undefined?{}:{display_label:label})},correlation):{mapping:await this.identities.lookup(s,c.id,subject)};});
+  }
+  async accept(connectionId:unknown,authorization:unknown,input:unknown,correlation:string,contactBound=false){
+    const wrapper=contactBound?object(input,['crm_contact_id','crm_identity_id','intake']):undefined;
+    if(wrapper&&(!uuid(wrapper.crm_contact_id)||!uuid(wrapper.crm_identity_id)))throw new CommandError(422,'CONTACT_CONTEXT_REQUIRED');
+    const ctx=await this.authenticated(connectionId,authorization),payload=normalized(wrapper?wrapper.intake:input),stored=wrapper?{version:2,crm_contact_id:wrapper.crm_contact_id,crm_identity_id:wrapper.crm_identity_id,intake:payload}:payload;
+    let confirmed:ContactMapping|undefined;
+    const cacheKey=this.contactCache.key(ctx.tenantId,ctx.connectionId,payload.external_subject_id);
+    const hash=createHash('sha256').update(canonical(stored)).digest('hex');
     const result=await this.uow.run({tenantId:ctx.tenantId},async s=>{
       const c=await this.connection(s,ctx.connectionId,ctx.hash),actor={kind:'service' as const,id:c.service_actor_id};
+      if(wrapper){let mapping=this.contactCache.get(cacheKey);if(!mapping||mapping.crm_contact_id!==wrapper.crm_contact_id||mapping.crm_identity_id!==wrapper.crm_identity_id){mapping=await this.identities.lookup(s,c.id,payload.external_subject_id);if(mapping)confirmed=mapping;}
+        if(!mapping||mapping.crm_contact_id!==wrapper.crm_contact_id||mapping.crm_identity_id!==wrapper.crm_identity_id)throw new CommandError(409,'CONTACT_BINDING_STALE');await this.crm.activeContact(s,mapping.crm_contact_id);
+      }
       const [old]=await s.query('SELECT id,payload_hash FROM inbound_delivery WHERE tenant_id=? AND connection_id=? AND provider_event_id=?',[ctx.tenantId,ctx.connectionId,payload.provider_event_id]);
       if(old){if(old.payload_hash!==hash){await this.commands.systemAudit(s,correlation,'inbound_delivery',old.id,'intake.payload_conflict',[],actor);return {conflict:true,id:old.id};}return {conflict:false,id:old.id};}
-      const id=randomUUID();await s.query("INSERT INTO inbound_delivery(id,tenant_id,connection_id,provider_event_id,payload_hash,payload,received_at) VALUES (?,?,?,?,?,?,UTC_TIMESTAMP(6))",[id,ctx.tenantId,ctx.connectionId,payload.provider_event_id,hash,JSON.stringify(payload)]);
+      const id=randomUUID();await s.query("INSERT INTO inbound_delivery(id,tenant_id,connection_id,provider_event_id,payload_hash,payload,received_at) VALUES (?,?,?,?,?,?,UTC_TIMESTAMP(6))",[id,ctx.tenantId,ctx.connectionId,payload.provider_event_id,hash,JSON.stringify(stored)]);
       await this.commands.systemAudit(s,correlation,'inbound_delivery',id,'intake.received',['status'],actor);return {conflict:false,id};
     });
-    if(result.conflict)throw new CommandError(409,'IDEMPOTENCY_CONFLICT');return {data:{delivery_id:result.id,status:'received'},meta:{correlation_id:correlation}};
+    if(result.conflict)throw new CommandError(409,'IDEMPOTENCY_CONFLICT');if(confirmed)this.contactCache.put(cacheKey,confirmed);return {data:{delivery_id:result.id,status:'received'},meta:{correlation_id:correlation}};
   }
   private output(row:any){return {id:row.id,connection_id:row.connection_id,status:row.status,attempts:Number(row.attempts),error_code:row.last_error_code,conversation_id:row.conversation_id,message_id:row.message_id,duplicate:!!row.duplicate,attribution:row.attribution,received_at:stamp(row.received_at),processed_at:stamp(row.processed_at)};}
   private async row(s:TransactionScope,id:string){if(!uuid(id))throw new CommandError(400,'INVALID_REQUEST');const [r]=await s.query('SELECT * FROM inbound_delivery WHERE tenant_id=? AND id=?',[s.context.tenantId,id]);if(!r)throw new CommandError(404,'NOT_FOUND');return r;}
@@ -70,14 +92,16 @@ export class MessengerIntake {
   }
   async process(claim:IntakeClaim){
     await this.uow.run({tenantId:claim.tenantId},async s=>{
-      const c=await this.connection(s,claim.connectionId),row=await this.locked(s,claim),payload=normalized(typeof row.payload==='string'?JSON.parse(row.payload):row.payload),actor={kind:'service' as const,id:c.service_actor_id};
+      const c=await this.connection(s,claim.connectionId),row=await this.locked(s,claim),saved=typeof row.payload==='string'?JSON.parse(row.payload):row.payload,payload=normalized(saved.version===2?saved.intake:saved),actor={kind:'service' as const,id:c.service_actor_id};
       const existing=await this.conversations.findInbound(s,c.id,payload.provider_message_id);let refs=existing,attribution='unknown';
-      if(!refs){
-        let [identity]=await s.query('SELECT * FROM contact_identity WHERE tenant_id=? AND connection_id=? AND external_subject_id=? FOR UPDATE',[claim.tenantId,c.id,payload.external_subject_id]);
-        if(!identity){const contact=await this.crm.createInboundContact(s,c.team_id,payload.display_label??'Messenger contact',claim.id,actor);identity={id:randomUUID(),contact_id:contact};await s.query('INSERT INTO contact_identity(id,tenant_id,connection_id,contact_id,external_subject_id,display_label) VALUES (?,?,?,?,?,?)',[identity.id,claim.tenantId,c.id,contact,payload.external_subject_id,payload.display_label??null]);}
-        refs=await this.conversations.receive(s,{identityId:identity.id,providerMessageId:payload.provider_message_id,text:payload.message.text,occurredAt:payload.occurred_at,correlation:claim.id,actor});
-        if(payload.referral){attribution='ctm';await s.query("INSERT INTO touchpoint(id,tenant_id,connection_id,delivery_id,contact_id,conversation_id,channel,source,campaign_id,ad_id,occurred_at,received_at) VALUES (?,?,?,?,?,?,'mock_messenger','ctm',?,?,?,?)",[randomUUID(),claim.tenantId,c.id,claim.id,identity.contact_id,refs.conversationId,payload.referral.campaign_id??null,payload.referral.ad_id??null,new Date(payload.occurred_at),row.received_at]);}
-      }else {const [touchpoint]=await s.query('SELECT id FROM touchpoint WHERE tenant_id=? AND delivery_id IN (SELECT id FROM inbound_delivery WHERE tenant_id=? AND message_id=? AND duplicate=0)',[claim.tenantId,claim.tenantId,refs.messageId]);if(touchpoint)attribution='ctm';}
+      if(!refs||saved.version===2){
+        const resolved=saved.version===2?{mapping:await this.identities.lookup(s,c.id,payload.external_subject_id)}:await this.identities.resolve(s,c.id,c.team_id,payload.external_subject_id,payload.display_label??'Messenger contact',claim.id,actor);
+        if(!resolved.mapping||saved.version===2&&(resolved.mapping.crm_contact_id!==saved.crm_contact_id||resolved.mapping.crm_identity_id!==saved.crm_identity_id))throw new CommandError(409,'CONTACT_BINDING_STALE');
+        const identity={id:resolved.mapping.crm_identity_id,contact_id:resolved.mapping.crm_contact_id};
+        refs=await this.conversations.receive(s,{identityId:identity.id,crmContactId:identity.contact_id,providerMessageId:payload.provider_message_id,text:payload.message.type==='rich'?legacyContentText(payload.message.content):payload.message.text,...(payload.message.type==='rich'?{content:payload.message.content}:{}),occurredAt:payload.occurred_at,correlation:claim.id,actor});
+        if(payload.referral&&!existing){attribution='ctm';await s.query("INSERT INTO touchpoint(id,tenant_id,connection_id,delivery_id,contact_id,conversation_id,channel,source,campaign_id,ad_id,occurred_at,received_at) VALUES (?,?,?,?,?,?,'mock_messenger','ctm',?,?,?,?)",[randomUUID(),claim.tenantId,c.id,claim.id,identity.contact_id,refs.conversationId,payload.referral.campaign_id??null,payload.referral.ad_id??null,new Date(payload.occurred_at),row.received_at]);}
+      }
+      if(existing){const [touchpoint]=await s.query('SELECT id FROM touchpoint WHERE tenant_id=? AND delivery_id IN (SELECT id FROM inbound_delivery WHERE tenant_id=? AND message_id=? AND duplicate=0)',[claim.tenantId,claim.tenantId,refs.messageId]);if(touchpoint)attribution='ctm';}
       await this.locked(s,claim);
       await s.query("UPDATE inbound_delivery SET status='processed',lease_until=NULL,next_attempt_at=NULL,last_error_code=NULL,conversation_id=?,message_id=?,duplicate=?,attribution=?,processed_at=UTC_TIMESTAMP(6) WHERE tenant_id=? AND id=? AND fencing_token=?",[refs.conversationId,refs.messageId,!!existing,attribution,claim.tenantId,claim.id,claim.token]);
       await this.commands.systemAudit(s,claim.id,'inbound_delivery',claim.id,existing?'intake.duplicate':'intake.processed',['status','message_id'],actor);

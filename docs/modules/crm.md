@@ -1,5 +1,6 @@
 # MOD-02 — CRM & Object Platform
 
+> Kiến trúc đích microservice theo ADR-017: [CRM Core & Metadata](../services/crm.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.
 Status: Ready for implementation nền móng M1; advanced builder Draft M5. Requirements: REQ-03, REQ-04, REQ-13.
 
 ## Mục tiêu và phạm vi
@@ -51,3 +52,9 @@ Registry metadata/association HTTP và internal record/subtype/ownership ports t
 ## SRC-011…013 M1 boundary
 
 Property/custom/index/form/view ở SRC-011, Contact/Company/Activity và Lead core qua Sales port ở SRC-012. SRC-013 nối CRM/Admin UI, descriptor/context API và dev fixture v3. [Exact record contract](../contracts/crm-records.md), [core](../contracts/crm-core.md), [UI](../contracts/crm-ui.md). Các ghi chú “chưa có subtype/CRUD” của SRC-010 phía trên chỉ mô tả mốc lịch sử đó. Generic Deal/Ticket/Conversation và public assignment vẫn chưa mở. Gate/evidence hiện hành ở tracker.
+
+ADR-019 target: CRM owns canonical external identity→Contact mapping and atomic ResolveContact; receives Connector profile observations without calling provider APIs or overwriting Human fields. [Contract](../contracts/contact-resolution.md). Physical source remains unchanged.
+
+## SRC-030 scoped implementation
+
+ContactIdentities application port owns canonical mapping reads and atomic Contact+identity creation; service-scoped durable operation receipt preserves replay result. No migration required. See [compatibility contract](../contracts/contact-resolution-local.md).

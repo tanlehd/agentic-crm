@@ -377,3 +377,141 @@ SRC-025 DONE; all25 M1–M2 source tasks DONE and local/mock M2 release gate PAS
 ## S-20261006-04 — Git sync SRC-025
 
 User explicitly requested commit/push. SRC-025 committed `f35ea60` and pushed origin/main from3476707. Fresh docs check88 files/381 links, AST lint205 files and git diff --check PASS; previous release/regression/canonical evidence retained, runtime suites not rerun for Git-only sync. All25 tasks remain DONE. Services untouched; runtime evidence remains S-20261006-03. This checkpoint/evidence sync is recorded in the following docs commit.
+
+
+## S-20261006-05 — PLAN-002 M3 provider/connector direction
+
+Claim PLAN-002 IN_PROGRESS, Codex 2026-10-06, dependency SRC-025 DONE. User explicitly directs AI Agent provider selection (Meta Business Agent case study), provider conversation routing, common message envelope and local official documentation snapshots. Scope Ready for this planning task only; production contracts remain Draft.
+
+CHG-20261006-03 (C3 direction authorized by user, C2 contract refinement pending): M2 in-process execute/cancel protocol is insufficient as the only abstraction for a hosted agent platform. Separate AI Agent provider configuration/lifecycle, CRM Connector transport/routing and platform-specific message rendering. Keep M2 contracts/migrations intact; future additive/versioned contracts require design gates. Update module designs, dictionary, contract draft, architecture/ADR, roadmap/build plan, acceptance, tracker/checkpoint and provider source manifest. Direction resolved via ADR-016 and updated docs; exact provider contract gaps remain PLAN-003/004, no product implementation.
+
+### S-20261006-05 completion
+
+PLAN-002 DONE (doc-only); PLAN-003 READY unclaimed, PLAN-004 TODO. CHG-20261006-03 direction resolved, production contract refinements remain Draft with named gaps. Added M3 provider plan, common-message envelope draft and 20 official Meta Markdown snapshots plus2 llms indexes, provenance/date/byte length/SHA-256 manifest. Updated runtime boundary, Agents/Channels/Conversation, data/architecture/ADR/UX, roadmap/build plan, acceptance, README/index and tracking. Meta overview WhatsApp eligibility excludes Health; preserve healthcare mock and use synthetic catering/retail for future provider case study. Messenger app routing and WhatsApp Agent thread control explicitly distinct.
+
+Final `node scripts/check-docs.mjs` PASS92 Markdown/451 local links/3 JSON examples/5 Mermaid headers/25 source task dependency graph; `git diff --check` PASS; Python byte/hash/provenance check PASS22 source files. Host macOS ARM64 Node25.9.0 for docs only; no product runtime test. Artifacts: `artifacts/PLAN-002/docs-check.log`, `checksums.log`, `whitespace.log`; details at [PLAN-002](details/PLAN-002.md). Initial sandbox curl DNS failed then approved public fetch succeeded; upstream encoded JSON failed doc parse, so raw immutable vendor Markdown saved as .md.txt without changing checker. Intermediate missing detail link fixed and final check rerun. No failed invocation reported PASS.
+
+Read-only Docker inspection returned7 existing services healthy; a later attempt to redirect the same snapshot to artifact failed sandbox socket access, not a new health result. Prior successful observation preserved in `artifacts/PLAN-002/services.log`; services untouched. All M3 sandbox/account eligibility/runtime acceptance NOT_RUN. Main starting HEAD1111839, dirty docs only, no commit/push/deploy/source/schema change. No agent or automation. Next action: claim PLAN-003 provider documentation/capability gap review; do not claim source integration on Draft design.
+
+
+## S-20261006-06 — PLAN-003 provider dossier
+
+User yêu cầu tiếp tục. Claim PLAN-003 IN_PROGRESS, Codex 2026-10-06; dependency PLAN-002 DONE, research scope Ready. Existing dirty PLAN-002 docs retained, starting HEAD1111839; no source implementation. Read plan/module/contract/dictionary/acceptance and source gaps before research.
+
+CHG-20261006-04 (C2, PLAN-003): bổ sung official WhatsApp/Agent references, per-surface API version/capability mapping và gap dispositions, giữ implementation Draft. Không schema/API/event/migration change; sandbox evidence NOT_RUN.
+
+### S-20261006-06 completion
+
+PLAN-003 DONE (research only), PLAN-004 READY unclaimed. CHG-20261006-04 resolved as research refinement with explicit remaining integration gates. Added33 Markdown+1 WhatsApp index; total56 downloaded snapshots preserve byte lengths/SHA-256,4 unusable HTML responses recorded failed. Graph versions/release notes observed in browser; selected v26.0, Agent config2.0.0 and Thread Control1.0.0. Generated16-endpoint URL/method/header version matrix; capability/source/disposition and sandbox case mapping. Updated source docs, plan, runtime/message drafts, modules, dictionary, ADR, acceptance and trackers; no product changes.
+
+`node scripts/check-docs.mjs` and `git diff --check` PASS; Python verification56 source snapshots+16 endpoint rows PASS. Final doc counts in `artifacts/PLAN-003/docs-check.log`; source hashes in `sources-check.log`, whitespace in `whitespace.log`. Evidence environment/commands/failures and gap ownership: [PLAN-003](details/PLAN-003.md). Sandbox/account eligibility/control/tool/runtime checks NOT_RUN; no new M3 AC PASS. G-04 control host/path, G-05 exact WA handover payload, G-08 hosted tool callback binding remain release/design gates; PLAN-004 can proceed independent scopes.
+
+Read-only docker ps reports7 preview services healthy; observation at artifacts/PLAN-003/services-observation.log, no lifecycle action. Main HEAD1111839 with existing PLAN-002+new PLAN-003 docs dirty; no commit/push/deploy/reset/source/schema/migration change. No agents/automation/background jobs. Next action: claim PLAN-004 exact contracts/UX/data/backlog with unresolved sub-scopes kept Draft.
+
+## S-20261006-07 — PLAN-004A và SRC-026
+
+Owner Codex, ngày2026-10-06. User yêu cầu implement. Claim PLAN-004A IN_PROGRESS; chỉ một task active.
+
+### CHG-20261006-05 — Tách gate độc lập cho message envelope
+
+C2, PLAN-004A/SRC-026: PLAN-004 rộng còn nhiều design/sandbox gaps; tách legacy read-only projection để code phần Ready. Contract/module/dictionary/physical-schema/AC/build-plan/tracker được cập nhật trước code. Không đổi migration, API messages v1, ownership hoặc integration mock. PLAN-004 còn TODO; rich/config/routing/tools không được coi DONE. Tests pending; quyết định design resolved.
+
+PLAN-004A DONE sau docs check96 files/568 links (host Node25 doc-only). SRC-026 claimed IN_PROGRESS trước source edits. Implement GET message-envelopes, strict generated contract và tenant-bound Channels history port. Initial integration command bị sandbox chặn Docker socket (artifacts/SRC-026/integration.log); retry elevated đã được duyệt, đang chạy. Fixture trạng thái inactive được sửa đúng enum disabled trước build. Canonical verify và MySQL suite pending; không claim PASS.
+
+SRC-026 DONE: canonical verify9/9 PASS (67 unit/contract +7 tooling), MySQL regression181/181 PASS, isolated container cleanup exit0. Evidence artifacts/SRC-026/{integration-retry.log,verify.log,verify/summary.json}; final docs/whitespace và services observation cùng thư mục. AC chỉ đóng text foundation, không rich/provider/UI. PLAN-004A doc gate DONE; PLAN-004 phần còn lại TODO. Main HEAD1111839 dirty (preserved PLAN-002/003); không commit/push/deploy/migration. Preview không lifecycle mutation. Next: exact rich persistence/renderer design trong PLAN-004. [Task detail](details/SRC-026.md).
+
+## S-20261006-08 — Rich message foundation
+
+Owner Codex2026-10-06. Claim PLAN-004B IN_PROGRESS, dependency SRC-026 DONE; existing dirty source/docs preserved.
+
+### CHG-20261006-06 — Rich content sidecar và passive rendering
+
+C2: schema v2 null-only không mở rich ngầm; tạo v3 endpoint và sidecar migration18. Phát hiện Chatflow đọc mọi inbound text; filter qua Conversation port để fallback/CSAT không là consent. Chốt normalized rich mock transport, reply resolution, media metadata-only và render passive theo rich-messages contract; cập nhật module/data/UX/AC/plans trước code. Remote media resolver/live provider riêng Draft. Design resolved; tests pending.
+
+User steering S-20261006-08: text của media là extracted/preview, automation được đọc để dự đoán; UI parse JSON content. Điều chỉnh CHG-20261006-06 trước tests: bỏ blanket nontext exclusion, bổ sung text_source, inference accepts rich và consent original-only. Không cần hỏi lại. Chưa chạy migration18; thiết kế sidecar không đổi.
+
+SRC-027 implementation: schema18 sidecar + typed rich mock intake, v3 projection/reply resolution, passive inbox renderer và text_source original/extracted/preview. Original-only consent; inference dùng text mọi type. Initial tests: verify.log FAIL JSX transform; integration.log181 PASS/2 FAIL do rich fixture chạy trước baseline-empty tests; sửa cấu hình Oxc JSX và chuyển fixture. verify-retry.log9/9 PASS, integration-retry.log183 PASS trước refinement preview. Refinement tạo preview từ JSON title/name/prompt thay fixed label; verify-final/verify-complete và integration-final/integration-complete FAIL build vì TypeScript narrowing. Sửa bằng hai guard riêng; host Node25 contracts build/backend typecheck preflight PASS (không canonical runtime evidence). Canonical validated runs đang chạy, chưa đóng task. Browser fixture từ component SSR thật PASS desktop1100/mobile390, no remote fetch/action/overflow; screenshots và browser.log ở artifacts/SRC-027; không login/full-stack browser claim.
+
+SRC-027 DONE: integration-validated.log183/183 PASS; verify-validated.log9/9 PASS gồm73 unit/contract/renderer+7 tooling. Browser component desktop/mobile PASS, screenshots inspected; full-stack browser/Meta/media resolver/release NOT_RUN. Final docs/whitespace evidence cùng artifacts/SRC-027. Main1111839 dirty preserved, no commit/push/deploy; preview7 healthy, test cleanup exit0, schema18 chỉ disposable test. PLAN-004B DONE; next authenticated media reference/resolver design. [Evidence](details/SRC-027.md).
+
+## S-20261006-09 — Enterprise microservices blueprint
+
+Claim PLAN-005 IN_PROGRESS, Codex2026-10-06; SRC-027 DONE. Read current README/build plan/tracker/checkpoint, architecture/modules/data/contracts/change control; dirty prior work preserved.
+
+### CHG-20261006-07 — Microservices architecture direction
+
+C3 architectural boundary change, explicitly authorized by user: mỗi module có phạm vi, kiến trúc và data model rõ; enterprise microservices là target thay modular monolith. Không hỏi lại định hướng đã yêu cầu. PLAN-005 chốt logical boundaries, data ownership và distributed invariants; exact transport/security/migration implementation gates theo follow-up. Không đổi business Human/AI/tenant semantics. ADR-017 supersedes future monolith/shared-UoW rules, retains current source/migrations1–18 and prior test evidence. Docs affected: system/modules/services/contracts/data/decisions/planning/tracking. Source/runtime changes NOT_RUN/not in doc-only task.
+
+PLAN-005 DONE doc-only:14 per-service descriptors,11 module→service links, service-owned data/registry partition, distributed contract/saga/authorization gates và extraction roadmap. ADR-017 replaces target architecture; baseline source retained. Boundary checker368 source/config SHA256 unchanged; docs/links/DAG/whitespace PASS, artifacts/PLAN-005. No app/broker/deploy tests, no source changes/commit/push; old dirty work retained. PLAN-006 READY design task; source extraction not Ready. Checkpoint updated with current-vs-target, services last-known state và next first-slice exact contracts.
+
+## S-20261006-10 — First independent Connector ingress
+
+Claim PLAN-006A IN_PROGRESS, Codex2026-10-06. User requests implementation. Existing dirty source/docs preserved; current source baseline monolith, PLAN-005 docs DONE.
+
+### CHG-20261006-08 — Scope first extraction prerequisite
+
+C2 architecture implementation refinement: split independent durable HTTP ingress bridge before broker/full domain extraction. PLAN-006A exact connection-scoped binding/intake/receipts/own DB/lease/auth protocol; remaining006 dispatch/Human delegation/sagas/JetStream not DONE. No owner/control or real provider mutation scope; no change public legacy messages. Separate service schema1, no edit monolith migrations1–18. Source task follows doc Ready gate. Tests pending.
+
+PLAN-006A DONE: docs check PASS120 Markdown/739 links; scoped contract Ready. Claim SRC-028 IN_PROGRESS, Codex2026-10-06; deps SRC-027 DONE.
+
+SRC-028 implementation: independent Nest API/worker, private schema1/journal, explicit grant/provision, durable HTTP binding/dedup/retries/receipts, non-root image and opt-in Compose/runbook. Initial integration FAIL load decorator in test fixture; retry FAIL MySQL BIGINT advisory-lock string; lock-fix FAIL reserved SQL alias in grant. Corrected each; integration-grant-fix.log184/184 PASS. Initial verify9/9 PASS, image build PASS; image-smoke first attempt failed at old grant alias, own project cleaned. Final audit composite FK, concurrent replay and generated error schema validation pending; status VERIFYING. No preview changes.
+
+SRC-028 DONE: final verify9/9 PASS (77 unit/contract/renderer,7 tooling), integration-final.log184/184 PASS, image-smoke-final.log release image/private MySQL/non-root/HTTP/API restart PASS and cleanup exit0. Own audit FK tenant-bound, canonical concurrent replay tested, worker child process recovery/shutdown tested. One final integration approval review timed out; permitted retry succeeded. Protected monolith migrations match pre-turn PLAN-005 hashes. Docker ps7 preview healthy, no test containers; no preview schema/route/traffic change, no commit/push/deploy. Docs/checkpoint/task/AC updated; remaining PLAN-006 TODO and production/Meta/broker NOT_RUN.
+
+## S-20261006-11 — M3 local completion
+
+User yêu cầu hoàn thiện M3 và chọn local trước, chưa có sandbox. Read checkpoint/tracker/plans/module/service/data/acceptance and provider snapshots; HEAD1111839, existing dirty work preserved. Claim PLAN-004C IN_PROGRESS, Codex2026-10-06, SRC-028/PLAN-003 DONE. No agent/background automation/commit/push/deploy.
+
+### CHG-20261006-09 — Signed Messenger ingress before domain cutover
+
+C2 scoped additive gate: independent Connector can capture authenticated real-format Page events without Chat extraction or calling mock APIs. Exact raw signature/challenge, immutable Page→tenant binding, atomic batch retention, message/replay identity, unknown/echo/standby quarantine, local schema2 and fault tests. Source must never reinterpret provider-managed echoes/control as inbound customer turns or silently drop unsupported messages. Remaining domain ingestion/dispatch/media/provider UI not promoted by this gate. User chose local synthetic verification; actual Meta sandbox NOT_RUN.
+
+PLAN-004C DONE scoped design, docs check PASS (artifacts/SRC-029/design-docs.log). Claim SRC-029 IN_PROGRESS, Codex2026-10-06. Implementation/test pending.
+
+SRC-029 initial canonical verify PASS; MySQL184 PASS/1 FAIL: SELECT FOR UPDATE on read-only Page binding returned503. Fix uses SELECT FOR SHARE on bindings + ordered event unique-key no-op inserts; runtime still cannot mutate Page/tenant. Final verification pending. Logs retained artifacts/SRC-029.
+
+SRC-029 VERIFYING: final MySQL185/185 PASS; canonical9/9 PASS (86 unit/contract/renderer +7 tooling). Initial integration permission bug fixed without Page UPDATE grant; retry reached assertion failure because DataSource COUNT returns string, corrected with numeric normalization. Image smoke passed signed capture/replay and API restart; final rebuild pending after timestamp validation refinement. Logs retained. Full M3 local remains incomplete; no sandbox or preview mutation.
+
+SRC-029 DONE: final canonical9/9 (86 unit+7 tooling), MySQL185/185, final release-image signed capture and restart PASS, cleanup exit0. Seven preview services healthy. Existing dirty work preserved at HEAD1111839; no commit/push/deploy. [Evidence](details/SRC-029.md). M3 local is not complete; next exact domain-ingestion/dispatch gate in PLAN-006.
+
+## S-20261006-12 — Clear contact resolution responsibilities
+
+Claim PLAN-006B IN_PROGRESS, Codex2026-10-06; dependencies PLAN-005/SRC-029 DONE. User explicitly assigns Connector provider profile enrichment/cache, CRM Core contact resolution and required CRM Contact ID on inbound/outbound Chat message contracts. Existing dirty workspace preserved; source snapshot artifacts/PLAN-006B/source-before.json. No implementation or runtime change planned in this design turn.
+
+### CHG-20261006-10 / ADR-019
+
+C3 target authority refinement explicitly authorized by user: canonical external-identity→Contact mapping belongs to CRM Core; Connector owns provider identity observations and reconstructible resolution/profile caches. Replaces PLAN-005 ownership row grouping contact_identity with Connector; monolith physical ownership unchanged until a future migration/cutover. New versioned Chat message interfaces require crm_contact_id on both directions. No modification of strict shipped schemas or old migration history. Exact auth/physical schema/provider endpoint and dispatch gates remain PLAN-006/004; no repeated business approval required.
+
+PLAN-006B DONE design-only: [contract](../contracts/contact-resolution.md), ADR-019 and service/module/data/API/event/UX/planning/AC documents synchronized. Canonical mapping CRM, observations/cache Connector; required crm_contact_id both directions including customer recipient for echo. Profile cache24h/resolution5min baseline, failure fallback and authoritative Chat binding validation specified; exact DTO/auth/DDL/provider endpoints still gated. `node scripts/check-docs.mjs`, `git diff --check`, Python source/config SHA256 comparison PASS, artifacts/PLAN-006B. No source/runtime test or service lifecycle operation, no commit/push/deploy; main HEAD1111839 dirty preserved. Checkpoint records next exact design gate; no task active.
+
+## S-20261006-13 — DB-backed cache-aside resolution
+
+Claim PLAN-006C IN_PROGRESS, Codex2026-10-06; PLAN-006B DONE. User clarifies Chat/Connector load caches from persisted DB mappings, call CRM Core to create Contact+identity only when absent. CHG-20261006-11 (C2): replace forced per-message CRM validation and cache-miss-implies-create with cache→DB lookup→confirmed absent→idempotent CRM resolve/create. Cache TTL is not authorization validity. Module port versus service API follows ADR-017; no new cross-service SQL or source implementation. Prior dirty work preserved; doc-only.
+
+PLAN-006C DONE design-only: cache-aside lookup/hydration for both services, authoritative DB-miss-only create, no per-message CRM mapping RPC on valid hits, separate dispatch authorization, mismatch/error behavior and nonblocking enrichment recorded. Replay created flag preserves stored receipt. Docs/service/data/ADR/AC/tracker/checkpoint synchronized. Docs/whitespace PASS under artifacts/PLAN-006C; runtime NOT_RUN, no source or lifecycle change, dirty work preserved, no commit/push/deploy. Next exact auth/schema/cache invalidation/fencing gate remains PLAN-006.
+
+## S-20261006-14 — Cache-aside implementation
+
+Claim PLAN-006D IN_PROGRESS, Codex2026-10-06. User requests implementation of approved cache→DB→CRM resolve/create and contact-bound Chat. Existing dirty main1111839 preserved. CHG-20261006-12 (C2): scoped authenticated compatibility APIs on existing immutable mock connections; own Connector cache/remote CRM port, monolith CRM-owned identity application port and Chat cache/required-contact ingress/outbound command. No migration or domain extraction, real Facebook capture not routed into mock. Remaining provider enrichment/live mapping invalidation/merge/dispatch gates separate.
+
+PLAN-006D DONE scoped design check PASS; claim SRC-030 IN_PROGRESS.
+
+SRC-030 initial canonical verify9/9 PASS; MySQL187/188 PASS, one failure: Nest POST default201 disagreed with lookup/resolve contract200. Explicit response status fixed; final verification pending. Added concurrent first-contact race, failed-transaction cache isolation and cross-contact duplicate-message fence tests. Scoped docs and backend-first rollout/rollback constraint synchronized.
+
+SRC-030 VERIFYING: final MySQL188/188 PASS, canonical9/9 PASS (89 unit/contract/renderer +7 tooling). Fix preserves explicit200 lookup/resolve contract; rollback/cache/concurrent-first-contact/cross-contact duplicate regressions passed. Release-image smoke running; no preview deployment or migration.
+
+SRC-030 DONE: canonical9/9 (89 unit+7 tooling), MySQL188/188, release-image smoke/restart PASS; disposable projects cleaned exit0. Final docs/whitespace checked; seven preview containers healthy, not upgraded. [Evidence](details/SRC-030.md). Main HEAD1111839 dirty preserved, no commit/push/deploy. Full M3, real Messenger→Chat, profile enrichment and new contact-bearing event family remain pending; checkpoint records one next design/source gate.
+
+## S-20261006-15 — Facebook configuration and channel-aware inbox
+
+User requests Admin Channels→Facebook Page list/Connect, DB-managed Page tokens and Conversation channel/channel_id filters. Explicit follow-up chooses real OAuth Page discovery now. CHG-20261006-13 (C2 authorized scope): exact OAuth/credential/schema19/API/UI contract, baseline Channels authority pending service extraction; real messaging transport remains separate. Preserve dirty main1111839. Claim PLAN-004D IN_PROGRESS, dependencies SRC-030/PLAN-003 DONE.
+
+PLAN-004D design check PASS, SRC-031 IN_PROGRESS. Implemented schema19, fixed-origin OAuth adapter and Page token encryption, Admin UI and channel filters. Initial MySQL195/195 and host preflight94 unit tests PASS; additional field-policy/filter/UI cases and final canonical verification pending. No live Meta call, credential inspection or preview change.
+
+SRC-031 DONE: final canonical9/9 (96 unit+7 tooling), MySQL196/196, desktop/mobile Next+Chrome synthetic OAuth/catalog/filter smoke and pinned nginx config PASS. [Evidence](details/SRC-031.md), [runbook](../development/facebook-configuration.md). Secrets never exposed; no real Meta request during tests. Disposable projects and temporary3101 server stopped; seven preview services healthy/schema17 unchanged. Main HEAD1111839 dirty preserved; no commit/push/deploy. Full M3/capture→Chat/subscription/send/profile and live OAuth acceptance remain pending.
+
+## S-20261006-16 — User-authorized Git handoff
+
+User explicitly requests commit and push current work, then will continue task-by-task. Scope includes accumulated SRC-026…031 source, contracts, service/M3 design and tracking evidence. Verified previous final SRC-031 evidence:196 MySQL,96 unit,9 canonical gates and browser/gateway checks PASS; tests not rerun for Git handoff. Restore next-env.d.ts production generated paths after isolated dev server; retain Next-generated agent guide files. No preview update; schema17/running images remain unchanged. Commit/push outcome recorded in conversation; this entry is included in the handoff commit.
+
+Handoff review:246 staged files before this log update; ignored .env/artifacts excluded. Sensitive-pattern scan matched only literal PEM header syntax in public Meta connector documentation, no key material. Staged whitespace check passes excluding immutable upstream *.txt snapshots; preserve their original whitespace/checksums. Fetch confirmed HEAD and origin/main aligned before commit.

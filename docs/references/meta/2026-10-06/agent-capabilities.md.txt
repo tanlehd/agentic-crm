@@ -1,0 +1,115 @@
+# Meta Business Agent capabilities
+
+
+## Overview &#123;#overview&#125;
+
+Meta Business Agent is an enterprise AI agent designed to reduce support workload while increasing sales. This page introduces all its capabilities and the APIs you use to configure it.
+
+When you are ready to build, skip ahead to [Next steps](#next-steps).
+
+## Conversational AI &#123;#conversational-ai&#125;
+
+When enabled, Meta Business Agent becomes the primary responder in the customer conversation. It interacts with customers based on the knowledge and instructions you configure. While the agent handles a conversation, your app can receive [standby webhooks](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/standby/) — notifications that let you follow the conversation without responding to it. You can take control at any time by sending a message, then release control back to the agent using [Thread Control (Cloud API)](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/thread-control-cloud-api).
+
+Out of the box, the agent can:
+
+- Understand and respond using natural language
+- Maintain context across multi-turn conversations
+- Handle multiple topics and transition between them
+- Follow specific workflows and speak in your brand voice
+
+## Customized AI &#123;#customized-ai&#125;
+
+With Meta Business Agent APIs, you control:
+
+- **What it knows** — ground the agent so it understands your business
+- **What it says** — set the tone of customer interactions using custom instructions
+- **What it does** — connect your own APIs so the agent can take actions in your systems
+- **How it helps** — tune rollouts, target audiences, and handoff to your teams
+
+You can also hand conversations to your team and test the agent to evaluate its responses before it goes live. Each capability is covered in more detail below.
+
+### Knowledge &#123;#knowledge&#125;
+
+Add knowledge sources to ground Meta Business Agent in your business content, so it answers accurately and resolves more questions without handing off.
+
+Use Agent Knowledge API endpoints to configure knowledge sources:
+
+- [**Business Info**](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-knowledge-business-info) — such as payment methods, shipping information, and return policies
+- [**FAQs**](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-knowledge-faqs) — question-and-answer pairs that the agent uses to respond to specific queries
+- [**Files**](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-knowledge-files) — unstructured business data stored in common file formats
+- [**Websites**](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-knowledge-websites) — URLs the agent crawls and periodically ingests
+
+### Instructions &#123;#skills&#125;
+
+Instructions define Meta Business Agent behavior. Use instructions to maintain a consistent brand voice and to send interactive UI components to customers.
+
+- [**Agent instructions**](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-skills) — shape conversation tone, priorities, and response patterns. You write them as clear instructions that the agent applies as directed to speak in your brand voice.
+- [**UI instructions**](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/ui-skills) — direct the agent to send UI components to customers. See the API reference for available component types and fields.
+
+### Connectors &#123;#connectors&#125;
+
+Connectors let Meta Business Agent take actions in your systems by calling external APIs. Once connected, the agent can retrieve customer information, check product availability, check order status, or access schedules during a WhatsApp conversation.
+
+These are examples of what businesses connect, not a fixed set of categories:
+
+| Example category | What the agent can do |
+| --- | --- |
+| Commerce | Product catalog, inventory, order status |
+| Customer | Customer history, tickets, contact records |
+| Productivity | Documents, calendars, project data |
+| Scheduling | Appointment booking, availability |
+
+Use these API endpoints to configure your third-party services:
+
+- [**Connectors**](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/connectors) — define external API base URL and authentication methods
+- [**Connector tools**](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/connector-tools) — define external API operations and request schemas
+
+### Agent settings &#123;#agent-settings&#125;
+
+Manage core operations with [Agent Settings](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-settings), such as agent status and policies for handoff and followup. You can also restrict agentic responses to certain audiences with an [allowlist](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-allowlist). The allowlist applies only when you set the `ai_audience` setting to `ALLOWLISTED_ONLY`; the default is `EVERYONE`, where the agent responds to all consumers and the allowlist is ignored. For the full sequence, see [Restrict the agent to a set of consumers](https://developers.facebook.com/documentation/meta-business-agent/get-started#restrict-the-agent-to-a-set-of-consumers).
+
+## Handoff and thread control &#123;#handoff-and-thread-control&#125;
+
+Some customer requests are complex or sensitive, so the agent cannot handle every conversation on its own. Meta Business Agent lets your app step into a WhatsApp conversation the agent is handling, then hand it back when you are done.
+
+- **AI-to-human handoff** — the agent starts a handoff automatically when it detects a signal such as low confidence, an integrity violation, or a customer asking for a human. You do not configure the triggers. Your app can follow the whole conversation through standby webhooks, so your team has the context when it takes over.
+- **Handoff message** — use [Agent Settings](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-settings) to send your own message to the customer immediately before a handoff, in place of the default message. Enable handoff and supply a non-empty `handoff.message`. If your account has the `handoff.message_selection` field, set it to `CUSTOM` for your own message, `AGENT` to have the agent compose one per conversation, or `DEFAULT` for the standard message. Accounts without the field get the same result from `handoff.message` alone.
+- **Thread control** — manage who responds in a conversation with [Thread Control (Cloud API)](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/thread-control-cloud-api). Your app takes control by sending a message. When you are done, release control and the agent resumes as the automatic responder.
+
+## Language support &#123;#language-support&#125;
+
+Meta Business Agent handles language automatically. There is no language setting to configure in the Meta Business Agent APIs.
+
+| Behavior | What the agent does |
+| --- | --- |
+| Language detection | Detects the language of each customer WhatsApp message and responds in the same language. |
+| Uncertain language | Defaults to the primary language of your business. |
+| Supported languages | Responds in any language supported by the underlying AI model. There is no fixed list to configure. English has the strongest response quality. |
+| Knowledge sources | Reads your knowledge sources in their original language and responds in the target language, so you do not need to localize your knowledge sources. |
+| Product names | Does not translate or alter product names and business-specific terms in knowledge sources. |
+
+## Agent events &#123;#agent-events&#125;
+
+Use agent events to send important updates from Meta Business Agent to customers. For example, when an order or shipping status changes, post an agent event and the agent tells the customer. You can define your own event types and attach a description and data payload that the agent uses to craft its messages.
+
+Your backend systems call the [Agent Event](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/agent-event) endpoint to send an agent event and check its status. Sending an event returns `accepted`, and then the agent processes the event asynchronously.
+
+## Testing and evaluation &#123;#testing-and-evaluation&#125;
+
+Validate Meta Business Agent behavior before you go live.
+
+- [**Agent Test**](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/agent-test) — send free test messages to the agent without affecting live customer conversations
+- [**Agent Eval**](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/agent-eval) — evaluate agent response quality across a set of test scenarios to optimize performance
+
+## Next steps &#123;#next-steps&#125;
+
+Ready to build with Meta Business Agent?
+
+- [Eligibility](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-eligibility) — check if Meta Business Agent is available to you now
+- [End-to-end setup](https://developers.facebook.com/documentation/meta-business-agent/get-started) — set up your environment and enable your agent
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/meta-business-agent/llms.txt

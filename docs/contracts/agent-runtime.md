@@ -1,8 +1,9 @@
 # Agent Runtime adapter contract
 
+> Microservices target ADR-017 dùng [cross-service rules](service-boundaries.md). APIs/UoW trong tài liệu này là baseline implementation hiện tại; exact remote contracts và sagas cần PLAN-006 trước extraction.
 Status: Ready for implementation — mock M2; provider adapter production Draft M3.
 
-## Boundary
+## Boundary — CRM-managed M2
 
 CRM sở hữu tenant, ownership, quyền, conversation, tool execution và audit. Runtime nhận context đã lọc, trả đề xuất tool hoặc kết quả; runtime không có DB credential, channel secret hay quyền tự phát tin ngoài CRM.
 
@@ -67,3 +68,11 @@ Timeout, capacity queue expiry, runtime/protocol/tool failure invokes session ha
 Runtime protocol v1 exact JSON Schema is `packages/contracts/schemas/agent-runtime.json`, generated TypeScript/schema exported from contracts; Ajv validates the private request/result boundary. This first mock protocol uses proposed_reply/tool_calls/handoff_reason/error_code, not provider summary/usage extensions. No OpenAPI execute path is added. Terminal start replay preserves original execution ID/status after current owner/auth checks; new execution requires running session. Worker keeps at most4 in-flight adapters without blocking intake/outbound ticks; shutdown drains them within their original deadline.
 
 SRC-020 supplies actual session port in production worker: proposal is private node data, outbound created only by guarded successful completion; draft and validated/evidence stored separately. Session logical reference stays owning-port validated; execution/turn binding is checked at callback. V16 proposed_reply is never returned by session projection. Old runtime synthetic harness remains isolated regression only.
+
+## M3 provider platform boundary — Draft
+
+CHG-20261006-03: `execute/cancel` và proposal-only send trong các phần trên là contract mode CRM-managed đã implemented M2. M3 thêm provider configuration/lifecycle và provider-managed conversations theo [M3 plan](../planning/m3-provider-plan.md); không bắt Meta Business Agent mô phỏng một synchronous model call. Với hosted agent, provider có thể phát reply trên channel đã liên kết; CRM ingest echo/standby và điều phối control, không gửi lại proposal. Đây là extension được user định hướng, chưa là quyền triển khai bypass owner guards.
+
+Mọi tool gọi vào CRM cần tenant/entity/agent binding, xác thực server-to-server, live permission/owner/control checks, dedup và audit. Exact callback protocol, remote config sync/version, revoke/deadline guarantees và capability mapping chưa Ready; không assume Meta cung cấp các field revision/idempotency như protocol M2. Agent secret reference tách khỏi channel credential, không đưa vào prompt/context. [Nguồn và gaps](../references/meta/README.md).
+
+PLAN-003: [provider matrix](../references/meta/capability-matrix.md) xác nhận config API2.0.0, WhatsApp Thread Control1.0.0 và budget Business Manager scope. G-04/05 chặn live control readiness; G-08 chặn mutable CRM tools cho đến khi trusted conversation/consumer/replay binding được chứng minh. Agent test/eval là separate provider capability, không mô phỏng M2 execution deadline/cancel guarantees.

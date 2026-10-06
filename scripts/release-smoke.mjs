@@ -40,7 +40,7 @@ try{
  stage='M1 provision and fixture';await seeds();await fixture('m1-records');const before=await fixture('snapshot');assert.equal(before.journal.length,8);await save('upgrade-before.json',before);
  stage='M1 to M2 migration';const content=JSON.parse(await readFile(override,'utf8'));for(const name of ['api','worker','migrate','db-grants','db-provision']){content.services[name].image=backend;content.services[name].platform=platforms[backend];}await writeFile(override,JSON.stringify(content));
  compose('run','--rm','db-grants');
- const after=await fixture('snapshot');assert.equal(after.journal.length,17);assert.deepEqual(after.journal.slice(0,8),before.journal);for(const [table,hash]of Object.entries(before.tables))if(table!=='schema_migration')assert.deepEqual(after.tables[table],hash,`Upgrade changed ${table}`);await save('upgrade-after.json',after);
+ const after=await fixture('snapshot');assert.equal(after.journal.length,19);assert.deepEqual(after.journal.slice(0,8),before.journal);for(const [table,hash]of Object.entries(before.tables))if(table!=='schema_migration')assert.deepEqual(after.tables[table],hash,`Upgrade changed ${table}`);await save('upgrade-after.json',after);
  compose('run','--rm','--no-deps','migrate');assert.deepEqual(await fixture('snapshot'),after);
  stage='upgraded release health';compose('up','-d','--no-build','--wait','--wait-timeout','240');
  await runtimeFacts('upgrade');stage='upgraded browser demo';await releaseDemo({env,artifacts,prefix:'upgrade',run,root});
@@ -52,9 +52,9 @@ try{
  compose('up','-d','--no-build','--wait','--wait-timeout','240');
  await releaseDemo({env,artifacts,prefix:'resume',run,root});
  compose('down');
- stage='cold current release';await configure('cold',backend);compose('up','-d','--no-build','--wait','--wait-timeout','240');await seeds();assert.equal((await fixture('snapshot')).journal.length,17);await runtimeFacts('cold');
+ stage='cold current release';await configure('cold',backend);compose('up','-d','--no-build','--wait','--wait-timeout','240');await seeds();assert.equal((await fixture('snapshot')).journal.length,19);await runtimeFacts('cold');
  await releaseDemo({env,artifacts,prefix:'cold',run,root});
- await save('release-summary.json',{status:'PASS',historicalM1:'f575a8e',migration:'8->17',existingTablesPreserved:Object.keys(before.tables).length-1,wholeStackRestart:'all table hashes equal before worker resumed',projects,architecture:metadata[0].Architecture,credentialsDirectory:directory,retainedVolumes:projects.flatMap(p=>['mysql_data','redis_data','keycloak_data'].map(v=>`${p}_${v}`))});
+ await save('release-summary.json',{status:'PASS',historicalM1:'f575a8e',migration:'8->19',existingTablesPreserved:Object.keys(before.tables).length-1,wholeStackRestart:'all table hashes equal before worker resumed',projects,architecture:metadata[0].Architecture,credentialsDirectory:directory,retainedVolumes:projects.flatMap(p=>['mysql_data','redis_data','keycloak_data'].map(v=>`${p}_${v}`))});
  console.log('PASS: release upgrade/cold/OIDC/M2 demo/restart. Evidence: '+artifacts);
 }catch(e){const code=e instanceof Error&&/^DEMO_[a-zA-Z0-9 _-]+$/.test(e.message)?e.message:'RELEASE_GATE_FAILED';console.error(`FAIL release gate at ${stage}: ${code}`);process.exitCode=1;await save('release-failure.json',{status:'FAIL',stage,code:'RELEASE_GATE_FAILED',projects,credentialsDirectory:directory});}
 finally{if(env){try{compose('down');}catch{process.exitCode=1;console.error('RELEASE_CLEANUP_FAILED');}}await log.close();}

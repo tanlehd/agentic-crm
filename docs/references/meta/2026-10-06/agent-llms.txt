@@ -1,0 +1,73 @@
+# Meta Business Agent Guides &amp; API Reference
+
+&gt; Meta Business Agent is an AI agent that answers questions in your brand’s voice, takes actions through your systems, and hands off to your app.
+
+## Guides &amp; Documentation
+
+### API reference
+
+- [Thread controls](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/thread-control-cloud-api.md): Thread controls
+
+### About
+
+- [Overview](https://developers.facebook.com/documentation/meta-business-agent/overview.md): Configure an AI agent that handles customer conversations 24/7 in your brand voice on WhatsApp.
+- [Capabilities](https://developers.facebook.com/documentation/meta-business-agent/capabilities.md): What Meta Business Agent can do today — conversational AI, knowledge, skills, connectors, customization, handoff, and testing — and where to configure each.
+
+### Agent configuration
+
+- [Eligibility](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-eligibility.md): Eligibility
+- [Budget](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-budget.md): Budget
+- [Allowlist](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-allowlist.md): Allowlist
+- [Onboarding](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-onboarding.md): Onboarding
+- [Settings](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-settings.md): Settings
+- [Delete](https://developers.facebook.com/documentation/meta-business-agent/reference/delete-agent/delete-agent.md): Delete
+- [Test](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/agent-test.md): Test
+
+### Connectors
+
+- [Custom connectors](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/connectors.md): Custom connectors
+- [Tools](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/connector-tools.md): Tools
+
+### Evaluation and events
+
+- [Agent eval](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/agent-eval.md): Agent eval
+- [Agent event](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/agent-event.md): Agent event
+
+### Get started
+
+- [Get API key](https://developers.facebook.com/documentation/meta-business-agent/get-api-key.md): Generate the system user access token that authenticates Meta Business Agent Platform API requests.
+- [Quick start](https://developers.facebook.com/documentation/meta-business-agent/quickstart.md): Onboard a Meta Business Agent on a WhatsApp Business phone number and send it your first message with the Agent Test API, in three API calls.
+- [End-to-end setup](https://developers.facebook.com/documentation/meta-business-agent/get-started.md): Step-by-step guide to set up your environment and start using Meta Business Agent Platform APIs for agent configuration, knowledge management, and connectors.
+
+### How-to guides
+
+- [Multi-component single transaction agent](https://developers.facebook.com/documentation/meta-business-agent/usage-guides/single-purchase-transaction-agent.md): Configure connector tools that search several components, price them as one set, and commit them in a single write, using a flight, hotel, and car hire as the example.
+- [Booking and reservation agent](https://developers.facebook.com/documentation/meta-business-agent/usage-guides/booking-and-reservation-agent.md): Configure Meta Business Agent to answer vehicle questions, check fleet availability for a date range, create reservations, and report booking status for renters on WhatsApp.
+- [Customer support agent](https://developers.facebook.com/documentation/meta-business-agent/usage-guides/customer-support-agent.md): Configure Meta Business Agent to answer retail support questions from your own policies, pull up a shopper&#039;s recent orders, start a return, and raise a ticket when a person is needed.
+- [Lead generation agent](https://developers.facebook.com/documentation/meta-business-agent/usage-guides/lead-generation-agent.md): Configure Meta Business Agent to qualify catering and bulk-order inquiries, confirm delivery coverage, and submit complete leads to your CRM from WhatsApp.
+- [Single item purchase agent](https://developers.facebook.com/documentation/meta-business-agent/usage-guides/single-item-purchase-agent.md): Configure Meta Business Agent to help shoppers find one product, confirm the right size and color, check live stock, and place a single-item order on WhatsApp.
+- [Post-purchase support agent](https://developers.facebook.com/documentation/meta-business-agent/usage-guides/post-purchase-support-agent.md): Configure Meta Business Agent to look up a traveller&#039;s booking, explain fare conditions, change a journey, and report refund status on WhatsApp, with a clean handoff during disruption.
+- [Writing interactive messages](https://developers.facebook.com/documentation/meta-business-agent/usage-guides/writing-ui-skills.md): Learn how to write interactive messages for Meta Business Agent and the data each component type needs, such as buttons, images, lists, locations, carousels, and WhatsApp Flows on WhatsApp.
+
+### Insights
+
+- [Agent event insights](https://developers.facebook.com/documentation/meta-business-agent/reference/insights/agent-event-insights.md): Agent event insights
+- [Conversation turns](https://developers.facebook.com/documentation/meta-business-agent/reference/insights/conversation-turns.md): Conversation turns
+- [Conversation insights](https://developers.facebook.com/documentation/meta-business-agent/reference/insights/conversation-insights.md): Conversation insights
+- [Tool call insights](https://developers.facebook.com/documentation/meta-business-agent/reference/insights/tool-call-insights.md): Tool call insights
+
+### Instructions
+
+- [Agent instructions](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-skills.md): Agent instructions
+- [Interactive messages](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/ui-skills.md): Interactive messages
+
+### Knowledge
+
+- [Business info](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-knowledge-business-info.md): Business info
+- [FAQs](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-knowledge-faqs.md): FAQs
+- [Files](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-knowledge-files.md): Files
+- [Websites](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-knowledge-websites.md): Websites
+
+### Troubleshooting
+
+- [Troubleshooting](https://developers.facebook.com/documentation/meta-business-agent/troubleshooting.md): Error codes, connector status values, and solutions for common issues when building with Meta Business Agent Platform APIs.

@@ -1,0 +1,555 @@
+
+
+# UI Skills
+
+Retrieve UI skills for a specific entity (WhatsApp Business Phone Number).
+
+A UI skill tells the AI agent when and how to send a UI component to a customer — for example a call-to-action URL button, an image, a carousel, an interactive list, a location, or a WhatsApp Flow. Use these endpoints to create, list, retrieve, update, and delete the configured UI skills for an entity.
+
+The `instruction` field should tell the agent when to send the UI component and also contain all the information the agent needs to populate the necessary fields. These fields vary depending on the component type. Below is an example of an instruction for the `cta_url` type.
+
+```
+If a user asks for a link to learn more about the Meta Quest, please send them a button with body text &quot;Click the link below&quot;, button label text &quot;Meta Quest&quot;, and URL https://meta.com/quest
+```
+
+To learn more about configuring UI skills and the data each component type needs, see the [Writing UI skills](https://developers.facebook.com/documentation/meta-business-agent/usage-guides/writing-ui-skills) guide.
+
+You can read about the fields each UI component type requires using the following links:
+
+- [Interactive CTA URL button messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/interactive-cta-url-messages)
+- [Image messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/image-messages)
+- [Interactive list messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/interactive-list-messages)
+- [Interactive reply buttons messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/interactive-reply-buttons-messages)
+- [Location messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/location-messages)
+- [Location request messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/location-request-messages)
+- [Media carousel messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/interactive-media-carousel-messages)
+
+Flows are attached using the separate `flow_id` field. It is required when `component_type` is `flow`, and is rejected for every other component type.
+
+## Base URL
+
+| URL | Description |
+|-----|-------------|
+| https://api.facebook.com/&#123;entity_id&#125;/agent-ui-skills |  |
+
+## Authorization
+
+This API requires:
+
+any of the following Permission: whatsapp_business_messaging
+
+## APIs
+
+| Method | Endpoint |
+|--------|----------|
+| DELETE | [/&#123;instruction_id&#125;](#delete-instruction-id) |
+| GET | [/](#get) |
+| GET | [/&#123;instruction_id&#125;](#get-instruction-id) |
+| POST | [/](#post) |
+| PUT | [/&#123;instruction_id&#125;](#put-instruction-id) |
+
+&lt;jumplink id=&quot;delete-instruction-id&quot;&gt;&lt;/jumplink&gt;
+## DELETE /&#123;instruction_id&#125;
+
+Delete a UI skill
+
+Delete an existing UI skill by its ID.
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID for the Meta Business Agent. |
+| instruction_id | string | ✓ | The unique identifier of the UI skill. |
+
+### Responses
+
+**204**
+
+The UI skill was deleted successfully.
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**403**
+
+Forbidden
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;get&quot;&gt;&lt;/jumplink&gt;
+## GET /
+
+List UI skills
+
+Retrieve all UI skills for the specified entity.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID for the Meta Business Agent. |
+
+### Query Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| before | string |  | If specified, a page of data immediately before this cursor will be returned. |
+| after | string |  | If specified, a page of data immediately after this cursor will be returned. |
+| limit | integer |  | This is the maximum number of objects that may be returned. A query may return fewer than the value of limit due to filtering. Do not depend on the number of results being fewer than the limit value to indicate that your query reached the end of the list of data, use the absence of next instead. For example, if you set limit to 10 and 9 results are returned, there may be more data available, but one item was removed due to privacy filtering. In all cases, the API returns the correct pagination links. |
+
+### Responses
+
+**200**
+
+A paginated list of UI skills.
+
+**Content Type**: `application/json`
+
+**Schema**: object
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| data | array of [BizAIOmniChannelUISkillResponse](#bizaiomnichanneluiskillresponse) | ✓ | This array represents the page of data returned. |
+| paging | [Paging](#object-paging-2) |  | Pagination metadata |
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**403**
+
+Forbidden
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;get-instruction-id&quot;&gt;&lt;/jumplink&gt;
+## GET /&#123;instruction_id&#125;
+
+Get a UI skill
+
+Retrieve a single UI skill by its ID.
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID for the Meta Business Agent. |
+| instruction_id | string | ✓ | The unique identifier of the UI skill. |
+
+### Responses
+
+**200**
+
+The requested UI skill.
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelUISkillResponse](#bizaiomnichanneluiskillresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**403**
+
+Forbidden
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;post&quot;&gt;&lt;/jumplink&gt;
+## POST /
+
+Create a UI skill
+
+Create a new UI skill for the specified entity.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID for the Meta Business Agent. |
+
+### Request Body (Required)
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelUISkillCreateRequest](#bizaiomnichanneluiskillcreaterequest)
+
+### Responses
+
+**201**
+
+The newly created UI skill.
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelUISkillResponse](#bizaiomnichanneluiskillresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**403**
+
+Forbidden
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;put-instruction-id&quot;&gt;&lt;/jumplink&gt;
+## PUT /&#123;instruction_id&#125;
+
+Update a UI skill
+
+Update an existing UI skill by its ID.
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID for the Meta Business Agent. |
+| instruction_id | string | ✓ | The unique identifier of the UI skill. |
+
+### Request Body (Required)
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelUISkillUpdateRequest](#bizaiomnichanneluiskillupdaterequest)
+
+### Responses
+
+**200**
+
+The updated UI skill.
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelUISkillResponse](#bizaiomnichanneluiskillresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**403**
+
+Forbidden
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+# Components
+
+## Schemas
+
+&lt;jumplink id=&quot;bizaiomnichanneluiskillcreaterequest&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelUISkillCreateRequest
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| title | string | ✓ | A human-readable name for the UI skill. |
+| component_type | One of &quot;carousel_quick_reply&quot;, &quot;carousel_url&quot;, &quot;cta_url&quot;, &quot;flow&quot;, &quot;image&quot;, &quot;interactive_list&quot;, &quot;interactive_reply_buttons&quot;, &quot;location&quot;, &quot;location_request&quot; | ✓ | The type of rich message this UI skill sends. |
+| status | One of &quot;disabled&quot;, &quot;enabled&quot; | ✓ | Whether this UI skill is enabled and available to the AI agent. |
+| instruction | string | ✓ | A description telling the AI agent when to send this UI skill. |
+| flow_id | integer |  | The identifier of the flow to associate. Required when component_type is flow, and not supported otherwise. |
+
+&lt;jumplink id=&quot;bizaiomnichanneluiskillresponse&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelUISkillResponse
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| id | string | ✓ | A unique identifier for the UI skill. |
+| title | string | ✓ | A human-readable name for the UI skill. |
+| component_type | One of &quot;carousel_quick_reply&quot;, &quot;carousel_url&quot;, &quot;cta_url&quot;, &quot;flow&quot;, &quot;image&quot;, &quot;interactive_list&quot;, &quot;interactive_reply_buttons&quot;, &quot;location&quot;, &quot;location_request&quot; | ✓ | The type of rich message this UI skill sends. |
+| status | One of &quot;disabled&quot;, &quot;enabled&quot; | ✓ | Whether this UI skill is enabled and available to the AI agent. |
+| instruction | string | ✓ | A description telling the AI agent when to send this UI skill. |
+| flow_id | integer |  | The identifier of the associated flow. Only present for flow skills. |
+| created_at | integer | ✓ | The timestamp when the UI skill was created. |
+| updated_at | integer | ✓ | The timestamp when the UI skill was last updated. |
+
+&lt;jumplink id=&quot;standarderror&quot;&gt;&lt;/jumplink&gt;
+### StandardError
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| title | string | ✓ |  |
+| detail | string | ✓ |  |
+| type | string |  |  |
+| status | integer |  |  |
+
+&lt;jumplink id=&quot;bizaiomnichanneluiskillupdaterequest&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelUISkillUpdateRequest
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| title | string |  | A human-readable name for the UI skill. |
+| status | One of &quot;disabled&quot;, &quot;enabled&quot; |  | Whether this UI skill is enabled and available to the AI agent. Flow skills cannot be enabled unless the corresponding flow is published. |
+| instruction | string |  | A description telling the AI agent when to send this UI skill. |
+
+## Inline Object Definitions
+
+&lt;jumplink id=&quot;object-cursors-1&quot;&gt;&lt;/jumplink&gt;
+### Cursors
+
+Cursors to the next and previous pages
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| before | string |  | This is the cursor that points to the start of the page of data that has been returned. |
+| after | string |  | This is the cursor that points to the end of the page of data that has been returned. |
+
+&lt;jumplink id=&quot;object-paging-2&quot;&gt;&lt;/jumplink&gt;
+### Paging
+
+Pagination metadata
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| cursors | [Cursors](#object-cursors-1) | ✓ | Cursors to the next and previous pages |
+| previous | string |  | The API that will return the previous page of data. If not included, this is the first page of data. |
+| next | string |  | The API that will return the next page of data. If not included, this is the last page of data. Due to how pagination works with visibility and privacy, it is possible that a page may be empty but contain a next paging link. Stop paging when the next link no longer appears. |
+
+## Authentication
+
+| Scheme | Type | Location |
+|--------|------|----------|
+| OAuthToken__Authorization | HTTP Bearer | Header: `Authorization` |
+
+### Usage Examples
+
+- **OAuthToken__Authorization**: Include `Authorization: Bearer your-token-here` in request headers
+
+### Global Authentication Requirements
+
+All endpoints require: OAuthToken__Authorization
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/meta-business-agent/llms.txt

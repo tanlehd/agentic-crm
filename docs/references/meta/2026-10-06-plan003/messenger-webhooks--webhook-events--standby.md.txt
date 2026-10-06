@@ -1,0 +1,64 @@
+# standby Webhook Event Reference
+
+
+
+For bots using the [handover protocol](https://developers.facebook.com/docs/messenger-platform/handover-protocol) and [conversation routing](https://developers.facebook.com/documentation/business-messaging/messenger-platform/conversation-routing), this callback will occur when a message has been sent to your page, but your application is not the current thread owner.
+
+Instead of delivering the callback through the normal `messaging` channel, the events will be delivered to `standby` channel. You can receive [message](https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks/webhook-events/messages), [read](https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks/webhook-events/message-reads), and [delivery](https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks/webhook-events/message-deliveries) events through history messages.
+
+You can subscribe to this callback by selecting the `standby` field when [setting up](https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks#setup) your webhook.
+
+### Contents
+- [Supported Events](#events)
+- [Example Event](#example)
+- [Properties](#properties)
+
+## Supported Events &#123;#events&#125;
+The following events are delivered to the standby channel:
+
+- [`message_reads`](https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks/webhook-events/message-reads)
+- [`message_deliveries`](https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks/webhook-events/message-deliveries)
+- [`messages`](https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks/webhook-events/messages)
+- [`messaging_postbacks`](https://developers.facebook.com/docs/messenger-platform/webhooks/webhook-events/messaging-postbacks)
+
+Note that `messaging_postback` events delivered via the Standby channel will not include the postback payload. The app that originally sent the [postback button](https://developers.facebook.com/documentation/business-messaging/messenger-platform/send-messages/buttons/postback) will receive the normal [`messaging_postbacks`](https://developers.facebook.com/docs/messenger-platform/webhooks/webhook-events/messaging-postbacks) webhook event that includes the postback payload.
+
+## Example Event &#123;#example&#125;
+
+```http
+&#123;
+  &quot;object&quot;:&quot;page&quot;,
+  &quot;entry&quot;:[
+    &#123;
+      &quot;id&quot;:&quot;&lt;PAGE_ID&gt;&quot;,
+      &quot;time&quot;:1458692752478,
+      &quot;standby&quot;:[
+        &#123;
+          &quot;sender&quot;:&#123;
+            &quot;id&quot;:&quot;&lt;USER_ID&gt;&quot;
+          &#125;,
+          &quot;recipient&quot;:&#123;
+            &quot;id&quot;:&quot;&lt;PAGE_ID&gt;&quot;
+          &#125;,
+
+          ...
+        &#125;
+      ]
+    &#125;
+  ]
+&#125;
+```
+
+## Properties &#123;#properties&#125;
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `id` | String | The PSID of the user that triggered the webhook event. |
+| `time` | Timestamp | Timestamp of the message send. |
+| `standby` | Array | Array of messages received in the standby channel. |
+
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/business-messaging/messenger-platform/llms.txt

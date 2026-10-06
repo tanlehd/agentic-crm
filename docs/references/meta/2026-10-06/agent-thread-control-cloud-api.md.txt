@@ -1,0 +1,116 @@
+
+
+# Thread Control (Cloud API)
+
+Transfer thread control for a consumer conversation on a WhatsApp Business phone number.
+
+Transfer thread control for a consumer conversation: release it back to Meta Business Agent as the automatic responder, or take it from the current owner.
+
+## Base URL
+
+| URL | Description |
+|-----|-------------|
+| https://api.facebook.com/business/whatsapp/phone_numbers/&#123;phone_number_id&#125;/thread_control |  |
+
+## Authorization
+
+This API requires:
+
+any of the following Permission: whatsapp_business_messaging
+
+## APIs
+
+| Method | Endpoint |
+|--------|----------|
+| POST | [/](#post) |
+
+&lt;jumplink id=&quot;post&quot;&gt;&lt;/jumplink&gt;
+## POST /
+
+Release or take thread control for a consumer conversation.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;1.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| phone_number_id | integer [min: 1] | ✓ | WhatsApp Business Account Phone Number ID |
+
+### Request Body (Required)
+
+**Content Type**: `application/json`
+
+**Schema**: [ThreadControlRequest](#threadcontrolrequest)
+
+### Responses
+
+**200**
+
+Thread control action result with messaging product identifier.
+
+
+**Content Type**: `application/json`
+
+**Schema**: [ThreadControlResponse](#threadcontrolresponse)
+
+
+# Components
+
+## Schemas
+
+&lt;jumplink id=&quot;threadcontrolpassrequest&quot;&gt;&lt;/jumplink&gt;
+### ThreadControlPassRequest
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| target_role | &quot;ai_agent&quot; | ✓ | Role receiving thread control. &quot;ai_agent&quot; selects Meta Business Agent. |
+
+&lt;jumplink id=&quot;threadcontrolrequest&quot;&gt;&lt;/jumplink&gt;
+### ThreadControlRequest
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| messaging_product | &quot;whatsapp&quot; | ✓ | Messaging service used for the request. Must be &quot;whatsapp&quot;. |
+| action | One of &quot;pass&quot;, &quot;release&quot;, &quot;take&quot; | ✓ | The thread control action to perform. &quot;release&quot; relinquishes thread control and hands the conversation back to Meta Business Agent as the automatic responder; you must currently hold thread control. &quot;take&quot; acquires thread control from the current owner and is restricted to the configured escalation partner. &quot;pass&quot; transfers thread control to Meta Business Agent when control_pass.target_role is &quot;ai_agent&quot;, or to the configured escalation partner when control_pass is omitted; you must currently hold thread control. |
+| to | string |  | Consumer identifier (phone number or WhatsApp ID) whose thread control is being transferred. |
+| recipient | string |  | Business-scoped user ID of the consumer whose thread control is being transferred. Accepted but not yet wired; provide `to` instead. |
+| metadata | string |  | Optional free-form string forwarded verbatim to the receiving app in the resulting messaging_handovers webhook. |
+| control_pass | [ThreadControlPassRequest](#threadcontrolpassrequest) |  | Optional configuration for a pass action. When omitted, pass uses the configured escalation partner. |
+
+&lt;jumplink id=&quot;threadcontrolresponse&quot;&gt;&lt;/jumplink&gt;
+### ThreadControlResponse
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| messaging_product | &quot;whatsapp&quot; | ✓ | Messaging service used for the response. Always &quot;whatsapp&quot;. |
+
+## Authentication
+
+| Scheme | Type | Location |
+|--------|------|----------|
+| OAuthToken__access_token | API Key | Query: `access_token` |
+| OAuthToken__oauth_token | API Key | Query: `oauth_token` |
+| OAuthToken__Authorization | HTTP Bearer | Header: `Authorization` |
+
+### Usage Examples
+
+- **OAuthToken__access_token**: Include `access_token=your-api-key-here` in query parameters
+
+- **OAuthToken__oauth_token**: Include `oauth_token=your-api-key-here` in query parameters
+
+- **OAuthToken__Authorization**: Include `Authorization: Bearer your-token-here` in request headers
+
+### Global Authentication Requirements
+
+All endpoints require: OAuthToken__access_token AND OAuthToken__oauth_token AND OAuthToken__Authorization
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/meta-business-agent/llms.txt

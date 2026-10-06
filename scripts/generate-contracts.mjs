@@ -78,11 +78,13 @@ const conversations=JSON.parse(await readFile('packages/contracts/schemas/conver
 for(const [name,definition] of Object.entries(conversations.definitions))spec.components.schemas[name]=JSON.parse(JSON.stringify(definition).replaceAll('#/definitions/','#/components/schemas/'));
 for(const [method,path,input,output] of [
   ['get','conversations',null,'list'],['get','conversations/{id}',null,'response'],['get','conversations/{id}/messages',null,'timeline'],
+  ['get','conversations/{id}/message-envelopes',null,'envelope-timeline'],
+  ['get','conversations/{id}/message-envelopes-v3',null,'rich-timeline'],
   ['get','conversations/{id}/outbound-intents/{intentId}',null,'intent-response'],['post','conversations/{id}/messages','send','send-response'],
   ['get','conversations/{id}/notes',null,'notes'],['post','conversations/{id}/notes','note','note-response'],['post','conversations/{id}/transition','transition','response'],
 ]){
   const parameters=[tenantHeader,...[...path.matchAll(/\{(\w+)\}/g)].map(m=>({name:m[1],in:'path',required:true,schema:{type:'string',format:'uuid'}})),...(input?mutationHeaders:[]),...(input==='transition'?[{name:'If-Match',in:'header',required:true,schema:{type:'string'}}]:[])];
-  if(['list','timeline','notes'].includes(output))parameters.push(...listParams);
+  if(['list','timeline','envelope-timeline','rich-timeline','notes'].includes(output))parameters.push(...listParams);
   if(output==='list')parameters.push(...['state','owner','team'].map(name=>({name,in:'query',schema:{type:'string'}})));
   const status=input==='send'?202:input==='note'?201:200;
   (spec.paths[`/api/v1/${path}`]??={})[method]={operationId:`conversation-${method}-${path.replaceAll(/[{}]/g,'').replaceAll('/','-')}`,security:[{sessionCookie:[]}],parameters,...(input?{requestBody:{required:true,content:{'application/json':{schema:{$ref:`#/components/schemas/conversation-${input}`}}}}}:{}),responses:{...adminErrors,[status]:response(`conversation-${output}`,'Authorized Conversation result')}};
@@ -98,6 +100,12 @@ for(const [method,path,input,output] of [
   const parameters=[...[...path.matchAll(/\{(\w+)\}/g)].map(m=>({name:m[1],in:'path',required:true,schema:{type:'string',format:'uuid'}})),...(input==='request'?[connectionHeader]:input==='retry'?[tenantHeader,...mutationHeaders]:[{...connectionHeader,required:false},{...tenantHeader,required:false}])];
   spec.paths[`/api/v1/${path}`]={[method]:{operationId:`intake-${input??'status'}`,security:input==='request'?[{connectionBearer:[]}]:input==='retry'?[{sessionCookie:[]}]:[{connectionBearer:[]},{sessionCookie:[]}],parameters,...(input?{requestBody:{required:true,content:{'application/json':{schema:{$ref:`#/components/schemas/intake-${input}`}}}}}:{}),responses:{...adminErrors,[input==='request'?202:200]:response(`intake-${output}`,'Durable mock intake result; no raw payload')}}};
 }
+spec.paths['/api/v1/integrations/mock-messenger/binding']={get:{operationId:'intake-binding',security:[{connectionBearer:[]}],parameters:[{name:'X-Connection-Id',in:'header',required:true,schema:{type:'string',format:'uuid'}}],responses:{...adminErrors,200:response('intake-binding','Authenticated immutable tenant binding')}}};
+const connector=JSON.parse(await readFile('packages/contracts/schemas/connector.json','utf8'));
+for(const [name,definition] of Object.entries(connector.definitions))spec.components.schemas[name]=definition;
+for(const [path,method,output] of [['/connector/v1/deliveries','post','connector-ack'],['/connector/v1/deliveries/{id}','get','connector-response']]){
+ spec.paths[path]={[method]:{operationId:output,security:[{connectionBearer:[]}],parameters:[{name:'X-Connection-Id',in:'header',required:true,schema:{type:'string',format:'uuid'}},...(method==='get'?[{name:'id',in:'path',required:true,schema:{type:'string',format:'uuid'}}]:[])],...(method==='post'?{requestBody:{required:true,content:{'application/json':{schema:{$ref:'#/components/schemas/intake-request'}}}}}:{}),responses:{...Object.fromEntries([400,401,403,404,409,422,503].map(status=>[status,response('connector-error','Sanitized Connector failure')])),[method==='post'?202:200]:response(output,'Independent durable Connector ingress; sanitized errors follow connector-bridge contract')}}};
+}
 spec.info.description+=' Durable mock Messenger intake and delivery status/retry.';
 const routing=JSON.parse(await readFile('packages/contracts/schemas/routing.json','utf8'));
 for(const [name,definition] of Object.entries(routing.definitions))spec.components.schemas[name]=JSON.parse(JSON.stringify(definition).replaceAll('#/definitions/','#/components/schemas/'));
@@ -105,6 +113,13 @@ for(const [method,path,input,output] of [['post','records/{id}/assignment','assi
   const parameters=[tenantHeader,{name:'id',in:'path',required:true,schema:{type:'string',format:'uuid'}},...(input?[...mutationHeaders,{name:'If-Match',in:'header',required:true,schema:{type:'string'}}]:[])];
   spec.paths[`/api/v1/${path}`]={[method]:{operationId:`routing-${input??output}`,security:[{sessionCookie:[]}],parameters,...(input?{requestBody:{required:true,content:{'application/json':{schema:{$ref:`#/components/schemas/routing-${input}`}}}}}:{}),responses:{...adminErrors,200:{...response(`routing-${output}`,'Authorized ownership result'),...(input?{headers:{ETag:{schema:{type:'string'}}}}:{})}}}};
 }
+const messengerParams=[{name:'appId',in:'path',required:true,schema:{type:'string',pattern:'^[0-9]{1,32}$'}}];
+const messengerText=(description,schema={type:'string'})=>({description,content:{'text/plain':{schema}}});
+const messengerErrors=Object.fromEntries([400,403,409,503].map(code=>[code,messengerText('Sanitized webhook error; parser failures may use the standard JSON error envelope')]));
+spec.paths['/connector/v1/messenger/{appId}/webhook']={
+ get:{operationId:'messenger-challenge',parameters:[...messengerParams,...['hub.mode','hub.verify_token','hub.challenge'].map(name=>({name,in:'query',required:true,schema:{type:'string'}}))],responses:{200:messengerText('Exact verification challenge'),...messengerErrors}},
+ post:{operationId:'messenger-capture',description:'Optional signed capture only. HMAC SHA256 over exact raw uncompressed bytes <=64KiB; max100 total events. Every Page must be explicitly bound. No Chat delivery implied.',parameters:[...messengerParams,{name:'X-Hub-Signature-256',in:'header',required:true,schema:{type:'string',pattern:'^sha256=[a-fA-F0-9]{64}$'}}],requestBody:{required:true,content:{'application/json':{schema:{$ref:'#/components/schemas/messenger-webhook'}}}},responses:{200:messengerText('Atomic durable capture committed',{type:'string',const:'EVENT_RECEIVED'}),...messengerErrors}}
+};
 const workflow=JSON.parse(await readFile('packages/contracts/schemas/workflow.json','utf8'));
 for(const [name,definition] of Object.entries(workflow.definitions))spec.components.schemas[name]=JSON.parse(JSON.stringify(definition).replaceAll('#/definitions/','#/components/schemas/'));
 for(const [method,path,input,output,match] of [['get','workflows',null,'list'],['post','workflows','create','mutation'],['patch','workflows/{id}','enable','mutation',true],['get','workflows/{id}/versions',null,'versions'],['post','workflows/{id}/versions','version-create','mutation'],['post','workflows/{id}/versions/{version}/publish','publish','mutation',true],['get','workflow-runs/{id}',null,'run'],['post','workflow-runs/{id}/cancel','cancel','mutation']]){
@@ -130,6 +145,21 @@ for(const [path,output] of [['sales/leads','m2-sales-list'],['sales/leads/{id}',
  spec.paths[`/api/v1/${path}`]={get:{operationId:`m2-${path.replaceAll(/[{}]/g,'').replaceAll('/','-')}`,security:[{sessionCookie:[]}],parameters,responses:{...adminErrors,200:response(output,'Authorized workspace projection')}}};
 }
 spec.paths['/api/v1/operations/deliveries/{id}/retry']={post:{operationId:'m2-delivery-retry',security:[{sessionCookie:[]}],parameters:[tenantHeader,...mutationHeaders,{name:'id',in:'path',required:true,schema:{type:'string',format:'uuid'}}],requestBody:{required:true,content:{'application/json':{schema:{$ref:'#/components/schemas/m2-retry'}}}},responses:{...adminErrors,200:response('intake-response','Scheduled same delivery')}}};
+const contactResolution=JSON.parse(await readFile('packages/contracts/schemas/contact-resolution.json','utf8'));
+for(const [name,definition] of Object.entries(contactResolution.definitions))spec.components.schemas[name]=definition;
+for(const [path,input,output,status] of [['contact-identities/lookup','contact-lookup-request','contact-lookup-response',200],['contact-identities/resolve','contact-resolve-request','contact-resolve-response',200],['mock-messenger/deliveries-v2','contact-delivery-request','intake-ack',202]]){
+ spec.paths['/api/v1/integrations/'+path]={post:{operationId:input,security:[{connectionBearer:[]}],parameters:[{name:'X-Connection-Id',in:'header',required:true,schema:{type:'string',format:'uuid'}}],requestBody:{required:true,content:{'application/json':{schema:{$ref:'#/components/schemas/'+input}}}},responses:{...adminErrors,[status]:response(output,'Authorized contact-bound result')}}};
+}
+spec.paths['/api/v1/conversations/{id}/messages-v2']=structuredClone(spec.paths['/api/v1/conversations/{id}/messages']);
+delete spec.paths['/api/v1/conversations/{id}/messages-v2'].get;
+spec.paths['/api/v1/conversations/{id}/messages-v2'].post.operationId='contact-bound-send';
+spec.paths['/api/v1/conversations/{id}/messages-v2'].post.requestBody={required:true,content:{'application/json':{schema:{$ref:'#/components/schemas/contact-send-request'}}}};
+const facebook=JSON.parse(await readFile('packages/contracts/schemas/facebook-configuration.json','utf8'));
+for(const [name,definition] of Object.entries(facebook.definitions))spec.components.schemas[name]=definition;
+for(const [path,output] of [['admin/channels/facebook/pages','facebook-page-list'],['conversation-channels','conversation-channel-options']])spec.paths['/api/v1/'+path]={get:{operationId:path.replaceAll('/','-'),security:[{sessionCookie:[]}],parameters:[tenantHeader,{name:'limit',in:'query',schema:{type:'integer',minimum:1,maximum:100}},{name:'cursor',in:'query',schema:{type:'string',format:'uuid'}}],responses:{...adminErrors,200:response(output,'Authorized channel projection')}}};
+spec.paths['/api/v1/admin/channels/facebook/connect']={post:{operationId:'facebook-connect',security:[{sessionCookie:[]}],parameters:[tenantHeader,...mutationHeaders.filter(h=>h.name!=='Idempotency-Key')],requestBody:{required:true,content:{'application/json':{schema:{$ref:'#/components/schemas/facebook-connect-request'}}}},responses:{...adminErrors,200:response('facebook-connect-response','One-use Facebook authorization URL')}}};
+spec.paths['/api/v1/admin/channels/facebook/callback']={get:{operationId:'facebook-callback',security:[{sessionCookie:[]}],parameters:['state','code','error','error_reason','error_description'].map(name=>({name,in:'query',required:name==='state',schema:{type:'string'}})),responses:{303:{description:'Fixed UI redirect with sanitized result; never tokens or provider error'}}}};
+spec.paths['/api/v1/conversations'].get.parameters.push(...['channel','channel_id','page_id'].map(name=>({name,in:'query',schema:name==='channel'?{type:'string',enum:['messenger','mock_messenger']}:name==='channel_id'?{type:'string',format:'uuid'}:{type:'string',maxLength:255}})));
 const runtime=JSON.parse(await readFile('packages/contracts/schemas/agent-runtime.json','utf8'));
 const chatflow=JSON.parse(await readFile('packages/contracts/schemas/chatflow.json','utf8'));
 const outputs = {
@@ -137,6 +167,12 @@ const outputs = {
   'packages/contracts/openapi.json': JSON.stringify(spec, null, 2) + '\n',
   'packages/contracts/src/generated/api.ts': astToString(await openapiTS(spec)),
 };
+for(const [name,definition] of Object.entries(facebook.definitions))outputs[`packages/contracts/src/generated/${name}.ts`]=await compile(definition,name,{bannerComment:'/* Generated. Do not edit. */'});
+for(const [name,definition] of Object.entries(contactResolution.definitions))outputs[`packages/contracts/src/generated/${name}.ts`]=await compile(definition,name,{bannerComment:'/* Generated. Do not edit. */'});
+const messageContent=JSON.parse(await readFile('packages/contracts/schemas/message-content.json','utf8'));
+outputs['packages/contracts/src/generated/message-content.ts']=await compile(messageContent,'MessageContent',{bannerComment:'/* Generated. Do not edit. */'});
+outputs['packages/contracts/src/generated/intake-schema.ts']='/* Generated. Do not edit. */\nexport const intakeSchema = '+JSON.stringify(intake,null,2)+';\n';
+outputs['packages/contracts/src/generated/message-content-schema.ts']='/* Generated. Do not edit. */\nexport const messageContentSchema = '+JSON.stringify(messageContent,null,2)+';\n';
 for(const [name,definition] of Object.entries(m2.definitions)) outputs[`packages/contracts/src/generated/${name}.ts`]=await compile({...definition,definitions:m2.definitions},name,{bannerComment:'/* Generated. Do not edit. */'});
 for(const [name,definition] of Object.entries(salesHandoff.definitions)) outputs[`packages/contracts/src/generated/${name}.ts`]=await compile({...definition,definitions:salesHandoff.definitions},name,{bannerComment:'/* Generated. Do not edit. */'});
 for(const [name,definition] of Object.entries(chatflowApi.definitions)) outputs[`packages/contracts/src/generated/${name}.ts`]=await compile({...definition,definitions:chatflowApi.definitions},name,{bannerComment:'/* Generated. Do not edit. */'});

@@ -7,7 +7,7 @@ Status: Ready for implementation — thứ tự và gate; không cam kết ngày
 | M0 — Documentation baseline | Bộ tài liệu hiện tại, ERD, contracts, ADR, fixtures | Link hợp lệ, traceability REQ→design→AC, không lẫn Draft với Ready |
 | M1 — Foundation | Tenant/OIDC, seat/role/team, registry, Contact/Lead, custom object, audit/outbox | AC-01…04, AC-12, AC-14; migration từ DB trống; hai tenant |
 | M2 — Mock vertical slice | Mock Messenger, inbox, routing, Workflow/Chatflow, mock AI, Lead acceptance | AC-05…09, AC-15…18; restart/retry và handoff end-to-end |
-| M3 — Real integrations | Messenger thật, Agent Runtime thật, theo dõi hiệu suất | Spec connector/provider được nâng Ready; sandbox credential, signature, rate limit, outbound reconciliation được kiểm thử |
+| M3 — Real integrations | CRM Connectors/routing thật, AI Agent provider setup (Meta Business Agent case study), message đa nền tảng và theo dõi hiệu suất | Spec connector/provider được nâng Ready; sandbox credential, signature, rate limit, outbound reconciliation được kiểm thử |
 | M4 — Revenue & service | Deal/customer, Appointment, Google Ads lead form, Ticket | Hoàn thiện thiết kế module Draft; AC-03 phần Deal, AC-10, AC-13 |
 | M5 — Configurable platform | Visual workflow/chatflow, form/view builder, custom reports, template ngành | Version/migration metadata, reporting ACL, fan-out join và publish validation; AC-04 nâng cao, AC-11 |
 
@@ -32,7 +32,7 @@ Theo dõi thực thi nhiều ngày bằng [tracker 25 task](../tracking/tasks.md
 
 ## Trước khi mở rộng
 
-- M3: kiểm chứng API/version/quyền ứng dụng Meta tại thời điểm tích hợp; không dùng mock contract như payload provider thật.
+- M3: theo [provider plan](../planning/m3-provider-plan.md): lưu provider docs local, kiểm capability/eligibility/version, chốt Agent setup và CRM Connector/routing/message contracts. Messenger routing và WhatsApp Agent thread control kiểm riêng; không dùng mock contract như payload provider thật.
 - M4: chốt vòng đời Deal/reopen/customer, SLA calendar, Google Ads consent/attribution và appointment conflict trong thiết kế chi tiết trước code.
 - M5: chốt giới hạn graph/report, publish/migration, cache và report execution budget trước xây builder.
 

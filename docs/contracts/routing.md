@@ -1,5 +1,6 @@
 # Routing và assignment — SRC-017
 
+> Microservices target ADR-017 dùng [cross-service rules](service-boundaries.md). APIs/UoW trong tài liệu này là baseline implementation hiện tại; exact remote contracts và sagas cần PLAN-006 trước extraction.
 Status: Ready, M2. CHG-20261005-03. Không thay API cũ.
 
 POST `/api/v1/records/{id}/assignment`: required `owner_principal_id` UUID hoặc null, `reason` enum `manual|handoff`; optional `team_id` UUID/null (omitted giữ team hiện tại). Supported existing Conversation, Lead, Contact, Company, Activity/custom; Deal/Ticket chưa có adapter. POST `/api/v1/conversations/{id}/takeover`: `{reason:"human_takeover"}`; caller Human thành owner, giữ team và phải eligible. Cả hai cần session/CSRF, tenant, Idempotency-Key và If-Match; trả 200 + ETag, data `{id,tenant_id,object_key,version,owner_revision,owner_principal_id,team_id}`. Không trả field business trong receipt. Read + assign hoặc read + takeover; takeover không đòi thêm assign. Team explicit null chỉ admin seat. Closed/archived không assign. Reason là code, không free text.

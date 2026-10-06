@@ -1,0 +1,38 @@
+# Get API key
+
+
+Meta Business Agent Platform API requests are authenticated as a system user, so every call needs a system user access token. This page covers generating that token.
+
+## Prerequisites &#123;#prerequisites&#125;
+
+- A Meta app granted both the [`whatsapp_business_messaging`](https://developers.facebook.com/docs/permissions#whatsapp_business_messaging) and [`whatsapp_business_management`](https://developers.facebook.com/docs/permissions#whatsapp_business_management) permissions. The `whatsapp_business_messaging` permission authenticates your requests. The `whatsapp_business_management` permission is required to read agent data — without it, read calls return an empty result.
+- A system user with your app and WhatsApp Business account (WABA) assigned to it. If you don&#039;t have one yet, create it and assign the assets first — see [Create a system user](https://developers.facebook.com/documentation/meta-business-agent/get-started#create-a-system-user) and [Assign the app and WABA](https://developers.facebook.com/documentation/meta-business-agent/get-started#assign-the-app-and-waba-to-your-system-user).
+
+## Generate the token &#123;#generate-an-access-token&#125;
+
+1. Go to [Meta Business Suite](https://business.facebook.com/settings/). In the left navigation select **Settings**, then under **Users** select **System users**, and click your system user.
+2. In the upper right, click **Generate new token**. A dialog opens.
+3. In the dialog, select your app from the dropdown, then click **Next**.
+4. Select the token expiration setting, then click **Next**.
+5. Select the checkboxes next to the **whatsapp_business_messaging** and **whatsapp_business_management** permissions. A token without **whatsapp_business_messaging** returns `401`. A token that has messaging but not **whatsapp_business_management** authenticates, but read calls return no data.
+6. Click **Generate token** and save it somewhere secure. It is shown only once.
+
+The `whatsapp_business_messaging` permission authenticates your calls, but reading agent data — for example evaluation cases and results — also requires the `whatsapp_business_management` permission. If a read call succeeds but returns no data, the most common cause is a token that has messaging but not management: add `whatsapp_business_management` and generate a new token. Receiving data also requires that the Meta Business Agent Terms of Service are accepted for the WABA (see [End-to-end setup](https://developers.facebook.com/documentation/meta-business-agent/get-started#set-up-meta-business-agent-in-whatsapp-manager)); if the WABA hasn&#039;t accepted them, calls return `403` rather than empty data. A few endpoints require additional Meta-granted access beyond both permissions — if data is still empty after adding management, contact your Meta representative to confirm your app&#039;s access.
+
+## Solution Partners and Tech Providers &#123;#bisu-tokens&#125;
+
+If you are calling on behalf of a client&#039;s WhatsApp Business account, use a Business Integration System User (BISU) token instead. A BISU token lets your platform act on behalf of multiple client WABAs under a single credential. See [Generate an access token](https://developers.facebook.com/documentation/meta-business-agent/get-started#generate-an-access-token) for both options side by side, and the [BISU documentation](https://developers.facebook.com/documentation/business-messaging/whatsapp/access-tokens/#business-integration-system-user-access-tokens) for generating and managing these tokens.
+
+## Set the API version header &#123;#api-version-header&#125;
+
+&gt; **Note:** Use the `X-API-Version` shown on each endpoint&#039;s reference page. Meta Business Agent Platform endpoints take `2.0.0`. Without the header, a request resolves to the oldest version that endpoint supports — `1.0.0` for endpoints that predate these field names — so set `2.0.0` explicitly. Cloud API endpoints differ — [Thread Control](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/thread-control-cloud-api), for example, takes `1.0.0`.
+
+## Next steps &#123;#next-steps&#125;
+
+- [Quickstart](https://developers.facebook.com/documentation/meta-business-agent/quickstart) — onboard an agent and send it your first message in three API calls.
+- [End-to-end setup](https://developers.facebook.com/documentation/meta-business-agent/get-started) — the full path to running an agent in front of WhatsApp users, including billing, app subscription, and webhook fields.
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/meta-business-agent/llms.txt

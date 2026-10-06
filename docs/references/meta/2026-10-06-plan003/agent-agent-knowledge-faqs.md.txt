@@ -1,0 +1,460 @@
+
+
+# Agent Knowledge - FAQs
+
+Manage FAQ entries in the AI agent knowledge base for a specific entity.
+
+This endpoint provides CRUD operations for managing FAQ entries in the AI agent knowledge base for a specific entity. FAQs are question-answer pairs that the agent references when responding to customer queries. Each FAQ entry has a `question`, an `answer`, and optional key-value `metadata`. Responses also carry the entry&#039;s `id` and its creation timestamp. For best results, keep FAQs focused and concise. Each entry should address a single, specific question. Adding too many FAQs (generally beyond a few hundred) can degrade the agent&#039;s ability to find the right answer. Prioritize the questions your customers ask most frequently and keep answers factual and direct. Every operation on this resource shares a budget of 1000 requests per hour; once it is exhausted, further requests return `429` until the limit resets.
+
+## Base URL
+
+| URL | Description |
+|-----|-------------|
+| https://api.facebook.com/&#123;entity_id&#125;/agent_config/faq |  |
+
+## Authorization
+
+This API requires:
+
+any of the following
+  - Capability: bizai_wa_enterprise_api_3p_access
+  - Capability: bizai_ig_enterprise_api_3p_access
+  - Permission: whatsapp_business_messaging
+
+## APIs
+
+| Method | Endpoint |
+|--------|----------|
+| DELETE | [/&#123;faq_id&#125;](#delete-faq-id) |
+| GET | [/](#get) |
+| GET | [/&#123;faq_id&#125;](#get-faq-id) |
+| POST | [/](#post) |
+| PUT | [/&#123;faq_id&#125;](#put-faq-id) |
+
+&lt;jumplink id=&quot;delete-faq-id&quot;&gt;&lt;/jumplink&gt;
+## DELETE /&#123;faq_id&#125;
+
+Delete an FAQ
+
+Delete an FAQ entry by its ID. The agent stops answering from it. Other knowledge sources for the entity are unaffected.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID, Instagram business account ID, or Instagram username for the Meta Business Agent. |
+| faq_id | string | ✓ | The identifier of the FAQ entry, as returned in the `id` field when the entry was created or listed. Pass that value through unchanged. |
+
+### Responses
+
+**204**
+
+FAQ entry successfully deleted
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;get&quot;&gt;&lt;/jumplink&gt;
+## GET /
+
+List FAQs
+
+Retrieve every FAQ entry configured for the specified entity.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID, Instagram business account ID, or Instagram username for the Meta Business Agent. |
+
+### Responses
+
+**200**
+
+A list of all FAQ entries
+
+**Content Type**: `application/json`
+
+**Schema**: array of [BizAIOmniChannelKnowledgeFAQResponse](#bizaiomnichannelknowledgefaqresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;get-faq-id&quot;&gt;&lt;/jumplink&gt;
+## GET /&#123;faq_id&#125;
+
+Get an FAQ
+
+Retrieve a single FAQ entry by its ID, including its question, its answer, and any metadata stored with it.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID, Instagram business account ID, or Instagram username for the Meta Business Agent. |
+| faq_id | string | ✓ | The identifier of the FAQ entry, as returned in the `id` field when the entry was created or listed. Pass that value through unchanged. |
+
+### Responses
+
+**200**
+
+The requested FAQ entry
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelKnowledgeFAQResponse](#bizaiomnichannelknowledgefaqresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;post&quot;&gt;&lt;/jumplink&gt;
+## POST /
+
+Create an FAQ
+
+Create an FAQ entry: a question-and-answer pair the agent can use to answer a specific customer question. FAQs are the most direct way to control how the agent answers a known question. The agent retrieves each entry independently and answers from it, rather than inferring an answer from your other knowledge sources.
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID, Instagram business account ID, or Instagram username for the Meta Business Agent. |
+
+### Request Body (Required)
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelKnowledgeFAQRequest](#bizaiomnichannelknowledgefaqrequest)
+
+### Responses
+
+**201**
+
+The newly created FAQ entry
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelKnowledgeFAQResponse](#bizaiomnichannelknowledgefaqresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**409**
+
+Conflict
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;put-faq-id&quot;&gt;&lt;/jumplink&gt;
+## PUT /&#123;faq_id&#125;
+
+Update an FAQ
+
+Update an FAQ entry by its ID. Rewording the `question` changes which customer messages the entry is matched against; rewording the `answer` changes what the agent replies.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID, Instagram business account ID, or Instagram username for the Meta Business Agent. |
+| faq_id | string | ✓ | The identifier of the FAQ entry, as returned in the `id` field when the entry was created or listed. Pass that value through unchanged. |
+
+### Request Body (Required)
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelKnowledgeFAQRequest](#bizaiomnichannelknowledgefaqrequest)
+
+### Responses
+
+**200**
+
+The updated FAQ entry
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelKnowledgeFAQResponse](#bizaiomnichannelknowledgefaqresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+# Components
+
+## Schemas
+
+&lt;jumplink id=&quot;bizaiomnichannelknowledgefaqrequest&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelKnowledgeFAQRequest
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| question | string | ✓ | The FAQ question text. Write it as a natural question a customer would ask. Each FAQ should address a single, specific topic. For example, use &quot;What is your return policy?&quot; rather than &quot;Returns, exchanges, and refunds&quot; — the agent matches questions more accurately when they mirror how customers phrase them. |
+| answer | string | ✓ | The FAQ answer text. Keep answers factual, concise, and self-contained. Include all the information needed to fully answer the question without requiring the customer to ask follow-ups. Avoid referencing other FAQ entries — the agent retrieves each entry independently. |
+| metadata | [Metadata](#object-metadata-1) |  | Key-value metadata associated with this FAQ entry |
+
+&lt;jumplink id=&quot;bizaiomnichannelknowledgefaqresponse&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelKnowledgeFAQResponse
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| id | string | ✓ | The unique identifier for this FAQ entry. Pass this value unchanged as the `faq_id` path parameter to read, update, or delete the entry. |
+| question | string | ✓ | The FAQ question text |
+| answer | string | ✓ | The FAQ answer text |
+| created_at | integer |  | The timestamp when the FAQ was created |
+| metadata | [Metadata](#object-metadata-1) |  | Key-value metadata associated with this FAQ entry |
+
+&lt;jumplink id=&quot;standarderror&quot;&gt;&lt;/jumplink&gt;
+### StandardError
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| title | string | ✓ |  |
+| detail | string | ✓ |  |
+| type | string |  |  |
+| status | integer |  |  |
+
+## Inline Object Definitions
+
+&lt;jumplink id=&quot;object-metadata-1&quot;&gt;&lt;/jumplink&gt;
+### Metadata
+
+Key-value metadata associated with this FAQ entry
+
+
+**Additional Properties**: string
+
+## Authentication
+
+| Scheme | Type | Location |
+|--------|------|----------|
+| OAuthToken__Authorization | HTTP Bearer | Header: `Authorization` |
+
+### Usage Examples
+
+- **OAuthToken__Authorization**: Include `Authorization: Bearer your-token-here` in request headers
+
+### Global Authentication Requirements
+
+All endpoints require: OAuthToken__Authorization
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/meta-business-agent/llms.txt

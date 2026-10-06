@@ -1,0 +1,1078 @@
+
+
+# Connectors
+
+Manage connector (API definition) resources for a specific entity.
+
+This endpoint provides CRUD operations for managing connector resources for a specific entity. Connectors define external API integrations including protocol, base URL, authentication type, and auth configuration that the AI agent can use to interact with third-party services. Supported `auth_type` values are `OAUTH2_CLIENT_CREDENTIALS`, `API_KEY`, and `NONE`. Give each connector a descriptive `name` and `description` so the agent understands what the external service provides. Every operation on this resource shares a budget of 1000 requests per hour; once it is exhausted, further requests return `429` until the limit resets.
+
+## Base URL
+
+| URL | Description |
+|-----|-------------|
+| https://api.facebook.com/&#123;entity_id&#125;/agent_connectors |  |
+
+## Authorization
+
+This API requires:
+
+any of the following
+  - Capability: bizai_wa_enterprise_api_3p_access
+  - Capability: bizai_ig_enterprise_api_3p_access
+  - Permission: whatsapp_business_messaging
+
+## APIs
+
+| Method | Endpoint |
+|--------|----------|
+| DELETE | [/&#123;connector_id&#125;](#delete-connector-id) |
+| GET | [/](#get) |
+| GET | [/&#123;connector_id&#125;](#get-connector-id) |
+| GET | [/&#123;connector_id&#125;/logs](#get-connector-id-logs) |
+| POST | [/](#post) |
+| POST | [/&#123;connector_id&#125;/refreshMCPTools](#post-connector-id-refreshmcptools) |
+| POST | [/&#123;connector_id&#125;/upsertApiKey](#post-connector-id-upsertapikey) |
+| POST | [/&#123;connector_id&#125;/upsertCertificate](#post-connector-id-upsertcertificate) |
+| POST | [/&#123;connector_id&#125;/upsertOAuth](#post-connector-id-upsertoauth) |
+| PUT | [/&#123;connector_id&#125;](#put-connector-id) |
+
+&lt;jumplink id=&quot;delete-connector-id&quot;&gt;&lt;/jumplink&gt;
+## DELETE /&#123;connector_id&#125;
+
+Delete a connector
+
+Delete a specific connector by its ID
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID or Instagram username for the Meta Business Agent. |
+| connector_id | string | ✓ | The identifier of the connector, as returned in the `id` field when the connector was created or listed. Pass that value through unchanged. |
+
+### Responses
+
+**204**
+
+Connector successfully deleted
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**403**
+
+Forbidden
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;get&quot;&gt;&lt;/jumplink&gt;
+## GET /
+
+List connectors
+
+Retrieve a list of all connectors for the specified entity
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID or Instagram username for the Meta Business Agent. |
+
+### Responses
+
+**200**
+
+A list of all connectors
+
+**Content Type**: `application/json`
+
+**Schema**: array of [BizAIOmniChannelConnectorResponse](#bizaiomnichannelconnectorresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;get-connector-id&quot;&gt;&lt;/jumplink&gt;
+## GET /&#123;connector_id&#125;
+
+Get a connector
+
+Retrieve a specific connector by its ID
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID or Instagram username for the Meta Business Agent. |
+| connector_id | string | ✓ | The identifier of the connector, as returned in the `id` field when the connector was created or listed. Pass that value through unchanged. |
+
+### Responses
+
+**200**
+
+The requested connector
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelConnectorResponse](#bizaiomnichannelconnectorresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;get-connector-id-logs&quot;&gt;&lt;/jumplink&gt;
+## GET /&#123;connector_id&#125;/logs
+
+List connector error logs
+
+Retrieve error logs for the connector. Returns individual log entries by default, or aggregated failure patterns ranked by occurrence count when summary_only is true. Optionally includes aggregate statistics such as success rate and latency percentiles. Only errors originating from the third-party system are included. The time range (end_time - start_time) must not exceed 7 days. Logs are available for the last 7 days only.
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID or Instagram username for the Meta Business Agent. |
+| connector_id | string | ✓ | The identifier of the connector, as returned in the `id` field when the connector was created or listed. Pass that value through unchanged. |
+
+### Query Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| start_time | integer |  | Start of the time range as a Unix timestamp (seconds). Defaults to 24 hours ago. Must be within the last 7 days. The time range must not exceed 7 days. |
+| end_time | integer |  | End of the time range as a Unix timestamp (seconds). Defaults to now (server side). The time range must not exceed 7 days. |
+| limit | integer |  | Maximum number of log entries to return (1-1000). Defaults to 100. |
+| tool_id | string |  | Optional tool ID to filter logs to a specific operation, as returned in the `id` field when the tool was created or listed. Pass that value through unchanged. When omitted, returns logs for all tools on the connector. |
+| include_stats | boolean |  | When true, include aggregate statistics (success rate, latency percentiles, counts) in the response. The returned `time_window_seconds` reflects the actual covered window, which may be smaller than your requested range if the most recent logs have not yet been processed. Defaults to false. |
+| summary_only | boolean |  | When true, return aggregated failure patterns ranked by occurrence count instead of individual log entries. Defaults to false. |
+| top_n | integer |  | Number of top failure patterns to return when summary_only is true (1-50). Defaults to 10. |
+
+### Responses
+
+**200**
+
+Log entries or failure patterns, with optional statistics
+
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelConnectorLogStatsResponse](#bizaiomnichannelconnectorlogstatsresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;post&quot;&gt;&lt;/jumplink&gt;
+## POST /
+
+Create a connector
+
+Create a new connector for the specified entity. The `name` must be unique among the connectors already created for this entity.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID or Instagram username for the Meta Business Agent. |
+
+### Request Body (Required)
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelConnectorRequest](#bizaiomnichannelconnectorrequest)
+
+### Responses
+
+**201**
+
+The newly created connector
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelConnectorResponse](#bizaiomnichannelconnectorresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**403**
+
+Forbidden
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**409**
+
+Conflict
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;post-connector-id-refreshmcptools&quot;&gt;&lt;/jumplink&gt;
+## POST /&#123;connector_id&#125;/refreshMCPTools
+
+Refresh MCP tools for a connector
+
+Discover the remote MCP server tools and reconcile the cached connector actions. The response reports the resulting refresh status and retains the previous successful tool set if discovery fails. Remote discovery and provisioning failures return HTTP 200 with an ERROR refresh status.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID or Instagram username for the Meta Business Agent. |
+| connector_id | string | ✓ | The unique identifier of the MCP connector |
+
+### Responses
+
+**200**
+
+The connector with updated MCP tool sync metadata
+
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelConnectorResponse](#bizaiomnichannelconnectorresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**403**
+
+Forbidden
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;post-connector-id-upsertapikey&quot;&gt;&lt;/jumplink&gt;
+## POST /&#123;connector_id&#125;/upsertApiKey
+
+Upsert API key credentials for a connector
+
+
+Set or rotate the API key credentials for this connector. If credentials already exist, they are replaced and the connection is re-established with the new credentials. The credential payload is required; this endpoint will not delete credentials. To remove an API key layer, delete the connector or change its auth type via the update endpoint instead.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID or Instagram username for the Meta Business Agent. |
+| connector_id | string | ✓ | The identifier of the connector, as returned in the `id` field when the connector was created or listed. Pass that value through unchanged. |
+
+### Request Body (Required)
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelConnectorUpsertApiKeyRequest](#bizaiomnichannelconnectorupsertapikeyrequest)
+
+### Responses
+
+**200**
+
+The updated connector with API key metadata
+
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelConnectorResponse](#bizaiomnichannelconnectorresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**403**
+
+Forbidden
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;post-connector-id-upsertcertificate&quot;&gt;&lt;/jumplink&gt;
+## POST /&#123;connector_id&#125;/upsertCertificate
+
+Upsert mTLS certificate for a connector
+
+Upload or rotate the mTLS client certificate for this connector. If a certificate already exists, it will be replaced and the connection will be re-established with the new credentials.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID or Instagram username for the Meta Business Agent. |
+| connector_id | string | ✓ | The identifier of the connector, as returned in the `id` field when the connector was created or listed. Pass that value through unchanged. |
+
+### Request Body (Required)
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelConnectorCertificateRequest](#bizaiomnichannelconnectorcertificaterequest)
+
+### Responses
+
+**200**
+
+The updated connector with mTLS certificate metadata
+
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelConnectorResponse](#bizaiomnichannelconnectorresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**403**
+
+Forbidden
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;post-connector-id-upsertoauth&quot;&gt;&lt;/jumplink&gt;
+## POST /&#123;connector_id&#125;/upsertOAuth
+
+Upsert OAuth 2.0 credentials for a connector
+
+
+Set or rotate the OAuth 2.0 client credentials for this connector. If credentials already exist, they are replaced and the connection is re-established with the new credentials. The credential payload is required; this endpoint will not delete credentials. To remove an OAuth layer, delete the connector or change its auth type via the update endpoint instead.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID or Instagram username for the Meta Business Agent. |
+| connector_id | string | ✓ | The identifier of the connector, as returned in the `id` field when the connector was created or listed. Pass that value through unchanged. |
+
+### Request Body (Required)
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelConnectorUpsertOAuthRequest](#bizaiomnichannelconnectorupsertoauthrequest)
+
+### Responses
+
+**200**
+
+The updated connector with OAuth credential metadata
+
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelConnectorResponse](#bizaiomnichannelconnectorresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**403**
+
+Forbidden
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;put-connector-id&quot;&gt;&lt;/jumplink&gt;
+## PUT /&#123;connector_id&#125;
+
+Update a connector
+
+Update a specific connector by its ID
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID or Instagram username for the Meta Business Agent. |
+| connector_id | string | ✓ | The identifier of the connector, as returned in the `id` field when the connector was created or listed. Pass that value through unchanged. |
+
+### Request Body (Required)
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelConnectorRequest](#bizaiomnichannelconnectorrequest)
+
+### Responses
+
+**200**
+
+The updated connector
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelConnectorResponse](#bizaiomnichannelconnectorresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**403**
+
+Forbidden
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+# Components
+
+## Schemas
+
+&lt;jumplink id=&quot;bizaiomnichannelconnectoroauth2clientcredentialsauthconfig&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelConnectorOAuth2ClientCredentialsAuthConfig
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| token_url | string | ✓ | Token URL used to request OAuth access tokens. |
+| scopes_to_request | array of string | ✓ | OAuth scopes to request. |
+| token_request_content_type | string |  | Content type for token requests. Supported values are application/x-www-form-urlencoded and application/json. Defaults to application/x-www-form-urlencoded. |
+| client_id | string | ✓ | OAuth client ID. |
+| client_secret | string | ✓ | OAuth client secret. |
+
+&lt;jumplink id=&quot;bizaiomnichannelconnectorapikeyparam&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelConnectorApiKeyParam
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| field_name | string | ✓ | Header, query parameter, or body field name. |
+| value | string | ✓ | Secret value for this API key field. |
+| prefix | string |  | Optional value prefix, such as Bearer followed by a space. |
+
+&lt;jumplink id=&quot;bizaiomnichannelconnectorapikeyauthconfig&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelConnectorApiKeyAuthConfig
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| headers | array of [BizAIOmniChannelConnectorApiKeyParam](#bizaiomnichannelconnectorapikeyparam) |  | API key fields to add as HTTP headers. |
+| query_params | array of [BizAIOmniChannelConnectorApiKeyParam](#bizaiomnichannelconnectorapikeyparam) |  | API key fields to add as query parameters. |
+| body_params | array of [BizAIOmniChannelConnectorApiKeyParam](#bizaiomnichannelconnectorapikeyparam) |  | API key fields to add as JSON body parameters. |
+
+&lt;jumplink id=&quot;bizaiomnichannelconnectorauthconfig&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelConnectorAuthConfig
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| oauth2_client_credentials | [BizAIOmniChannelConnectorOAuth2ClientCredentialsAuthConfig](#bizaiomnichannelconnectoroauth2clientcredentialsauthconfig) |  | OAuth 2.0 client credentials configuration. Provide this only when auth_type is OAUTH2_CLIENT_CREDENTIALS. |
+| api_key | [BizAIOmniChannelConnectorApiKeyAuthConfig](#bizaiomnichannelconnectorapikeyauthconfig) |  | API key configuration. Provide this only when auth_type is API_KEY. |
+
+&lt;jumplink id=&quot;bizaiomnichannelconnectorrequest&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelConnectorRequest
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| name | string | ✓ | Display name of the connector. Use a name that clearly identifies the external service (e.g., `Shopify Order Management`, `Salesforce CRM`). |
+| description | string | ✓ | Description of what this connector integrates with and its purpose. The agent uses this to understand the connector&#039;s capabilities. For example: &quot;Connects to the Shopify API for managing customer orders, processing returns, and checking inventory availability.&quot; |
+| base_url | string | ✓ | Base URL of the external HTTP API or remote MCP server |
+| connector_protocol | One of &quot;HTTP&quot;, &quot;MCP&quot; |  | Connector protocol. Defaults to HTTP when omitted and cannot be changed after creation. |
+| auth_type | One of &quot;OAUTH2&quot;, &quot;OAUTH2_CLIENT_CREDENTIALS&quot;, &quot;API_KEY&quot;, &quot;BASIC&quot;, &quot;CUSTOM&quot;, &quot;NONE&quot; | ✓ | Authentication type for this connector. The listed values are the full set the field can represent, but only `OAUTH2_CLIENT_CREDENTIALS`, `API_KEY`, and `NONE` are accepted here. Sending `OAUTH2`, `BASIC`, or `CUSTOM` is rejected. |
+| auth_config | [BizAIOmniChannelConnectorAuthConfig](#bizaiomnichannelconnectorauthconfig) |  | Authentication configuration. Set oauth2_client_credentials when auth_type is OAUTH2_CLIENT_CREDENTIALS, set api_key when auth_type is API_KEY, and omit this field when auth_type is NONE. |
+| user_auth_injection_config | [User_auth_injection_config](#object-user_auth_injection_config-1) |  | Configuration for injecting user auth tokens into tool requests |
+| requires_certificate | boolean |  | Whether this connector requires mTLS client certificate. When true, use the upsert_certificate endpoint to provide the cert. |
+
+&lt;jumplink id=&quot;bizaiomnichannelconnectorresponse&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelConnectorResponse
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| id | string | ✓ | The unique identifier for this connector. Pass this value unchanged as the `connector_id` path parameter to read, update, delete, or configure credentials on the connector. |
+| name | string | ✓ | Display name of the connector |
+| description | string | ✓ | Description of the connector |
+| base_url | string | ✓ | Base URL of the external API |
+| connector_protocol | One of &quot;HTTP&quot;, &quot;MCP&quot; |  | Protocol used by this connector. Defaults to HTTP when omitted. |
+| mcp_tool_sync | [Mcp_tool_sync](#object-mcp_tool_sync-2) |  | MCP tool discovery cache status. Null for HTTP connectors. |
+| auth_type | One of &quot;OAUTH2&quot;, &quot;OAUTH2_CLIENT_CREDENTIALS&quot;, &quot;API_KEY&quot;, &quot;BASIC&quot;, &quot;CUSTOM&quot;, &quot;NONE&quot; | ✓ | Authentication type for this connector. The listed values are the full set the field can represent; only `OAUTH2_CLIENT_CREDENTIALS`, `API_KEY`, and `NONE` can be set when creating or updating a connector. |
+| auth_config | [BizAIOmniChannelConnectorAuthConfig](#bizaiomnichannelconnectorauthconfig) |  | Authentication configuration for this connector |
+| mtls_config | [Mtls_config](#object-mtls_config-3) |  | mTLS certificate metadata and PEM content (private key is never exposed) |
+| connection_status | [Connection_status](#object-connection_status-4) | ✓ | Connection status information |
+| user_auth_injection_config | [User_auth_injection_config](#object-user_auth_injection_config-5) |  | Configuration for injecting user auth tokens into tool requests |
+
+&lt;jumplink id=&quot;standarderror&quot;&gt;&lt;/jumplink&gt;
+### StandardError
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| title | string | ✓ |  |
+| detail | string | ✓ |  |
+| type | string |  |  |
+| status | integer |  |  |
+
+&lt;jumplink id=&quot;bizaiomnichannelconnectorcertificaterequest&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelConnectorCertificateRequest
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| client_certificate | string | ✓ | PEM-encoded client certificate for mTLS authentication. Must begin with &quot;-----BEGIN CERTIFICATE-----&quot;. |
+| client_key | string | ✓ | PEM-encoded private key for mTLS authentication. Must begin with &quot;-----BEGIN PRIVATE KEY-----&quot; (PKCS8), &quot;-----BEGIN RSA PRIVATE KEY-----&quot;, or &quot;-----BEGIN EC PRIVATE KEY-----&quot;. |
+| ca_certificate | string |  | Optional PEM-encoded CA certificate for the client side mTLS trust chain to verify server side certificate. Useful if server certificate is not signed by a public CA. |
+
+&lt;jumplink id=&quot;bizaiomnichannelconnectorupsertapikeyrequest&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelConnectorUpsertApiKeyRequest
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| api_key_config | [BizAIOmniChannelConnectorApiKeyAuthConfig](#bizaiomnichannelconnectorapikeyauthconfig) | ✓ | API key configuration to set on the connector. At least one of headers, query_params, or body_params must contain a populated entry. The request fails with HTTP 400 if this field is null or missing. |
+
+&lt;jumplink id=&quot;bizaiomnichannelconnectorupsertoauthrequest&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelConnectorUpsertOAuthRequest
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| oauth_config | [BizAIOmniChannelConnectorOAuth2ClientCredentialsAuthConfig](#bizaiomnichannelconnectoroauth2clientcredentialsauthconfig) | ✓ | OAuth 2.0 client credentials configuration to set on the connector. The request fails with HTTP 400 if this field is null or missing. |
+
+&lt;jumplink id=&quot;bizaiomnichannelconnectorlogstatsresponse&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelConnectorLogStatsResponse
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| data | array of [Data](#object-data-6) | ✓ | Array of log entries or failure patterns depending on query mode |
+| stats | [Stats](#object-stats-7) |  | Aggregate statistics for the queried time window, present when include_stats is true |
+
+## Inline Object Definitions
+
+&lt;jumplink id=&quot;object-user_auth_injection_config-1&quot;&gt;&lt;/jumplink&gt;
+### User_auth_injection_config
+
+Configuration for injecting user auth tokens into tool requests
+
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| location | One of &quot;body&quot;, &quot;headers&quot;, &quot;path&quot;, &quot;query&quot; | ✓ | Where to inject the token (HEADERS, QUERY, or BODY) |
+| field_name | string | ✓ | Field name for the injected token (e.g., &quot;X-User-Token&quot;) |
+| prefix | string | ✓ | Prefix for the token value (e.g., &quot;Bearer &quot;) |
+
+&lt;jumplink id=&quot;object-mcp_tool_sync-2&quot;&gt;&lt;/jumplink&gt;
+### Mcp_tool_sync
+
+MCP tool discovery cache status. Null for HTTP connectors.
+
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| status | One of &quot;ERROR&quot;, &quot;PENDING&quot;, &quot;READY&quot; | ✓ | Current MCP tool refresh status |
+| last_attempted_at | integer |  | Unix timestamp of the latest refresh attempt |
+| last_successful_at | integer |  | Unix timestamp of the latest successful refresh |
+| fingerprint | string |  | Fingerprint of the cached remote tool set |
+| tool_count | integer |  | Number of cached remote MCP tools |
+
+&lt;jumplink id=&quot;object-mtls_config-3&quot;&gt;&lt;/jumplink&gt;
+### Mtls_config
+
+mTLS certificate metadata and PEM content (private key is never exposed)
+
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| has_certificate | boolean | ✓ | Whether an mTLS certificate is configured |
+| fingerprint | string |  | SHA-256 fingerprint of the certificate |
+| expires_at | integer |  | Unix timestamp of certificate expiry |
+| subject | string |  | Certificate subject DN |
+| client_certificate | string |  | PEM-encoded client certificate (public, safe to expose) |
+| ca_certificate | string |  | PEM-encoded CA certificate chain (public, safe to expose) |
+
+&lt;jumplink id=&quot;object-connection_status-4&quot;&gt;&lt;/jumplink&gt;
+### Connection_status
+
+Connection status information
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| status | One of &quot;PENDING_OAUTH&quot;, &quot;ACTIVE&quot;, &quot;EXPIRED&quot;, &quot;ERROR&quot; | ✓ | Current connection status |
+| error_message | string |  | Error message if connection failed |
+
+&lt;jumplink id=&quot;object-user_auth_injection_config-5&quot;&gt;&lt;/jumplink&gt;
+### User_auth_injection_config
+
+Configuration for injecting user auth tokens into tool requests
+
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| location | One of &quot;body&quot;, &quot;headers&quot;, &quot;path&quot;, &quot;query&quot; | ✓ | Where to inject the token |
+| field_name | string | ✓ | Field name for the injected token |
+| prefix | string | ✓ | Prefix for the token value |
+
+&lt;jumplink id=&quot;object-data-6&quot;&gt;&lt;/jumplink&gt;
+### Data
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| event_time | string |  | ISO 8601 UTC timestamp at second precision (e.g. &quot;2026-05-13T21:46:58Z&quot;) of when the error event occurred (individual log entry mode). |
+| failure_code_name | string |  | Human-readable name of the failure code (e.g. TRANSPORT_ERROR) |
+| error_message | string |  | Error message from the failed operation |
+| tool_name | string |  | The tool that was being used when the error occurred |
+| occurrences | integer |  | Number of times this failure pattern occurred (summary_only mode) |
+| last_seen | string |  | ISO 8601 UTC timestamp at second precision (e.g. &quot;2026-05-13T21:46:58Z&quot;) of the most recent occurrence (summary_only mode). |
+
+&lt;jumplink id=&quot;object-stats-7&quot;&gt;&lt;/jumplink&gt;
+### Stats
+
+Aggregate statistics for the queried time window, present when include_stats is true
+
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| start_count | integer | ✓ | Total number of tool execution starts |
+| success_count | integer | ✓ | Number of successful tool executions |
+| exception_count | integer | ✓ | Number of failed tool executions |
+| success_rate | number | ✓ | Ratio of successful executions to total starts |
+| avg_latency_s | number | ✓ | Average execution latency in seconds |
+| p95_latency_s | number | ✓ | 95th percentile execution latency in seconds |
+| p99_latency_s | number | ✓ | 99th percentile execution latency in seconds |
+| time_window_seconds | integer | ✓ | Number of seconds in the statistics time window. Reflects the actual covered window, which may be smaller than the requested range if the most recent logs have not yet been processed. |
+
+## Authentication
+
+| Scheme | Type | Location |
+|--------|------|----------|
+| OAuthToken__Authorization | HTTP Bearer | Header: `Authorization` |
+
+### Usage Examples
+
+- **OAuthToken__Authorization**: Include `Authorization: Bearer your-token-here` in request headers
+
+### Global Authentication Requirements
+
+All endpoints require: OAuthToken__Authorization
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/meta-business-agent/llms.txt

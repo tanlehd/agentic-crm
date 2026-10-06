@@ -1,5 +1,6 @@
 # Domain events và delivery semantics
 
+> Microservices target ADR-017 dùng [cross-service rules](service-boundaries.md). APIs/UoW trong tài liệu này là baseline implementation hiện tại; exact remote contracts và sagas cần PLAN-006 trước extraction.
 Status: Ready for implementation — M1–M2.
 
 ## Envelope v1
@@ -71,3 +72,7 @@ SRC-019 registers workflow.starter.v1 for conversation.created and predicate wak
 SRC-020 emits `chatflow.completed` schema1 with session_id,parent_run_id,outcome,lead_id (nullable) from the same terminal transaction; aggregate type chatflow_session, actual persisted version. Parent verifies exact durable child predicate even if event arrives before wait. Lead.created/qualified from Chatflow use actual service/Human actor; payload never copies transcript/draft.
 
 SRC-021 emits lead.handoff_requested and lead.accepted atomically with ownership/share/state and receipt or Workflow action. Payloads follow the catalog above; no qualification/phone/consent text. Existing workflow.lead.accepted.v1 wakes the exact handoff predicate; missed/early signals recover by persisted polling.
+
+## ADR-019 — New Chat message contracts
+
+For new versioned chat.message.received/sent/updated and chat.send.requested payloads, MessageContext requires non-null crm_contact_id on inbound and outbound, including observed echoes. Customer identity differs from actor principal; correlate message-linked receipts first. Generic bus payload uses minimized refs, not profile/avatar/transcript. [Semantic contract and compatibility](contact-resolution.md). This does not modify implemented M2 event schemas or assert these new events are deployed.

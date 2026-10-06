@@ -1,0 +1,76 @@
+# Overview for the Messenger Platform
+
+
+
+Messenger from Meta lets a business&#039; Facebook Page or Instagram Professional account respond to people who message them through Facebook, Instagram, or a Meta plugin on your mobile app or website. A person must initiate the conversation. The Messenger Platform is free to use.
+
+## How it works
+
+When a person sends a message to your business Page or Instagram Professional account, a webhook notification is triggered. Your app calls the Meta social graph to retrieve the conversation, determine the appropriate reply, and send a response within 24 hours. You can send an automatic reply, have a live agent respond, or use a combination of both.
+
+The platform supports this at scale and provides a wide variety of conversation entry points and message types.
+
+### Scoped IDs
+
+Each person who messages your Facebook Page or Instagram Professional account is assigned a scoped ID unique to that account. This ID allows you to map interactions for the same person across multiple messaging apps.
+
+* **Page-scoped ID** -- Created when a person messages your Facebook Page.
+* **Instagram-scoped ID** -- Created when a person messages your Instagram Professional account.
+
+### Limitations
+
+* A person logged in to Facebook cannot message your Instagram Professional account. Similarly, a person logged in to Instagram cannot message your Facebook Page using the Messenger Platform.
+* Instagram Messaging is available for any Instagram Professional account for a business or creator.
+
+## Key concepts
+
+| Concept | Description |
+|---------|-------------|
+| [Access tokens](https://developers.facebook.com/documentation/facebook-login/guides/access-tokens) | Opaque strings that provide temporary, secure access to Meta social graph endpoints for sending and receiving messages. |
+| [Page access tokens](https://developers.facebook.com/documentation/facebook-login/guides/access-tokens#page-access-tokens) | A type of access token used to make API calls on behalf of a Facebook Page. Required to send and receive messages through the Messenger Platform. Generated after a Page admin grants your app the necessary permissions. |
+| [Access levels](https://developers.facebook.com/docs/graph-api/overview/access-levels) | **Standard Access** (default) limits data to users with a Role on your app or Page. **Advanced Access** extends data access to all app users and requires [App Review](https://developers.facebook.com/docs/app-review). |
+| [Facebook Login for Business](https://developers.facebook.com/documentation/facebook-login/facebook-login-for-business) | Required to request permissions from your app users to send and receive messages on their behalf. |
+| [Webhooks](https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks) | Real-time notifications about messages sent to your Page or Instagram Professional account, avoiding the need to poll the Meta social graph. |
+| [Rate limiting](https://developers.facebook.com/docs/messenger-platform/send-messages/rate-limiting) | Limits on API call volume and message throughput. High-volume messaging can temporarily disable inbox functionality. |
+| [Policies](https://developers.facebook.com/documentation/business-messaging/messenger-platform/policy) | Platform policies, responsiveness requirements, and community standards you must follow to maintain API access. |
+| CDN URLs | Privacy-aware Content Delivery Network URLs for retrieving rich media shared by Instagram users. The URL stops returning media after content is deleted or expired. |
+
+## Before you begin
+
+To implement the Messenger Platform, you need:
+
+* A [registered Meta developer account](https://developers.facebook.com/docs/development)
+* A [Meta app](https://developers.facebook.com/docs/development/create-an-app) with the [Messenger use case](https://developers.facebook.com/docs/development/create-an-app/messenger-use-case)
+* A [Facebook Page](https://www.facebook.com/business/help/461775097570076) linked to your app
+* An [Instagram Professional account](https://help.instagram.com/502981923235522) (for Instagram Messaging)
+* [Business Verification](https://developers.facebook.com/docs/development/release/business-verification) (if your app is used by people without a Role on the app)
+* [App Review](https://developers.facebook.com/docs/app-review) (if your app needs Advanced Access). Not required if you only send and receive messages for your own Facebook Page.
+
+### Permissions
+
+Request the following permissions through Facebook Login for Business for Messenger conversations:
+
+* `pages_show_list`
+* `pages_manage_metadata`
+* `pages_messaging`
+* `pages_read_engagement`
+* `business_management`
+
+For Instagram Messaging, also request:
+
+* `instagram_basic`
+* `instagram_manage_messages`
+
+The `business_management` permission is a dependency for `pages_messaging`, `pages_show_list`, and `instagram_manage_messages`. Call this out in your [App Review](https://developers.facebook.com/docs/app-review) submission. The app user requesting the Page access token must be able to perform the `MESSAGING` and `MODERATE` [Page tasks](https://developers.facebook.com/docs/pages/overview/permissions-features#tasks).
+
+## Next steps
+
+* Send your first message using the [Get started guide](https://developers.facebook.com/documentation/business-messaging/messenger-platform/get-started).
+* [Set up Webhooks](https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks) -- Receive real-time HTTP notifications for messages sent and received by your app.
+* [Find a partner](https://www.facebook.com/business/partner-directory/search?solution_type=messaging) -- Browse the Meta Partner Directory for Messenger Platform expertise.
+* [Developer Videos](https://developers.facebook.com/videos/?filters%5B1%5D=messenger) -- Watch walkthroughs, best practices, and recorded events.
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/business-messaging/messenger-platform/llms.txt

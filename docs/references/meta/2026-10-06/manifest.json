@@ -1,0 +1,204 @@
+{
+  "provider": "Meta",
+  "scope": "Selected design references, not complete provider documentation",
+  "sources": [
+    {
+      "file": "agent-thread-control-cloud-api.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/reference/operate/thread-control-cloud-api.md",
+      "bytes": 4462,
+      "sha256": "542a46a8eb8893f197041088409a2954979a3312c07ca5ef804221f0d1aedce5",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-markdown",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "agent-capabilities.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/capabilities.md",
+      "bytes": 9689,
+      "sha256": "b6314bb2b4400d38a6be6c220ea9d1137a0c71168f74f64f1d36e426fbdb5273",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-markdown",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "agent-agent-eligibility.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-eligibility.md",
+      "bytes": 5132,
+      "sha256": "df082bbb020e5c9b75a815fc8bd89d75b045e66f3b7131394216425d0f34d763",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-markdown",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "agent-agent-onboarding.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-onboarding.md",
+      "bytes": 3721,
+      "sha256": "c51d4a8b2440d5e483c292c4224d4c38a1f81eeca0521ec5c435bc4294a7a616",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-markdown",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "agent-agent-settings.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-settings.md",
+      "bytes": 10732,
+      "sha256": "f947bb36a0144c594f4fbba2086881a3e3822f89c83d94468cd642e97a1b40fd",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-markdown",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "agent-agent-test.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/reference/operate/agent-test.md",
+      "bytes": 4942,
+      "sha256": "813c73fae2787e0d2b0b4db61ac638ddbcd6866c8e45eb918eb73d36d703ab81",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-markdown",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "agent-connectors.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/reference/configure/connectors.md",
+      "bytes": 34293,
+      "sha256": "ece95d8a276ac387e9a28454624ee50fc6fbbe60db2ea6962221503bdc1da8a1",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-markdown",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "agent-connector-tools.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/reference/configure/connector-tools.md",
+      "bytes": 29062,
+      "sha256": "31019ee058f7425e42915298571915f38a65a7b2320321188c2491dec6e2776e",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-markdown",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "agent-get-api-key.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/get-api-key.md",
+      "bytes": 4677,
+      "sha256": "31a04d5df209f6efe2a5484f9961fe381beb38f5b65349f9c9630ece6595ac2f",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-markdown",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "agent-get-started.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/get-started.md",
+      "bytes": 27451,
+      "sha256": "ef0e16fa627ef340a83605c03cca86bb7b844f470839a6c5b8eff4afee6b0e8b",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-markdown",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "agent-lead-generation-agent.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/usage-guides/lead-generation-agent.md",
+      "bytes": 54975,
+      "sha256": "086f579974988b10e6c79bd5242c0fcbda2486a4627925b82eb366386b0c5efe",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-markdown",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "agent-agent-skills.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-skills.md",
+      "bytes": 14496,
+      "sha256": "21af3083c5137e30078c91ef4b1654bb049c26183f9c5f1bf21fc787f98955b3",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-markdown",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "agent-agent-knowledge-business-info.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-knowledge-business-info.md",
+      "bytes": 7749,
+      "sha256": "3aa9bc918ba10b4c20da5c90c1ecced83af3d284562ba2b3bb67eb926fdffde3",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-markdown",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "messenger-messages.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks/webhook-events/messages.md",
+      "bytes": 18302,
+      "sha256": "cb99da9e6db5e8ba20dceff66c626aaaa7f563e401ffb3aed17cd594c10f194c",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-markdown",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "messenger-message-echoes.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks/webhook-events/message-echoes.md",
+      "bytes": 14122,
+      "sha256": "199ba55d0f9396f855a57ebc4394c0188da77817b0c5d19b17f6110dea9c4e95",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-markdown",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "messenger-customer-feedback-template.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/messenger-platform/send-messages/templates/customer-feedback-template.md",
+      "bytes": 18679,
+      "sha256": "7bdaf68f802898bbebee3c288f52372ff49bb5e4485d4dbbcb3bac0d8b21217a",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-markdown",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "messenger-generic.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/messenger-platform/send-messages/template/generic.md",
+      "bytes": 5102,
+      "sha256": "029f074fbbc8bfc67546c86d557f9d8b551d6e084203031b7dd9e087a05c89d2",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-markdown",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "messenger-webhooks.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks.md",
+      "bytes": 26863,
+      "sha256": "3b15e6e40d962629d1ce9867a6c5f45a0ebfd40e4b5576bd7bb7a496ff238fcd",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-markdown",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "messenger-conversation-routing.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/messenger-platform/conversation-routing.md",
+      "bytes": 22124,
+      "sha256": "fdc4466bcc0f86bbdb06959a6262f11125647a16ec2b8adbfa490e9e0d6139e6",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-markdown",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "messenger-llms.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/messenger-platform/llms.txt",
+      "bytes": 36656,
+      "sha256": "ef56a625bb6024f9f4457b6095dc14fb8dd761babc56017fba4005a2ff8d006a",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-index",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "agent-overview.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/overview.md",
+      "bytes": 3693,
+      "sha256": "881313a8880d26432ad8b2650e8e162e6c643c38f3e7548719812bf304434c92",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-markdown",
+      "api_version": "not pinned; per-endpoint review required"
+    },
+    {
+      "file": "agent-llms.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/llms.txt",
+      "bytes": 7065,
+      "sha256": "6fae0a6f2e02ae8827918ed9798faac021e4dc768ee419ee824ebb0ad533932f",
+      "retrieved_date": "2026-10-06",
+      "format": "vendor-index",
+      "api_version": "not pinned; per-endpoint review required"
+    }
+  ]
+}

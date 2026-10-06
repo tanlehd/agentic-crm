@@ -279,6 +279,22 @@
               "type": "null"
             }
           ]
+        },
+        "channel": {
+          "enum": [
+            "mock_messenger",
+            "messenger"
+          ]
+        },
+        "channel_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "page_id": {
+          "type": "string"
+        },
+        "channel_name": {
+          "type": "string"
         }
       },
       "required": [
@@ -714,6 +730,524 @@
           "type": [
             "string",
             "null"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "next_cursor",
+        "meta"
+      ]
+    },
+    "conversation-message-envelope-v2": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "conversation_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "direction": {
+          "enum": [
+            "inbound",
+            "outbound"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000,
+          "pattern": "\\S"
+        },
+        "status": {
+          "enum": [
+            "received",
+            "queued",
+            "sending",
+            "sent",
+            "failed",
+            "unknown",
+            "cancelled"
+          ]
+        },
+        "outbound_intent_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "occurred_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "received_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "external_msg_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "schema_version": {
+          "const": 2,
+          "type": "integer"
+        },
+        "connection_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "platform": {
+          "const": "mock_messenger",
+          "type": "string"
+        },
+        "message_type": {
+          "const": "text",
+          "type": "string"
+        },
+        "reply_to": {
+          "type": "null"
+        },
+        "attachment": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "id",
+        "conversation_id",
+        "direction",
+        "status",
+        "external_msg_id",
+        "outbound_intent_id",
+        "occurred_at",
+        "received_at",
+        "schema_version",
+        "connection_id",
+        "platform",
+        "message_type"
+      ]
+    },
+    "conversation-envelope-timeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/conversation-message-envelope-v2"
+          }
+        },
+        "next_cursor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "next_cursor",
+        "meta"
+      ]
+    },
+    "conversation-message-envelope-v3": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "conversation_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "direction": {
+          "enum": [
+            "inbound",
+            "outbound"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000,
+          "pattern": "\\S"
+        },
+        "status": {
+          "enum": [
+            "received",
+            "queued",
+            "sending",
+            "sent",
+            "failed",
+            "unknown",
+            "cancelled"
+          ]
+        },
+        "outbound_intent_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "occurred_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "received_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "external_msg_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "schema_version": {
+          "type": "integer",
+          "const": 3
+        },
+        "connection_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "platform": {
+          "const": "mock_messenger",
+          "type": "string"
+        },
+        "message_type": {
+          "enum": [
+            "text",
+            "media",
+            "template",
+            "unsupported"
+          ]
+        },
+        "reply_to": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "external_msg_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 255,
+                  "pattern": "\\S"
+                },
+                "internal_message_id": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "external_msg_id",
+                "internal_message_id"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "attachment": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "version": {
+                  "type": "integer",
+                  "const": 1
+                },
+                "kind": {
+                  "const": "media"
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "media_type": {
+                        "enum": [
+                          "image",
+                          "audio",
+                          "video",
+                          "file"
+                        ]
+                      },
+                      "external_media_id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 255,
+                        "pattern": "\\S"
+                      },
+                      "name": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 255,
+                            "pattern": "\\S"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "media_type",
+                      "external_media_id",
+                      "name"
+                    ]
+                  },
+                  "minItems": 1,
+                  "maxItems": 10
+                }
+              },
+              "required": [
+                "version",
+                "kind",
+                "items"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "version": {
+                  "type": "integer",
+                  "const": 1
+                },
+                "kind": {
+                  "const": "gallery"
+                },
+                "cards": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80,
+                        "pattern": "\\S"
+                      },
+                      "subtitle": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 80,
+                            "pattern": "\\S"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "buttons": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "label": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 20,
+                              "pattern": "\\S"
+                            }
+                          },
+                          "required": [
+                            "label"
+                          ]
+                        },
+                        "minItems": 0,
+                        "maxItems": 3
+                      }
+                    },
+                    "required": [
+                      "title",
+                      "subtitle",
+                      "buttons"
+                    ]
+                  },
+                  "minItems": 1,
+                  "maxItems": 10
+                }
+              },
+              "required": [
+                "version",
+                "kind",
+                "cards"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "version": {
+                  "type": "integer",
+                  "const": 1
+                },
+                "kind": {
+                  "const": "csat"
+                },
+                "title": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80,
+                  "pattern": "\\S"
+                },
+                "prompt": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 400,
+                  "pattern": "\\S"
+                }
+              },
+              "required": [
+                "version",
+                "kind",
+                "title",
+                "prompt"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "version": {
+                  "type": "integer",
+                  "const": 1
+                },
+                "kind": {
+                  "const": "unsupported"
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120,
+                  "pattern": "\\S"
+                }
+              },
+              "required": [
+                "version",
+                "kind",
+                "label"
+              ]
+            }
+          ]
+        },
+        "text_source": {
+          "enum": [
+            "original",
+            "extracted",
+            "preview"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "conversation_id",
+        "direction",
+        "status",
+        "external_msg_id",
+        "outbound_intent_id",
+        "occurred_at",
+        "received_at",
+        "schema_version",
+        "connection_id",
+        "platform",
+        "message_type",
+        "text_source"
+      ]
+    },
+    "conversation-rich-timeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/conversation-message-envelope-v3"
+          }
+        },
+        "next_cursor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
           ]
         },
         "meta": {

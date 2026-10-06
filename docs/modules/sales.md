@@ -1,5 +1,6 @@
 # MOD-05 — Lead/Opportunity & Sale Workspace
 
+> Kiến trúc đích microservice theo ADR-017: [Sales](../services/sales.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.
 Status: Ready for implementation Lead qualification/handoff M2; Deal/customer đầy đủ Draft M4. Requirements: REQ-03, REQ-06, REQ-09.
 
 ## Mục tiêu và phạm vi

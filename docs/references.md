@@ -27,3 +27,7 @@ Salesforce chỉ là lựa chọn tham chiếu UX được đề xuất ban đ�
 - [MySQL implicit commit](https://dev.mysql.com/doc/refman/8.4/en/implicit-commit.html): migration DDL không được giả định rollback như business transaction.
 - [shadcn/ui Next.js](https://ui.shadcn.com/docs/installation/next): tham chiếu tích hợp UI khi scaffold; không có assets/code UI được tạo ở bước planning.
 - [Ajv](https://ajv.js.org/): lựa chọn runtime validation cho JSON Schema; dialect/version được pin cùng toolchain ở SRC-001.
+
+## Meta M3 source snapshots
+
+[Local provider documentation dossier](references/meta/README.md) lưu Markdown chính thức, chỉ mục, URL/date/checksum và discrepancy review cho Meta Business Agent, Messenger Conversation Routing và media/webhooks. Đây là evidence nghiên cứu; không thay sandbox acceptance hoặc contract nội bộ.

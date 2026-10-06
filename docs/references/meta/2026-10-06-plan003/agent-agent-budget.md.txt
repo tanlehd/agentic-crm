@@ -1,0 +1,278 @@
+
+
+# Agent Budget
+
+Cap business-agent usage so costs and conversation length stay predictable.
+
+A budget caps agent usage within a rolling time window. Use these endpoints to read the budgets configured for an agent and to replace them.
+
+Each budget is a combination of three things:
+
+- `unit_type` — what is being measured: token usage across the Business Manager or AI agent turns within each conversation.
+- `time_window` — the period the usage is totalled over: one day, seven days, fourteen days, or thirty days. Windows roll rather than resetting on a fixed calendar boundary, and are measured in the timezone of the WhatsApp Business Account.
+- `max_budget` — the maximum allowed usage in that window.
+
+You can configure several budgets at once — for example a one-day token cap alongside a one-day AI-turn cap and longer rolling caps. A given `unit_type` and `time_window` pair may only appear once; a request containing two budgets for the same pair is rejected. To raise or lower an existing cap, edit that budget rather than adding a second one for the same window.
+
+When more than one budget is configured, whichever is reached first takes effect. Once a budget is reached the agent completes the turn it is already working on, then stops replying to new messages and hands the conversation to a human using the routing the agent is already set up with. Replies resume once the time window rolls over.
+
+An agent with no budgets configured has unlimited usage.
+
+Reading and replacing budgets share a budget of their own: 1000 requests per hour across both endpoints. Once it is exhausted, further requests return `429` until the limit resets. This is a limit on calls to these endpoints and is unrelated to the spend budgets they configure.
+
+## Base URL
+
+| URL | Description |
+|-----|-------------|
+| https://api.facebook.com/&#123;entity_id&#125;/agent_budget |  |
+
+## Authorization
+
+This API requires:
+
+any of the following
+  - Capability: bizai_wa_enterprise_api_3p_access
+  - Permission: business_management
+
+## APIs
+
+| Method | Endpoint |
+|--------|----------|
+| GET | [/](#get) |
+| POST | [/](#post) |
+
+&lt;jumplink id=&quot;get&quot;&gt;&lt;/jumplink&gt;
+## GET /
+
+Get the agent budgets
+
+Retrieve every budget currently configured for the agent. An empty `budgets` array means no cap is set and usage is unlimited.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | integer | ✓ | The Business Manager ID that owns the agent — not the WhatsApp Business Phone Number ID used by the other agent endpoints. |
+
+### Responses
+
+**200**
+
+The budgets currently configured for the agent.
+
+
+**Content Type**: `application/json`
+
+**Schema**: [AgentBudgetResponse](#agentbudgetresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**403**
+
+Forbidden
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;post&quot;&gt;&lt;/jumplink&gt;
+## POST /
+
+Replace the agent budgets
+
+Replace the full set of budgets for the agent. The request describes the complete desired state, so any budget you leave out is removed, and an empty `budgets` array clears every budget and returns the agent to unlimited usage.
+
+To change an existing budget, pass back the `budget_id` that was returned for it; the budget is updated in place and keeps its id. Omit `budget_id` to add a new budget and have an id assigned.
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | integer | ✓ | The Business Manager ID that owns the agent — not the WhatsApp Business Phone Number ID used by the other agent endpoints. |
+
+### Request Body (Required)
+
+**Content Type**: `application/json`
+
+**Schema**: [AgentBudgetRequest](#agentbudgetrequest)
+
+### Responses
+
+**200**
+
+The budgets configured for the agent after the update.
+
+
+**Content Type**: `application/json`
+
+**Schema**: [AgentBudgetResponse](#agentbudgetresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**403**
+
+Forbidden
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+# Components
+
+## Schemas
+
+&lt;jumplink id=&quot;agentbudgetresponse&quot;&gt;&lt;/jumplink&gt;
+### AgentBudgetResponse
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| budgets | array of [Budgets](#object-budgets-1) | ✓ | The budgets configured for the agent. When more than one is set, whichever is reached first takes effect. An empty array means no cap is set and usage is unlimited. |
+
+&lt;jumplink id=&quot;standarderror&quot;&gt;&lt;/jumplink&gt;
+### StandardError
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| title | string | ✓ |  |
+| detail | string | ✓ |  |
+| type | string |  |  |
+| status | integer |  |  |
+
+&lt;jumplink id=&quot;agentbudgetrequest&quot;&gt;&lt;/jumplink&gt;
+### AgentBudgetRequest
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| budgets | array of [Budgets](#object-budgets-2) | ✓ | The complete set of budgets for the agent. This replaces any budgets already configured, so any you leave out are removed, and an empty array clears them all and returns the agent to unlimited usage. Token budgets apply across the Business Manager; AI-turn budgets apply to each conversation. A given unit type and time window pair may only appear once. |
+
+## Inline Object Definitions
+
+&lt;jumplink id=&quot;object-budgets-1&quot;&gt;&lt;/jumplink&gt;
+### Budgets
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| budget_id | string | ✓ | Stable identifier for this budget. Pass it back on a subsequent set request to edit or preserve this budget. |
+| unit_type | One of &quot;token&quot;, &quot;ai_turn&quot; | ✓ | What the budget measures: token usage or AI agent turns. |
+| time_window | One of &quot;one_day&quot;, &quot;seven_days&quot;, &quot;fourteen_days&quot;, &quot;thirty_days&quot; | ✓ | The rolling period usage is totalled over, measured in the timezone of the WhatsApp Business Account. |
+| max_budget | integer | ✓ | The maximum allowed usage, in the given unit, within the time window. |
+
+&lt;jumplink id=&quot;object-budgets-2&quot;&gt;&lt;/jumplink&gt;
+### Budgets
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| budget_id | string |  | Stable identifier of the budget. For an existing budget, pass the id the server returned when it was created to edit or preserve it. For a new budget, leave it empty; the server assigns one. |
+| unit_type | One of &quot;token&quot;, &quot;ai_turn&quot; | ✓ | What the budget measures: token usage or AI agent turns. |
+| time_window | One of &quot;one_day&quot;, &quot;seven_days&quot;, &quot;fourteen_days&quot;, &quot;thirty_days&quot; | ✓ | The rolling period usage is totalled over, measured in the timezone of the WhatsApp Business Account. |
+| max_budget | integer [min: 1] | ✓ | The maximum allowed usage, in the given unit, within the time window. Must be a positive whole number. |
+
+## Authentication
+
+| Scheme | Type | Location |
+|--------|------|----------|
+| OAuthToken__Authorization | HTTP Bearer | Header: `Authorization` |
+
+### Usage Examples
+
+- **OAuthToken__Authorization**: Include `Authorization: Bearer your-token-here` in request headers
+
+### Global Authentication Requirements
+
+All endpoints require: OAuthToken__Authorization
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/meta-business-agent/llms.txt

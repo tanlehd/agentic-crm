@@ -1,5 +1,6 @@
 # Sales handoff — SRC-021
 
+> Microservices target ADR-017 dùng [cross-service rules](service-boundaries.md). APIs/UoW trong tài liệu này là baseline implementation hiện tại; exact remote contracts và sagas cần PLAN-006 trước extraction.
 Status: Ready for implementation, M2.
 
 POST `/leads/{id}/handoffs` body `{target_team_id:uuid}`; POST `/leads/{id}/handoffs/{handoffId}/accept` body `{owner_revision:positive-decimal-string}`. Both require authenticated session, active tenant, Origin/CSRF, Idempotency-Key and quoted If-Match Lead version. Return 200 envelope data `{id,version,owner_revision,owner_principal_id,team_id,handoff_id,status,due_at,accepted_at,attention}` (id is Lead ID, status is handoff status). GET `/leads/{id}/handoffs` returns bounded latest 100 handoffs under Lead read permission, with same projection. No qualification or Contact fields in receipts. Replay rechecks current read/action/seat/team/field rights; changed request/key conflicts.

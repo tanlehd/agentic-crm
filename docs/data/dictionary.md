@@ -1,6 +1,7 @@
 # Data dictionary
 
-Status: Ready for implementation cho bảng M1–M2; mục M4–M5 là Draft.
+> Baseline monolith hiện có, không phải physical schema của các microservice đích. Xem [data ownership ADR-017](service-ownership.md); FK/UoW cross-module dưới đây chỉ áp dụng trong DB hiện tại. Extraction không sửa applied migrations1–18.
+Status: Ready for implementation cho bảng M1–M2; phần bổ sung M3 và mục M4–M5 là Draft.
 
 ## Quy ước vật lý
 
@@ -137,3 +138,35 @@ V15 follow-up (same CHG): MySQL skips composite FK when any member is NULL; `ck_
 V16 follow-up preserves applied v14/v15 and adds private `chatflow_node_run.proposed_reply TEXT NULL` bounded4000. Runtime proposal/tool only stores text there; no outbound intent until the exact execution completes successfully under live guards. Takeover/failed/cancelled executions leave proposals inert; session read projections exclude this field.
 
 SRC-021: lead_handoff exact fields and state/parent/action constraints follow [Sales handoff contract](../contracts/sales-handoff.md); attention persists no eligible/15-minute alert.
+
+## M3 proposed additions — Draft, chưa là migration
+
+CHG-20261006-03. [Message envelope](../contracts/messaging-platforms.md) bổ sung `platform`, `message_type`, `external_msg_id`, `reply_to` JSON và `attachment` JSON; text cho media-only cần nullable ở contract mới. `external_msg_id` map cùng semantic với `provider_message_id` hiện có, giữ namespace tenant+connection; chưa rename/drop cột hoặc sửa unique key đã dùng.
+
+AI provider binding cần provider key, external agent/entity reference, tenant-bound connection, secret reference, capability/config version và desired/observed sync status. Provider routing cần external control state, operation/revision, confirmation/error/attention để reconcile độc lập CRM owner. Tên bảng, FK/index/check, retention, migration/backfill và field-level access chốt PLAN-004 trước code; không coi đề xuất này là bảng đã tồn tại.
+
+PLAN-003 refinement: provider entity reference phải có loại asset (phone number, agent, Business Manager...), không dùng một external ID không phân loại. Budget token scope Business Manager có thể chứa nhiều tenant; design PLAN-004 cần authority mapping riêng, không mutate qua tenant-local config mặc định. Desired/observed control và message template definition/parameters cần versioned schema theo [source matrix](../references/meta/capability-matrix.md); chưa thêm cột hay bảng.
+
+
+SRC-026 không thêm persisted field: external_msg_id alias provider_message_id; platform qua Channels; reply_to/attachment null-only; field ACL bỏ toàn bộ content khi deny. [Exact projection](../contracts/message-envelope-v2.md).
+
+
+SRC-027 / schema18 Ready: message_content(tenant_id,message_id,content JSON) lưu normalized v1; reply external-only, resolution là projection. [Exact fields](../contracts/rich-messages.md).
+
+## Connector Messenger capture — PLAN-004C
+
+Independent service owns connector_meta_page/event/audit (schema2); exact fields/keys/retention at [Messenger ingress contract](../contracts/messenger-ingress.md). Tenant/Page authority local; no monolith table or FK change. Captured is not a Chat message.
+
+## ADR-019 target identity and cache ownership
+
+Canonical contact_identity moves to CRM Core at future extraction: tenant_id, platform, connection_id, external_subject_id, crm_contact_id, mapping_revision. Connector owns provider_profile_cache (name/avatar provenance/expiry) and contact_resolution_cache (confirmed CRM refs/revision/expiry); no second master. Chat message context has required crm_contact_id for both directions. [Fields, policy and migration](../contracts/contact-resolution.md). These are logical target entities; existing SQL contact_id/identity rows and migrations unchanged.
+
+PLAN-006C: contact_resolution_cache exists logically at both Chat and Connector; lookup DB before create, keep mapping_revision/status/expiry, hydrate only from authorized DB read or successful CRM receipt. Lookup errors are not not_found. [Semantics](../contracts/contact-resolution.md).
+
+## SRC-030 scoped implementation
+
+Existing contact_identity remains canonical CRM-owned identity mapping in schema18. SRC-030 reuses idempotency_record with service actor and connection-scoped route. inbound_delivery.payload accepts an additive internal version2 wrapper containing crm_contact_id, crm_identity_id and legacy intake. No applied migration changes; mapping_revision is fixed at 1 while mapping mutation is disabled. See [compatibility contract](../contracts/contact-resolution-local.md).
+
+## SRC-031 Facebook configuration and channel dimensions
+
+[Exact OAuth/Page/schema19 contract](../contracts/facebook-configuration.md) and [operator runbook](../development/facebook-configuration.md) define Admin→Channels→Facebook, session/state-bound OAuth, encrypted DB Page credentials and manual verified token replacement. Baseline Channels remains sole writer of catalog/credentials; independent Connector capture is unchanged until API-based extraction/provisioning. Conversation channel and generated channel_id retain existing connection IDs, with Page metadata and tenant/field-authorized filters/options. Messaging activation and real sandbox acceptance remain separate.

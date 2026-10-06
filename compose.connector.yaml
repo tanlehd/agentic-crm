@@ -1,0 +1,73 @@
+# Opt-in local bridge; no preview gateway/volume changes.
+name: agentic-crm-connector
+x-image: &image
+  image: agentic-crm-connector:local
+  build: {context: ., dockerfile: infra/docker/Dockerfile, target: connector}
+x-runtime: &runtime
+  CONNECTOR_DB_HOST: connector-mysql
+  CONNECTOR_DB_NAME: connector_local
+  CONNECTOR_DB_USER: connector_runtime
+  CONNECTOR_DB_PASSWORD: ${CONNECTOR_DB_PASSWORD:?Set a dedicated runtime password}
+services:
+  connector-mysql:
+    image: mysql@sha256:6ea90827b1100f8f2ae306a539f86d2c264a26ed435a2a9f75551dd5c3aeb242
+    environment:
+      MYSQL_ROOT_PASSWORD: ${CONNECTOR_MIGRATION_PASSWORD:?Set a dedicated migration password}
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: connector_local
+    volumes: [connector-data:/var/lib/mysql]
+    networks: [database]
+    healthcheck:
+      test: [CMD-SHELL, 'MYSQL_PWD="$$MYSQL_ROOT_PASSWORD" mysql -u root -e "SELECT 1" >/dev/null 2>&1']
+      interval: 5s
+      timeout: 3s
+      retries: 30
+  connector-admin:
+    <<: *image
+    profiles: [admin]
+    command: [node, dist/main.js, migrate]
+    environment:
+      <<: *runtime
+      CONNECTOR_MIGRATION_USER: root
+      CONNECTOR_MIGRATION_PASSWORD: ${CONNECTOR_MIGRATION_PASSWORD:?Set migration password}
+      CONNECTOR_CONNECTION_ID: ${CONNECTOR_CONNECTION_ID:-}
+      CONNECTOR_TENANT_ID: ${CONNECTOR_TENANT_ID:-}
+      CONNECTOR_INGRESS_TOKEN: ${CONNECTOR_INGRESS_TOKEN:-}
+      CONNECTOR_REMOTE_CONNECTION_ID: ${CONNECTOR_REMOTE_CONNECTION_ID:-}
+      CONNECTOR_REMOTE_TOKEN_ENV: CONNECTOR_REMOTE_TOKEN_LOCAL
+      CONNECTOR_META_BINDING_ID: ${CONNECTOR_META_BINDING_ID:-}
+      CONNECTOR_META_APP_ID: ${CONNECTOR_META_APP_ID:-}
+      CONNECTOR_META_PAGE_ID: ${CONNECTOR_META_PAGE_ID:-}
+    networks: [database]
+    depends_on: {connector-mysql: {condition: service_healthy}}
+  connector-api:
+    <<: *image
+    environment:
+      <<: *runtime
+      CONNECTOR_META_APPS: ${CONNECTOR_META_APPS:-}
+      CONNECTOR_META_APP_SECRET: ${CONNECTOR_META_APP_SECRET:-}
+      CONNECTOR_META_VERIFY_TOKEN: ${CONNECTOR_META_VERIFY_TOKEN:-}
+    ports: ['127.0.0.1:3010:3010']
+    networks: [database,egress]
+    depends_on: {connector-mysql: {condition: service_healthy}}
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:3010/connector/v1/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+  connector-worker:
+    <<: *image
+    command: [node, dist/main.js, worker]
+    environment:
+      <<: *runtime
+      CONNECTOR_REMOTE_ORIGIN: ${CONNECTOR_REMOTE_ORIGIN:?Set trusted monolith origin}
+      CONNECTOR_ALLOW_HTTP: ${CONNECTOR_ALLOW_HTTP:-false}
+      CONNECTOR_REMOTE_TOKEN_LOCAL: ${CONNECTOR_REMOTE_TOKEN_LOCAL:?Set destination connection token}
+    networks: [database,egress]
+    depends_on: {connector-mysql: {condition: service_healthy}}
+    stop_grace_period: 20s
+networks:
+  database: {internal: true}
+  egress: {}
+volumes:
+  connector-data: {}

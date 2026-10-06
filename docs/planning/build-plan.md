@@ -84,3 +84,32 @@ Mỗi phiên đọc checkpoint → claim một READY task → cập nhật spec 
 Task cuối phiên không cần DONE: checkpoint phải đủ chi tiết để tiếp tục mà không dựa vào lịch sử chat. Xem [change control](../governance/change-control.md) và [task template](../templates/task.md).
 
 CHG-20261003-06: phần transaction storage audit/idempotency/outbox tối thiểu chuyển vào SRC-007 vì admin API yêu cầu atomic receipt/events. SRC-008 vẫn phụ thuộc SRC-007 và chịu trách nhiệm consumer inbox/relay/leases, replay hardening và audit privilege hardening; không triển khai task song song.
+
+## Sau release M2 — hướng M3 đã cập nhật
+
+Theo CHG-20261006-03, [M3 provider plan](m3-provider-plan.md) mở AI Agent setup theo provider (Meta Business Agent case study), CRM Connectors với provider routing, và message envelope/render đa nền tảng. PLAN-002 ghi định hướng và snapshot nguồn; PLAN-003 hoàn thiện dossier/capability matrix; PLAN-004 chốt contract/data/UX/AC và source backlog. Production integration chưa Ready. SRC-026 là task M3 đầu tiên theo gate độc lập PLAN-004A.
+
+
+M3 foundation: PLAN-004A chốt [legacy envelope projection](../contracts/message-envelope-v2.md), SRC-026 triển khai additive read API. PLAN-004 phần còn lại tiếp tục design gate; không tính source M3 vào 25 task M1–M2.
+
+
+PLAN-004B chốt normalized rich storage/passive renderer; SRC-027 sau SRC-026. Media resolver và live provider giữ gate riêng.
+
+## ADR-017 — Microservices target sau SRC-027
+
+User đã yêu cầu enterprise microservices. [PLAN-005 blueprint/extraction roadmap](microservices-migration.md) thay định hướng monolith tương lai; không đổi bằng chứng M1–M2 hoặc source hiện tại. PLAN-006 exact distributed contracts/data/auth/dispatch/saga và broker gate đi trước extraction source. Pending PLAN-004 media/provider design phải align service boundaries; không code thêm cross-module shared transaction cho service đích. Source task IDs chỉ tạo sau scoped design Ready.
+
+
+SRC-028 after SRC-027 + PLAN-006A design Ready: independent Connector ingress/API/worker/private schema1 and HTTP compatibility bridge. ADR-018, remaining broker/delegation/domain extraction gate unchanged.
+
+SRC-028: first independent Connector ingress implementation and opt-in image/Compose at [service runbook](../../services/crm-connector/README.md). PLAN-006A exact scoped design DONE; remaining PLAN-006 distributed authority/broker/cutover work is separate.
+
+M3 local continuation: PLAN-004C scoped signed Messenger capture before SRC-029; [contract](../contracts/messenger-ingress.md). Separate capture does not depend on Chat cutover and cannot forward to mock intake.
+
+PLAN-006B design-only: [contact resolution responsibilities](../contracts/contact-resolution.md) accepted; source gate still needs exact DTO/auth/DDL/provider adapter and tests. No source task ID/READY implied by responsibility design.
+
+## SRC-030 local contact-resolution slice
+
+Scoped cache-aside compatibility is implemented and verified; [evidence](../tracking/details/SRC-030.md). CRM DB owns identity mapping; Connector uses remote lookup/resolve and Chat uses baseline CRM application port. Remaining PLAN-006 provider ingestion/event gates still precede full Messenger delivery and M3 completion.
+
+SRC-031 delivers Facebook OAuth/Page setup and channel-aware Inbox under [scoped contract](../contracts/facebook-configuration.md); evidence and remaining messaging gates in [task detail](../tracking/details/SRC-031.md). This does not close full M3 or live provider acceptance.

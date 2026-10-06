@@ -121,3 +121,51 @@ AC-09 application-service healthcare fixture and AC-11/M2 persisted metric seman
 ## SRC-025 — M2 local/mock release gate PASS
 
 [Evidence SRC-025](../tracking/details/SRC-025.md): built actual release images and historical M1 f575a8e; native ARM64 and emulated AMD64 cold/upgrade/full-stack restart gates PASS. Schema8→17 preserves31 existing tables and10 CRM records; no-op migration; all-table hash equality across restart and one persisted timer completion. Fresh real Chrome/OIDC + API/worker CTM intake/duplicate, AI-owned qualification, Sales UI accept, Human takeover/form/handoff, tenant denial and owner/prospect invariants PASS on both app architectures.180 regression tests (including healthcare KPI and SRC-024 faults) and9 canonical gates PASS. This closes M1–M2 local/mock release acceptance only; native AMD64 hardware, remote CI, production rollout, real Meta/LLM and M4/M5 portions of shared AC IDs remain unclaimed.
+
+## M3 provider/connector acceptance — Draft, NOT_RUN
+
+CHG-20261006-03; [plan](../planning/m3-provider-plan.md), [message contract](../contracts/messaging-platforms.md), [source dossier](../references/meta/README.md). M2 AC results không đóng các sub-scopes sau.
+
+| Sub-scope | Scenario/gate dự kiến | Evidence hiện tại |
+|---|---|---|
+| AC-01/02/07 / M3 | Provider/entity binding tenant isolation; eligibility denied; setup/read/config/test quyền; callback/tool revoke và idempotency | NOT_RUN |
+| AC-05/15/17 / M3 | Verified raw webhook, batch, duplicate/reordered events, durable ACK, echo trước send response; không duplicate Message/turn | NOT_RUN |
+| AC-06/18 / M3 | AI→CRM Human→AI qua routing/thread control đúng platform; pending/timeout/reconcile, external takeover, late event, no double reply | NOT_RUN |
+| AC-05 / M3 rich messages | Text/media/reply/gallery/CSAT, unsupported template/version, inaccessible reply, media expiry, render isolation; backend reject unsupported send | NOT_RUN |
+| AC-07/09 / M3 case study | Meta Agent setup→test→eligible channel conversation→Lead qualification→Human/Sales handoff bằng synthetic catering/retail; healthcare M2 giữ riêng | NOT_RUN |
+| AC-12/17 / M3 operations | Secret rotation/token expiry/rate limit, sanitized audit, desired-vs-observed config/control, compatibility upgrade giữ M2 history | NOT_RUN |
+
+PLAN-002 chỉ kiểm tra tài liệu và checksum; exact fixture/machine contracts và provider sandbox requirements chốt PLAN-003/004. Không tuyên bố production hoặc platform hỗ trợ chỉ từ docs snapshot.
+
+PLAN-003 doc research complete: [capability/gap matrix và sandbox cases](../references/meta/capability-matrix.md). Bổ sung regression candidates cho standby vs messages/echo, budget shared-asset authority, outbound template definition+parameters, media URL expiry, current Graph version, send-vs-explicit-take và unknown operation. Tất cả provider AC vẫn NOT_RUN; G-04/05/08 là điều kiện chưa cho sub-scope live routing/mutable tools Ready.
+
+
+AC-05/M3 text foundation (SRC-026): PASS181 MySQL regression và67 unit/contract trong9 canonical gates; [evidence](../tracking/details/SRC-026.md). Exact cases tại [contract](../contracts/message-envelope-v2.md); các AC rich/provider ở trên vẫn NOT_RUN.
+
+
+AC-05/M3 normalized rich mock SRC-027: PASS183 MySQL regression,73 unit/contract/renderer và9 canonical gates; Chrome desktop/mobile component smoke PASS, full-stack browser NOT_RUN. [Evidence](../tracking/details/SRC-027.md); [cases và exclusions](../contracts/rich-messages.md).
+
+## Microservices architecture / PLAN-005
+
+Doc-only gate: mỗi module có mapping service, scope/non-goals/internal architecture/data owner/model/interfaces/consistency/operations/extraction/AC; [catalog](../services/README.md). Tại PLAN-005, source vẫn monolith; subsequent SRC-028 ingress evidence below. Full distributed acceptance remains NOT_RUN: isolated databases/grants, remote tenant/auth/owner fences, lost ACK/duplicate/reorder, saga recovery, schema/event compat, single-writer cutover, broker HA/restore and production SLO. PLAN-006 chốt exact cases trước source task, không reuse monolith PASS để đóng distributed gate.
+
+
+AC microservices/ingress bridge SRC-028: PASS184 MySQL tests,77 unit/contract tests,9 canonical gates; release image/private DB/non-root/API restart smoke PASS. [Evidence](../tracking/details/SRC-028.md); [exact isolated DB/auth/HTTP/retry cases](../contracts/connector-bridge.md). Not full distributed/business/provider acceptance.
+
+SRC-029 PASS185 MySQL/86 unit/9 canonical gates and release image restart: AC-05/M3 signed Messenger capture subset per [contract](../contracts/messenger-ingress.md), local synthetic raw HTTP/MySQL only. Not Chat delivery, provider send or sandbox completion.
+
+Evidence [SRC-029](../tracking/details/SRC-029.md). All other M3 provider/domain/media/UI/local release scopes remain TODO/NOT_RUN; sandbox unavailable by user selection.
+
+## PLAN-006B design gate / future source acceptance
+
+[Contact-resolution contract](../contracts/contact-resolution.md) defines cache hit/miss/expiry, concurrent resolve/lost ACK, provider profile unavailable, stale enrichment/Human field preservation, cross-tenant identity, invalidation and required crm_contact_id on inbound/outbound/echo. Design/doc checks only; all runtime cases NOT_RUN. Existing M2/SRC-029 PASS does not close this scope.
+
+PLAN-006C design refinement: test cache hit/no CRM lookup, cache miss+DB hit/no create, confirmed DB miss/concurrent resolve→one Contact+identity, DB outage/denial never creates, both service caches rehydrate, invalidation/revision mismatch pending, and nonblocking enrichment. Runtime NOT_RUN; [contract](../contracts/contact-resolution.md).
+
+## SRC-030 scoped implementation
+
+SRC-030 sub-scope: real local HTTP/MySQL tests verify lookup/resolve replay/concurrency, cache hit/expiry/reset/isolation, rollback without cache poisoning, failed lookup never creates, inbound contact binding and duplicate identity fencing, outbound contact checks/send, revocation. This does not close full Facebook/M3 acceptance. See [compatibility contract](../contracts/contact-resolution-local.md).
+
+## SRC-031 Facebook configuration and channel dimensions
+
+[Exact OAuth/Page/schema19 contract](../contracts/facebook-configuration.md) and [operator runbook](../development/facebook-configuration.md) define Admin→Channels→Facebook, session/state-bound OAuth, encrypted DB Page credentials and manual verified token replacement. Baseline Channels remains sole writer of catalog/credentials; independent Connector capture is unchanged until API-based extraction/provisioning. Conversation channel and generated channel_id retain existing connection IDs, with Page metadata and tenant/field-authorized filters/options. Messaging activation and real sandbox acceptance remain separate.

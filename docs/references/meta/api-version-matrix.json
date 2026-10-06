@@ -1,0 +1,211 @@
+{
+  "reviewed_date": "2026-10-06",
+  "graph_api_baseline": "v26.0",
+  "graph_api_evidence": "graph-version-observation.md",
+  "sandbox_status": "NOT_RUN",
+  "agent_endpoints": [
+    {
+      "source": "2026-10-06/agent-agent-eligibility.md.txt",
+      "base_url": "https://api.facebook.com/{entity_id}/agent_eligibility",
+      "header_versions": [
+        "2.0.0"
+      ],
+      "methods": [
+        "GET"
+      ],
+      "verification": "documentation only; sandbox NOT_RUN"
+    },
+    {
+      "source": "2026-10-06/agent-agent-knowledge-business-info.md.txt",
+      "base_url": "https://api.facebook.com/{entity_id}/agent_config/business_info",
+      "header_versions": [
+        "2.0.0"
+      ],
+      "methods": [
+        "DELETE",
+        "GET",
+        "PUT"
+      ],
+      "verification": "documentation only; sandbox NOT_RUN"
+    },
+    {
+      "source": "2026-10-06/agent-agent-onboarding.md.txt",
+      "base_url": "https://api.facebook.com/{entity_id}/agent_onboarding",
+      "header_versions": [
+        "2.0.0"
+      ],
+      "methods": [
+        "POST"
+      ],
+      "verification": "documentation only; sandbox NOT_RUN"
+    },
+    {
+      "source": "2026-10-06/agent-agent-settings.md.txt",
+      "base_url": "https://api.facebook.com/{entity_id}/agent_config/settings",
+      "header_versions": [
+        "2.0.0"
+      ],
+      "methods": [
+        "GET",
+        "PUT"
+      ],
+      "verification": "documentation only; sandbox NOT_RUN"
+    },
+    {
+      "source": "2026-10-06/agent-agent-skills.md.txt",
+      "base_url": "https://api.facebook.com/{entity_id}/agent_config/skills",
+      "header_versions": [
+        "2.0.0"
+      ],
+      "methods": [
+        "DELETE",
+        "GET",
+        "POST",
+        "PUT"
+      ],
+      "verification": "documentation only; sandbox NOT_RUN"
+    },
+    {
+      "source": "2026-10-06/agent-agent-test.md.txt",
+      "base_url": "https://api.facebook.com/{entity_id}/agent_test",
+      "header_versions": [
+        "2.0.0"
+      ],
+      "methods": [
+        "POST"
+      ],
+      "verification": "documentation only; sandbox NOT_RUN"
+    },
+    {
+      "source": "2026-10-06/agent-connector-tools.md.txt",
+      "base_url": "https://api.facebook.com/{entity_id}/agent_connectors/{connector_id}/tools",
+      "header_versions": [
+        "2.0.0"
+      ],
+      "methods": [
+        "DELETE",
+        "GET",
+        "POST",
+        "PUT"
+      ],
+      "verification": "documentation only; sandbox NOT_RUN"
+    },
+    {
+      "source": "2026-10-06/agent-connectors.md.txt",
+      "base_url": "https://api.facebook.com/{entity_id}/agent_connectors",
+      "header_versions": [
+        "2.0.0"
+      ],
+      "methods": [
+        "DELETE",
+        "GET",
+        "POST",
+        "PUT"
+      ],
+      "verification": "documentation only; sandbox NOT_RUN"
+    },
+    {
+      "source": "2026-10-06/agent-thread-control-cloud-api.md.txt",
+      "base_url": "https://api.facebook.com/business/whatsapp/phone_numbers/{phone_number_id}/thread_control",
+      "header_versions": [
+        "1.0.0"
+      ],
+      "methods": [
+        "POST"
+      ],
+      "verification": "documentation only; sandbox NOT_RUN"
+    },
+    {
+      "source": "2026-10-06-plan003/agent-agent-allowlist.md.txt",
+      "base_url": "https://api.facebook.com/{entity_id}/agent_config/allowlist",
+      "header_versions": [
+        "2.0.0"
+      ],
+      "methods": [
+        "DELETE",
+        "GET",
+        "POST"
+      ],
+      "verification": "documentation only; sandbox NOT_RUN"
+    },
+    {
+      "source": "2026-10-06-plan003/agent-agent-budget.md.txt",
+      "base_url": "https://api.facebook.com/{entity_id}/agent_budget",
+      "header_versions": [
+        "2.0.0"
+      ],
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "verification": "documentation only; sandbox NOT_RUN"
+    },
+    {
+      "source": "2026-10-06-plan003/agent-agent-eval.md.txt",
+      "base_url": "https://api.facebook.com/{entity_id}/agent-eval",
+      "header_versions": [
+        "2.0.0"
+      ],
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "verification": "documentation only; sandbox NOT_RUN"
+    },
+    {
+      "source": "2026-10-06-plan003/agent-agent-knowledge-faqs.md.txt",
+      "base_url": "https://api.facebook.com/{entity_id}/agent_config/faq",
+      "header_versions": [
+        "2.0.0"
+      ],
+      "methods": [
+        "DELETE",
+        "GET",
+        "POST",
+        "PUT"
+      ],
+      "verification": "documentation only; sandbox NOT_RUN"
+    },
+    {
+      "source": "2026-10-06-plan003/agent-agent-knowledge-files.md.txt",
+      "base_url": "https://api.facebook.com/{entity_id}/agent_config/files",
+      "header_versions": [
+        "2.0.0"
+      ],
+      "methods": [
+        "DELETE",
+        "GET",
+        "POST"
+      ],
+      "verification": "documentation only; sandbox NOT_RUN"
+    },
+    {
+      "source": "2026-10-06-plan003/agent-agent-knowledge-websites.md.txt",
+      "base_url": "https://api.facebook.com/{entity_id}/agent_config/websites",
+      "header_versions": [
+        "2.0.0"
+      ],
+      "methods": [
+        "DELETE",
+        "GET",
+        "POST",
+        "PUT"
+      ],
+      "verification": "documentation only; sandbox NOT_RUN"
+    },
+    {
+      "source": "2026-10-06-plan003/agent-ui-skills.md.txt",
+      "base_url": "https://api.facebook.com/{entity_id}/agent-ui-skills",
+      "header_versions": [
+        "2.0.0"
+      ],
+      "methods": [
+        "DELETE",
+        "GET",
+        "POST",
+        "PUT"
+      ],
+      "verification": "documentation only; sandbox NOT_RUN"
+    }
+  ]
+}

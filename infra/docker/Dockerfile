@@ -8,6 +8,7 @@ WORKDIR /app
 
 FROM toolchain AS dependencies
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY services/crm-connector/package.json ./services/crm-connector/package.json
 COPY apps/backend/package.json ./apps/backend/package.json
 COPY apps/web/package.json ./apps/web/package.json
 COPY packages/contracts/package.json ./packages/contracts/package.json
@@ -50,3 +51,14 @@ COPY --from=build --chown=node:node /app/apps/web/.next/static ./apps/web/.next/
 USER node
 EXPOSE 3000
 CMD ["node", "apps/web/server.js"]
+
+FROM source AS connector-build
+RUN pnpm --filter @agentic-crm/crm-connector build && pnpm --filter @agentic-crm/crm-connector deploy --prod --legacy --offline /out/connector
+
+FROM ${NODE_IMAGE} AS connector
+ENV NODE_ENV=production
+WORKDIR /app
+COPY --from=connector-build --chown=node:node /out/connector ./
+USER node
+EXPOSE 3010
+CMD ["node", "dist/main.js", "api"]

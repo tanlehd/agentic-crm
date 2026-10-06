@@ -1,0 +1,312 @@
+# End-to-end setup
+
+
+## Summary &#123;#summary&#125;
+
+This guide sets up Meta Business Agent on a WhatsApp Business phone number. It covers the end-to-end setup process including WhatsApp Manager, system user, access token, app subscription, and webhook fields. To enable the agent, you must call the Meta Business Agent [Onboarding](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-onboarding) endpoint and then the [Settings](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-settings) endpoint.
+
+## Prerequisites &#123;#prerequisites&#125;
+
+Before you begin, make sure you have the following:
+
+- A WhatsApp Business account (WABA) ID, found in [WhatsApp Manager](https://business.facebook.com/latest/whatsapp_manager/) in Settings &gt; WhatsApp accounts
+- Your Business Portfolio (Meta Business Account) ID, found in the [Meta Business Suite](https://business.facebook.com/settings/) as the `business_id` parameter in the URL
+- An App ID for your Meta app, found in the [Facebook Developer Portal](https://developers.facebook.com/apps/) next to your app&#039;s name
+- A Meta app granted both the [`whatsapp_business_messaging`](https://developers.facebook.com/docs/permissions#whatsapp_business_messaging) and [`whatsapp_business_management`](https://developers.facebook.com/docs/permissions#whatsapp_business_management) permissions. The `whatsapp_business_messaging` permission authenticates your requests. The `whatsapp_business_management` permission is required to read agent data — without it, read calls return an empty result.
+- A WhatsApp Business phone number that&#039;s [eligible for Meta Business Agent](https://developers.facebook.com/documentation/meta-business-agent/overview#which-phone-numbers-are-eligible)
+
+For an introduction to what Meta Business Agent can do and who can use it, see the [Overview](https://developers.facebook.com/documentation/meta-business-agent/overview). To get an agent answering test messages in three API calls before you complete this setup, see the [Quickstart](https://developers.facebook.com/documentation/meta-business-agent/quickstart).
+
+## Set up Meta Business Agent in WhatsApp Manager &#123;#set-up-meta-business-agent-in-whatsapp-manager&#125;
+
+Set up Meta Business Agent on your eligible phone numbers in WhatsApp Manager and accept the Meta Business Agent Terms of Service.
+
+1. Go to [WhatsApp Manager](https://business.facebook.com/latest/whatsapp_manager/) and select the correct WhatsApp Business account if prompted.
+2. Go to the **Meta Business Agent** tab. This tab only appears if at least one phone number in your WABA is [eligible](https://developers.facebook.com/documentation/meta-business-agent/overview#which-phone-numbers-are-eligible).
+3. Set up Meta Business Agent for any eligible phone numbers. This is also where you accept the Meta Business Agent Terms of Service.
+4. Your agent isn&#039;t enabled yet — set up its knowledge and instructions first (see [Next steps](#next-steps-configure-and-run-your-agent)) before enabling it.
+
+&gt; **Important:** Solution Partners and Tech Providers: your client accepts the Meta Business Agent Terms of Service in WhatsApp Manager (above). You must additionally accept the Tech Provider Terms of Service (if you haven&#039;t already done so) by becoming a Tech Provider in the [Facebook Developer Portal](https://developers.facebook.com/apps/). Meta Business Agent rejects API calls until you accept the required Terms of Service. For details, see [Get started for Tech Providers](https://developers.facebook.com/documentation/business-messaging/whatsapp/solution-providers/get-started-for-tech-providers).
+
+## Set up billing &#123;#set-up-billing&#125;
+
+Meta charges for Meta Business Agent messages. Turning your agent on for everyone — `ai_audience` set to `EVERYONE` — requires a payment method; without one, the settings call to enable the agent for everyone fails with a `400` error. You can turn the agent on with `ai_audience` set to `ALLOWLISTED_ONLY` without a payment method, so you can test with allowlisted consumers first before expanding to `EVERYONE`.
+
+Attach a payment method to your account in [Billing Hub](https://business.facebook.com/latest/billing_hub/). For instructions, rates, and the list of supported currencies, see [Billing for Meta Business Agent messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/pricing/non-template-messages#billing-for-meta-business-agent-messages).
+
+## Create a system user &#123;#create-a-system-user&#125;
+
+Meta Business Agent Platform API requests are authenticated as a system user. If you already have a system user in Meta Business Suite, skip to [Assign the app and WABA to your system user](#assign-the-app-and-waba-to-your-system-user).
+
+1. Go to [Meta Business Suite](https://business.facebook.com/settings/).
+2. In the left navigation, select **Settings**.
+3. In the side navigation panel, under **Users**, select **System users**.
+4. In the upper right, click the **+ Add** button. In the dialog that opens, enter a name, select the **Admin** role, and click **Create system user**.
+
+## Assign the app and WABA to your system user &#123;#assign-the-app-and-waba-to-your-system-user&#125;
+
+Assign your WhatsApp Business account (WABA) to the same system user, with phone number management permission.
+
+1. In [Meta Business Suite](https://business.facebook.com/settings/), in the left navigation, select **Settings**. In the side navigation panel, under **Users**, select **System users**, then select your system user.
+2. In the upper right, click the three-dot menu button and click **Assign Assets**.
+3. In the panel that opens, select **Apps**, find your app, and enable the checkbox next to it.
+4. Assign the permissions that are necessary for your System User.
+5. Find your WABA, and enable the checkbox next to it.
+6. Click the slider next to **View and manage phone numbers** to grant the permission, and then click **Assign Assets**.
+
+## Generate an access token &#123;#generate-an-access-token&#125;
+
+You can authenticate Meta Business Agent Platform API requests using either a *system user token* or a *Business Integration System User (BISU) token*, depending on your integration model. Both token types require the **whatsapp_business_messaging** permission to authenticate. Reading agent data — for example evaluation cases and results — also requires the **whatsapp_business_management** permission: a token that has messaging but not management authenticates, but read calls return an empty result. If a read call still returns nothing after you grant management, a few endpoints require additional Meta-granted access beyond both permissions; contact your Meta representative to confirm your app&#039;s access.
+
+&gt; **Note:** Use the `X-API-Version` shown on each endpoint&#039;s reference page. Meta Business Agent Platform endpoints take `2.0.0`. Without the header, a request resolves to the oldest version that endpoint supports — `1.0.0` for endpoints that predate these field names — so set `2.0.0` explicitly. Cloud API endpoints differ — [Thread Control](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/thread-control-cloud-api), for example, takes `1.0.0`.
+
+&gt; **Note:** This guide uses the [Skills](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-skills) endpoint, which is available only from version `2.0.0` (it superseded the earlier `instructions` endpoint at a separate path). Because `2.0.0` is the only version the Skills endpoint supports, a request that omits the header still resolves to `2.0.0` and succeeds — but set it explicitly on these calls so you don&#039;t rely on that default.
+
+### Option A: system user token for direct integrators &#123;#option-a-system-user-token-for-direct-integrators&#125;
+
+Use a system user token if you are integrating directly with the Meta Business Agent Platform APIs for your own WABA.
+
+1. In [Meta Business Suite](https://business.facebook.com/settings/), in the left navigation, select **Settings**. In the side navigation panel, under **Users**, select **System users**, then click your system user.
+2. In the upper right, click **Generate new token**. A dialog opens.
+3. In the dialog, select your app from the dropdown, then click **Next**.
+4. Select the token expiration setting, then click **Next**.
+5. Select the checkboxes next to the **whatsapp_business_messaging** and **whatsapp_business_management** permissions.
+6. Click **Generate token** and save it in a secure location.
+
+### Option B: Business Integration System User (BISU) token for Solution Partners and Tech Providers &#123;#option-b-business-integration-system-user-bisu-token-for-solution-partners-and-tech-providers&#125;
+
+Use a Business Integration System User (BISU) token if you are a Solution Partner or Tech Provider making Meta Business Agent Platform API calls on behalf of your clients&#039; WhatsApp Business accounts (WABAs). A Business Integration System User (BISU) token lets your platform act on behalf of multiple client WABAs under a single credential. See the [BISU documentation](https://developers.facebook.com/documentation/business-messaging/whatsapp/access-tokens/#business-integration-system-user-access-tokens) for details on generating and managing BISU tokens.
+
+## Subscribe the app to the WhatsApp Business account &#123;#subscribe-the-app-to-the-whatsapp-business-account&#125;
+
+Subscribe your Meta app to your WhatsApp Business account so it receives webhooks for Meta Business Agent conversations.
+
+1. Go to the [Graph API Explorer](https://developers.facebook.com/tools/explorer/) tool.
+2. Choose your app from the dropdown menu and select **Get App Token**. This opens a dialog to choose the Business Portfolio and the specific WhatsApp account. Make sure you choose the correct WABA.
+3. Make a POST request to `/&lt;WABA_ID&gt;/subscribed_apps`. See the [Subscribed Apps API reference](https://developers.facebook.com/documentation/business-messaging/whatsapp/reference/whatsapp-business-account/subscribed-apps-api#post-version-waba-id-subscribed-apps) for details.
+4. Verify the subscription by making a GET request to `/&lt;WABA_ID&gt;/subscribed_apps`. If successful, your app ID appears in the response.
+
+## Subscribe to webhook fields &#123;#subscribe-to-webhook-fields&#125;
+
+Meta Business Agent requires three webhook fields so your app stays in sync with agent conversations.
+
+1. Go to the [Facebook Developer Portal](https://developers.facebook.com/apps/) and click your app.
+2. In the left navigation, go to the **WhatsApp** tab, then go to **Configuration**. The configuration page opens.
+3. In the **Webhook fields** section, click **Subscribe** next to each of the following fields:
+   - [`messages`](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages)
+   - [`standby`](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/standby)
+   - `messaging_handovers`
+
+### Conversation routing &#123;#conversation-routing&#125;
+
+When Meta Business Agent is enabled, it acts as the *primary responder* for a conversation and answers the WhatsApp user directly. Your app is a *standby* participant: it still receives the WhatsApp user&#039;s messages, plus copies of the messages the agent sends on the business&#039;s behalf and their delivery and read receipts, so it stays in sync.
+
+Which webhook field a WhatsApp user&#039;s message arrives on depends on who holds control:
+
+| Who holds control | Webhook field that receives messages |
+|---------------------|--------------------------------------|
+| Meta Business Agent | [`standby`](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/standby) |
+| Your app | [`messages`](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages) |
+
+A `messaging_handovers` webhook notifies you whenever control changes.
+
+To respond to a conversation, your app needs control of it. Your app takes control by sending a message to the conversation, or, if your business is configured as the escalation partner for the phone number, by calling the [Thread Control (Cloud API)](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/thread-control-cloud-api) endpoint with the `take` action. To hand control back to Meta Business Agent so it resumes responding, call the same endpoint with the `release` action.
+
+The endpoint also accepts a `pass` action, which transfers control to the escalation partner configured for the phone number, or to Meta Business Agent when you set `control_pass.target_role` to `&quot;ai_agent&quot;`.
+
+
+### Release conversation control back to the agent &#123;#release-conversation-control-back-to-the-agent&#125;
+
+When your app sends a message to a conversation, it automatically takes control from Meta Business Agent. To hand control back to the agent so it resumes responding, call the Thread Control (Cloud API) endpoint with the `release` action.
+
+`&lt;PHONE_NUMBER_ID&gt;` is the same WhatsApp Business phone number ID as `&lt;ENTITY_ID&gt;`; the Cloud API Thread Control endpoint just names the path parameter `phone_number_id`.
+
+#### Request &#123;#release-request&#125;
+
+```bash
+curl -X POST &quot;https://graph.facebook.com/v21.0/&lt;PHONE_NUMBER_ID&gt;/thread_control&quot; \
+  -H &quot;Authorization: Bearer &lt;ACCESS_TOKEN&gt;&quot; \
+  -H &quot;X-API-Version: 1.0.0&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#039;&#123;
+    &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+    &quot;action&quot;: &quot;release&quot;,
+    &quot;to&quot;: &quot;&lt;CONSUMER_PHONE_NUMBER&gt;&quot;
+  &#125;&#039;
+```
+
+#### Parameters &#123;#release-parameters&#125;
+
+&gt; **Note:** Identify the consumer with exactly one of `to` or `recipient`. A request carrying both is rejected, and a request carrying neither does not identify a consumer.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `phone_number_id` | integer [min: 1] | Yes | WhatsApp Business account Phone Number ID (path parameter). |
+| `messaging_product` | `&quot;whatsapp&quot;` | Yes | Messaging service used for the request. Must be `&quot;whatsapp&quot;`. |
+| `action` | `&quot;release&quot;`, `&quot;pass&quot;`, or `&quot;take&quot;` | Yes | The thread control action to perform. `release` relinquishes thread control and hands the conversation back to Meta Business Agent as the automatic responder; you must currently hold thread control. `pass` transfers thread control to Meta Business Agent when `control_pass.target_role` is `&quot;ai_agent&quot;`, or to the escalation partner configured for this phone number when `control_pass` is omitted; you must currently hold thread control. `take` acquires thread control from the current owner and is restricted to the configured escalation partner. |
+| `to` | string | Conditional | The consumer&#039;s phone number or WhatsApp ID. Provide exactly one of `to` or `recipient`. |
+| `recipient` | string | Conditional | The consumer&#039;s business-scoped user ID (BSUID). Use this for consumers who have a WhatsApp username but no phone number. Provide exactly one of `to` or `recipient`. |
+| `metadata` | string [max: 2000] | No | Free-form string forwarded verbatim to the receiving app in the resulting `messaging_handovers` webhook. |
+| `control_pass` | object | No | Configuration for a `pass` action. When omitted, `pass` uses the configured escalation partner. Contains one required field, `target_role`, whose only accepted value is `&quot;ai_agent&quot;` — which selects Meta Business Agent as the recipient of control. |
+
+#### Response &#123;#release-response&#125;
+
+```json
+&#123;
+  &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+  &quot;request_id&quot;: &quot;&lt;REQUEST_ID&gt;&quot;
+&#125;
+```
+
+The response confirms the action completed. After releasing control, Meta Business Agent resumes as the primary responder for the conversation. Your app continues receiving messages on the `standby` webhook field instead of the `messages` field.
+
+`request_id` is an opaque identifier for this request. Include it when you contact support. If the call fails, include the `fbtrace_id` from the error response instead.
+
+#### When to release control &#123;#when-to-release-control&#125;
+
+Release control when:
+- Your human agent resolves the customer&#039;s issue and no further action is needed
+- You want the AI agent to handle routine follow-ups automatically
+- The conversation requires capabilities the agent provides (product recommendations, FAQ responses)
+
+Your app retains control until you explicitly release it. Stopping message sends does **not** release control — you must call this endpoint.
+
+### Take control of a conversation &#123;#take-control-of-a-conversation&#125;
+
+Sending a message to a conversation takes control implicitly. Use the `take` action to take control **before** you send anything — for example, to stop Meta Business Agent from replying while a human agent reads the conversation history and composes a response.
+
+The `take` action is restricted to the business configured as the *escalation partner* for the phone number. Other apps and businesses receive an error; they take control implicitly by sending a message instead.
+
+#### Request &#123;#take-control-request&#125;
+
+```bash
+curl -X POST &quot;https://graph.facebook.com/v21.0/&lt;PHONE_NUMBER_ID&gt;/thread_control&quot; \
+  -H &quot;Authorization: Bearer &lt;ACCESS_TOKEN&gt;&quot; \
+  -H &quot;X-API-Version: 1.0.0&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#039;&#123;
+    &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+    &quot;action&quot;: &quot;take&quot;,
+    &quot;to&quot;: &quot;&lt;CONSUMER_PHONE_NUMBER&gt;&quot;,
+    &quot;metadata&quot;: &quot;Human agent stepping in&quot;
+  &#125;&#039;
+```
+
+#### Parameters &#123;#take-control-parameters&#125;
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `phone_number_id` | integer [min: 1] | Yes | WhatsApp Business account Phone Number ID (path parameter). |
+| `messaging_product` | `&quot;whatsapp&quot;` | Yes | Messaging service used for the request. Must be `&quot;whatsapp&quot;`. |
+| `action` | `&quot;take&quot;` | Yes | The thread control action to perform. Acquires thread control from the current owner. |
+| `to` | string | Conditional | The consumer&#039;s phone number or WhatsApp ID. Provide exactly one of `to` or `recipient`; a request carrying both is rejected. |
+| `recipient` | string | Conditional | The consumer&#039;s business-scoped user ID (BSUID). Use this for consumers who have a WhatsApp username but no phone number. Provide exactly one of `to` or `recipient`; a request carrying both is rejected. |
+| `metadata` | string [max: 2000] | No | Free-form string forwarded verbatim to the receiving app in the resulting `messaging_handovers` webhook. |
+
+#### Response &#123;#take-control-response&#125;
+
+```json
+&#123;
+  &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+  &quot;request_id&quot;: &quot;&lt;REQUEST_ID&gt;&quot;
+&#125;
+```
+
+The response confirms the action completed. Your app now holds thread control: Meta Business Agent stops responding, and the WhatsApp user&#039;s messages arrive on the `messages` webhook field instead of `standby`.
+
+#### Outcomes by current owner &#123;#outcomes-by-current-owner&#125;
+
+| Owner before the call | Owner after the call | Result |
+|-----------------------|----------------------|--------|
+| Meta Business Agent | Escalation partner | Control transfers. The agent stops responding. |
+| Another app | Escalation partner | Control transfers. |
+| No one (idle conversation) | Escalation partner | Control is acquired. |
+| Escalation partner (you) | Escalation partner | No change. |
+
+#### Handover webhook &#123;#handover-webhook&#125;
+
+When control transfers, the app that lost control receives a `control_taken` webhook on the `messaging_handovers` field. This webhook goes only to the app that lost control, not to every app subscribed to the WhatsApp Business account.
+
+```json
+&#123;
+  &quot;type&quot;: &quot;control_taken&quot;,
+  &quot;control_taken&quot;: &#123;
+    &quot;previous_owner_app_id&quot;: &quot;&lt;APP_ID&gt;&quot;,
+    &quot;new_owner_app_id&quot;: &quot;&lt;APP_ID&gt;&quot;,
+    &quot;new_owner_business_id&quot;: &quot;&lt;BUSINESS_ID&gt;&quot;,
+    &quot;metadata&quot;: &quot;Human agent stepping in&quot;
+  &#125;
+&#125;
+```
+
+Release control with the `release` action when you&#039;re done, so Meta Business Agent resumes as the primary responder.
+
+## Next steps: configure and run your agent &#123;#next-steps-configure-and-run-your-agent&#125;
+
+Your app is connected! Set up your agent in three stages: Onboard, Configure, and Operate.
+
+At minimum, call [Onboarding](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-onboarding), then [Settings](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-settings) to turn an agent on. These two calls are the basic configuration required to enable an agent. You can also populate its knowledge base, connectors, or both, depending on your use case.
+
+### Onboard &#123;#onboard&#125;
+
+Use these APIs to check eligibility, turn your agent on or off, onboard, and manage your agent.
+
+| Endpoint | Use it to |
+|----------|-----------|
+| [Eligibility](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-eligibility) | Check whether a WhatsApp Business phone number can use Meta Business Agent. |
+| [Onboarding](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-onboarding) | Prepare the agent on a phone number — creates its configuration and knowledge. Required step before turning the agent on. |
+| [Settings](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-settings) | Turn the agent on or off, and set its behavior, audience, and handoff and followup policies. Required to turn the agent on — enabling makes it start responding to new conversations. |
+| [Allowlist](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-allowlist) | Limit the agent to a specific set of consumer phone numbers — useful for a controlled rollout. Only takes effect when `ai_audience` is set to `ALLOWLISTED_ONLY` in [Settings](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-settings). See [Restrict the agent to a set of consumers](#restrict-the-agent-to-a-set-of-consumers). |
+
+#### Restrict the agent to a set of consumers &#123;#restrict-the-agent-to-a-set-of-consumers&#125;
+
+Adding consumers to the allowlist does not by itself limit who the agent replies to. The allowlist is only enforced when the `ai_audience` setting is `ALLOWLISTED_ONLY`. The default is `EVERYONE`, so an agent enabled without changing `ai_audience` responds to every consumer who messages your business, regardless of what the allowlist contains.
+
+To restrict the agent, do both of the following before you enable it:
+
+1. Add each consumer to the allowlist with `POST /&#123;entity_id&#125;/agent_config/allowlist`, passing `consumer_phone_number` in E.164 format, for example `+15551234567`. Add one consumer per call, and list the current entries with `GET /&#123;entity_id&#125;/agent_config/allowlist`.
+2. Set `ai_audience` to `ALLOWLISTED_ONLY` with `PUT /&#123;entity_id&#125;/agent_config/settings`, then read the setting back with `GET /&#123;entity_id&#125;/agent_config/settings` to confirm the change applied.
+
+Only after both calls succeed should you set `rollout.enabled` to `true`. This ordering matters when you are testing against a live WhatsApp Business phone number, because enabling the agent first exposes it to real conversations.
+
+| `ai_audience` value | Who the agent responds to |
+|---------------------|---------------------------|
+| `EVERYONE` (default) | All consumers. The allowlist is ignored. |
+| `ALLOWLISTED_ONLY` | Only consumers in the allowlist. |
+
+Remove a consumer with `DELETE /&#123;entity_id&#125;/agent_config/allowlist/&#123;entry_id&#125;`.
+
+### Configure &#123;#configure&#125;
+
+Shape what your agent knows and what it can do.
+
+| Endpoint | Use it to |
+|----------|-----------|
+| [Agent instructions](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-skills) | Shape how the agent responds. |
+| [Business info](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-knowledge-business-info) | Add business details, such as hours, locations, and policies, that the agent can reference. |
+| [FAQs](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-knowledge-faqs) | Add question-and-answer pairs to the agent&#039;s knowledge base. |
+| [Websites](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-knowledge-websites) | Add website URLs for the agent to crawl and reference. |
+| [Files](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-knowledge-files) | Upload files as knowledge sources. |
+| [Connectors](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/connectors) | Define an external API the agent can call, so it can do more than answer questions. |
+| [Connector tools](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/connector-tools) | Define the individual operations available on a connector. |
+
+### Operate &#123;#operate&#125;
+
+Run your agent in live conversations, then test and measure it.
+
+| Endpoint | Use it to |
+|----------|-----------|
+| [Thread Control (Cloud API)](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/thread-control-cloud-api) | Take control of a conversation, or release control back to the agent. |
+| [Agent Event](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/agent-event) | Trigger an agent action for a conversation in response to a business event, such as a completed purchase. |
+| [Agent test](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/agent-test) | Send test messages to the agent for automated testing. |
+| [Agent eval](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/agent-eval) | Evaluate the agent&#039;s performance. |
+| [Agent Insights](https://developers.facebook.com/documentation/meta-business-agent/reference/insights/agent-insights) | Fetch AI-generated insights for the agent and manage their state — surface, resolve, dismiss, or reopen. |
+
+### Product catalog &#123;#product-catalog&#125;
+
+Meta Business Agent uses your Meta product catalog for product information — manage your products in Meta Commerce Manager. The direct catalog API is deprecated; use Commerce Manager for all catalog management.
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/meta-business-agent/llms.txt

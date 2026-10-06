@@ -1,0 +1,89 @@
+# Text messages
+
+
+
+Text messages are messages containing only a text body and an optional link preview.
+
+## Request syntax
+
+Use the [Messages API](https://developers.facebook.com/documentation/business-messaging/whatsapp/reference/whatsapp-business-phone-number/message-api#post-version-phone-number-id-messages) to send a text message to a WhatsApp user.
+
+```html
+curl &#039;https://graph.facebook.com/&lt;API_VERSION&gt;/&lt;WHATSAPP_BUSINESS_PHONE_NUMBER_ID&gt;/messages&#039; \
+-H &#039;Content-Type: application/json&#039; \
+-H &#039;Authorization: Bearer &lt;ACCESS_TOKEN&gt;&#039; \
+-d &#039;
+&#123;
+  &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+  &quot;recipient_type&quot;: &quot;individual&quot;,
+  &quot;to&quot;: &quot;&lt;WHATSAPP_USER_PHONE_NUMBER&gt;&quot;,
+  &quot;type&quot;: &quot;text&quot;,
+  &quot;text&quot;: &#123;
+    &quot;preview_url&quot;: &lt;ENABLE_LINK_PREVIEW&gt;,
+    &quot;body&quot;: &quot;&lt;BODY_TEXT&gt;&quot;
+  &#125;
+&#125;&#039;
+```
+
+### Request parameters
+
+| Placeholder | Description | Example Value |
+| --- | --- | --- |
+| `&lt;ACCESS_TOKEN&gt;`&lt;br&gt;&lt;br&gt;_String_ | **Required.**&lt;br&gt;&lt;br&gt;[System token](https://developers.facebook.com/documentation/business-messaging/whatsapp/access-tokens#system-user-access-tokens) or [business token](https://developers.facebook.com/documentation/business-messaging/whatsapp/access-tokens#business-integration-system-user-access-tokens). | `EAAA...` |
+| `&lt;API_VERSION&gt;`&lt;br&gt;&lt;br&gt;_String_ | **Optional.**&lt;br&gt;&lt;br&gt;Graph API version. | v25.0 |
+| `&lt;BODY_TEXT&gt;`&lt;br&gt;&lt;br&gt;_String_ | **Required.**&lt;br&gt;&lt;br&gt;Body text. The WhatsApp client automatically hyperlinks URLs in the body text.&lt;br&gt;&lt;br&gt;Maximum 4096 characters. | `As requested, here&#039;s the link to our latest product: https://www.meta.com/quest/quest-3/` |
+| `&lt;ENABLE_LINK_PREVIEW&gt;`&lt;br&gt;&lt;br&gt;_Boolean_ | **Optional.**&lt;br&gt;&lt;br&gt;Set to `true` to have the WhatsApp client attempt to render a link preview of any URL in the body text string.&lt;br&gt;&lt;br&gt;See [Link Preview](#link-preview) below. | `true` |
+| `&lt;WHATSAPP_BUSINESS_PHONE_NUMBER_ID&gt;`&lt;br&gt;&lt;br&gt;_String_ | **Required.**&lt;br&gt;&lt;br&gt;WhatsApp business phone number ID. | `106540352242922` |
+| `&lt;WHATSAPP_USER_PHONE_NUMBER&gt;`&lt;br&gt;&lt;br&gt;_String_ | **Required.**&lt;br&gt;&lt;br&gt;WhatsApp user phone number. | `+16505551234` |
+
+## Link preview
+
+You can have the WhatsApp client attempt to render a preview of the first URL in the body text string, if it contains one. URLs must begin with `http://` or `https://`. If the body text string contains multiple URLs, the WhatsApp client renders only the first URL.
+
+If `preview_url` is omitted, or if the WhatsApp client cannot retrieve a link preview, the client renders a clickable link instead.
+
+## Example request
+
+Example request to send a text message with link previews enabled and a body text string that contains a link.
+
+```html
+curl &#039;https://graph.facebook.com/v25.0/106540352242922/messages&#039; \
+-H &#039;Content-Type: application/json&#039; \
+-H &#039;Authorization: Bearer EAAJB...&#039; \
+-d &#039;
+&#123;
+  &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+  &quot;recipient_type&quot;: &quot;individual&quot;,
+  &quot;to&quot;: &quot;+16505551234&quot;,
+  &quot;type&quot;: &quot;text&quot;,
+  &quot;text&quot;: &#123;
+    &quot;preview_url&quot;: true,
+    &quot;body&quot;: &quot;As requested, here&#039;\&#039;&#039;s the link to our latest product: https://www.meta.com/quest/quest-3/&quot;
+  &#125;
+&#125;&#039;
+```
+
+## Example response
+
+```json
+&#123;
+  &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+  &quot;contacts&quot;: [
+    &#123;
+      &quot;input&quot;: &quot;+16505551234&quot;,
+      &quot;wa_id&quot;: &quot;16505551234&quot;
+    &#125;
+  ],
+  &quot;messages&quot;: [
+    &#123;
+      &quot;id&quot;: &quot;wamid.HBgLMTY0NjcwNDM1OTUVAgARGBI1RjQyNUE3NEYxMzAzMzQ5MkEA&quot;
+    &#125;
+  ]
+&#125;
+```
+
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/business-messaging/whatsapp/llms.txt

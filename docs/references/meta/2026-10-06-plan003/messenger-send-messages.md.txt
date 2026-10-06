@@ -1,0 +1,326 @@
+# Send a Message
+
+
+
+To send messages to a person on Messenger or Instagram, the conversation must be initiated by that person. The Messenger Platform has several different types of messages you can send. Each message type has different policies and guidelines for what types of content and under what conditions they can be sent.
+
+**Note:** If your app users don&#039;t have a Facebook Page linked to their Instagram professional account, learn more about building an app with [the Instagram API with Instagram Login](https://developers.facebook.com/docs/instagram/platform/instagram-api).
+
+#### Informing Users About Your Automated Experience
+
+When required by applicable law, automated chat experiences must disclose that a person is interacting with an automated service:
+
+* at the beginning of any conversation or message thread,
+* after a significant lapse of time, or
+* when a chat moves from human interaction to automated experience.
+
+Automated chat experiences that serve the following groups should pay special attention to this requirement:
+
+* California market or California users
+* German market or German users
+
+Disclosures may include but are not limited to: “I’m the [Page Name] bot,”“You are interacting with an automated experience,” “You are talking to a bot,” or “I am an automated chatbot.”
+
+Even where not legally required, we recommend informing users when they’re interacting with an automated chat as best practice, as this helps manage user expectations about their interaction with your messaging experience.
+
+Visit our
+[Developer Policies](https://developers.facebook.com/devpolicy/#messengerplatform)
+for more information.
+
+## Message components &#123;#send_api_basics&#125;
+
+All Send API requests from your app to send a message must include the following:
+
+* The Page ID for the Facebook Page, or the Facebook Page linked to the Instagram Professional account, sending the message
+* The [ID for the person](#recipient_ids) receiving the message
+* A Page access token requested from the Page sending the message
+* Permission from the person receiving the message
+* The [message type](#messaging_types)
+* The [message content](#content_types)
+
+For more information about message components, visit the
+[Send API Reference](https://developers.facebook.com/documentation/business-messaging/messenger-platform/reference/send-api).
+
+### Standard messaging window
+
+The **Standard Messaging Window** is the 24 hour time period in which you are allowed to send a message to a person. When a person sends your Page or Instagram Professional account a message or starts a conversation via a web plug-in, your app has up to 24 hours to send a message.
+
+Messages sent within the 24 hour window may contain promotional content.
+
+**User Actions that Open the Standard Messaging Window**
+
+The following user actions open the 24 hour standard messaging window:
+
+* A person sends a message to your Page or Instagram Professional account
+* A person clicks a call-to-action button like Get Started within a conversation
+* A person clicks on a Click-to-Messenger ad and then sends a message to your Page or Instagram Professional account
+* A person sends a message to a Page via a plugin, such as the Send to Messenger or Checkbox plugin
+* A person clicks on an m.me link that takes them to an existing conversation between the person and the Page
+* A person clicks on an ig.me link that takes them to an existing conversation between the person and the Instagram Professional account
+* A person reacts to a message, such as a marketing message
+* A person comments on a post on your Page or Instagram Professional account
+* A person publishes a visitor post on your Page
+
+People expect a prompt response, so respond as soon as possible within this 24 hour window. People have the option to block or mute a conversation at any time.
+
+### Recipient IDs &#123;#recipient_ids&#125;
+
+Set the ID for a person receiving the message in the `recipient` object parameter. The ID can be one of the following types:
+
+- **Page-scoped ID (PSID)** – An ID assigned to a person the first time the person sends a message to your Page. This unique ID represents interactions between your Page and the person.
+
+- **User Ref** – An ID assigned to a person who used a plugin or postback button to send a message to your Page.
+
+- **Post or Comment ID**: An ID assigned to a person who published a post on your Page or commented on a post. Used to send a Private Reply to the person.
+
+User IDs from [Facebook Login](https://developers.facebook.com/documentation/facebook-login) integrations are app-scoped and will not work with the Messenger platform.
+
+### Messaging types &#123;#messaging_types&#125;
+
+The type of message you are sending is set in the `messaging_type` parameter. This parameter is a more explicit way to ensure your messaging complies with messaging policies and the recipient&#039;s preferences.
+
+The following types of messages are supported:
+
+* **Response** – The message you are sending is a response to a received message. The message can contain promotional and non-promotional content and must be sent during the standard messaging window.
+
+* **Updates** – The message you are sending is being sent proactively and is not in response to a received message. The message can contain promotional and non-promotional content and must be sent during the standard messaging window.
+
+* **Tagged Message** – The message you are sending is being sent outside the standard messaging window. This message must include a message tag that matches the allowed use case for the tag and contains non-promotional content.
+
+### Message tags
+
+**Warning:** Effective April 27th, 2026, all API requests containing the Message Tags CONFIRMED_EVENT_UPDATE, ACCOUNT_UPDATE, and POST_PURCHASE_UPDATE will receive error code 100.
+
+Message Tags allow you to send a message outside the standard messaging window. These messages are personally relevant updates for a person. For example, you may send updates about shipping and delivery, an upcoming reservation or flight, or alerts about a customer&#039;s account.  For messaging flows that require an escalation path, the Human Agent tag allows a business representative to manually respond to a person&#039;s messages within a 7-day period.
+
+Message Tags may not be used to send promotional content, including but not limited to: deals, offers, coupons, and discounts. Use of Message Tags outside the [approved use cases](https://developers.facebook.com/documentation/business-messaging/messenger-platform/reference/send-api#parameters) may result in restrictions on the Page or Instagram account&#039;s ability to send messages. See the [Messenger Platform and Instagram Messaging API Policy](https://developers.facebook.com/documentation/business-messaging/messenger-platform/policy) for details.
+
+Businesses using Messenger Platform who want to send promotional messages outside the 24 hour standard messaging window should use [Sponsored Messages](https://developers.facebook.com/documentation/business-messaging/messenger-platform/discovery) or [One-Time Notifications](https://developers.facebook.com/docs/messenger-platform/send-messages/one-time-notification).
+
+### Content types &#123;#content_types&#125;
+
+The message you send may contain the following types of content:
+
+* Audio
+* Buttons
+* Files
+
+* Menus
+* GIFs
+* Images
+
+* [Stickers](https://developers.facebook.com/documentation/business-messaging/messenger-platform/send-messages/sticker-api)
+* Templates
+* Text
+* Videos
+
+## Send a basic text &#123;#sending_text&#125;
+
+To send a basic text message to a person who sent your Page a message, send a `POST` request to the `/&lt;PAGE_ID&gt;/messages` endpoint, with the `recipient` object literal key `id` set to the person&#039;s Page-scoped ID (PSID), the `messaging_type` parameter set to `RESPONSE`, and the `message` parameter object `text` set to the message text.
+
+#### Sample request
+
+```curl
+curl -X POST -H &quot;Content-Type: application/json&quot; -d &#039;&#123;
+  &quot;recipient&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;messaging_type&quot;: &quot;RESPONSE&quot;,
+  &quot;message&quot;:&#123;
+    &quot;text&quot;:&quot;Hello, world!&quot;
+  &#125;
+&#125;&#039; &quot;https://graph.facebook.com/v25.0/&#123;PAGE-ID&#125;/messages?access_token=&#123;PAGE-ACCESS-TOKEN&#125;&quot;
+```
+
+On success, your app will receive the following JSON response with the recipient&#039;s ID and the message ID.
+
+```json
+&#123;
+  &quot;recipient_id&quot;: &quot;PAGE-SCOPED-ID&quot;,
+  &quot;message_id&quot;: &quot;AG5Hz2U...&quot;
+&#125;
+```
+
+## Send a media attachment &#123;#sending_attachments&#125;
+
+To send a message with media, such as a GIF or image, or a template, you add the content to the API request in a JSON message attachment object.
+
+To send a message with an image to a person who sent your Page a message, send a `POST` request to the `/&lt;PAGE_ID&gt;/messages` endpoint, with the `recipient` object literal key `id` set to the person&#039;s Page-scoped ID (PSID), the `messaging_type` parameter set to `RESPONSE`, and the `message` parameter `attachment` object `type` key set to `image` and the `payload` object `url` key set to the URL for the image.
+
+#### Sample request
+
+```curl
+curl -X POST -H &quot;Content-Type: application/json&quot; -d &#039;&#123;
+  &quot;recipient&quot;:&#123;
+    &quot;id&quot;:&quot;1254459154682919&quot;
+  &#125;,
+  &quot;message&quot;:&#123;
+    &quot;attachment&quot;:&#123;
+      &quot;type&quot;:&quot;image&quot;,
+      &quot;payload&quot;:&#123;
+        &quot;url&quot;:&quot;http://www.messenger-rocks.com/image.jpg&quot;,
+        &quot;is_reusable&quot;:true
+      &#125;
+    &#125;
+  &#125;
+&#125;&#039; &quot;https://graph.facebook.com/v25.0/me/messages?access_token=&#123;PAGE_ACCESS_TOKEN&#125;&quot;
+```
+
+
+On success, your app will receive the following JSON response with the recipient&#039;s ID and the message ID.
+
+```json
+&#123;
+  &quot;recipient_id&quot;: &quot;PAGE-SCOPED-ID&quot;,
+  &quot;message_id&quot;: &quot;AG5Hz2U...&quot;
+&#125;
+```
+
+Sending audio, video, or a file from a URL will use the same format.
+
+You can also send media from your server or from content you have previously uploaded to a Meta server. Learn more about uploading files using the
+[Attachment Upload API.](https://developers.facebook.com/documentation/business-messaging/messenger-platform/reference/attachment-upload-api)
+
+## Send a reply to a message
+
+To send a reply to a specific past message within the chat, send a `POST` request to the `/&lt;PAGE_ID&gt;/messages` endpoint with the following:
+
+* `recipient` object literal key `id` set to the person&#039;s Page-scoped ID (PSID)
+* `messaging_type` set to `RESPONSE`
+* your message details in the message parameter object
+* `reply_to` object literal key `mid` set to the message id of the specific message in the chat you want to reply to
+
+The message can either be the message your Page or the user sent.
+
+#### Sample request
+
+```curl
+curl -X POST -H &quot;Content-Type: application/json&quot; -d &#039;&#123;
+  &quot;recipient&quot;: &#123;
+    &quot;id&quot;: &quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;messaging_type&quot;: &quot;RESPONSE&quot;,
+  &quot;message&quot;: &#123;
+    &quot;text&quot;: &quot;Hello, world!&quot;
+  &#125;,
+  &quot;reply_to&quot;: &#123;
+    &quot;mid&quot;: &quot;&lt;MESSAGE_ID&gt;&quot;
+  &#125;
+&#125;&#039; &quot;https://graph.facebook.com/&lt;API_VERSION&gt;/&lt;PAGE_ID&gt;/messages?access_token=&lt;PAGE_ACCESS_TOKEN&gt;&quot;
+```
+
+On success, your app will receive the following JSON response with the recipient&#039;s ID and the message ID.
+
+```json
+&#123;
+  &quot;recipient_id&quot;: &quot;PAGE-SCOPED-ID&quot;,
+  &quot;message_id&quot;: &quot;AG5Hz2U…&quot;
+&#125;
+```
+
+## Sending messages on Instagram &#123;#instagram_messaging&#125;
+
+You can also use the Send API to send messages to people on Instagram. The API and message format is the same, but the setup and requirements differ depending on whether your Instagram Professional account is linked to a Facebook Page.
+
+### Instagram accounts linked to a Facebook Page
+
+If your Instagram Professional account is linked to a Facebook Page, use the [Instagram Messaging API](https://developers.facebook.com/docs/instagram-messaging). You send messages using the same `/&lt;PAGE_ID&gt;/messages` endpoint as Messenger, using the Instagram-scoped ID (IGSID) as the recipient. Subscribe to the `messages` webhook field to receive incoming Instagram messages alongside Messenger messages.
+
+### Instagram accounts not linked to a Facebook Page
+
+If your Instagram Professional account is not linked to a Facebook Page, use the [Instagram API with Instagram Login](https://developers.facebook.com/documentation/instagram-platform/instagram-api-with-instagram-login) instead. You can send [private replies](https://developers.facebook.com/docs/instagram-platform/private-replies) in response to comments, mentions, or story replies on your account.
+
+## Message delivery and read status &#123;#delivery_status&#125;
+
+To track whether your messages are delivered and read, subscribe to the following webhook fields:
+
+- **`message_deliveries`** — notifies you when a message you sent has been delivered to the recipient. Only available for Messenger conversations.
+- **`message_reads`** — notifies you when a person reads a message you sent. Only available for Messenger conversations.
+- **`messaging_seen`** — notifies you when a person reads a message you sent. Only available for Instagram Messaging conversations.
+
+For more information, see [webhook event references](https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks).
+
+## Error handling &#123;#error_handling&#125;
+
+When a Send API request fails, the response includes an error object with a code, subcode, and message. Common errors include:
+
+| Error Code | Description | Resolution |
+|------------|-------------|------------|
+| 10 | Permissions error | Verify your app has the `pages_messaging` permission and a valid Page access token. |
+| 100 | Invalid parameter | Check that the recipient ID, message format, and required fields are correct. |
+| 190 | Access token expired | Generate a new Page access token. |
+| 551 | Person is not available | The person may have blocked your Page, deactivated their account, or is otherwise unreachable. |
+| 613 | Rate limit exceeded | Reduce the frequency of your API calls. See [rate limits](https://developers.facebook.com/documentation/business-messaging/messenger-platform/overview#rate-limiting). |
+| 1545041 | Messaging window closed | The 24-hour standard messaging window has expired. Use a [message tag](#message-tags) for eligible follow-ups, or request a [one-time notification](https://developers.facebook.com/docs/messenger-platform/send-messages/one-time-notification). |
+
+For the complete list of error codes, see the [Send API Reference](https://developers.facebook.com/documentation/business-messaging/messenger-platform/reference/send-api).
+
+## Best practices &#123;#best_practices&#125;
+
+#### Text messages &#123;#text_messages&#125;
+
+* Keep it short. Consider screen size and scrolling behavior; compact messages are easier for people to follow. Try sending a few separate messages instead of one long one.
+* Don&#039;t use text as a substitute for images, tables, charts, and images. Structured messages or even a webview might suit your needs better.
+* Don&#039;t write lengthy exchanges. If you need to communicate multiple things, try sending a few separate messages instead of one long one.
+
+#### Attachments &#123;#attachments&#125;
+
+* Pay attention to quality. Use colorful, high-resolution images so they display clearly in the conversation.
+* Consider aspect ratio. Review how your image may get cropped when it appears in the message bubble.
+* Don&#039;t put large amounts of text in your image. Use a text message instead, or combine images and text with a generic template.
+
+## More message types
+
+### Marketing messages
+
+[Marketing Messages](https://developers.facebook.com/docs/messenger-platform/marketing-messages) allows you to ask a person for permission to send multiple, marketing messages after the standard messaging window has ended. If the person accepts this request to receive these notifications, you will be able to send the person automated, recurring promotional messages with information about your upcoming sales or product releases and updates.
+
+### News messaging (under development)
+
+[News Messaging](https://developers.facebook.com/documentation/business-messaging/messenger-platform/policy#news_messaging) is only available for registered news publishers that are registered with the Facebook News Page Index (NPI).  News Messaging allows news publishers to send non-promotional, news messages to people who have subscribed to receive these messages.
+
+News messaging is not available for Instagram Messaging API.
+
+### One-time notifications
+
+[One-time Notification](https://developers.facebook.com/docs/messenger-platform/send-messages/one-time-notification) allows you to ask a person for permission to send one follow-up message after the standard messaging window has ended. If the person accepts this request to receive a one time notification, you will be able to send a one message that is time-sensitive and personally relevant, such as an appointment reminder or back in stock alert.
+
+One-Time Notifications are not available for Instagram Messaging API.
+
+### Private replies
+
+[Private Replies](https://developers.facebook.com/documentation/business-messaging/messenger-platform/discovery/private-replies) allows you to send a message to a person when the person publishes a comment on one of your posts or ads, or publishes a visitor post on your Page or Instagram Professional account. The private reply can only be a single message, which will automatically include a link to the post or comment, and must be sent within seven days of the person publishing the post or comment.
+
+### Sponsored messages
+
+[Sponsored Messages](https://developers.facebook.com/documentation/business-messaging/messenger-platform/discovery) allow you to send promotional  or non-promotional content, after the standard messaging window has expired, to a person who has previously sent a message to your Page or Instagram Professional account. Sponsored Messages appear like normal messages in the conversation but are annotated with the word Sponsored above the message. Sponsored message content must comply with [advertising policies](https://transparency.fb.com/policies/ad-standards).
+
+Sponsored Messages are not available for Instagram Messaging API.
+
+### Utility messages
+[Utility Messages](https://developers.facebook.com/documentation/business-messaging/messenger-platform/send-messages/utility-messages) allow you to send a pre-approved template message that include orders, account updates, and appointments. These messages are highly personalized with account numbers, order IDs, shipment tracking numbers, appointment date and time and can have call-to-actions that allow the user to cancel an order, reschedule an appointment, and other actions that make it easier to interact with a business.
+
+## Next steps
+
+Learn about the [components you can add to messages in your conversations](https://developers.facebook.com/documentation/business-messaging/messenger-platform/introduction/conversation-components).
+
+## Learn more
+
+Learn more about sending messages using the Messenger Platform.
+
+- [Attachment Upload API Reference](https://developers.facebook.com/documentation/business-messaging/messenger-platform/reference/attachment-upload-api) – Learn more about uploading and sending media.
+
+- [Send API Reference](https://developers.facebook.com/documentation/business-messaging/messenger-platform/reference/send-api) – Learn more about all the tags, content, and attachments you can send.
+
+- [Rate Limits](https://developers.facebook.com/documentation/business-messaging/messenger-platform/overview#rate-limiting) – Learn about the rate limits for sending messages using the Messenger Platform.
+
+### Developer Support
+
+* Use the  [Meta Status tool](https://metastatus.com) to check for the status and outages of Meta business products.
+* Use the [Meta Developer Support tool](https://developers.facebook.com/support) to report bugs and view reported bugs, get help with Ads or Business Manager, and more.
+
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/business-messaging/messenger-platform/llms.txt

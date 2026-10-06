@@ -1,0 +1,9 @@
+import { describe,it,expect } from 'vitest';
+import { canonical,payload,remoteOrigin } from '../src/validation.js';
+const body={provider_event_id:'synthetic-event',provider_message_id:'synthetic-message',external_subject_id:'synthetic',occurred_at:'2026-10-06T00:00:00Z',message:{type:'text',text:'Synthetic'}};
+describe('Connector ingress contract',()=>{
+ it('canonicalizes UTC and object keys without changing original text',()=>{expect(payload(body).occurred_at).toBe('2026-10-06T00:00:00.000Z');expect(canonical({b:1,a:2})).toBe(canonical({a:2,b:1}));expect(payload(body).message).toEqual(body.message);});
+ it('rejects tenant injection, invalid calendars, extra nested fields and oversized content',()=>{for(const input of [{...body,tenant_id:'spoof'},{...body,occurred_at:'2026-02-30T00:00:00Z'},{...body,message:{...body.message,token:'invalid'}},{...body,message:{type:'text',text:'x'.repeat(4001)}}])expect(()=>payload(input)).toThrow('VALIDATION_FAILED');});
+ it('retains media JSON and automation extraction',()=>{const message={type:'rich',content:{version:1,message_type:'media',text:'Synthetic extraction',text_source:'extracted',reply_to:null,attachment:{version:1,kind:'media',items:[{media_type:'image',external_media_id:'synthetic',name:null}]}}};expect(payload({...body,message}).message).toEqual(message);});
+ it('only accepts configured HTTPS origins or explicitly enabled local HTTP',()=>{expect(remoteOrigin('https://example.invalid')).toBe('https://example.invalid');for(const value of ['http://example.invalid','https://user:secret@example.invalid','https://example.invalid/path','https://example.invalid/?q=1','https://example.invalid/#fragment'])expect(()=>remoteOrigin(value)).toThrow();expect(remoteOrigin('http://127.0.0.1:1234',true)).toBe('http://127.0.0.1:1234');});
+});

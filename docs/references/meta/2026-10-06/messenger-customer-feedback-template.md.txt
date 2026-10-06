@@ -1,0 +1,239 @@
+# Customer Feedback Template
+
+
+
+**Warning:** This functionality is in development. Meta can change or remove this functionality at any time.
+
+Messenger helps brands build lasting relationships through conversation. Whether you are talking to a loyal customer or someone brand new, Messenger lets businesses help customers with their pre and post purchase inquiries. Every interaction is an opportunity for the businesses to delight the customer. And, businesses now have more robust tools such as Customer Feedback Template to measure the experience they provide to their customers. With Customer Feedback Template businesses can:
+
+1. **Increase response rates** for your customer feedback surveys with Messenger&#039;s native customer feedback template.
+2. **Aggregate customer satisfaction ratings across channels easily** with built-in Messenger templates such as Customer Satisfaction (CSAT), Net Promoter Score (NPS) and Customer Effort Score (CES) surveys.
+3. **Reduce biases and inconsistency** in survey scores with optimized UX.
+
+CSAT
+CES
+NPS
+
+### Use case details:
+
+**Allowed:**
+
+* Post purchase feedback collection via NPS
+* Post customer service conversation feedback collection via CSAT and CES
+
+**Not allowed:**
+
+* User research survey unrelated to a preceding interaction
+* Promotional survey, any survey wording or content that are promotional in nature
+
+## Flow Walkthrough &#123;#flow-walkthrough&#125;
+
+A typical flow using the Customer Feedback template is shown above:
+
+1. After a case has been completed the Customer Feedback template is triggered into the thread via the Send API (detailed in sections below). The template will have a title, disclaimer and a button to start the rating flow.
+2. Tapping the button will trigger the bottom sheet to pop up which will have the configured scoring components.
+3. A customer selects a score and can provide additional text if the business has configured the free-form text input (detailed in sections below). Once the scores are selected the Submit button pops up.
+4. Customer completes feedback and taps the Submit button.
+5. Feedback is sent to the business via the configured web-hook URL.
+6. The bottom sheet collapses and the template in the thread will have the button replaced with Complete. An admin text will show that the feedback has been shared with the business.
+7. Note: As long as the Submit button is not tapped, the customer can collapse and come back to give feedback provided the template has not expired (an expiry can be set for the template, detailed in sections below)
+
+Details of the template and its setup is provided in the following sections.
+
+## Score Types &#123;#score-types&#125;
+We support the most commonly used scoring standards in the industry which include CSAT, NPS, CES as well as Free Form inputs.
+
+Below are the various scoring options and their nomenclature for our API calls.
+
+```js
+Score Type: CSAT
+    type: &quot;csat &quot;
+    default_title: &quot;How would you rate your experience with &lt;business&gt;?&quot;
+    options: &quot;one_to_five&quot;, &quot;five_stars&quot; (default if no option set), &quot;five_emojis&quot;
+    payload: &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;
+
+Score Type: NPS
+    type: &quot;nps&quot;
+    default_title: &quot;How likely are you to recommend &lt;business&gt; to a friend?&quot;
+    options: &quot;zero_to_ten&quot; (also default if no option set)
+    payload: &quot;0&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot;, &quot;8&quot;, &quot;9&quot;, &quot;10&quot;
+
+Score Type: CES
+    type: &quot;ces&quot;
+    defaut_title: &quot;Overall, how easy was it to solve your problem today?&quot;
+    options: &quot;one_to_seven&quot; (also default if no option set)
+    payload: &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot;
+```
+
+**CSAT(Customer Satisfaction Score)** will be able to support views with 1 to 5, 5 stars or 5 emojis, default if none is provided would be **&quot;five_stars&quot;**. You can provide your own custom title for the question, if none is provided, the **default_title** will be chosen. Note: default_titles will be translated and localized to the locale of the user. Custom titles will not be translated, you would have to perform the translation yourselves if needed.
+
+Selecting a score in any of the view formats will translate to a numeric score from 1 to 5 which will be the value that would be sent to your web-hook. That is what the payload fields show above. An example CSAT view using five_stars is shown below.
+
+**NPS(Net Promoter Score)** will be able to support views with numbers from 0 to 10, default if none is provided would be **&quot;zero_to_ten&quot;**.. You can provide your own custom title for the question, if none is provided, the **default_title** will be chosen. Note: default_titles will be translated and localized to the locale of the user. Custom titles will not be translated, you would have to perform the translation yourselves if needed.
+
+Selecting a score will translate to a numeric score from 0 to 10, which will be the value that would be sent to your web-hook. An example NPS view is shown below.
+
+**CES(Customer Effort Score)** will be able to support views with numbers from 1 to 7, default if none is provided would be **&quot;one_to_seven&quot;**. You can provide your own custom title for the question, if none is provided, the **default_title** will be chosen. Note: default_titles will be translated and localized to the locale of the user. Custom titles will not be translated, you would have to perform the translation yourselves if needed.
+Selecting a score will translate to a numeric score from 1 to 7, which will be the value that would be sent to your web-hook. An example CES view is shown below.
+
+**Optional Free Form Input Field**: To each of the score types you can also attach an additional free-form input. This input can be optionally set and can be used if you need text feedback in addition to the score a customer selects. Please note, a customer can choose to submit a score without providing text feedback. **Also, the form input has a character limit of 400**. Below is an example for a CSAT score type with five_stars and the additional free-from input.
+
+## Score Labels &#123;#score-labels&#125;
+For each of the scoring options you can also set the score labels to clearly define the level of the lowest value and the highest value in the template. The values that you can use are below. Please note, some values are default for certain score options, provided in parentheses below. For e.g. if no score label for CSAT is provided, it will take neg_pos as the default. You could also choose &quot;none&quot; if you would like to not show any labels at all.
+
+```js
+&quot;neg_pos&quot; = Negative - Positive (default value for CSAT)
+&quot;hard_easy&quot; = Hard - Easy (default value for CES)
+&quot;dis_sat&quot; = Very Dissatisfied - Very Satisfied
+&quot;unlike_like&quot; = Very Unlikely - Very Likely (default value for NPS)
+&quot;poor_great&quot; = Poor - Great
+&quot;none&quot; = &quot;&quot;
+```
+
+For eg. a CSAT five_stars score option with *neg_pos* set would show the Negative and Positive indicators as below.
+
+## 24 hour restriction
+
+The standard messaging window for sending the template to a user is 24 hours after the user&#039;s last message. We encourage you to send the template within the 24 hour window for better customer experience and response rates. We also recognize that sometimes surveys will need to be sent outside this window. For that, you can use the [message-tag](https://developers.facebook.com/documentation/business-messaging/messenger-platform/reference/send-api#sending): **CUSTOMER_FEEDBACK** while sending the template. This tag allows you to send the template within 7 days after the user&#039;s last message.
+Please note, the tag can only be used with the customer feedback template. Use in any other form is prohibited and will fail.
+
+## API details: &#123;#api-details&#125;
+### Sending a template to the thread: &#123;#sending-template&#125;
+With the specific nomenclature out of the way, let us now look at the API that can be used to send the Customer Satisfaction Template to a thread.
+
+A call should be made to the Send API with the following POST structure. Example values filled in:
+
+```
+  curl -X POST -H &quot;Content-Type: application/json&quot; -d &#039;&#123;
+  &quot;recipient&quot;: &#123;
+    &quot;id&quot;: &quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;message&quot;: &#123;
+    &quot;attachment&quot;: &#123;
+      &quot;type&quot;: &quot;template&quot;,
+      &quot;payload&quot;: &#123;
+        &quot;template_type&quot;: &quot;customer_feedback&quot;,
+        &quot;title&quot;: &quot;Rate your experience with Original Coast Clothing.&quot;, // Business needs to define.
+        &quot;subtitle&quot;: &quot;Let Original Coast Clothing know how they are doing by answering two questions&quot;, // Business needs to define.
+        &quot;button_title&quot;: &quot;Rate Experience&quot;, // Business needs to define.
+        &quot;feedback_screens&quot;: [&#123;
+          &quot;questions&quot;:[&#123;
+            &quot;id&quot;: &quot;hauydmns8&quot;, // Unique id for question that business sets
+            &quot;type&quot;: &quot;csat&quot;,
+            &quot;title&quot;: &quot;How would you rate your experience with Original Coast Clothing?&quot;, // Optional. If business does not define, we show standard text. Standard text based on question type (&quot;csat&quot;, &quot;nps&quot;, &quot;ces&quot; &gt;&gt;&gt; &quot;text&quot;)
+            &quot;score_label&quot;: &quot;neg_pos&quot;, // Optional
+            &quot;score_option&quot;: &quot;five_stars&quot;, // Optional
+            &quot;follow_up&quot;: // Optional. Inherits the title and id from the previous question on the same page.  Only free-from input is allowed. No other title will show.
+            &#123;
+              &quot;type&quot;: &quot;free_form&quot;,
+              &quot;placeholder&quot;: &quot;Give additional feedback&quot; // Optional
+            &#125;
+          &#125;]
+        &#125;],
+        &quot;business_privacy&quot;:
+        &#123;
+            &quot;url&quot;: &quot;https://www.example.com&quot;
+         &#125;,
+        &quot;expires_in_days&quot; : 3 // Optional, default 1 day, business defines 1-7 days
+      &#125;
+    &#125;
+  &#125;
+&#125;&#039; &quot;https://graph.facebook.com/v7.0/me/messages?access_token=&lt;PAGE_ACCESS_TOKEN&gt;&quot;
+```
+
+### API Properties: &#123;#api-props&#125;
+| Property | Type | Description |
+| --- | --- | --- |
+| `id` | String | *Required*. The `PSID` of the customer. |
+| `attachment.type` | String | *Required*. Must be &quot;template&quot;. |
+| `template_type` | String | *Required*. Must be &quot;customer_feedback&quot;. |
+| `title` | String | *Required*. Defines the main title of the template that gets sent to the thread with the button to open the feedback form. **Max 65 chars allowed. No URLs.** |
+| `subtitle` | String | *Required*. Defines the sub-title of the template that gets sent to the thread with the button to open the feedback form. **Max 80 chars allowed. No URLs.** |
+| `button_title` | String | *Required*. Defines the button title for the button that will open the feedback form. **Max 20 chars allowed. No URLs.** |
+| `feedback_screens` | Array&lt;`Objects`&gt; | *Required*. This is an array of objects. Each object represents 1 page. Please note we only support one page and one question per page right now. If multiple pages or multiple questions per page are set, we will throw an error back. |
+| `questions` | Array&lt;`question`&gt; | *Required*. Each page may have up to 1 questions. This is an array of objects. Each object represents 1 question. |
+| `question.id` | String | *Required*. Alphanumeric. Maximum 80 characters. Must be unique throughout the entire form. You shall use these as the unique identifiers of the questions which would be sent back in the response to help you tie context back to your system. Ids should be alpha numeric and can contain any number of underscores(_) for e.g. banjkkl__2345 is a valid id, abnj-4567 is not a valid id due to the &quot;-&quot;. |
+| `question.type` | String | *Required*. The type of the question. Currently supported values include: &quot;csat&quot;, &quot;nps&quot;, &quot;ces&quot;, &quot;free_form. Please check Score Types section above for more details. |
+| `question.title` | String | *Optional*. You can provide your own custom title for the question, if none is provided, the default_title will be chosen. Please check Score Types section above for more details.  Note: default_titles will be translated and localized to the locale of the user. Custom titles will not be translated, you would have to perform the translation yourselves if needed. **Min 5 chars and Max 85 chars allowed. No URLs.** |
+| `question.score_label` | String | *Optional*. Field to define the level labels for low and high values. Please check Score Level Indicators section above for details. Values include &#039;neg_pos&#039;, &#039;hard_easy&#039;, &#039;dis_sat&#039;, &#039;unlike_like&#039;,&#039;poor_great&#039; |
+| `question.score_option` | String | *Optional*. Field to define the score selector views. For e.g. values include &#039;1_to_5&#039;, &#039;five_stars&#039;, &#039;five_emojis&#039; for csat type. Please check Score Types section above for more details. |
+| `question.follow_up` | `Object` | *Optional*. Object to set a free form input. Inherits the title and id from the previous question on the same page.  Only free-from input is allowed. |
+| `question.follow_up.type` | String | *Required*. Set value as &#039;free_form&#039;. |
+| `question.follow_up.placeholder` | String | *Optional*. Placeholder to be shown inside the free form text input. Defaults to **&quot;Give additional feedback&quot;**, if none provided. **Max 65 chars allowed. No URLs.** |
+| `business_privacy` | `Object` | *Required*. Object to provide your privacy policies in the template. |
+| `business_privacy.url` | String | *Required*. The link to your hosted privacy policy. Example, the &quot;privacy policy&quot; link in the screenshots. You only need to provide the URL, and the link text will be automatically generated in the template. |
+| `expires_in_days` | Integer | *Optional*.  Set the time for template expiration in minutes. You can set a value between 1 to 7. Unit is days. If no value is set then a default of 1 day would be set. |
+
+### Restrictions: &#123;#restrictions&#125;
+Please re-note the following restrictions that apply to the template.
+
+* A template can have:
+    * 1 title + 1 scoring component + 1 free-form input box
+    * 1 title + 1 scoring component
+    * 1 title + 1 free-form input
+* A template CANNOT have:
+    * More than 1 title
+    * More than 1 scoring component
+
+Please check individual field restrictions in the API properties table above.
+
+### Receiving data on submission: &#123;#receiving-data&#125;
+After the template is sent in thread, you shall wait and expect the customer to fill in the information and submit it. Your web-hook server will receive a &quot;**messaging_feedback**&quot; event (i.e., an event that contains the submitted data) once the customer submits the feedback. Please ensure you have subscribed to the &quot;**messaging_feedback**&quot; webhook subscription for your app and page in the app dashboard.
+
+Note: The customer will have the time; set in the **expires_in_days** field of the send request (default 1 day, if not set) to fill the template and submit the feedback. The form will auto-expire after the set time, after which the in-thread entry point will no longer be available.
+
+The received feedback event will be as below:
+
+```
+  &#123;
+  &quot;object&quot;: &quot;page&quot;,
+  &quot;entry&quot;: [&#123;
+    &quot;time&quot;: &lt;timestamp&gt;,
+    &quot;messaging&quot;: [&#123;
+      &quot;sender&quot;: &#123;
+        &quot;id&quot;: &quot;&lt;PSID&gt;&quot;
+      &#125;,
+      &quot;recipient&quot;: &#123;
+        &quot;id&quot;: &quot;&lt;page_id&gt;&quot;
+      &#125;,
+      &quot;messaging_feedback&quot;: &#123;
+        &quot;feedback_screens&quot;: [&#123;
+          &quot;screen_id&quot;: 0,
+          &quot;questions&quot;: &#123;
+            &quot;hauydmns8&quot;: &#123;
+              &quot;type&quot;: &quot;csat&quot;,
+              &quot;payload&quot; : &quot;5&quot;,
+              &quot;follow_up&quot;: &#123;
+                &quot;type&quot;: &quot;free_form&quot;,
+                &quot;payload&quot; : &quot;I am very satisfied!&quot;
+              &#125;
+            &#125;
+          &#125;
+        &#125;]
+      &#125;
+    &#125;]
+  &#125;]
+&#125;
+```
+
+### Receive Event Properties: &#123;#receive-props&#125;
+| Property | Type | Description |
+| --- | --- | --- |
+| `time` | Integer | The timestamp when the customer submits the feedback. |
+| sender `id` | String | The customer `PSID`. |
+| recipient `id` | String | The page `ID` of your business page. |
+| `messaging_feedback` | `Object` | The standard key of a &quot;messaging_feedback&quot; event. This holds an array of feedback_screens with an array of object of feedback question responses. |
+| `messaging_feedback.feedback_screens` | Array&lt;`Objects`&gt; | Holds feedback by the customer. Each object represents a form page of your original request, with customer feedbacks. Each object has a key &quot;screen_id&quot;, which is the form page index, and a key &quot;questions&quot;, which holds your question ids and customer answers. The objects are present in the same sequence as your original request. |
+| `feedback_screens.questions` | `Object` | Holds questions in a form page. Each object has the key as the question id, and the value answered by the customer. |
+| `question.&lt;id&gt;` | String | question.id set in the Send API request, as a key to the responses submitted by the customer. |
+| `question.&lt;id&gt;.type` | String | Defines the type of the scoring mechanism used. For e.g csat, nps, ces etc |
+| `question.&lt;id&gt;.payload` | String | Score value selected by the customer. |
+| `question.&lt;id&gt;.follow_up` | `Object` | Object that stores the value of the free form text input if set. |
+| `follow_up.type` | String | Will be set to free_form to identify free form responses vs other responses. |
+| `follow_up.payload` | String | Free form text feedback provided by the customer. |
+
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/business-messaging/messenger-platform/llms.txt

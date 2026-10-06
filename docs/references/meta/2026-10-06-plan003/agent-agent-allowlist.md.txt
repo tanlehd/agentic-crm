@@ -1,0 +1,297 @@
+
+
+# Agent Allowlist
+
+Manage the consumer allowlist for the AI agent on a specific entity.
+
+This endpoint manages the consumer allowlist for the AI agent on a specific entity. When the AIAudience setting is set to ALLOWLISTED_ONLY, the agent only responds to consumers whose identifiers are in this list. Uses POST to add entries, GET to list all entries, and DELETE to remove individual entries. Adding, listing, and removing entries are each rate limited to 1,000 requests per hour for each app, counted separately per operation. Exceeding a limit returns `429 Too Many Requests`. These limits are subject to change.
+
+## Base URL
+
+| URL | Description |
+|-----|-------------|
+| https://api.facebook.com/&#123;entity_id&#125;/agent_config/allowlist |  |
+
+## Authorization
+
+This API requires:
+
+any of the following
+  - Capability: bizai_wa_enterprise_api_3p_access
+  - Capability: bizai_ig_enterprise_api_3p_access
+  - Permission: whatsapp_business_messaging
+  - Permission: instagram_basic
+
+## APIs
+
+| Method | Endpoint |
+|--------|----------|
+| DELETE | [/&#123;entry_id&#125;](#delete-entry-id) |
+| GET | [/](#get) |
+| POST | [/](#post) |
+
+&lt;jumplink id=&quot;delete-entry-id&quot;&gt;&lt;/jumplink&gt;
+## DELETE /&#123;entry_id&#125;
+
+Remove from allowlist
+
+Remove a specific allowlist entry by its ID
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp phone number ID or Instagram business account ID for the agent. |
+| entry_id | string | ✓ | The identifier of the allowlist entry, as returned in the `id` field when the entry was added or listed. Pass that value through unchanged. |
+
+### Responses
+
+**204**
+
+Allowlist entry successfully deleted
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;get&quot;&gt;&lt;/jumplink&gt;
+## GET /
+
+List allowlist entries
+
+Retrieve all allowlisted consumers for the specified entity
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp phone number ID or Instagram business account ID for the agent. |
+
+### Responses
+
+**200**
+
+A list of all allowlist entries
+
+**Content Type**: `application/json`
+
+**Schema**: array of [BizAIOmniChannelAllowlistResponseV2](#bizaiomnichannelallowlistresponsev2)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;post&quot;&gt;&lt;/jumplink&gt;
+## POST /
+
+Add to allowlist
+
+Add a consumer to the allowlist for the specified entity. A WhatsApp business phone number can hold up to 20 allowlisted consumer phone numbers, and an Instagram business account can hold up to 20 allowlisted Instagram accounts. The two limits are counted separately. Adding an entry once the allowlist is full returns `400 Bad Request`, and the error detail reports the current maximum.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp phone number ID or Instagram business account ID for the agent. |
+
+### Request Body (Required)
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelAllowlistRequestV2](#bizaiomnichannelallowlistrequestv2)
+
+### Responses
+
+**201**
+
+The newly created allowlist entry
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelAllowlistResponseV2](#bizaiomnichannelallowlistresponsev2)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+# Components
+
+## Schemas
+
+&lt;jumplink id=&quot;bizaiomnichannelallowlistrequestv2&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelAllowlistRequestV2
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| consumer_phone_number | string |  | Consumer WhatsApp phone number in E.164 format. Required when the entity is a WhatsApp business phone number, and must be omitted for Instagram business assets. Mutually exclusive with `consumer_instagram_username`. |
+| consumer_instagram_username | string |  | Instagram username for the consumer, without the leading `&#064;`. Required when the entity is an Instagram business asset, and must be omitted for WhatsApp business phone numbers. Mutually exclusive with `consumer_phone_number`. |
+
+&lt;jumplink id=&quot;bizaiomnichannelallowlistresponsev2&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelAllowlistResponseV2
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| id | string | ✓ | The unique identifier for this allowlist entry. Pass this value unchanged as the `entry_id` path parameter to remove the entry. |
+| consumer_phone_number | string |  | Consumer WhatsApp phone number in E.164 format. Present only on entries for WhatsApp business phone number entities. Mutually exclusive with `consumer_instagram_username`. |
+| consumer_instagram_username | string |  | Current Instagram username for the consumer. Present on Instagram entries when the account is available. Mutually exclusive with `consumer_phone_number`. |
+
+&lt;jumplink id=&quot;standarderror&quot;&gt;&lt;/jumplink&gt;
+### StandardError
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| title | string | ✓ |  |
+| detail | string | ✓ |  |
+| type | string |  |  |
+| status | integer |  |  |
+
+## Authentication
+
+| Scheme | Type | Location |
+|--------|------|----------|
+| OAuthToken__Authorization | HTTP Bearer | Header: `Authorization` |
+
+### Usage Examples
+
+- **OAuthToken__Authorization**: Include `Authorization: Bearer your-token-here` in request headers
+
+### Global Authentication Requirements
+
+All endpoints require: OAuthToken__Authorization
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/meta-business-agent/llms.txt

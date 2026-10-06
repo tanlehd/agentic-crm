@@ -88,7 +88,7 @@ export class ChatflowEngine implements ChatflowSessionPort {
     let next:string|undefined,wait=false;
     if(node.type==='send_prompt'){await prompt(renderPrompt(node,r.variables),0);next=node.next;}
     if(node.type==='collect'||node.type==='invoke_agent'){
-      const used=(await s.query('SELECT message_id FROM chatflow_turn WHERE tenant_id=? AND session_id=?',[claim.tenantId,r.id])).map((x:any)=>x.message_id);const m=await this.conversations.next(s,r.conversation_id,used);
+      const used=(await s.query('SELECT message_id FROM chatflow_turn WHERE tenant_id=? AND session_id=?',[claim.tenantId,r.id])).map((x:any)=>x.message_id);const m=await this.conversations.next(s,r.conversation_id,used,node.type==='collect'&&node.config.variable_key==='contact_permission'?'consent':'inference');
       if(!m){if(node.type==='collect'&&n.prompt_attempt!==n.invalid_attempts)await prompt(node.config.prompt,n.invalid_attempts);wait=true;}
       else if(node.type==='collect'){
         const answer=parseAnswer(node.config,m.text);await s.query('INSERT INTO chatflow_turn(tenant_id,session_id,message_id,node_key,status) VALUES (?,?,?,?,?)',[claim.tenantId,r.id,m.id,node.key,answer.valid?'validated':'invalid']);r.last_message_id=m.id;
@@ -110,7 +110,7 @@ export class ChatflowEngine implements ChatflowSessionPort {
     await this.fenced(s,claim);if(next)await this.advance(s,r,next);else if(wait){await s.query("UPDATE chatflow_node_run SET status='waiting',lease_until=NULL WHERE tenant_id=? AND session_id=? AND node_key=?",[claim.tenantId,r.id,node.key]);await s.query("UPDATE chatflow_session SET status='waiting_message' WHERE tenant_id=? AND id=?",[claim.tenantId,r.id]);}
   });}
   async load(s:TransactionScope,id:string,message:string):Promise<SessionSnapshot>{const r=await this.lock(s,id),node=r.graph.nodes.find((n:Node)=>n.key===r.node_key) as Node;
-    if(r.status!=='running'||node.type!=='invoke_agent'||r.last_message_id!==message)throw new CommandError(409,'SESSION_NOT_AVAILABLE');const live=await this.guard(s,r);await this.conversations.inbound(s,r.conversation_id,message);
+    if(r.status!=='running'||node.type!=='invoke_agent'||r.last_message_id!==message)throw new CommandError(409,'SESSION_NOT_AVAILABLE');const live=await this.guard(s,r);await this.conversations.inbound(s,r.conversation_id,message,'inference');
     return {id,status:'running',conversationId:r.conversation_id,principalId:live.p.id,ownerRevision:r.owner_revision,serviceActorId:r.service_actor_id,node:node.key,instruction:node.config.instruction,allowedTools:[...node.config.allowed_tools],qualification:{...r.draft,...r.variables}};
   }
   async saveDraft(s:TransactionScope,id:string,value:Record<string,unknown>){const r=await this.lock(s,id);await this.load(s,id,r.last_message_id);r.draft={...r.draft,...runtimeDraft(value)};await this.persist(s,r);}

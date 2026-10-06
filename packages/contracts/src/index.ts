@@ -8,3 +8,9 @@ export { runtimeSchema } from './generated/runtime-schema.js';
 
 export { chatflowSchema } from './generated/chatflow-schema.js';
 export type { ChatflowGraph } from './generated/chatflow-graph.js';
+
+export { messageContentSchema } from './generated/message-content-schema.js';
+export type { MessageContent } from './generated/message-content.js';
+
+export { intakeSchema } from './generated/intake-schema.js';
+export type { IntakeRequest } from './generated/intake-request.js';

@@ -32,4 +32,8 @@ export interface ConversationEntity {
     direction: "inbound" | "outbound";
     received_at: string;
   } | null;
+  channel?: "mock_messenger" | "messenger";
+  channel_id?: string;
+  page_id?: string;
+  channel_name?: string;
 }

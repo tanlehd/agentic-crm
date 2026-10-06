@@ -1,76 +1,77 @@
-# Kiến trúc hệ thống
+# Kiến trúc đích — enterprise microservices
 
-Status: Ready for implementation cho M1–M2; scale-out nâng cao Draft.
+Direction accepted2026-10-06 theo user, ADR-017/CHG-20261006-07. PLAN-005 là blueprint documentation, không phải đã tách source/deploy. [Baseline đang chạy](monolith-baseline.md) vẫn Next.js + NestJS API/worker + MySQL shared schema. SRC-028 implements scoped [independent HTTP ingress](../../services/crm-connector/README.md) under ADR-018, verified in disposable containers; no preview cutover. Remaining exact distributed wire/physical schema/security gates còn PLAN-006; không đánh Ready code extraction bằng tài liệu tổng thể này.
 
-## Cấu trúc triển khai
+## Ranh giới triển khai
+
+Mỗi bounded context có deploy/release/scale, database credential/migrations, public/internal contract và operational ownership riêng. Một service có thể gồm API và worker processes dùng cùng own database. Giữ Next.js/NestJS/TypeScript/MySQL và tenant isolation; service boundary không thay nghiệp vụ Human/AI owner, consent, Lead hoặc durable versioned workflows.
 
 ```mermaid
 flowchart LR
-  User[Human user] --> Web[Next.js workspace]
-  Web --> API[NestJS API]
-  Provider[Channel connector / mock] --> API
-  API --> Modules[Domain modules]
-  Modules --> DB[(MySQL)]
-  DB --> Relay[Outbox relay]
-  Relay --> Queue[(Redis / BullMQ)]
-  Queue --> Worker[NestJS worker]
-  Worker --> Modules
-  Worker --> Adapter[Agent Runtime adapter]
-  Adapter --> Runtime[Mock / external AI runtime]
-  Worker --> Sender[Channel sender adapter]
-  API --> OIDC[OIDC identity provider]
+  FB[Facebook và messaging platforms] --> Connector[CRM Connector Service]
+  User[Human user] --> Web[Next.js Agent Workspace]
+  Web --> Edge[Gateway / BFF]
+  Edge --> IAM[Identity Service]
+  Edge --> Chat[Chat Service]
+  Edge --> CRM[CRM Core Service]
+  Edge --> Sales[Sales Service]
+  Edge --> AI[AI Runtime Service]
+  Connector --> Bus[Durable event transport]
+  Bus --> Chat
+  Chat --> Bus
+  Bus --> CF[Chatflow Service]
+  Bus --> WF[Workflow Service]
+  CF --> AI
+  CF --> Sales
+  WF --> Routing[Routing Service]
+  Routing --> Chat
+  Connector --> Media[Media Service]
+  Media --> Bus
+  Bus --> Ops[Operations / Reporting projections]
 ```
 
-Một repository ứng dụng về sau gồm frontend, backend và shared contracts. API và worker dùng cùng domain code; build/deploy riêng process. Domain module không gọi SQL vào bảng của module khác; gọi application service nội bộ hoặc consume event. Không dùng HTTP giữa module trong monolith.
+Mũi tên là logical API/event dependency, không đại diện transaction hoặc lời hứa ordering. Catalog đầy đủ gồm Ticket và từng data boundary ở [services](../services/README.md).
 
-MySQL 8.4 LTS là system of record; InnoDB, UTF-8 `utf8mb4`, thời gian UTC `DATETIME(6)`. Redis/BullMQ là hạ tầng dispatch/cache, mất Redis không được làm mất workflow business state. Tệp đính kèm và object storage chưa nằm trong M2 text-only.
+## Nguồn chuẩn của state
 
-## Ranh giới và dependency
+- Identity: account/tenant/principal/role/team/authorization. CRM Core: Contact/Company/custom objects, metadata; external registry chỉ projection.
+- Chat: Conversation, message/rich JSON/text, Conversation ownership/version và outbound intent. Connector: webhook delivery/connection/credential binding/transport receipt/provider control. Chat owner và provider control là hai state machine.
+- Sales/Ticket: owner/version của resource tương ứng. Routing chỉ đề xuất với expected revision; owning service CAS và phát event.
+- AI Runtime: full provider lifecycle/config/knowledge/tools/eval và execution. Identity giữ principal ID của Agent; provisioning liên service là saga.
+- Workflow/Chatflow: pinned graph/run/session/turn/action receipt. Media: asset/processing/extraction. Reporting/Operations: authorized projections, không business authority.
 
-| Module | Sở hữu | Phụ thuộc trực tiếp |
-|---|---|---|
-| Identity | Tenant, membership, seat, role, team | Audit interface |
-| CRM | Registry, property, association, Contact/Company | Identity, Audit |
-| Channels | Connection, external identity mapping, delivery, touchpoint | CRM, Conversation application service |
-| Conversation | Conversation, Message, note, outbound intent | CRM registry, Identity, Agent policy |
-| Sales | Lead, handoff, Deal, pipeline | CRM, Identity |
-| Ticket | Ticket, SLA | CRM, Identity |
-| Agents | AI config, capability, routing, assignment history | Identity, CRM ownership service |
-| Workflow | Definition/version/run/step/wait | Command interfaces có allowlist |
-| Chatflow | Definition/version/session/turn | Conversation, CRM/Sales commands, Agent adapter |
-| Reporting | Metric/report/dashboard metadata và projection | Domain event + authorized query interfaces |
-| Operations | Audit, outbox, inbox, replay | Hạ tầng; không tự sửa business state |
+[Data ownership](../data/service-ownership.md) giải quyết registry/FK/UoW hiện đang gắn chặt. Cấm join/SQL/foreign key/cascade giữa service databases; service account không có quyền DB khác. Local dev có thể chung MySQL instance nhưng databases/users/migration journals riêng; production placement/HA được quyết định qua deployment gate. Shared types/schema libraries không chứa ORM entity/repository/domain implementation.
 
-Registry giữ identity/quyền/owner chung của record; domain service sở hữu lifecycle nội dung. Assignment service khóa record registry và ghi history; caller không tự sửa `owner_principal_id` bằng generic PATCH.
+## Giao tiếp và tính bền vững
 
-## Giao dịch và bất đồng bộ
+REST/OpenAPI dùng cho queries và commands cần response; async commands/events qua durable broker. Chọn baseline thiết kế NATS JetStream (ADR-017), chưa pin/install/deploy; topology, retention/replication, ordering key và failover proof ở PLAN-006. Redis dùng cache/session/ephemeral fan-out hoặc local job wakeup, không là source of truth của business saga. Không tự thêm Kafka/service mesh/Kubernetes chỉ để gọi là enterprise.
 
-Một business command ghi domain state, registry version, audit và outbox trong cùng transaction. Consumer có inbox key `(tenant_id, consumer_name, event_id)`; update business state và đánh dấu inbox complete cùng transaction. Outbox relay có thể phát lặp, consumer phải idempotent.
+Every mutation commits local domain state + local audit/outbox. Relay publish at-least-once; consumer writes inbox+local effect atomic. Unique operation IDs/digests, aggregate versions, bounded retry, DLQ và reconciliation thay transaction xuyên service. Không XA/2PC; không exactly-once claim cho provider. [Contract rules](../contracts/service-boundaries.md).
 
-Webhook đầu vào chỉ ACK sau khi delivery được lưu bền vững. Worker normalize rồi xử lý theo [inbound contract](../contracts/api.md). Luồng M2 tạo Contact/Conversation/Message/touchpoint/outbox trong một transaction ứng dụng; module gọi nội bộ dùng chung unit of work.
+## Facebook webhook tới Agent Chat UI
 
-External I/O nằm ngoài database transaction. Ghi outbound/tool intent trước, thực thi sau; lưu kết quả riêng. Không tuyên bố exactly-once đối với provider không hỗ trợ idempotency/reconciliation.
+1. Connector kiểm challenge/signature trên raw body, xác định asset→tenant connection, durable delivery trước ACK theo provider contract.
+2. Parser phân loại messages/echoes/status/postback/control; normalize rich JSON và text original/extracted/preview. Batch thành events độc lập có source keys và schema versions.
+3. Connector enrich profile qua provider API/cache, resolve Contact qua CRM idempotent và cache confirmed mapping; Chat nhận IngestMessage với required crm_contact_id và tenant-bound refs, local dedup, lưu Conversation/message/content và outbox. Không shared UoW hoặc webhook chờ synchronous CRM/Chat thành công.
+4. Chat API/authorized realtime feed cung cấp JSON cho UI. Chatflow/AI đọc text để inference; consent provenance vẫn original-only. Media extraction hoàn tất gửi event có expected content revision; Chat không overwrite lời gốc/user correction.
+5. Human/AI send command vào Chat intent; Connector dispatch sau authorization/owner/control fence rồi trả receipt. Unknown không resend mù. Facebook routing handler sống Connector; CRM owner transition sống Chat.
 
-## Thực thi AI và automation
+Hiện mới có mock flow trong monolith; endpoint Meta thật, broker/realtime/media resolver chưa có. Không dùng đường nét sơ đồ để suy ra đã implemented.
 
-Runtime không truy cập trực tiếp DB và không giữ secret channel. Backend xác thực từng tool call bằng tenant, actor, capability, quyền hiện hành và owner revision. Workflow chạy bằng tenant service actor có role/allowlist rõ; service actor không được làm owner và không có quyền quản trị mặc định.
+## Security và consistency khi owner/quyền thay đổi
 
-Các quyền workflow là giao của execution role đã gắn ở version, allowlist primitive và quyền hiện hành của service actor. Actor bị disable thì run pause/failed, không tự nâng quyền bằng người publish.
+Edge xác thực Human hoặc integration, bỏ spoofed internal headers; service xác thực workload identity/audience/signed delegation và tenant trước xử lý. Record owner authority phải nằm cùng DB với intent gate; policy authority ở Identity. Cross-service cache không thay quyền tại dispatch; privileged paths fail closed khi không thể xác nhận.
 
-## Deployment và tiến hóa
+Takeover: Chat commit owner_revision mới + invalidate queued intents + revoke outbox ngay. Runtime/Chatflow nhận cancel có thể trễ; effects mới vẫn bị Chat/tool-owning service từ chối. Connector cần dispatch permit/lease có revision và operation receipt; exact issue/consume/revoke protocol là PLAN-006 security gate, chưa đủ để bật remote dispatch. Side effect đang in-flight trước revoke có thể hoàn tất; UI giữ unknown/pending/reconciliation trung thực. Không hứa instant distributed cancellation hoặc remote role revoke từ một invalidation event.
 
-- Local/dev: frontend, API, worker, MySQL, Redis và OIDC dev provider; fixture riêng cho hai tenant.
-- Production về sau: TLS edge, private DB/Redis, secret manager, health/readiness, backup restore drill; triển khai worker cùng version contract tương thích với API.
-- Migration áp dụng trước code cần schema mới; ưu tiên expand → backfill → switch → contract. Không drop field mà run/version cũ còn đọc.
-- Rollback code chỉ khi schema/event còn tương thích; với migration phá hủy dùng forward fix, không hứa rollback dữ liệu đã mất.
-- M1–M2 chưa tách microservice, không đưa Kafka/warehouse vào dependency bắt buộc. Reporting lớn và engine orchestration thay thế cần ADR dựa trên tải đo được.
+## Enterprise operational baseline
 
-Frontend không truy cập DB; mọi quyền đi qua backend. API backend là REST `/api/v1`; M2 inbox dùng polling cursor mỗi 5 giây, realtime stream là mở rộng sau.
+Mỗi service cần versioned contracts/consumer compatibility CI, separate images/migrations/runtime grants, health/readiness, redacted OpenTelemetry traces/metrics, structured audit và on-call ownership. Broker durable replicated quorum/failover, MySQL backups/PITR và object-store restore phải test trước production. SLO/error budget/RPO/RTO, load sizing, quotas/retention, regional placement chốt theo deployment evidence; không đặt con số giả hoặc claim HA chưa chạy.
 
-## Kế hoạch đóng gói và source
+Secrets server-side theo service/provider asset, rotation/revocation có receipts. Service egress allowlists, tenant-aware rate limits, PII minimization và authorized replay. Fault tests bắt buộc: duplicate/reorder, lost ACK, broker outage, downstream timeout, split-brain lease, revocation race, orphan refs, disaster restore.
 
-Chi tiết topology/health/migration/dev-test-release image ở [Docker plan](docker-development.md). API và worker dùng chung backend image khác entrypoint; Compose là môi trường local và release smoke, chưa phải cam kết triển khai production. TypeORM/mysql2 dùng explicit migrations, không schema auto-sync; frontend Next.js standalone khi build release.
+## Migration và mức sẵn sàng
 
-Source organization, contracts-first tooling, OIDC dev và milestone gates nằm ở [build plan](../planning/build-plan.md). Exact dependency versions và physical/auth contract refinement đã hoàn tất SRC-001; Docker/source scaffold SRC-002/003 đã chạy. Migration và domain modules tiếp tục theo tracker.
+[Roadmap extraction](../planning/microservices-migration.md) dùng compatibility gateway, strangler extraction, single-writer cutover và reconciliation. Preserve migrations1–18/history/IDs; per-service migration lineage và transferred aggregates có evidence. Không đổi deployed topology hoặc tự reset dữ liệu trong phiên docs. [Tracker](../tracking/tasks.md) là nguồn status, [service catalog](../services/README.md) là nguồn boundary đích.
 
-SRC-008 / ADR-014: relay M1 dispatch qua transactional registry trong worker với durable MySQL backlog; Identity access consumer acknowledge sau validation, quyền vẫn đọc DB trực tiếp. BullMQ job wakeups cho workflow/runtime ở tasks sau. Registry chưa chứa CRM consumers.
+ADR-019 canonical identity authority and new inbound/outbound Chat contact requirement: [contract](../contracts/contact-resolution.md). Connector cache is not Contact master; no cross-service SQL.

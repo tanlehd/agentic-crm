@@ -1,0 +1,886 @@
+# Lead generation agent
+
+
+Restaurant groups, cloud kitchens, and quick-commerce operators can use Meta Business Agent to turn catering and bulk-order inquiries on WhatsApp into qualified leads — collecting the event date, headcount, and delivery area, confirming you serve that area, and submitting a complete lead to your sales system instead of an unstructured message someone has to chase. This page covers the agent instructions, knowledge sources, and connector configuration for that scenario. At minimum you must add one agent instruction and create a connector with a `submit_catering_lead` tool; your packages, FAQs, and website crawl improve the conversation but the agent cannot record a lead without the connector.
+
+The agent handles:
+
+- Package discovery across your Meta product catalog
+- Delivery coverage checks for a postcode before the conversation goes further
+- Qualification, gathering event date, headcount, and contact details in one exchange
+- Lead submission to your sales system, with a reference the customer can quote
+- Out-of-scope questions — invoicing disputes, complaints about a delivered order — routed to your team
+
+## Who this guide is for &#123;#who-this-guide-is-for&#125;
+
+The examples use a catering operation, but the configuration pattern fits any business where **the conversation ends in a qualified handoff rather than a completed sale**: the customer describes a need, the agent establishes whether you can serve it, and a person follows up to close.
+
+| Organization type | What the agent qualifies | What the agent submits |
+|-------------------|--------------------------|------------------------|
+| Restaurant groups and caterers | Event date, headcount, dietary requirements, delivery postcode | A catering lead |
+| Cloud kitchens and virtual brands | Order volume, recurring or one-off, service window | A bulk-order inquiry |
+| Quick-commerce and grocery delivery | Business account type, expected weekly spend, delivery area | A business account application |
+| Meal-kit and subscription food brands | Household size, dietary profile, start date | A trial signup |
+| Franchise and partnership teams | Territory, capital available, timeline | A franchise inquiry |
+
+This flow differs from selling an item outright. Nothing is charged, no stock moves, and the agent&#039;s output is a record in someone else&#039;s queue rather than an order. The quality bar is therefore completeness rather than accuracy of price: a lead missing the event date costs a salesperson a phone call, and a lead outside your delivery area wastes the call entirely. If your conversation ends in a payment, see [Single item purchase agent](https://developers.facebook.com/documentation/meta-business-agent/usage-guides/single-item-purchase-agent). If it ends in a dated reservation against limited capacity, see [Booking and reservation agent](https://developers.facebook.com/documentation/meta-business-agent/usage-guides/booking-and-reservation-agent).
+
+Each step below notes how the API is used in other scenarios, then applies it to the catering example.
+
+## Prerequisites &#123;#prerequisites&#125;
+
+Have the following in place before you configure the agent for lead generation. The first three come from Meta Business Agent onboarding; the fourth and fifth are your own systems.
+
+- An onboarded and enabled Meta Business Agent (`rollout.enabled: true`) — see [End-to-end setup](https://developers.facebook.com/documentation/meta-business-agent/get-started)
+- A valid system user access token (SUAT) or Business Integration System User (BISU) token with the `whatsapp_business_messaging` and `whatsapp_business_management` permissions — see [Generate an access token](https://developers.facebook.com/documentation/meta-business-agent/get-started#generate-an-access-token). `whatsapp_business_messaging` authenticates your requests; `whatsapp_business_management` is required to read agent data, such as connector logs
+- Your WhatsApp Business phone number ID (`&#123;entity_id&#125;`) — the phone number the agent is enabled on, not the WhatsApp Business account ID. Find it in [WhatsApp Manager](https://business.facebook.com/latest/whatsapp_manager/) under **Account tools** &gt; **Phone numbers**
+- A publicly accessible HTTPS endpoint for your CRM or lead system, required by [Create a leads connector](#create-a-leads-connector)
+- A staffed destination for handed-off conversations, required by [Configure handoff](#configure-handoff)
+
+## Add agent instructions &#123;#add-agent-skills&#125;
+
+[Agent instructions](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-skills) shape how the agent responds. The `title` is a short identifier, `description` tells the agent when to apply the instruction, and `skill` contains the actual instructions.
+
+&gt; **Note:** An instruction `title` can be up to 64 characters — lowercase letters, numbers, and dashes only, and cannot start or end with a dash.
+
+### cURL
+```bash
+curl -X POST &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_config/skills&quot; \
+  -H &quot;Authorization: Bearer &#123;ACCESS_TOKEN&#125;&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;X-API-Version: 2.0.0&quot; \
+  -d &#039;&#123;
+  &quot;title&quot;: &quot;catering-inquiries&quot;,
+  &quot;description&quot;: &quot;Applied when someone asks about catering, bulk orders, corporate accounts, feeding a group, or an event.&quot;,
+  &quot;skill&quot;: &quot;Establish the delivery postcode, the event date, and the approximate headcount before recommending a package or quoting anything. Check delivery coverage for the postcode before discussing packages, and say plainly that the area is not served rather than suggesting alternatives you cannot deliver. Quote only the per-head prices returned by a tool call or listed in the packages, and state that the final quote comes from the catering team. Collect a contact name before submitting the lead. Confirm the date, headcount, and postcode back to the customer before submitting. For complaints about an order already delivered, invoicing questions, and refund requests, acknowledge the request and direct the customer to the support team.&quot;
+&#125;&#039;
+```
+
+### Python
+```python
+import requests
+
+response = requests.post(
+    &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_config/skills&quot;,
+    headers=&#123;
+        &quot;Authorization&quot;: &quot;Bearer &#123;ACCESS_TOKEN&#125;&quot;,
+        &quot;X-API-Version&quot;: &quot;2.0.0&quot;,
+    &#125;,
+    json=&#123;
+        &quot;title&quot;: &quot;catering-inquiries&quot;,
+        &quot;description&quot;: &quot;Applied when someone asks about catering, bulk orders, corporate accounts, feeding a group, or an event.&quot;,
+        &quot;skill&quot;: &quot;Establish the delivery postcode, the event date, and the approximate headcount before recommending a package or quoting anything. Check delivery coverage for the postcode before discussing packages, and say plainly that the area is not served rather than suggesting alternatives you cannot deliver. Quote only the per-head prices returned by a tool call or listed in the packages, and state that the final quote comes from the catering team. Collect a contact name before submitting the lead. Confirm the date, headcount, and postcode back to the customer before submitting. For complaints about an order already delivered, invoicing questions, and refund requests, acknowledge the request and direct the customer to the support team.&quot;,
+    &#125;,
+)
+print(response.json())
+```
+
+### Node.js
+```javascript
+const response = await fetch(
+  &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_config/skills&quot;,
+  &#123;
+    method: &quot;POST&quot;,
+    headers: &#123;
+      &quot;Authorization&quot;: &quot;Bearer &#123;ACCESS_TOKEN&#125;&quot;,
+      &quot;Content-Type&quot;: &quot;application/json&quot;,
+      &quot;X-API-Version&quot;: &quot;2.0.0&quot;,
+    &#125;,
+    body: JSON.stringify(&#123;
+      &quot;title&quot;: &quot;catering-inquiries&quot;,
+      &quot;description&quot;: &quot;Applied when someone asks about catering, bulk orders, corporate accounts, feeding a group, or an event.&quot;,
+      &quot;skill&quot;: &quot;Establish the delivery postcode, the event date, and the approximate headcount before recommending a package or quoting anything. Check delivery coverage for the postcode before discussing packages, and say plainly that the area is not served rather than suggesting alternatives you cannot deliver. Quote only the per-head prices returned by a tool call or listed in the packages, and state that the final quote comes from the catering team. Collect a contact name before submitting the lead. Confirm the date, headcount, and postcode back to the customer before submitting. For complaints about an order already delivered, invoicing questions, and refund requests, acknowledge the request and direct the customer to the support team.&quot;,
+    &#125;),
+  &#125;
+);
+const data = await response.json();
+```
+
+Each POST call creates one instruction. The instruction to check coverage before discussing packages matters more in lead generation than in most scenarios, because a customer talked through a menu for an area you do not serve is a worse outcome than an early no.
+
+**Where else this applies.** An agent instruction is scoped, so the same call shapes very different agents. A franchise team can require the territory and available capital before submitting an inquiry, and a grocery delivery service can require the business account type. For catering, keep the instruction focused on the three fields that make a lead workable — postcode, date, headcount — and on never promising a final price the sales team has not seen.
+
+## Add catering policy FAQs &#123;#add-catering-policy-faqs&#125;
+
+[FAQs](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-knowledge-faqs) give the agent reliable answers to common questions. Each entry takes a `question` and an `answer`, both required. Focus on policies that change only when you change them.
+
+### cURL
+```bash
+curl -X POST &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_config/faq&quot; \
+  -H &quot;Authorization: Bearer &#123;ACCESS_TOKEN&#125;&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;X-API-Version: 2.0.0&quot; \
+  -d &#039;&#123;
+  &quot;question&quot;: &quot;How much notice do you need for a catering order?&quot;,
+  &quot;answer&quot;: &quot;Standard catering needs 48 hours notice. Orders for more than 100 guests need five working days. Hot buffet menus need 72 hours because the kitchen batches production the day before. If your event is sooner than that, the team can still check whether a cold platter menu is possible.&quot;
+&#125;&#039;
+```
+
+### Python
+```python
+import requests
+
+response = requests.post(
+    &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_config/faq&quot;,
+    headers=&#123;
+        &quot;Authorization&quot;: &quot;Bearer &#123;ACCESS_TOKEN&#125;&quot;,
+        &quot;X-API-Version&quot;: &quot;2.0.0&quot;,
+    &#125;,
+    json=&#123;
+        &quot;question&quot;: &quot;How much notice do you need for a catering order?&quot;,
+        &quot;answer&quot;: &quot;Standard catering needs 48 hours notice. Orders for more than 100 guests need five working days. Hot buffet menus need 72 hours because the kitchen batches production the day before. If your event is sooner than that, the team can still check whether a cold platter menu is possible.&quot;,
+    &#125;,
+)
+print(response.json())
+```
+
+### Node.js
+```javascript
+const response = await fetch(
+  &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_config/faq&quot;,
+  &#123;
+    method: &quot;POST&quot;,
+    headers: &#123;
+      &quot;Authorization&quot;: &quot;Bearer &#123;ACCESS_TOKEN&#125;&quot;,
+      &quot;Content-Type&quot;: &quot;application/json&quot;,
+      &quot;X-API-Version&quot;: &quot;2.0.0&quot;,
+    &#125;,
+    body: JSON.stringify(&#123;
+      &quot;question&quot;: &quot;How much notice do you need for a catering order?&quot;,
+      &quot;answer&quot;: &quot;Standard catering needs 48 hours notice. Orders for more than 100 guests need five working days. Hot buffet menus need 72 hours because the kitchen batches production the day before. If your event is sooner than that, the team can still check whether a cold platter menu is possible.&quot;,
+    &#125;),
+  &#125;
+);
+const data = await response.json();
+```
+
+Manage existing entries with the following calls:
+
+| To do this | Call |
+|------------|------|
+| Retrieve all entries | `GET /&#123;entity_id&#125;/agent_config/faq` |
+| Replace one entry | `PUT /&#123;entity_id&#125;/agent_config/faq/&#123;faq_id&#125;` |
+| Remove one entry | `DELETE /&#123;entity_id&#125;/agent_config/faq/&#123;faq_id&#125;` |
+
+A PUT replaces the whole entry, so send both `question` and `answer` even when only one changed.
+
+Suggested FAQs for a catering scenario:
+
+| Question | Notes |
+|----------|-------|
+| How much notice do you need for a catering order? | Lead times by menu type and by headcount |
+| What is the minimum order? | Minimum spend or minimum headcount, and whether it varies by area |
+| Do you cater for dietary requirements? | Vegetarian, vegan, halal, gluten-free, and how allergens are handled |
+| What areas do you deliver to? | The general answer, with the postcode check as the precise one |
+| Do you provide staff, crockery, or setup? | What the per-head price includes and what costs extra |
+| How does payment work for a catering order? | Deposit, invoicing terms, and accepted methods |
+| Can I change the headcount after booking? | The cutoff for changes and any charge |
+| Do you do recurring office catering? | Whether an account manager is assigned, and how ordering works |
+
+**Where else this applies.** FAQs suit any question whose answer changes only when a policy changes: a franchise team is asked about capital requirements, a grocery service about business account eligibility. Anything that changes on its own — whether you deliver to a specific postcode today, what a package costs this month — belongs in a connector tool or the package catalog instead.
+
+## Set up your catering packages &#123;#set-up-your-catering-packages&#125;
+
+Meta Business Agent draws product information from your Meta product catalog, which you manage in Meta Commerce Manager rather than through this API. There is no catalog call to make from your integration: once the catalog is linked to the business, the agent already knows what is in it. See [Product catalog](https://developers.facebook.com/documentation/meta-business-agent/get-started#product-catalog) in Get started.
+
+For catering, list packages rather than individual dishes, because a customer picks a per-head package and the kitchen resolves the dishes.
+
+| Catalog practice | Why it matters for lead generation |
+|------------------|------------------------------------|
+| One item per package, not per dish | The customer chooses at package level, and a menu of individual dishes makes the agent list options instead of qualifying |
+| Put the per-head price on the item | Customers compare per-head figures. Make clear in the description that the price is per head |
+| Keep the package code aligned with your CRM | The code is what ties an inquiry to a specific package when the lead reaches your sales team |
+| Group package variants under a shared item group | Cold and hot versions of a working lunch belong together, so the agent can offer the alternative |
+| Describe minimum guests and dietary coverage | These are the two things customers ask first, and neither has a dedicated catalog field |
+| Include an image and a menu URL | Gives the customer something to look at while deciding |
+
+Keep the list short. Lead generation conversations stall when the agent has nine options to present. Five or fewer packages, clearly separated by service style and price point, qualify faster than a complete menu.
+
+**Where else this applies.** Any business with a browsable set of offers works this way. Where the offer set is very small, or changes faster than you want to maintain a catalog, an FAQ entry or a crawled page carries the same information adequately — the catalog earns its place when the agent needs to match a customer&#039;s description against a structured set of options rather than recall a paragraph.
+
+## Crawl your catering website &#123;#crawl-your-catering-website&#125;
+
+The [Websites](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-knowledge-websites) knowledge source crawls your public website so the agent can answer from pages that are not package listings — allergen statements, sustainability and packaging policies, case studies, and terms of service.
+
+```bash
+curl -X POST &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_config/websites&quot; \
+  -H &quot;Authorization: Bearer &#123;ACCESS_TOKEN&#125;&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;X-API-Version: 2.0.0&quot; \
+  -d &#039;&#123;
+  &quot;url&quot;: &quot;https://www.harvestlanekitchens.com/catering&quot;
+&#125;&#039;
+```
+
+Website knowledge is a snapshot taken at crawl time. Poll `GET /&#123;entity_id&#125;/agent_config/websites/&#123;website_id&#125;` until `crawl_status` reports the crawl finished, and re-crawl whenever those pages change materially.
+
+**Where else this applies.** Crawling suits content that already exists on your public site and changes on a predictable cycle: an allergen matrix, a case study library, a terms page. For catering, crawl the catering and allergen pages rather than the daily restaurant menu, since the menu changes faster than the crawl and the packages list already carries what the agent needs.
+
+## Create a leads connector &#123;#create-a-leads-connector&#125;
+
+A [connector](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/connectors) is the bridge to your CRM or lead system. Supported `auth_type` values are `API_KEY`, `OAUTH2_CLIENT_CREDENTIALS`, and `NONE`.
+
+### cURL
+```bash
+curl -X POST &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_connectors&quot; \
+  -H &quot;Authorization: Bearer &#123;ACCESS_TOKEN&#125;&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;X-API-Version: 2.0.0&quot; \
+  -d &#039;&#123;
+  &quot;name&quot;: &quot;harvest_lane_leads_api&quot;,
+  &quot;description&quot;: &quot;Checks catering delivery coverage by postcode, submits qualified catering leads, and returns the status of a lead already submitted for Harvest Lane Kitchens.&quot;,
+  &quot;base_url&quot;: &quot;https://api.harvestlanekitchens.com/crm/v1&quot;,
+  &quot;auth_type&quot;: &quot;API_KEY&quot;,
+  &quot;auth_config&quot;: &#123;
+    &quot;api_key&quot;: &#123;
+      &quot;headers&quot;: [
+        &#123;
+          &quot;field_name&quot;: &quot;X-API-Key&quot;,
+          &quot;value&quot;: &quot;&#123;YOUR_CRM_API_KEY&#125;&quot;
+        &#125;
+      ]
+    &#125;
+  &#125;
+&#125;&#039;
+```
+
+### Python
+```python
+import requests
+
+response = requests.post(
+    &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_connectors&quot;,
+    headers=&#123;
+        &quot;Authorization&quot;: &quot;Bearer &#123;ACCESS_TOKEN&#125;&quot;,
+        &quot;X-API-Version&quot;: &quot;2.0.0&quot;,
+    &#125;,
+    json=&#123;
+        &quot;name&quot;: &quot;harvest_lane_leads_api&quot;,
+        &quot;description&quot;: &quot;Checks catering delivery coverage by postcode, submits qualified catering leads, and returns the status of a lead already submitted for Harvest Lane Kitchens.&quot;,
+        &quot;base_url&quot;: &quot;https://api.harvestlanekitchens.com/crm/v1&quot;,
+        &quot;auth_type&quot;: &quot;API_KEY&quot;,
+        &quot;auth_config&quot;: &#123;
+            &quot;api_key&quot;: &#123;
+                &quot;headers&quot;: [
+                    &#123;
+                        &quot;field_name&quot;: &quot;X-API-Key&quot;,
+                        &quot;value&quot;: &quot;&#123;YOUR_CRM_API_KEY&#125;&quot;,
+                    &#125;
+                ]
+            &#125;
+        &#125;,
+    &#125;,
+)
+print(response.json())
+```
+
+### Node.js
+```javascript
+const response = await fetch(
+  &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_connectors&quot;,
+  &#123;
+    method: &quot;POST&quot;,
+    headers: &#123;
+      &quot;Authorization&quot;: &quot;Bearer &#123;ACCESS_TOKEN&#125;&quot;,
+      &quot;Content-Type&quot;: &quot;application/json&quot;,
+      &quot;X-API-Version&quot;: &quot;2.0.0&quot;,
+    &#125;,
+    body: JSON.stringify(&#123;
+      &quot;name&quot;: &quot;harvest_lane_leads_api&quot;,
+      &quot;description&quot;: &quot;Checks catering delivery coverage by postcode, submits qualified catering leads, and returns the status of a lead already submitted for Harvest Lane Kitchens.&quot;,
+      &quot;base_url&quot;: &quot;https://api.harvestlanekitchens.com/crm/v1&quot;,
+      &quot;auth_type&quot;: &quot;API_KEY&quot;,
+      &quot;auth_config&quot;: &#123;
+        &quot;api_key&quot;: &#123;
+          &quot;headers&quot;: [
+            &#123;
+              &quot;field_name&quot;: &quot;X-API-Key&quot;,
+              &quot;value&quot;: &quot;&#123;YOUR_CRM_API_KEY&#125;&quot;,
+            &#125;,
+          ],
+        &#125;,
+      &#125;,
+    &#125;),
+  &#125;
+);
+const data = await response.json();
+```
+
+A successful response returns the `id` of the new connector. Save it — the tools in [Define connector tools](#define-connector-tools) are created under it, where it becomes the `&#123;connector_id&#125;` path parameter.
+
+**Where else this applies.** The connector call is identical whichever system receives your leads, whether that is a CRM, a marketing automation platform, or a queue your sales team works from. Only `base_url`, `auth_type`, and the credentials change. For catering, point it at the system that owns the lead record, so the salesperson sees the inquiry in the tool they already work in rather than in a separate inbox.
+
+## Define connector tools &#123;#define-connector-tools&#125;
+
+[Connector tools](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/connector-tools) define the operations the agent can invoke. Each tool needs a `name`, a `description`, `user_auth_required`, and a `request_definition` describing the outbound HTTP call. Inside `request_definition`, set `method` and `path`, then declare inputs in the section that matches where they belong: `path_parameters` for `&#123;placeholder&#125;` segments in the path, `query_parameters`, `headers`, or `body`.
+
+A lead generation flow needs three tools: one to check whether you serve an area, one to submit the lead, and one to answer questions about a lead already submitted.
+
+### Check delivery coverage &#123;#check-delivery-coverage&#125;
+
+### cURL
+```bash
+curl -X POST &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_connectors/&#123;connector_id&#125;/tools&quot; \
+  -H &quot;Authorization: Bearer &#123;ACCESS_TOKEN&#125;&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;X-API-Version: 2.0.0&quot; \
+  -d &#039;&#123;
+  &quot;name&quot;: &quot;check_delivery_coverage&quot;,
+  &quot;description&quot;: &quot;Returns whether catering delivery is available for a postcode, the minimum order for that area, and the earliest date the kitchen can serve it. Call this as soon as the customer names a location and before discussing packages or prices. Ask for the postcode first if the customer only gave a city or a district name.&quot;,
+  &quot;user_auth_required&quot;: false,
+  &quot;request_definition&quot;: &#123;
+    &quot;method&quot;: &quot;GET&quot;,
+    &quot;path&quot;: &quot;/coverage&quot;,
+    &quot;query_parameters&quot;: &#123;
+      &quot;postcode&quot;: &#123;
+        &quot;type&quot;: &quot;string&quot;,
+        &quot;description&quot;: &quot;The delivery postcode as the customer gave it, for example SW1A 1AA.&quot;,
+        &quot;required&quot;: true
+      &#125;,
+      &quot;event_date&quot;: &#123;
+        &quot;type&quot;: &quot;string&quot;,
+        &quot;description&quot;: &quot;Event date in ISO 8601 format, for example 2026-09-18. Omit when the customer has not given a date yet.&quot;
+      &#125;,
+      &quot;headcount&quot;: &#123;
+        &quot;type&quot;: &quot;integer&quot;,
+        &quot;description&quot;: &quot;Approximate number of guests. Omit when the customer has not given a number yet.&quot;
+      &#125;
+    &#125;
+  &#125;
+&#125;&#039;
+```
+
+### Python
+```python
+import requests
+
+response = requests.post(
+    &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_connectors/&#123;connector_id&#125;/tools&quot;,
+    headers=&#123;
+        &quot;Authorization&quot;: &quot;Bearer &#123;ACCESS_TOKEN&#125;&quot;,
+        &quot;X-API-Version&quot;: &quot;2.0.0&quot;,
+    &#125;,
+    json=&#123;
+        &quot;name&quot;: &quot;check_delivery_coverage&quot;,
+        &quot;description&quot;: &quot;Returns whether catering delivery is available for a postcode, the minimum order for that area, and the earliest date the kitchen can serve it. Call this as soon as the customer names a location and before discussing packages or prices. Ask for the postcode first if the customer only gave a city or a district name.&quot;,
+        &quot;user_auth_required&quot;: False,
+        &quot;request_definition&quot;: &#123;
+            &quot;method&quot;: &quot;GET&quot;,
+            &quot;path&quot;: &quot;/coverage&quot;,
+            &quot;query_parameters&quot;: &#123;
+                &quot;postcode&quot;: &#123;
+                    &quot;type&quot;: &quot;string&quot;,
+                    &quot;description&quot;: &quot;The delivery postcode as the customer gave it, for example SW1A 1AA.&quot;,
+                    &quot;required&quot;: True,
+                &#125;,
+                &quot;event_date&quot;: &#123;
+                    &quot;type&quot;: &quot;string&quot;,
+                    &quot;description&quot;: &quot;Event date in ISO 8601 format, for example 2026-09-18. Omit when the customer has not given a date yet.&quot;,
+                &#125;,
+                &quot;headcount&quot;: &#123;
+                    &quot;type&quot;: &quot;integer&quot;,
+                    &quot;description&quot;: &quot;Approximate number of guests. Omit when the customer has not given a number yet.&quot;,
+                &#125;,
+            &#125;,
+        &#125;,
+    &#125;,
+)
+print(response.json())
+```
+
+### Node.js
+```javascript
+const response = await fetch(
+  &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_connectors/&#123;connector_id&#125;/tools&quot;,
+  &#123;
+    method: &quot;POST&quot;,
+    headers: &#123;
+      &quot;Authorization&quot;: &quot;Bearer &#123;ACCESS_TOKEN&#125;&quot;,
+      &quot;Content-Type&quot;: &quot;application/json&quot;,
+      &quot;X-API-Version&quot;: &quot;2.0.0&quot;,
+    &#125;,
+    body: JSON.stringify(&#123;
+      &quot;name&quot;: &quot;check_delivery_coverage&quot;,
+      &quot;description&quot;: &quot;Returns whether catering delivery is available for a postcode, the minimum order for that area, and the earliest date the kitchen can serve it. Call this as soon as the customer names a location and before discussing packages or prices. Ask for the postcode first if the customer only gave a city or a district name.&quot;,
+      &quot;user_auth_required&quot;: false,
+      &quot;request_definition&quot;: &#123;
+        &quot;method&quot;: &quot;GET&quot;,
+        &quot;path&quot;: &quot;/coverage&quot;,
+        &quot;query_parameters&quot;: &#123;
+          &quot;postcode&quot;: &#123;
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;description&quot;: &quot;The delivery postcode as the customer gave it, for example SW1A 1AA.&quot;,
+            &quot;required&quot;: true,
+          &#125;,
+          &quot;event_date&quot;: &#123;
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;description&quot;: &quot;Event date in ISO 8601 format, for example 2026-09-18. Omit when the customer has not given a date yet.&quot;,
+          &#125;,
+          &quot;headcount&quot;: &#123;
+            &quot;type&quot;: &quot;integer&quot;,
+            &quot;description&quot;: &quot;Approximate number of guests. Omit when the customer has not given a number yet.&quot;,
+          &#125;,
+        &#125;,
+      &#125;,
+    &#125;),
+  &#125;
+);
+const data = await response.json();
+```
+
+Keep the response small. Return a coverage decision, the minimum order for that area, and the earliest serviceable date, rather than the full delivery zone table for the agent to interpret.
+
+### Submit a catering lead &#123;#submit-a-catering-lead&#125;
+
+The customer&#039;s phone number identifies their lead, and it is a value the agent should never have to ask for or infer. Bind it with the `WHATSAPP_PHONE_NUMBER` macro so Meta Business Agent fills it at runtime.
+
+### cURL
+```bash
+curl -X POST &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_connectors/&#123;connector_id&#125;/tools&quot; \
+  -H &quot;Authorization: Bearer &#123;ACCESS_TOKEN&#125;&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;X-API-Version: 2.0.0&quot; \
+  -d &#039;&#123;
+  &quot;name&quot;: &quot;submit_catering_lead&quot;,
+  &quot;description&quot;: &quot;Creates a catering lead in the sales system and returns a reference the customer can quote. Call this only after delivery coverage is confirmed and the customer has given a contact name, an event date, a headcount, and a postcode. Do not call it to check a price or coverage.&quot;,
+  &quot;user_auth_required&quot;: false,
+  &quot;request_definition&quot;: &#123;
+    &quot;method&quot;: &quot;POST&quot;,
+    &quot;path&quot;: &quot;/leads&quot;,
+    &quot;body&quot;: &#123;
+      &quot;content_type&quot;: &quot;application/json&quot;,
+      &quot;params&quot;: &#123;
+        &quot;contact_name&quot;: &#123;
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;description&quot;: &quot;The name the customer gave for the person the team should contact.&quot;
+        &#125;,
+        &quot;postcode&quot;: &#123;
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;description&quot;: &quot;The confirmed delivery postcode, as accepted by check_delivery_coverage.&quot;
+        &#125;,
+        &quot;event_date&quot;: &#123;
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;description&quot;: &quot;Event date in ISO 8601 format, exactly as confirmed with the customer.&quot;
+        &#125;,
+        &quot;headcount&quot;: &#123;
+          &quot;type&quot;: &quot;integer&quot;,
+          &quot;description&quot;: &quot;Number of guests as confirmed with the customer.&quot;
+        &#125;,
+        &quot;package_sku&quot;: &#123;
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;description&quot;: &quot;The package code the customer expressed interest in. Omit when they did not settle on one.&quot;
+        &#125;,
+        &quot;dietary_notes&quot;: &#123;
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;description&quot;: &quot;Dietary requirements in their own words, for example four vegan and two gluten-free.&quot;
+        &#125;,
+        &quot;contact_phone&quot;: &#123;
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;description&quot;: &quot;The customer WhatsApp phone number, used to identify the lead.&quot;,
+          &quot;binding&quot;: &#123;
+            &quot;kind&quot;: &quot;macro&quot;,
+            &quot;macro&quot;: &quot;WHATSAPP_PHONE_NUMBER&quot;
+          &#125;
+        &#125;
+      &#125;,
+      &quot;required&quot;: [&quot;contact_name&quot;, &quot;postcode&quot;, &quot;event_date&quot;, &quot;headcount&quot;, &quot;contact_phone&quot;]
+    &#125;
+  &#125;
+&#125;&#039;
+```
+
+### Python
+```python
+import requests
+
+response = requests.post(
+    &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_connectors/&#123;connector_id&#125;/tools&quot;,
+    headers=&#123;
+        &quot;Authorization&quot;: &quot;Bearer &#123;ACCESS_TOKEN&#125;&quot;,
+        &quot;X-API-Version&quot;: &quot;2.0.0&quot;,
+    &#125;,
+    json=&#123;
+        &quot;name&quot;: &quot;submit_catering_lead&quot;,
+        &quot;description&quot;: &quot;Creates a catering lead in the sales system and returns a reference the customer can quote. Call this only after delivery coverage is confirmed and the customer has given a contact name, an event date, a headcount, and a postcode. Do not call it to check a price or coverage.&quot;,
+        &quot;user_auth_required&quot;: False,
+        &quot;request_definition&quot;: &#123;
+            &quot;method&quot;: &quot;POST&quot;,
+            &quot;path&quot;: &quot;/leads&quot;,
+            &quot;body&quot;: &#123;
+                &quot;content_type&quot;: &quot;application/json&quot;,
+                &quot;params&quot;: &#123;
+                    &quot;contact_name&quot;: &#123;
+                        &quot;type&quot;: &quot;string&quot;,
+                        &quot;description&quot;: &quot;The name the customer gave for the person the team should contact.&quot;,
+                    &#125;,
+                    &quot;postcode&quot;: &#123;
+                        &quot;type&quot;: &quot;string&quot;,
+                        &quot;description&quot;: &quot;The confirmed delivery postcode, as accepted by check_delivery_coverage.&quot;,
+                    &#125;,
+                    &quot;event_date&quot;: &#123;
+                        &quot;type&quot;: &quot;string&quot;,
+                        &quot;description&quot;: &quot;Event date in ISO 8601 format, exactly as confirmed with the customer.&quot;,
+                    &#125;,
+                    &quot;headcount&quot;: &#123;
+                        &quot;type&quot;: &quot;integer&quot;,
+                        &quot;description&quot;: &quot;Number of guests as confirmed with the customer.&quot;,
+                    &#125;,
+                    &quot;package_sku&quot;: &#123;
+                        &quot;type&quot;: &quot;string&quot;,
+                        &quot;description&quot;: &quot;The package code the customer expressed interest in. Omit when they did not settle on one.&quot;,
+                    &#125;,
+                    &quot;dietary_notes&quot;: &#123;
+                        &quot;type&quot;: &quot;string&quot;,
+                        &quot;description&quot;: &quot;Dietary requirements in their own words, for example four vegan and two gluten-free.&quot;,
+                    &#125;,
+                    &quot;contact_phone&quot;: &#123;
+                        &quot;type&quot;: &quot;string&quot;,
+                        &quot;description&quot;: &quot;The customer WhatsApp phone number, used to identify the lead.&quot;,
+                        &quot;binding&quot;: &#123;
+                            &quot;kind&quot;: &quot;macro&quot;,
+                            &quot;macro&quot;: &quot;WHATSAPP_PHONE_NUMBER&quot;,
+                        &#125;,
+                    &#125;,
+                &#125;,
+                &quot;required&quot;: [
+                    &quot;contact_name&quot;,
+                    &quot;postcode&quot;,
+                    &quot;event_date&quot;,
+                    &quot;headcount&quot;,
+                    &quot;contact_phone&quot;,
+                ],
+            &#125;,
+        &#125;,
+    &#125;,
+)
+print(response.json())
+```
+
+### Node.js
+```javascript
+const response = await fetch(
+  &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_connectors/&#123;connector_id&#125;/tools&quot;,
+  &#123;
+    method: &quot;POST&quot;,
+    headers: &#123;
+      &quot;Authorization&quot;: &quot;Bearer &#123;ACCESS_TOKEN&#125;&quot;,
+      &quot;Content-Type&quot;: &quot;application/json&quot;,
+      &quot;X-API-Version&quot;: &quot;2.0.0&quot;,
+    &#125;,
+    body: JSON.stringify(&#123;
+      &quot;name&quot;: &quot;submit_catering_lead&quot;,
+      &quot;description&quot;: &quot;Creates a catering lead in the sales system and returns a reference the customer can quote. Call this only after delivery coverage is confirmed and the customer has given a contact name, an event date, a headcount, and a postcode. Do not call it to check a price or coverage.&quot;,
+      &quot;user_auth_required&quot;: false,
+      &quot;request_definition&quot;: &#123;
+        &quot;method&quot;: &quot;POST&quot;,
+        &quot;path&quot;: &quot;/leads&quot;,
+        &quot;body&quot;: &#123;
+          &quot;content_type&quot;: &quot;application/json&quot;,
+          &quot;params&quot;: &#123;
+            &quot;contact_name&quot;: &#123;
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;description&quot;: &quot;The name the customer gave for the person the team should contact.&quot;,
+            &#125;,
+            &quot;postcode&quot;: &#123;
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;description&quot;: &quot;The confirmed delivery postcode, as accepted by check_delivery_coverage.&quot;,
+            &#125;,
+            &quot;event_date&quot;: &#123;
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;description&quot;: &quot;Event date in ISO 8601 format, exactly as confirmed with the customer.&quot;,
+            &#125;,
+            &quot;headcount&quot;: &#123;
+              &quot;type&quot;: &quot;integer&quot;,
+              &quot;description&quot;: &quot;Number of guests as confirmed with the customer.&quot;,
+            &#125;,
+            &quot;package_sku&quot;: &#123;
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;description&quot;: &quot;The package code the customer expressed interest in. Omit when they did not settle on one.&quot;,
+            &#125;,
+            &quot;dietary_notes&quot;: &#123;
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;description&quot;: &quot;Dietary requirements in their own words, for example four vegan and two gluten-free.&quot;,
+            &#125;,
+            &quot;contact_phone&quot;: &#123;
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;description&quot;: &quot;The customer WhatsApp phone number, used to identify the lead.&quot;,
+              &quot;binding&quot;: &#123;
+                &quot;kind&quot;: &quot;macro&quot;,
+                &quot;macro&quot;: &quot;WHATSAPP_PHONE_NUMBER&quot;,
+              &#125;,
+            &#125;,
+          &#125;,
+          &quot;required&quot;: [
+            &quot;contact_name&quot;,
+            &quot;postcode&quot;,
+            &quot;event_date&quot;,
+            &quot;headcount&quot;,
+            &quot;contact_phone&quot;,
+          ],
+        &#125;,
+      &#125;,
+    &#125;),
+  &#125;
+);
+const data = await response.json();
+```
+
+### Check a lead &#123;#check-a-lead&#125;
+
+```bash
+curl -X POST &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_connectors/&#123;connector_id&#125;/tools&quot; \
+  -H &quot;Authorization: Bearer &#123;ACCESS_TOKEN&#125;&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;X-API-Version: 2.0.0&quot; \
+  -d &#039;&#123;
+  &quot;name&quot;: &quot;check_lead_status&quot;,
+  &quot;description&quot;: &quot;Returns the status of one catering lead and whether the team has been in touch. Call this when a customer asks about an inquiry they already sent. Ask for the lead reference first if they did not provide one.&quot;,
+  &quot;user_auth_required&quot;: false,
+  &quot;request_definition&quot;: &#123;
+    &quot;method&quot;: &quot;GET&quot;,
+    &quot;path&quot;: &quot;/leads/&#123;lead_id&#125;&quot;,
+    &quot;path_parameters&quot;: &#123;
+      &quot;lead_id&quot;: &#123;
+        &quot;type&quot;: &quot;string&quot;,
+        &quot;description&quot;: &quot;The lead reference as the customer provided it, for example HL-20419.&quot;
+      &#125;
+    &#125;
+  &#125;
+&#125;&#039;
+```
+
+Path parameters are always required, so they take no `required` flag. Body fields list their required keys in `body.required`.
+
+**Where else this applies.** Lead flows share this qualify, submit, follow-up shape: establish whether the customer is servable, capture the fields a salesperson needs, then answer questions about the record afterwards. A franchise team swaps the postcode for a territory, and a grocery service swaps the headcount for expected weekly spend. Guard the write in every case, since a lead submitted too early gives your sales team a record they cannot act on.
+
+## Configure handoff &#123;#configure-handoff&#125;
+
+The `catering-inquiries` instruction tells the agent to route complaints about a delivered order, invoicing questions, and refund requests to your team. That instruction does nothing on its own. Pair it with a real destination, or the customer is acknowledged and then left waiting.
+
+Two pieces are involved, and both are required.
+
+Set the handoff policy on the agent with [Agent settings](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-settings), which controls how the agent behaves when a conversation should move to a person.
+
+Transfer the conversation itself with [Thread control (Cloud API)](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/thread-control-cloud-api). Thread control decides who owns the thread: while your app holds control, the agent stops responding and your team answers directly in the same WhatsApp conversation. Pass control back when the case is closed.
+
+```bash
+curl -X PUT &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_config/settings&quot; \
+  -H &quot;Authorization: Bearer &#123;ACCESS_TOKEN&#125;&quot; \
+  -H &quot;X-API-Version: 2.0.0&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#039;&#123;
+  &quot;handoff&quot;: &#123;
+    &quot;enabled&quot;: true,
+    &quot;message_selection&quot;: &quot;AGENT&quot;
+  &#125;
+&#125;&#039;
+```
+
+### Take control when a customer escalates &#123;#take-control&#125;
+
+Thread control is a single POST with an `action`. `take` acquires control from the
+current owner, which stops the agent responding so your team can answer in the same
+conversation. It is restricted to the escalation partner configured on the phone number.
+
+Note the path parameter is named `phone_number_id` here rather than `entity_id`. It is
+the same WhatsApp Business phone number ID used everywhere else in this guide.
+
+```bash
+curl -X POST &quot;https://api.facebook.com/business/whatsapp/phone_numbers/&#123;phone_number_id&#125;/thread_control&quot; \
+  -H &quot;Authorization: Bearer &#123;ACCESS_TOKEN&#125;&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#039;&#123;
+  &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+  &quot;action&quot;: &quot;take&quot;,
+  &quot;to&quot;: &quot;&#123;CUSTOMER_PHONE_NUMBER&#125;&quot;,
+  &quot;metadata&quot;: &quot;Complaint on catering lead HL-20419&quot;
+&#125;&#039;
+```
+
+`metadata` is a free-form string forwarded verbatim to the receiving app in the
+resulting `messaging_handovers` webhook. Use it to carry the lead reference, so the colleague
+picking the conversation up does not have to ask for it again.
+
+### Hand the conversation back &#123;#hand-the-conversation-back&#125;
+
+When the case is closed, `release` relinquishes control and makes Meta Business Agent
+the automatic responder again. You must currently hold thread control for this to
+succeed.
+
+```bash
+curl -X POST &quot;https://api.facebook.com/business/whatsapp/phone_numbers/&#123;phone_number_id&#125;/thread_control&quot; \
+  -H &quot;Authorization: Bearer &#123;ACCESS_TOKEN&#125;&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#039;&#123;
+  &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+  &quot;action&quot;: &quot;release&quot;,
+  &quot;to&quot;: &quot;&#123;CUSTOMER_PHONE_NUMBER&#125;&quot;
+&#125;&#039;
+```
+
+The three actions differ in who ends up holding the thread:
+
+| Action | Effect | Who can call it |
+|--------|--------|-----------------|
+| `take` | Acquires control from the current owner. The agent stops responding | The configured escalation partner |
+| `release` | Relinquishes control and restores the agent as automatic responder | Whoever currently holds control |
+| `pass` | Transfers control to the agent when `control_pass.target_role` is `ai_agent`, or to the configured escalation partner when `control_pass` is omitted | Whoever currently holds control |
+
+These calls carry no `X-API-Version` header, unlike every other call on this page.
+Thread control belongs to the Cloud API rather than the agent configuration API: its
+version header is optional and accepts only `1.0.0`, so the `2.0.0` value used
+elsewhere in this guide does not apply here.
+
+This endpoint needs the `whatsapp_business_messaging` permission, the same one used for
+the rest of this guide.
+
+
+Lead generation has a second handoff worth designing for: a qualified lead the sales team wants to pick up while the customer is still in the conversation. A large event, a recurring contract, or a customer asking for something outside your standard packages is often worth a person joining immediately rather than a callback tomorrow. Decide which lead shapes warrant that, and hand those over as well as the complaints.
+
+Decide what happens outside staffed hours before you launch. An agent that hands off at 02:00 into an unstaffed queue produces a worse outcome than one that says when the team is next available.
+
+**Where else this applies.** Any scenario where the value of the conversation exceeds the cost of a person&#039;s time deserves a live handoff rather than a queued follow-up. For catering, a complaint about food already delivered should leave the agent on the first message, and a high-value inquiry should leave it on the last.
+
+## Test the agent &#123;#test-the-agent&#125;
+
+Use [Agent test](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/agent-test) to simulate customer conversations before going live. Pass `conversation_id` from a previous response to continue a multi-turn exchange.
+
+### cURL
+```bash
+curl -X POST &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_test&quot; \
+  -H &quot;Authorization: Bearer &#123;ACCESS_TOKEN&#125;&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;X-API-Version: 2.0.0&quot; \
+  -d &#039;&#123;
+  &quot;user_msg&quot;: &quot;Can you do lunch for 30 people in the office next Thursday?&quot;
+&#125;&#039;
+```
+
+### Python
+```python
+import requests
+
+response = requests.post(
+    &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_test&quot;,
+    headers=&#123;
+        &quot;Authorization&quot;: &quot;Bearer &#123;ACCESS_TOKEN&#125;&quot;,
+        &quot;X-API-Version&quot;: &quot;2.0.0&quot;,
+    &#125;,
+    json=&#123;&quot;user_msg&quot;: &quot;Can you do lunch for 30 people in the office next Thursday?&quot;&#125;,
+)
+print(response.json())
+```
+
+### Node.js
+```javascript
+const response = await fetch(
+  &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_test&quot;,
+  &#123;
+    method: &quot;POST&quot;,
+    headers: &#123;
+      &quot;Authorization&quot;: &quot;Bearer &#123;ACCESS_TOKEN&#125;&quot;,
+      &quot;Content-Type&quot;: &quot;application/json&quot;,
+      &quot;X-API-Version&quot;: &quot;2.0.0&quot;,
+    &#125;,
+    body: JSON.stringify(&#123;
+      &quot;user_msg&quot;: &quot;Can you do lunch for 30 people in the office next Thursday?&quot;,
+    &#125;),
+  &#125;
+);
+const data = await response.json();
+```
+
+Cover these scenarios in your test plan:
+
+| Scenario | Sample message |
+|----------|---------------|
+| Vague inquiry | &quot;Do you do catering?&quot; |
+| Missing postcode | &quot;Lunch for 30 next Thursday please&quot; |
+| Out-of-area postcode | &quot;Can you deliver to IV27 4HT?&quot; |
+| Below the minimum order | &quot;Just sandwiches for four of us&quot; |
+| Shorter notice than the lead time | &quot;Can you do 50 people tomorrow?&quot; |
+| Dietary requirement | &quot;Half the group is vegan, is that a problem?&quot; |
+| Complete lead | &quot;Sarah Chen, 30 people, SW1A 1AA, the 18th, working lunch&quot; |
+| Lead follow-up | &quot;Has anyone picked up my inquiry HL-20419?&quot; |
+| Out-of-scope question | &quot;Last week&#039;s delivery was cold and I want a refund&quot; |
+
+**Where else this applies.** Test the qualification your agent actually performs, in the words your customers use rather than the terms in your packages list. Always include one out-of-area and one below-minimum message, because a polite early no is the outcome those conversations should reach, and it is the one agents most often get wrong by staying enthusiastic.
+
+## Example conversation &#123;#example-conversation&#125;
+
+This exchange shows the configuration above in use: the agent checks coverage before discussing packages, gathers the three qualifying fields, confirms them, and only then calls `submit_catering_lead`.
+
+**Customer:** Hi, do you do catering for offices?
+
+**Agent:** We do. Whereabouts are you — if you give me the postcode I can check we deliver there.
+
+**Customer:** SW1A 1AA. It&#039;d be lunch for about 30 people on the 18th.
+
+**Agent:** *(calls `check_delivery_coverage`)*
+
+We deliver to SW1A with a minimum order of 10 guests, so 30 is fine, and the 18th is well within our notice period. The Working lunch buffet is £14.50 per head — sandwich platters, two salads, fruit, and soft drinks, with vegetarian, vegan, and gluten-free portions at no extra cost. Shall I pass this to the catering team for a firm quote?
+
+**Customer:** Yes please. Four of them are vegan.
+
+**Agent:** Noted. Can I take a name for the team to contact?
+
+**Customer:** Sarah Chen.
+
+**Agent:** *(calls `submit_catering_lead`)*
+
+Thanks Sarah — I have logged it: Working lunch buffet, 30 guests including 4 vegan, SW1A 1AA, 18 September. Your reference is HL-20419 and the catering team will confirm the final quote within one working day.
+
+## Monitor connector health &#123;#monitor-connector-health&#125;
+
+The connector logs endpoint, `GET /&#123;entity_id&#125;/agent_connectors/&#123;connector_id&#125;/logs`, reports how your CRM is answering the agent. It returns individual error entries by default, or aggregated failure patterns when `summary_only` is true. Add `include_stats=true` for success rate and latency.
+
+Reading these logs requires the `whatsapp_business_management` permission in addition to `whatsapp_business_messaging`. A token with only `whatsapp_business_messaging` receives a `200` response with an empty body.
+
+```bash
+curl -X GET &quot;https://api.facebook.com/&#123;entity_id&#125;/agent_connectors/&#123;connector_id&#125;/logs?summary_only=true&amp;top_n=5&amp;include_stats=true&quot; \
+  -H &quot;Authorization: Bearer &#123;ACCESS_TOKEN&#125;&quot; \
+  -H &quot;X-API-Version: 2.0.0&quot;
+```
+
+Logs cover the last seven days, and the requested time range cannot exceed seven days. Each entry in `data` is one error event by default, or one failure pattern when you pass `summary_only=true`, and `stats` summarizes the whole window. For the fields each mode returns, see the [Connectors reference](https://developers.facebook.com/documentation/meta-business-agent/reference/configure/connectors).
+
+Filter to one operation with `tool_id` when you want a single tool&#039;s health rather than the connector&#039;s overall rate.
+
+**Where else this applies.** Watch the write tool separately from the connector as a whole, because a healthy overall rate hides a write that fails every time when reads outnumber writes. For lead generation, a failing `submit_catering_lead` is invisible to everyone: the customer is told the team will be in touch, and no record ever reaches the sales queue. Alert on that tool specifically, and reconcile lead counts against your CRM weekly.
+
+## Tips for this use case &#123;#tips-for-this-use-case&#125;
+
+These are the lead generation specific decisions that most often go wrong once the agent is live.
+
+**Check coverage before selling.** A customer talked through packages for an area you do not serve is a worse experience than an early no, and it burns a sales follow-up. The `catering-inquiries` instruction puts the postcode check first for that reason.
+
+**Define what makes a lead complete, and enforce it in the tool.** The `required` array on `submit_catering_lead` is the real specification. A lead without a date or a headcount is a message, not a lead, and it lands in the same queue as the good ones.
+
+**Say the quote is provisional.** The agent can present per-head package prices, but the final figure usually depends on service style, travel, and staffing. Have the instruction state that the team confirms the quote, so the customer is not surprised later.
+
+**Bind the customer&#039;s phone number rather than asking for it.** The `WHATSAPP_PHONE_NUMBER` macro fills the value at runtime, which removes a turn from the conversation and a chance for the agent to transcribe it wrong.
+
+**Handle repeat inquiries deliberately.** The same person may message twice about the same event. Decide whether your endpoint deduplicates on phone number and event date, or whether your team would rather see both records, and make the tool description match that decision.
+
+**Route delivered-order problems away immediately.** Complaints about food already delivered are not leads, and an agent that tries to help usually makes them worse. The instruction sends those to your support team on the first message.
+
+## Summary checklist &#123;#summary-checklist&#125;
+
+Confirm each of the following before you enable the agent on a production phone number.
+
+- Added a `catering-inquiries` agent instruction scoped to qualification, coverage-first, and handoff
+- Added FAQs for stable policies (notice periods, minimum order, dietary, payment terms)
+- Set up catering packages in the Meta product catalog with per-head prices, package codes, and shared item groups
+- Crawled the catering and allergen pages of your website
+- Created a leads connector with API key authentication
+- Defined `check_delivery_coverage`, `submit_catering_lead`, and `check_lead_status` connector tools
+- Bound the customer phone number with the `WHATSAPP_PHONE_NUMBER` macro
+- Set the `required` fields on `submit_catering_lead` to match your definition of a workable lead
+- Tested vague inquiries, out-of-area postcodes, below-minimum orders, short notice, and out-of-scope complaints
+- Configured a handoff policy in agent settings and implemented thread control for complaints and high-value leads
+- Set up connector health monitoring with alerting on the write tool
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/meta-business-agent/llms.txt

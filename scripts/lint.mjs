@@ -19,6 +19,7 @@ for (const file of files) {
     if (ts.isVariableDeclarationList(node) && !(node.flags & ts.NodeFlags.BlockScoped)) report(node, 'Use const/let instead of var');
     if (ts.isCallExpression(node) && ts.isIdentifier(node.expression) && node.expression.text === 'eval') report(node, 'eval is forbidden');
     if (file.includes('/domain/') && ts.isImportDeclaration(node) && /(?:@nestjs|apps\/web|\/http\/)/.test(node.moduleSpecifier.text)) report(node, 'Domain must not import transport/framework code');
+    if (file.startsWith('services/') && ts.isImportDeclaration(node) && /(?:apps\/|@agentic-crm\/(?!contracts(?:$|\/)))/.test(node.moduleSpecifier.text)) report(node, 'Service must not import another application/domain implementation');
     ts.forEachChild(node, visit);
   }
   visit(source);

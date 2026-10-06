@@ -1,5 +1,6 @@
 # MOD-04 — Conversation & Chat Workspace
 
+> Kiến trúc đích microservice theo ADR-017: [Chat / Conversation Server](../services/chat.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.
 Status: Ready for implementation text inbox M2. Requirements: REQ-05, REQ-06, REQ-09.
 
 ## Mục tiêu và phạm vi
@@ -51,3 +52,25 @@ SRC-015 đã nối `Conversations.receive` từ durable intake worker; inbound e
 SRC-016: inbox queue/detail/messages/notes polling 5 giây, owner kind và allowed_actions từ backend. Notes port kiểm Conversation read rồi Activity scope/field ACL riêng. Khi mất ACK, giữ nguyên payload/key và chỉ kiểm tra lại yêu cầu cũ; owner revision đổi chặn composer đến khi người dùng xem lại phân công. Context Contact/CTM có thật; chưa session qualification/attention/routing UI.
 
 SRC-017 integrates actual assignment/takeover with queued cancellation in one UoW, version/owner_revision checks, eligible owner selector and history in inbox. Sending intents retain real completion/reconciliation behavior. SRC-018 cancels actual queued/running runtime executions and tool rows atomically on assignment/close; active Chatflow session pause binds at SRC-020.
+
+## M3 — Platform-aware messages (Draft)
+
+Common envelope có `platform`, `message_type`, `external_msg_id`, `text`, `reply_to` JSON và `attachment` JSON, cùng internal IDs/tenant/direction/status/timestamps. Client chọn renderer theo platform/type/template version, hỗ trợ media/gallery/CSAT theo capability và fallback an toàn. Rich message là scope M3 theo CHG-20261006-03; edit/delete/realtime/omnichannel merge vẫn ngoài lát cắt này. [Draft contract và compatibility](../contracts/messaging-platforms.md).
+
+Human/AI owner trong CRM tách khỏi external thread control; UI cần biểu thị pending/unknown/confirmed control và chỉ mở send khi backend cho phép. External provider-hosted replies cập nhật timeline qua connector, không giả thành outbound intent do CRM gửi. Exact transitions/API/UX chốt ở [M3 plan](../planning/m3-provider-plan.md).
+
+
+SRC-026 Ready scope: read-only [legacy envelope v2](../contracts/message-envelope-v2.md); inbox text UI không đổi, rich variants vẫn Draft.
+
+
+SRC-027 Ready scope theo [rich messages](../contracts/rich-messages.md): sidecar storage, envelope v3, ACL-safe reply resolution, passive renderer. Chatflow ports nhận rich text cho inference, consent chỉ original; v1/v2 giữ compatibility.
+
+ADR-019 target: all new inbound/outbound Chat message inputs/events require crm_contact_id for the customer, validated against tenant/identity/conversation. Chat never creates Contact. [Contract](../contracts/contact-resolution.md); versioned rollout required for legacy strict APIs.
+
+## SRC-030 scoped implementation
+
+Chat bounded cache is a hint, hydrated only after successful ingress commit. Contact-bound inbound/outbound commands validate customer context; actor/permission/owner checks remain independent. Legacy strict event and timeline envelope versions remain compatible. See [compatibility contract](../contracts/contact-resolution-local.md).
+
+## SRC-031 Facebook configuration and channel dimensions
+
+[Exact OAuth/Page/schema19 contract](../contracts/facebook-configuration.md) and [operator runbook](../development/facebook-configuration.md) define Admin→Channels→Facebook, session/state-bound OAuth, encrypted DB Page credentials and manual verified token replacement. Baseline Channels remains sole writer of catalog/credentials; independent Connector capture is unchanged until API-based extraction/provisioning. Conversation channel and generated channel_id retain existing connection IDs, with Page metadata and tenant/field-authorized filters/options. Messaging activation and real sandbox acceptance remain separate.

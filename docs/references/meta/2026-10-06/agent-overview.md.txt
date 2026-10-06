@@ -1,0 +1,80 @@
+# Meta Business Agent
+
+
+
+  
+    
+  
+
+  
+    
+      Build an AI agent for your business
+      Configure an AI agent that handles customer conversations 24/7 in your brand voice on WhatsApp.
+    
+    
+      [Get started](https://developers.facebook.com/documentation/meta-business-agent/get-started)
+    
+    
+  
+
+  
+    
+  
+
+## What you can do
+
+You configure what your agent knows, how it responds, and what actions it can take — plus handoff to your app whenever you need to step in.
+
+- **Add knowledge** — business information, FAQs, websites, and files so the agent answers from your content
+
+- **Define how it responds** — instructions that set the agent&#039;s tone, priorities, and brand voice
+
+- **Connect your systems** — your own APIs and webhook subscriptions so the agent can take actions and listen to events, such as booking an appointment or confirming a payment
+
+- **Hand off to your app** — pass control between the agent and your app for specific events or flows
+
+- **Test your agent** — send test messages and evaluate performance before and after you go live
+
+For the full setup walkthrough, [End-to-end setup](https://developers.facebook.com/documentation/meta-business-agent/get-started).
+
+## Which phone numbers are eligible
+
+Before you can set up Meta Business Agent on a phone number, that number must be eligible. A phone number&#039;s WhatsApp Business account must meet all of the following:
+
+- **In a supported vertical** — all verticals are supported except Finance, Government, Health, Alcohol, Gambling, over-the-counter drugs, and matrimony services. The account must have a valid business category set.
+
+- **Managed through the WhatsApp Business Platform** — the phone number belongs to an enterprise WhatsApp Business Platform account (including one managed through a Solution Partner or Embedded Signup), not the consumer WhatsApp Business app.
+
+- **In good standing** — neither the WhatsApp Business account nor its owning business is restricted or banned on WhatsApp.
+
+- **In an eligible country** — the business must be based in a country authorized for Meta Business Agent.
+
+- **Meets business trust and verification requirements.**
+
+- **Not already running another AI agent on that number** — an active authorized-agent integration blocks Meta Business Agent.
+
+Additional account and integrity conditions can also affect eligibility. The [Eligibility](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-eligibility) endpoint is the authoritative check — call it to confirm whether a specific phone number is eligible.
+
+## Requirements
+
+To use Meta Business Agent, you need:
+
+- A WhatsApp Business [account](https://developers.facebook.com/documentation/business-messaging/whatsapp/get-started) with a WhatsApp Business phone number
+
+- A Meta app with the [`whatsapp_business_messaging`](https://developers.facebook.com/docs/permissions#whatsapp_business_messaging) permission
+
+- A WhatsApp Business phone number that&#039;s [eligible](#which-phone-numbers-are-eligible) for Meta Business Agent
+
+For the full setup walkthrough, [End-to-end setup](https://developers.facebook.com/documentation/meta-business-agent/get-started).
+
+## Next steps
+
+- [Capabilities](https://developers.facebook.com/documentation/meta-business-agent/capabilities) — see what the agent can do today and where to configure each capability
+
+- [End-to-end setup](https://developers.facebook.com/documentation/meta-business-agent/get-started) — set up your environment and enable your agent
+
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/meta-business-agent/llms.txt

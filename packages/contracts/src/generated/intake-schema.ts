@@ -1,0 +1,807 @@
+/* Generated. Do not edit. */
+export const intakeSchema = {
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://agentic-crm.invalid/schemas/intake.json",
+  "title": "IntakeSchema",
+  "definitions": {
+    "intake-request": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "provider_event_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+        },
+        "provider_message_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+        },
+        "external_subject_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+        },
+        "occurred_at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$"
+        },
+        "display_label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+        },
+        "message": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "type": {
+                  "const": "text"
+                },
+                "text": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4000,
+                  "pattern": "\\S"
+                }
+              },
+              "required": [
+                "type",
+                "text"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "type": {
+                  "const": "rich"
+                },
+                "content": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "version": {
+                          "type": "integer",
+                          "const": 1
+                        },
+                        "message_type": {
+                          "const": "text"
+                        },
+                        "text": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 4000,
+                          "pattern": "\\S"
+                        },
+                        "reply_to": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "external_msg_id": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 255,
+                                  "pattern": "\\S"
+                                }
+                              },
+                              "required": [
+                                "external_msg_id"
+                              ]
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "attachment": {
+                          "type": "null"
+                        }
+                      },
+                      "required": [
+                        "version",
+                        "message_type",
+                        "text",
+                        "reply_to",
+                        "attachment"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "version": {
+                          "type": "integer",
+                          "const": 1
+                        },
+                        "message_type": {
+                          "const": "media"
+                        },
+                        "text": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 4000,
+                              "pattern": "\\S"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "reply_to": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "external_msg_id": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 255,
+                                  "pattern": "\\S"
+                                }
+                              },
+                              "required": [
+                                "external_msg_id"
+                              ]
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "attachment": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "version": {
+                              "type": "integer",
+                              "const": 1
+                            },
+                            "kind": {
+                              "const": "media"
+                            },
+                            "items": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "media_type": {
+                                    "enum": [
+                                      "image",
+                                      "audio",
+                                      "video",
+                                      "file"
+                                    ]
+                                  },
+                                  "external_media_id": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 255,
+                                    "pattern": "\\S"
+                                  },
+                                  "name": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 255,
+                                        "pattern": "\\S"
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "media_type",
+                                  "external_media_id",
+                                  "name"
+                                ]
+                              },
+                              "minItems": 1,
+                              "maxItems": 10
+                            }
+                          },
+                          "required": [
+                            "version",
+                            "kind",
+                            "items"
+                          ]
+                        },
+                        "text_source": {
+                          "enum": [
+                            "extracted",
+                            "preview"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "version",
+                        "message_type",
+                        "text",
+                        "reply_to",
+                        "attachment"
+                      ],
+                      "not": {
+                        "properties": {
+                          "text_source": {
+                            "const": "extracted"
+                          },
+                          "text": {
+                            "type": "null"
+                          }
+                        },
+                        "required": [
+                          "text_source",
+                          "text"
+                        ]
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "version": {
+                          "type": "integer",
+                          "const": 1
+                        },
+                        "message_type": {
+                          "const": "template"
+                        },
+                        "text": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 4000,
+                              "pattern": "\\S"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "reply_to": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "external_msg_id": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 255,
+                                  "pattern": "\\S"
+                                }
+                              },
+                              "required": [
+                                "external_msg_id"
+                              ]
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "attachment": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "version": {
+                                  "type": "integer",
+                                  "const": 1
+                                },
+                                "kind": {
+                                  "const": "gallery"
+                                },
+                                "cards": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "title": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 80,
+                                        "pattern": "\\S"
+                                      },
+                                      "subtitle": {
+                                        "anyOf": [
+                                          {
+                                            "type": "string",
+                                            "minLength": 1,
+                                            "maxLength": 80,
+                                            "pattern": "\\S"
+                                          },
+                                          {
+                                            "type": "null"
+                                          }
+                                        ]
+                                      },
+                                      "buttons": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "additionalProperties": false,
+                                          "properties": {
+                                            "label": {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "maxLength": 20,
+                                              "pattern": "\\S"
+                                            }
+                                          },
+                                          "required": [
+                                            "label"
+                                          ]
+                                        },
+                                        "minItems": 0,
+                                        "maxItems": 3
+                                      }
+                                    },
+                                    "required": [
+                                      "title",
+                                      "subtitle",
+                                      "buttons"
+                                    ]
+                                  },
+                                  "minItems": 1,
+                                  "maxItems": 10
+                                }
+                              },
+                              "required": [
+                                "version",
+                                "kind",
+                                "cards"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "version": {
+                                  "type": "integer",
+                                  "const": 1
+                                },
+                                "kind": {
+                                  "const": "csat"
+                                },
+                                "title": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 80,
+                                  "pattern": "\\S"
+                                },
+                                "prompt": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 400,
+                                  "pattern": "\\S"
+                                }
+                              },
+                              "required": [
+                                "version",
+                                "kind",
+                                "title",
+                                "prompt"
+                              ]
+                            }
+                          ]
+                        },
+                        "text_source": {
+                          "enum": [
+                            "extracted",
+                            "preview"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "version",
+                        "message_type",
+                        "text",
+                        "reply_to",
+                        "attachment"
+                      ],
+                      "not": {
+                        "properties": {
+                          "text_source": {
+                            "const": "extracted"
+                          },
+                          "text": {
+                            "type": "null"
+                          }
+                        },
+                        "required": [
+                          "text_source",
+                          "text"
+                        ]
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "version": {
+                          "type": "integer",
+                          "const": 1
+                        },
+                        "message_type": {
+                          "const": "unsupported"
+                        },
+                        "text": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 4000,
+                              "pattern": "\\S"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "reply_to": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "external_msg_id": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 255,
+                                  "pattern": "\\S"
+                                }
+                              },
+                              "required": [
+                                "external_msg_id"
+                              ]
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "attachment": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "version": {
+                              "type": "integer",
+                              "const": 1
+                            },
+                            "kind": {
+                              "const": "unsupported"
+                            },
+                            "label": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 120,
+                              "pattern": "\\S"
+                            }
+                          },
+                          "required": [
+                            "version",
+                            "kind",
+                            "label"
+                          ]
+                        },
+                        "text_source": {
+                          "enum": [
+                            "extracted",
+                            "preview"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "version",
+                        "message_type",
+                        "text",
+                        "reply_to",
+                        "attachment"
+                      ],
+                      "not": {
+                        "properties": {
+                          "text_source": {
+                            "const": "extracted"
+                          },
+                          "text": {
+                            "type": "null"
+                          }
+                        },
+                        "required": [
+                          "text_source",
+                          "text"
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "type",
+                "content"
+              ]
+            }
+          ]
+        },
+        "referral": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "const": "ctm"
+            },
+            "ad_id": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 255,
+                  "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "campaign_id": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 255,
+                  "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "source"
+          ]
+        }
+      },
+      "required": [
+        "provider_event_id",
+        "provider_message_id",
+        "external_subject_id",
+        "occurred_at",
+        "message"
+      ]
+    },
+    "intake-status": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "connection_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "status": {
+          "enum": [
+            "received",
+            "processed",
+            "failed"
+          ]
+        },
+        "attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "error_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "conversation_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "message_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "duplicate": {
+          "type": "boolean"
+        },
+        "attribution": {
+          "enum": [
+            "unknown",
+            "ctm"
+          ]
+        },
+        "received_at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$"
+        },
+        "processed_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "connection_id",
+        "status",
+        "attempts",
+        "error_code",
+        "conversation_id",
+        "message_id",
+        "duplicate",
+        "attribution",
+        "received_at",
+        "processed_at"
+      ]
+    },
+    "intake-ack": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "delivery_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "status": {
+              "const": "received"
+            }
+          },
+          "required": [
+            "delivery_id",
+            "status"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "intake-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/intake-status"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "intake-retry": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {},
+      "required": []
+    },
+    "intake-binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tenant_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "connection_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "platform": {
+              "const": "mock_messenger"
+            }
+          },
+          "required": [
+            "tenant_id",
+            "connection_id",
+            "platform"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    }
+  }
+};

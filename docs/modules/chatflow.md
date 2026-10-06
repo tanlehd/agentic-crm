@@ -1,5 +1,6 @@
 # MOD-09 — Chatflow
 
+> Kiến trúc đích microservice theo ADR-017: [Chatflow Orchestrator](../services/chatflow.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.
 Status: Ready for implementation qualification M2; visual builder Draft M5. Requirements: REQ-07, REQ-08, REQ-09.
 
 ## Mục tiêu và phạm vi

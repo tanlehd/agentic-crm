@@ -1,0 +1,279 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://agentic-crm.local/schemas/facebook-configuration.json",
+  "definitions": {
+    "facebook-connect-request": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "team_id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "team_id"
+      ]
+    },
+    "facebook-connect-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "authorization_url": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "required": [
+            "authorization_url"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "facebook-page": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "channel": {
+          "const": "messenger"
+        },
+        "channel_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "page_id": {
+          "type": "string",
+          "pattern": "^[0-9]{1,32}$"
+        },
+        "app_id": {
+          "type": "string",
+          "pattern": "^[0-9]{1,32}$"
+        },
+        "name": {
+          "type": "string"
+        },
+        "team_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "credential_status": {
+          "enum": [
+            "stored",
+            "missing"
+          ]
+        },
+        "version": {
+          "type": "string"
+        },
+        "connected_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "channel",
+        "channel_id",
+        "page_id",
+        "app_id",
+        "name",
+        "team_id",
+        "credential_status",
+        "version",
+        "connected_at"
+      ]
+    },
+    "facebook-page-list": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "channel": {
+                "const": "messenger"
+              },
+              "channel_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "page_id": {
+                "type": "string",
+                "pattern": "^[0-9]{1,32}$"
+              },
+              "app_id": {
+                "type": "string",
+                "pattern": "^[0-9]{1,32}$"
+              },
+              "name": {
+                "type": "string"
+              },
+              "team_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "credential_status": {
+                "enum": [
+                  "stored",
+                  "missing"
+                ]
+              },
+              "version": {
+                "type": "string"
+              },
+              "connected_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": [
+              "id",
+              "channel",
+              "channel_id",
+              "page_id",
+              "app_id",
+              "name",
+              "team_id",
+              "credential_status",
+              "version",
+              "connected_at"
+            ]
+          }
+        },
+        "next_cursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "oauth_configured": {
+          "type": "boolean"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "next_cursor",
+        "oauth_configured",
+        "meta"
+      ]
+    },
+    "conversation-channel-options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "channel": {
+                "enum": [
+                  "messenger",
+                  "mock_messenger"
+                ]
+              },
+              "channel_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "page_id": {
+                "type": "string"
+              },
+              "channel_name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "channel",
+              "channel_id",
+              "page_id",
+              "channel_name"
+            ]
+          }
+        },
+        "next_cursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "next_cursor",
+        "meta"
+      ]
+    }
+  }
+}

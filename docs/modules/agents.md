@@ -1,5 +1,6 @@
 # MOD-07 — Agent & Routing
 
+> Kiến trúc đích microservice theo ADR-017: [AI Runtime Platform](../services/ai-runtime.md). Routing/allocation tách riêng ở [Routing Service](../services/routing.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.
 Status: Ready for implementation M2 rule-based routing/mock AI. Requirements: REQ-06, REQ-07.
 
 ## Mục tiêu và phạm vi
@@ -47,3 +48,9 @@ Routing theo hiệu suất cần metric window/minimum sample/cold start và pol
 SRC-017 implementation binding: [routing contract](../contracts/routing.md), physical v11. Ownership cancellation/session callback is composed through UoW ports; runtime implemented SRC-018; production session engine remains SRC-020.
 
 SRC-018: private validated runtime protocol, deterministic adapter, v12 execution/tool ledger, capacity/deadline fencing, live authorization and cancellation are implemented. Worker uses a fail-closed session port until SRC-020; durable synthetic session harness is test-only. Proposals never send directly; draft tools cannot set consent/status. [Evidence](../tracking/details/SRC-018.md).
+
+## M3 — AI Agent providers (Draft)
+
+User direction CHG-20261006-03: AI Runtime là platform; CRM có AI Agent setup chọn provider, Meta AI Agent (Meta Business Agent) làm case study. Provider lifecycle/config/knowledge/instructions/tools/test/telemetry tách khỏi messaging CRM Connector. Hỗ trợ thiết kế cả CRM-managed execution và provider-managed conversations; protocol mock M2 không là interface bắt buộc cho mọi provider. Owner Human/AI và CRM permission vẫn thuộc CRM; provider thread control cần observed/desired state và reconciliation riêng. Xem [M3 plan](../planning/m3-provider-plan.md) và [provider evidence/gaps](../references/meta/README.md). Phạm vi thiết kế production chưa Ready.
+
+PLAN-003: [capability matrix](../references/meta/capability-matrix.md) bổ sung provider allowlist, config/eval versions và shared Business Manager budget semantics. Màn hình admin chỉ expose mutation đúng asset authority; không cho tenant admin sửa budget chung mặc định. Hosted tool gateway còn gate trusted callback binding; đầy đủ platform API không đồng nghĩa được cấp arbitrary CRM tool access.

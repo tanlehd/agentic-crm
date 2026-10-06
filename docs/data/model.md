@@ -1,5 +1,6 @@
 # Data model và ERD
 
+> Baseline monolith hiện có, không phải physical schema của các microservice đích. Xem [data ownership ADR-017](service-ownership.md); FK/UoW cross-module dưới đây chỉ áp dụng trong DB hiện tại. Extraction không sửa applied migrations1–18.
 Status: Ready for implementation cho M1–M2. Deal/Ticket/report authoring là mô hình đích Draft M4–M5.
 
 ## Invariant chung
@@ -124,3 +125,40 @@ SRC-019 physical v13 adds Workflow definition/version/run/step/wait/action/trigg
 SRC-020: Chatflow physical session/turn/node state and Lead session binding are implemented by v14–v16; see [dictionary](dictionary.md) and [Chatflow contract](../contracts/chatflow.md). Workflow/Runtime use owning-module ports; Human completion commits Lead+session+event together.
 
 SRC-021 migration17 implements lead_handoff with composite tenant FKs, generated pending active_lead_key, parent/action replay binding, accepted principal/time state checks and durable attention. [Exact Sales contract](../contracts/sales-handoff.md).
+
+## M3 model refinement — Draft
+
+[Dictionary đề xuất](dictionary.md) và [M3 plan](../planning/m3-provider-plan.md) thêm AI provider binding, external conversation control và message đa nền tảng. M2 ERD/schema giữ nguyên; ERD vật lý M3 phải được đồng bộ cùng migration spec ở PLAN-004. Provider app/thread owner không thay Human/AI principal owner.
+
+
+Message có optional one-to-one MessageContent cùng tenant, authoritative normalized rich JSON; legacy text không cần sidecar. [Rich contract](../contracts/rich-messages.md).
+
+## ADR-019 target Contact resolution ERD
+
+CRM Core owns Contact→canonical ContactIdentity→profile observations; Connector owns profile/resolution caches with logical CRM refs. Chat Conversation/Message carries crm_contact_id. [Target ERD, message contract and compatibility](../contracts/contact-resolution.md). Cross-service references are not physical FK; current monolith ERD remains baseline.
+
+## SRC-031 Facebook configuration ERD (baseline monolith)
+
+```mermaid
+erDiagram
+  Tenant ||--o{ FacebookOAuthAttempt : scopes
+  Account ||--o{ FacebookOAuthAttempt : initiates
+  Team ||--o{ FacebookOAuthAttempt : selects
+  ChannelConnection ||--o| FacebookPage : configures
+  ChannelConnection ||--o{ Conversation : receives
+  FacebookPage {
+    uuid tenant_id
+    uuid connection_id
+    string app_id
+    string page_id
+    string name
+    string token_ciphertext
+  }
+  Conversation {
+    string channel
+    uuid connection_id
+    uuid channel_id_generated
+  }
+```
+
+[Schema19 and OAuth](../contracts/facebook-configuration.md): channel_id is a stored generated alias of connection_id; tenant/connection/channel composite FK prevents provider mismatch. Page metadata/token ownership remains Channels until extraction, not shared SQL access from independent Connector. OAuth attempt stores state/session hashes, no code or token.

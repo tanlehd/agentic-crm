@@ -13,3 +13,13 @@
 .chat-layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:16px;align-items:start}.chat-queue{padding:18px;display:grid;gap:12px}.chat-queue form{display:grid;gap:8px}.chat-queue .record-list{max-height:640px;overflow:auto}.chat-queue button,.chat-detail{overflow-wrap:anywhere;min-width:0}.chat-detail{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:16px;align-items:start}.chat-thread{min-width:0}.chat-caption{font-size:12px}.chat-messages{list-style:none!important;padding:0!important;display:grid;gap:12px;max-height:520px;overflow:auto}.chat-message{border:1px solid #dce5e0;border-radius:10px;padding:14px;background:#f6f8f7;overflow-wrap:anywhere}.chat-message.outbound{background:#edf6f1;margin-left:24px}.chat-message>div{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.chat-message p,.chat-note p{white-space:pre-wrap}.chat-message small,.chat-note small{font-size:11px;color:#53675d}.chat-note{border-left:3px solid #d9b564;padding:8px 14px;margin:12px 0;background:#fffbf1}.chat-composer{border-top:1px solid #dce5e0;padding-top:18px}.chat-context{margin:0!important;overflow-wrap:anywhere}.chat-context>summary{font-size:14px}.chat-context[open]>summary{margin-bottom:16px}@media(max-width:1449px){.chat-detail{grid-template-columns:1fr}.chat-context{grid-row:1}.chat-layout{grid-template-columns:240px minmax(0,1fr)}}@media(max-width:950px){.chat-layout{grid-template-columns:1fr}.chat-queue .record-list{max-height:300px}.chat-message.outbound{margin-left:12px}}
 
 .chat-preview{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap}
+.message-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: .5rem; }
+.message-card { border: 1px solid currentColor; border-radius: .5rem; padding: .75rem; overflow-wrap: anywhere; }
+.message-content { min-width: 0; overflow-wrap: anywhere; }
+.message-reply { display: block; border-left: 3px solid currentColor; padding-left: .5rem; }
+
+.channel-badge { display:inline-flex; align-items:center; gap:6px; color:#344054; font-size:12px; overflow-wrap:anywhere; }
+.channel-badge svg { flex-shrink:0; }
+.facebook-connect { padding:16px; background:#f5f8ff; border:1px solid #dbe5ff; border-radius:12px; margin:18px 0; display:flex; flex-wrap:wrap; gap:12px; align-items:end; }
+.facebook-connect p { flex-basis:100%; margin:0; }
+.facebook-connect label { min-width:220px; }

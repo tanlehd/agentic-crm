@@ -1,0 +1,478 @@
+# messages Webhook Event Reference
+
+
+
+This callback will occur when a message has been sent to your Page. Messages are always sent in order. You may receive text messages or messages with attachments.
+
+Attachment types `image`, `audio`, `video`, `file`, `sticker`, `reel`, `ig_reel`, `post`, `ig_post` and `appointment_booking` are the main supported types. You may also receive `fallback` attachments. A common example of a &#039;fallback&#039; is when a user shares a URL with a Page, an attachment is created based on [link sharing](https://developers.facebook.com/docs/sharing/web). For unsupported shares made by users to your Page a `fallback` with no payload might be sent.
+
+&gt; **Sticker attachment type transition (until August 30, 2026):** Sticker messages in webhooks now include a new `sticker` attachment type with `sticker_id` metadata. During the 90-day transition period, both the `sticker` and `image` attachment types are present in the payload. After August 30, 2026, only the `sticker` attachment type will be sent. Update your webhook handlers to recognize the `sticker` attachment type before this date. The same change applies to [message echoes](https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks/webhook-events/message-echoes).
+
+You can subscribe to this callback by selecting `message` when [setting up](https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks#setup) your webhook.
+
+## Examples &#123;#example&#125;
+
+### Text message
+
+```
+&#123;
+  &quot;sender&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;recipient&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PAGE_ID&gt;&quot;
+  &#125;,
+  &quot;timestamp&quot;:1458692752478,
+  &quot;message&quot;:&#123;
+    &quot;mid&quot;:&quot;mid.1457764197618:41d102a3e1ae206a38&quot;,
+    &quot;text&quot;:&quot;hello, world!&quot;,
+    &quot;quick_reply&quot;: &#123;
+      &quot;payload&quot;: &quot;&lt;DEVELOPER_DEFINED_PAYLOAD&gt;&quot;
+    &#125;
+  &#125;
+&#125;
+```
+
+### Reply message
+
+```
+&#123;
+  &quot;sender&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;recipient&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PAGE_ID&gt;&quot;
+  &#125;,
+  &quot;timestamp&quot;:1458692752478,
+  &quot;message&quot;:&#123;
+    &quot;mid&quot;:&quot;m_1457764197618:41d102a3e1ae206a38&quot;,
+    &quot;text&quot;:&quot;hello, world!&quot;,
+    &quot;reply_to&quot;: &#123;
+      &quot;mid&quot;:&quot;m_1fTq8oLumEyIp3Q2MR-aY7IfLZDamVrALniheU&quot;,
+      &quot;is_self_reply&quot;: false
+    &#125;
+  &#125;
+&#125;
+```
+
+### Message with attachment
+
+```http
+&#123;
+  &quot;id&quot;: &quot;682498302938465&quot;,
+  &quot;time&quot;: 1518479195594,
+  &quot;messaging&quot;: [
+    &#123;
+      &quot;sender&quot;: &#123;
+        &quot;id&quot;: &quot;&lt;PSID&gt;&quot;
+      &#125;,
+      &quot;recipient&quot;: &#123;
+        &quot;id&quot;: &quot;&lt;PAGE_ID&gt;&quot;
+      &#125;,
+      &quot;timestamp&quot;: 1518479195308,
+      &quot;message&quot;: &#123;
+        &quot;mid&quot;: &quot;mid.$cAAJdkrCd2ORnva8ErFhjGm0X_Q_c&quot;,
+        &quot;attachments&quot;: [
+          &#123;
+  &quot;type&quot;: &quot;&lt;image|video|audio|file|sticker|reel|ig_reel&gt;&quot;,
+            &quot;payload&quot;: &#123;
+              &quot;url&quot;: &quot;&lt;ATTACHMENT_URL&gt;&quot;
+            &#125;
+          &#125;
+        ]
+      &#125;
+    &#125;
+  ]
+&#125;
+```
+
+### Message with sticker attachment
+
+```http
+&#123;
+  &quot;id&quot;: &quot;682498302938465&quot;,
+  &quot;time&quot;: 1518479195594,
+  &quot;messaging&quot;: [
+    &#123;
+      &quot;sender&quot;: &#123;
+        &quot;id&quot;: &quot;&lt;PSID&gt;&quot;
+      &#125;,
+      &quot;recipient&quot;: &#123;
+        &quot;id&quot;: &quot;&lt;PAGE_ID&gt;&quot;
+      &#125;,
+      &quot;timestamp&quot;: 1518479195308,
+      &quot;message&quot;: &#123;
+        &quot;mid&quot;: &quot;mid.$cAAJdkrCd2ORnva8ErFhjGm0X_Q_c&quot;,
+        &quot;attachments&quot;: [
+          &#123;
+            &quot;type&quot;: &quot;sticker&quot;,
+            &quot;payload&quot;: &#123;
+              &quot;url&quot;: &quot;&lt;STICKER_URL&gt;&quot;,
+              &quot;sticker_id&quot;: 369239263222822
+            &#125;
+          &#125;
+        ]
+      &#125;
+    &#125;
+  ]
+&#125;
+```
+
+### Message with appointment booking
+
+```http
+&#123;
+  &quot;id&quot;: &quot;682498302938465&quot;,
+  &quot;time&quot;: 1518479195594,
+  &quot;messaging&quot;: [
+    &#123;
+      &quot;sender&quot;: &#123;
+        &quot;id&quot;: &quot;&lt;PSID&gt;&quot;
+      &#125;,
+      &quot;recipient&quot;: &#123;
+        &quot;id&quot;: &quot;&lt;PAGE_ID&gt;&quot;
+      &#125;,
+      &quot;timestamp&quot;: 1518479195308,
+      &quot;message&quot;: &#123;
+        &quot;mid&quot;: &quot;mid.$cAAJdkrCd2ORnva8ErFhjGm0X_Q_c&quot;,
+        &quot;attachments&quot;: [
+          &#123;
+            &quot;type&quot;: &quot;appointment_booking&quot;,
+            &quot;payload&quot;: &#123;
+              &quot;booking_id&quot;: &quot;&lt;BOOKING_ID&gt;&quot;
+              &quot;status&quot;: &quot;&quot;&lt;requested|confirmed|declined|cancelled&gt;&quot;,
+              &quot;start_time&quot;: 1739612400,
+              &quot;end_time&quot;: 1739616000,
+              &quot;timezone&quot;: &quot;America/Los_Angeles&quot;
+            &#125;
+          &#125;
+        ]
+      &#125;
+    &#125;
+  ]
+&#125;
+```
+
+### Message with post attachment
+
+```http
+&#123;
+  &quot;id&quot;: &quot;682498302938465&quot;,
+  &quot;time&quot;: 1518479195594,
+  &quot;messaging&quot;: [
+    &#123;
+      &quot;sender&quot;: &#123;
+        &quot;id&quot;: &quot;&lt;PSID&gt;&quot;
+      &#125;,
+      &quot;recipient&quot;: &#123;
+        &quot;id&quot;: &quot;&lt;PAGE_ID&gt;&quot;
+      &#125;,
+      &quot;timestamp&quot;: 1518479195308,
+      &quot;message&quot;: &#123;
+        &quot;mid&quot;: &quot;mid.$cAAJdkrCd2ORnva8ErFhjGm0X_Q_c&quot;,
+        &quot;attachments&quot;: [
+          &#123;
+            &quot;type&quot;: &quot;&lt;post|ig_post&gt;&quot;,
+            &quot;payload&quot;: &#123;
+              &quot;url&quot;: &quot;&lt;ATTACHMENT_URL&gt;&quot;,
+              &quot;title&quot;: &quot;&lt;ATTACHMENT_TITLE&gt;&quot;,
+              &quot;id&quot;: &lt;ATTACHMENT_ID&gt;
+            &#125;
+          &#125;
+        ]
+      &#125;
+    &#125;
+  ]
+&#125;
+```
+
+### Message with product template
+
+This webhook applies to the scenario when user shares products from other threads or sharing flow to the page. This webhook is limited to only products that are owned by the page. App will need to have [`catalog_management`](https://developers.facebook.com/docs/permissions/reference/catalog_management) permission approved to receive product details in webhooks.
+
+```http
+&#123;
+  &quot;id&quot;: &quot;682498302938465&quot;,
+  &quot;time&quot;: 1518479195594,
+  &quot;messaging&quot;: [
+    &#123;
+      &quot;sender&quot;: &#123;
+        &quot;id&quot;: &quot;&lt;PSID&gt;&quot;
+      &#125;,
+      &quot;recipient&quot;: &#123;
+        &quot;id&quot;: &quot;&lt;PAGE_ID&gt;&quot;
+      &#125;,
+      &quot;timestamp&quot;: 1518479195308,
+      &quot;message&quot;: &#123;
+        &quot;mid&quot;: &quot;mid.$cAAJdkrCd2ORnva8ErFhjGm0X_Q_c&quot;,
+        &quot;attachments&quot;: [
+          &#123;
+            &quot;type&quot;: &quot;template&quot;,
+            &quot;payload&quot;: &#123;
+              &quot;product&quot;:&#123;
+               &quot;elements&quot;:[ // multiple elements for Hscroll
+                 &#123;
+                   &quot;id&quot;:&quot;&lt;PRODUCT_ID&gt;&quot;,
+                   &quot;retailer_id&quot;:&quot;&lt;EXTERNAL_ID&gt;&quot;,
+                   &quot;image_url&quot;:&quot;https://fb.cdn.com/sdsd&quot;,
+                   &quot;title&quot;:&quot;Some product title&quot;,
+                   &quot;subtitle&quot;: &quot;$40&quot;,
+                 &#125;,
+                 &#123;...&#125;,
+               ]
+            &#125;
+          &#125;
+        ]
+      &#125;
+    &#125;
+  ]
+&#125;
+```
+
+### Message with fallback attachment
+Example applicable to `messages` on version +v6.0
+
+```
+&#123;
+    &quot;object&quot;: &quot;page&quot;,
+    &quot;entry&quot;: [
+        &#123;
+            &quot;id&quot;: &quot;&lt;PAGE_ID&gt;&quot;,
+            &quot;time&quot;: 1583173667623,
+            &quot;messaging&quot;: [
+                &#123;
+                    &quot;sender&quot;: &#123;
+                        &quot;id&quot;: &quot;&lt;PSID&gt;&quot;
+                    &#125;,
+                    &quot;recipient&quot;: &#123;
+                        &quot;id&quot;: &quot;&lt;PAGE_ID&gt;&quot;
+                    &#125;,
+                    &quot;timestamp&quot;: 1583173666767,
+                    &quot;message&quot;: &#123;
+                        &quot;mid&quot;: &quot;m_toDnmD...&quot;,
+                        &quot;text&quot;: &quot;This is where I want to go: https:\/\/youtu.be\/bbo_fZAjIhg&quot;,
+                        &quot;attachments&quot;: [
+                            &#123;
+                                &quot;type&quot;: &quot;fallback&quot;,
+                                &quot;payload&quot;: &#123;
+                                    &quot;url&quot;: &quot;&lt;ATTACHMENT_URL &gt;&quot;,
+                                    &quot;title&quot;: &quot;TAHITI - Heaven on Earth&quot;
+                                &#125;
+                            &#125;
+                        ]
+                    &#125;
+                &#125;
+            ]
+        &#125;
+    ]
+&#125;
+```
+
+### Message from Shops product detail page
+
+```
+&#123;
+  &quot;sender&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;recipient&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PAGE_ID&gt;&quot;
+  &#125;,
+  &quot;timestamp&quot;:1458692752478,
+  &quot;message&quot;:&#123;
+    &quot;mid&quot;:&quot;mid.1457764197618:41d102a3e1ae206a38&quot;,
+    &quot;text&quot;:&quot;hello, world!&quot;,
+    &quot;referral&quot;: &#123;
+      &quot;product&quot;: &#123;
+        &quot;id&quot;:&quot;&lt;PRODUCT_ID&gt;&quot;
+      &#125;
+    &#125;
+  &#125;
+&#125;
+```
+
+### Message with Ads referral information
+
+This webhook applies to the scenario when a user clicks on a CTM (Click-to-Messenger) advertisement and sends a message to a Facebook page. In addition to the message details included, the application will receive ads referral information.
+
+#### Requirements
+Message with Ads Referral Information requires the application to have page subscriptions to both the `messages` and the `messaging_referrals` fields.
+
+```json
+&#123;
+  &quot;sender&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;recipient&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PAGE_ID&gt;&quot;
+  &#125;,
+  &quot;timestamp&quot;:1458692752478,
+  &quot;message&quot;:&#123;
+    &quot;mid&quot;:&quot;mid.1457764197618:41d102a3e1ae206a38&quot;,
+    &quot;text&quot;:&quot;hello, world!&quot;,
+    &quot;referral&quot;: &#123;
+      &quot;ref&quot;: &quot;&lt;REF_DATA_IF_SPECIFIED_IN_THE_AD&gt;&quot;,
+      &quot;ad_id&quot;: &quot;&lt;ID_OF_THE_AD&gt;&quot;,
+      &quot;source&quot;: &quot;ADS&quot;,
+      &quot;type&quot;: &quot;OPEN_THREAD&quot;,
+      &quot;ads_context_data&quot;: &#123;
+        &quot;ad_title&quot;: &quot;&lt;TITLE_OF_THE_AD&gt;&quot;,
+        &quot;photo_url&quot;: &quot;&lt;URL_OF_THE_IMAGE_FROM_AD_THE_USER_IS_INTERESTED_IN&gt;&quot;,
+        &quot;video_url&quot;: &quot;&lt;THUMBNAIL_URL_OF_THE_VIDEO_FROM_THE_AD&gt;&quot;,
+        &quot;post_id&quot;: &quot;&lt;ID_OF_THE_POST&gt;&quot;,
+        &quot;product_id&quot;: &quot;&lt;PRODUCT_ID&gt;&quot;,
+        &quot;flow_id&quot;: &quot;&lt;ID_OF_THE_PARTNER_APP_WELCOME_MESSAGE_FLOW&gt;&quot;
+      &#125;
+    &#125;
+  &#125;
+&#125;
+```
+
+For more information about the flow ID, please refer to [Welcome Message Flows](https://developers.facebook.com/documentation/business-messaging/messenger-platform/ads/ads-welcome-message-flows).
+
+### Message with commands
+
+```json
+&#123;
+  &quot;object&quot;: &quot;page&quot;,
+  &quot;entry&quot;: [
+    &#123;
+      &quot;id&quot;: &quot;&lt;PAGE_ID&gt;&quot;,
+      &quot;time&quot;: 1697643211842,
+      &quot;messaging&quot;: [
+        &#123;
+          &quot;sender&quot;: &#123;
+            &quot;id&quot;: &quot;&lt;PSID&gt;&quot;
+          &#125;,
+          &quot;recipient&quot;: &#123;
+            &quot;id&quot;: &quot;&lt;PAGE_ID&gt;&quot;
+          &#125;,
+          &quot;timestamp&quot;: 1697643027400,
+          &quot;message&quot;: &#123;
+            &quot;mid&quot;: &quot;m_3vs...&quot;,
+            &quot;text&quot;: &quot;find flights from SFO to LAX next Thursday&quot;,
+            &quot;commands&quot;: [
+              &#123;
+                &quot;name&quot;: &quot;flights&quot;
+              &#125;
+            ]
+          &#125;
+        &#125;
+      ]
+    &#125;
+  ]
+&#125;
+```
+
+## Properties &#123;#fields&#125;
+
+### `sender`
+
+| `sender` Field | Description |
+| --- | --- |
+| `id` *string* | The Page-scoped ID for the person who sent a message to your business |
+
+### `recipient`
+
+| `recipient` Field | Description |
+| --- | --- |
+| `id` *string* | The ID for your Facebook Page |
+
+### `message` &#123;#messaging&#125;
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `mid` | String | Message ID |
+| `text` | String | Text of message |
+| `quick_reply` | Object | Optional custom data provided by the sending app |
+| `reply_to` | Object | Reference to the message id (mid) that this message is replying to |
+| `attachments` | Array&lt;[`attachments`](#attachments)&gt; | Array containing attachment data |
+| `referral` | Object | Referral of the message from Shops product details page. |
+
+### `message.quick_reply` &#123;#quick_reply&#125;
+
+A `quick_reply` payload is only provided with a text message when the user taps a [Quick Replies](https://developers.facebook.com/documentation/business-messaging/messenger-platform/send-messages/quick-replies) button.
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `payload` | String | Custom data provided by the app |
+
+### `message.reply_to` &#123;#reply_to&#125;
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `mid` | String | Reference to the message ID that this message is replying to |
+| `is_self_reply` | Boolean | Indicates whether the message is a self-reply. |
+
+### `message.attachments` &#123;#attachments&#125;
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `type` | String | `audio`, `file`, `image` (including gif), `sticker`, `video`, `fallback`, `reel`, `ig_reel`, `post`, `ig_post` or `appointment_booking` |
+| `payload` | String | [`message.attachments.payload`](#payload) |
+
+### `message.attachments.payload` &#123;#payload&#125;
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `url` | String | URL of the attachment type. Applicable to attachment type: `audio`, `file`, `image`, `video`, `fallback`, `reel`, `ig_reel`, `post`, `ig_post` |
+| `title` | String | Title of the attachment. Applicable to attachment type: `fallback`, `reel`, `ig_reel`, `post` and `ig_post` |
+| `sticker_id` | Number | Persistent id of this sticker, for example `369239263222822` references the Like sticker. Applicable to attachment type: `sticker`. During the transition period (until August 30, 2026), also present in attachment type: `image` when a sticker is sent. |
+| `reel_video_id` | Number | ID of the video associated with the attached reel. Applicable to attachment type: `reel` and `ig_reel` |
+| `id` | Number | ID of the shared post. Applicable to attachment type: `post` and `ig_post` |
+| `booking_id` | String | ID of the booking associated with the appointment. Applicable to attachment type: `appointment_booking` |
+| `status` | String | Current status of the appointment. Can be `requested`, `confirmed`, `declined`, `cancelled`. Applicable to attachment type: `appointment_booking` |
+| `start_time` | Integer | Appointment start time as a Unix timestamp (seconds). Applicable to attachment type: `appointment_booking` |
+| `end_time` | Integer | Appointment end time as a Unix timestamp (seconds). Applicable to attachment type: `appointment_booking` |
+| `timezone` | String | IANA timezone identifier (e.g., `America/Los_Angeles`). Applicable to attachment type: `appointment_booking` |
+
+### `message.attachments.payload.product.elements`
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `id` | String | Product ID from [Facebook product catalog](https://developers.facebook.com/documentation/ads-commerce/catalog/overview) |
+| `retailer_id` | String | External ID that is associated with the Product. (ex: SKU/ Content ID) |
+| `image_url` | String | URL of product |
+| `title` | String | Title of product |
+| `subtitle` | String | Subtitle of product |
+
+### `message.referral` &#123;#referral&#125;
+
+`referral` payload is only provided when the user sends a message from the Shops product detail page.
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `product` | Object | Product information |
+| `source` | String | The source of the referral. Supported values: `ADS` (only ads referral supported). |
+| `type` | String | The referral type. Currently supports `OPEN_THREAD`. |
+| `ref` | String | The optional `ref` attribute set in the referrer. Only alphanumeric characters and `-`, `_`, and `=` are supported. |
+| `ad_id` | String | Advertisement ID from Ads Manager. |
+| `ads_context_data` | Object | Advertisement context data from Ads Manager. |
+
+### `message.referral.product`
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `id` | String | Product ID |
+
+### `message.referral.ads_context_data`
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `ad_title` | String | Title of the ad in Ads Manager. |
+| `photo_url` | String | [Optional] URL of the image from the ad. |
+| `video_url` | String | [Optional] Thumbnail URL of the video from the ad. |
+| `post_id` | String | ID of the ad post in Ads manager. |
+| `product_id` | String | [Optional] Product ID from the ad. |
+
+### `message.commands`
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `name` | String | The name of the command |
+
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/business-messaging/messenger-platform/llms.txt

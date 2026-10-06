@@ -1,5 +1,8 @@
 # Bản đồ tài liệu
 
+
+Kiến trúc đích hiện tại theo ADR-017: [enterprise service catalog](services/README.md), [architecture](system/architecture.md), [data ownership](data/service-ownership.md), [contracts](contracts/service-boundaries.md), [migration plan](planning/microservices-migration.md). Mỗi service có scope/internal architecture/data model/interfaces/operations/extraction gates. [Monolith baseline](system/monolith-baseline.md) giữ để đối chiếu source hiện tại.
+
 Ngày baseline: 2026-10-02. Trạng thái phản ánh độ sâu thiết kế, không phản ánh tính năng đã chạy.
 
 - `Draft`: blueprint hoặc còn quyết định cần chốt trước khi implement phạm vi đó.
@@ -21,7 +24,7 @@ Ngày baseline: 2026-10-02. Trạng thái phản ánh độ sâu thiết kế, k
 | Contract | [REST API](contracts/api.md), [Events](contracts/events.md), [Conversation DTO](contracts/conversation.md), [Mock intake](contracts/mock-intake.md), [Agent Runtime](contracts/agent-runtime.md) | Ready for implementation: mock slice M1–M2 |
 | UX | [Workspaces](ux/workspaces.md) | Ready for implementation: wireframe/hành vi M2; các workspace nâng cao là Draft |
 | Business | [Healthcare](business/healthcare.md), [First slice](business/first-slice.md) | Ready for implementation: fixtures và mock scenario; production integration là Draft |
-| Quality | [Acceptance & traceability](quality/acceptance.md), [baseline validation](quality/validation.md) | M1 có unit/MySQL/browser evidence; M2 SRC-014/015 có MySQL và HTTP-worker evidence; full slice chưa chạy |
+| Quality | [Acceptance & traceability](quality/acceptance.md), [baseline validation](quality/validation.md) | M1–M2 local/mock gates PASS; release SRC-025, real provider M3 chưa chạy |
 | Decisions | [ADRs](decisions/README.md) | Accepted: baseline thiết kế |
 | References | [Nguồn tham khảo](references.md) | Tách đặc tính tham khảo khỏi quyết định tự thiết kế |
 
@@ -37,13 +40,13 @@ Ngày baseline: 2026-10-02. Trạng thái phản ánh độ sâu thiết kế, k
 | MOD-02 | [CRM & Object Platform](modules/crm.md) | Registry/association, properties/custom CRUD, Contact/Company/Activity và UI implemented SRC-010…013; advanced builder Draft |
 | MOD-03 | [Channels & Acquisition](modules/channels.md) | Mock Messenger durable intake/identity/CTM implemented SRC-015; connector thật/Google Ads Draft |
 | MOD-04 | [Conversation & Chat Workspace](modules/conversation.md) | Domain/API/notes/mock outbound SRC-014 và inbox UI SRC-016 implemented; routing/takeover SRC-017 implemented; session/Sales handoff SRC-020/021 |
-| MOD-05 | [Lead/Opportunity & Sale Workspace](modules/sales.md) | Lead core/draft/qualification implemented SRC-012/013; queue/handoff/accept M2 Ready; Deal/customer production Draft |
+| MOD-05 | [Lead/Opportunity & Sale Workspace](modules/sales.md) | Lead core/draft/qualification implemented SRC-012/013; queue/handoff/accept M2 implemented SRC-021/022; Deal/customer production Draft |
 | MOD-06 | [Ticket System](modules/ticket.md) | Draft: blueprint M4 |
 | MOD-07 | [Agent & Routing](modules/agents.md) | Routing/assignment/takeover implemented SRC-017; private mock runtime SRC-018 implemented; session integration SRC-020 |
 | MOD-08 | [Workflow](modules/workflow.md) | Primitive graph/version/run/wait engine + API implemented SRC-019; child Chatflow/Sales integration SRC-020/021; visual builder Draft |
 | MOD-09 | [Chatflow](modules/chatflow.md) | SRC-020 DONE: qualification flow M2; visual builder Draft |
 | MOD-10 | [Reporting & Dashboard](modules/reporting.md) | Ready for implementation: KPI semantics; report builder/API Draft |
-| MOD-11 | [Audit & Operations](modules/operations.md) | Outbox/inbox, audit, replay foundation implemented SRC-008; operations M2 tiếp tục |
+| MOD-11 | [Audit & Operations](modules/operations.md) | Outbox/inbox, audit, replay foundation implemented SRC-008; operations M2 UI implemented SRC-022 |
 
 Mọi mục `Ready` có phạm vi giới hạn như trên. Không suy diễn một file Ready thành toàn bộ roadmap của module đã sẵn sàng.
 
@@ -54,3 +57,9 @@ Mọi mục `Ready` có phạm vi giới hạn như trên. Không suy diễn m�
 SRC-021 Sales handoff/acceptance backend DONE; [exact contract](contracts/sales-handoff.md), [execution evidence](tracking/details/SRC-021.md). Preview nâng schema17 trong SRC-022.
 
 SRC-022 Sales/Operations UI DONE: [workspace contract](contracts/workspaces-m2.md), [evidence](tracking/details/SRC-022.md). SRC-023 healthcare fixture/KPI DONE; SRC-024 fault/regression DONE ([matrix](quality/m2-fault-suite.md), [evidence](tracking/details/SRC-024.md)); SRC-025 local/mock M2 release gate DONE ([runbook](development/m2-release.md), [evidence](tracking/details/SRC-025.md)); native ARM64 và emulated AMD64.
+
+## Thiết kế M3 sau release M2
+
+[Provider plan](planning/m3-provider-plan.md) · [message envelope Draft](contracts/messaging-platforms.md) · [Meta docs dossier](references/meta/README.md). Định hướng provider/connector được user chấp thuận; contract production chưa Ready. PLAN-003 đã có [capability/source gap matrix](references/meta/capability-matrix.md); PLAN-004 tiếp tục exact contracts và source backlog, giữ live routing/tool gates còn mở. M2 đã PASS theo tracker; các mô tả theo từng task cũ không là trạng thái hiện hành.
+
+ADR-019 / PLAN-006B: [Contact resolution, Connector cache and required Chat contact context](contracts/contact-resolution.md), accepted responsibility design; exact source gate pending.

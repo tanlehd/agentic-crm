@@ -1,5 +1,6 @@
 # MOD-03 — Channels & Acquisition
 
+> Kiến trúc đích microservice theo ADR-017: [CRM Connector / Messaging Platforms](../services/crm-connector.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.
 Status: Implemented SRC-015 cho mock Messenger text intake; real Meta/Google Ads Draft M3–M4. Requirements: REQ-05, REQ-09, REQ-11.
 
 ## Mục tiêu và phạm vi
@@ -49,3 +50,31 @@ SRC-014 đã có ChannelReferences và MockSender persisted receipt (lookup reco
 [Exact contract](../contracts/mock-intake.md) · [evidence](../tracking/details/SRC-015.md). Endpoint credential-only ACK sau MySQL commit; status dùng connection credential hoặc Human operator, retry Human có CSRF/idempotency. Worker claim lease60s/fencing và bounded backoff, duplicate message kiểm trước identity/Contact để không tạo dữ liệu thừa; Touchpoint chỉ new message có referral CTM. Seed Alpha/Beta additive và repeat-safe; tokens random private .env, hash DB. API không trả raw payload. Conversation detail có attribution CTM/unknown qua Channels port.
 
 Phạm vi chưa có: inbox UI SRC-016, routing SRC-017, workflow/chatflow/Lead/Sales xuyên luồng SRC-018…023; không Meta thật.
+
+## M3 — CRM Connector (Draft)
+
+CRM Connector là lớp tích hợp từng messaging platform (Messenger, Instagram, WhatsApp, Zalo...), sở hữu credential/connection, webhook normalization, outbound/receipt và provider conversation routing. Mỗi adapter phải có bản tài liệu chính thức lưu local, provenance/checksum, API version/capability matrix và test fixtures. [Meta dossier](../references/meta/README.md) là bộ khởi đầu, chưa đầy đủ mọi platform.
+
+Messenger Conversation Routing và WhatsApp Business Agent Thread Control là các surface khác nhau, map qua control port riêng; không đồng nhất provider app owner với CRM principal. Hosted AI replies được ingest qua echo/standby theo platform, không resend từ CRM. Base message và render policy theo [draft contract](../contracts/messaging-platforms.md). M2 mock behavior ở các mục trước giữ nguyên; trạng thái hoàn tất toàn M2 theo tracker, các câu future-work SRC-016…023 phía trên là lịch sử SRC-015.
+
+PLAN-003: [capability/gap matrix](../references/meta/capability-matrix.md) là nguồn kết luận nghiên cứu. Graph baseline v26.0; WhatsApp webhook batch/retry7 ngày/standby envelope khác Messenger. Live WA routing chưa Ready do exact handover payload và control endpoint discrepancy; normalization/media/compatibility có thể thiết kế độc lập tại PLAN-004.
+
+
+SRC-026 Ready scope: tenant-bound history metadata port đọc provider kể cả inactive connection; chỉ mock_messenger đã supported, không dùng dispatch active guard cho lịch sử. [Contract](../contracts/message-envelope-v2.md).
+
+
+SRC-027 thêm explicit mock intake message.type=rich/content v1; durable ACK/dedup giữ nguyên. [Contract](../contracts/rich-messages.md). Không Meta connector thật.
+
+PLAN-004C scoped signed Messenger capture Ready: [contract](../contracts/messenger-ingress.md). Provider-shaped events stay in independent Connector until domain ingestion/control gate; no mock bridge reinterpretation.
+
+## Target refinement ADR-019
+
+M3 Connector owns provider name/avatar fetching, profile cache and confirmed CRM resolution cache. Canonical contact_identity belongs to CRM Core; cache hit sends crm_contact_id to Chat. [Responsibility contract](../contracts/contact-resolution.md). Baseline mock transaction described above is unchanged.
+
+## SRC-030 scoped implementation
+
+Authenticated lookup/resolve and deliveries-v2 routes use existing immutable mock connection context. Legacy intake delegates Contact creation to CRM application port. v2 processor validates mapping and duplicate message identity in its transaction; missing supplied mapping never creates a substitute Contact. See [compatibility contract](../contracts/contact-resolution-local.md).
+
+## SRC-031 Facebook configuration and channel dimensions
+
+[Exact OAuth/Page/schema19 contract](../contracts/facebook-configuration.md) and [operator runbook](../development/facebook-configuration.md) define Admin→Channels→Facebook, session/state-bound OAuth, encrypted DB Page credentials and manual verified token replacement. Baseline Channels remains sole writer of catalog/credentials; independent Connector capture is unchanged until API-based extraction/provisioning. Conversation channel and generated channel_id retain existing connection IDs, with Page metadata and tenant/field-authorized filters/options. Messaging activation and real sandbox acceptance remain separate.

@@ -1,5 +1,6 @@
 # REST API contract — M1–M2
 
+> Microservices target ADR-017 dùng [cross-service rules](service-boundaries.md). APIs/UoW trong tài liệu này là baseline implementation hiện tại; exact remote contracts và sagas cần PLAN-006 trước extraction.
 Status: Ready for implementation. Health/auth và Identity admin API đã có source; registry metadata/association API đã có SRC-010 ([exact contract](registry.md)); record CRUD còn thiết kế. Exact Identity DTO tại [admin contract](identity-admin.md); OpenAPI/schema/generated TS trong packages/contracts.
 
 ## Quy ước chung
@@ -166,3 +167,15 @@ SRC-019 exact Workflow transport: [contract](workflow.md); definition creation i
 SRC-020 implements Chatflow definition/version/publish/list, session detail and GET `/conversations/{id}/chatflow-session` (latest retained session or null), plus Human completion. Exact DTOs/guards at [Chatflow contract](chatflow.md); generated OpenAPI includes these routes. SRC-021 adds handoff/acceptance and GET `/leads/{id}/handoffs`; exact DTOs, read scope and errors follow [Sales contract](sales-handoff.md).
 
 SRC-022 adds `/sales/leads` list/detail, Operations failed inbound/read-only Workflow and Agent Runtime lists and reason-coded retry. Exact DTOs, bounded cursors and authorization at [M2 workspace contract](workspaces-m2.md). Existing intake retry remains compatible; no unknown outbound resend.
+
+Messenger optional raw provider endpoint GET/POST `/connector/v1/messenger/:appId/webhook` follows [exact ingress contract](messenger-ingress.md); no session or mock credential API.
+
+ADR-019 target API semantics: [ResolveContact / ValidateContactBinding / SyncContactProfile and Chat MessageContext](contact-resolution.md). All new Chat inbound/outbound message inputs require crm_contact_id; endpoints/OpenAPI/auth wire details pending PLAN-006. Existing generated API remains unchanged.
+
+## SRC-030 scoped implementation
+
+Additive contact lookup/resolve, contact-bound deliveries-v2 and messages-v2 endpoints are specified by the local contract and generated OpenAPI. Existing endpoints remain available. New Connector worker requires this backend version. See [compatibility contract](../contracts/contact-resolution-local.md).
+
+## SRC-031 Facebook configuration and channel dimensions
+
+[Exact OAuth/Page/schema19 contract](../contracts/facebook-configuration.md) and [operator runbook](../development/facebook-configuration.md) define Admin→Channels→Facebook, session/state-bound OAuth, encrypted DB Page credentials and manual verified token replacement. Baseline Channels remains sole writer of catalog/credentials; independent Connector capture is unchanged until API-based extraction/provisioning. Conversation channel and generated channel_id retain existing connection IDs, with Page metadata and tenant/field-authorized filters/options. Messaging activation and real sandbox acceptance remain separate.

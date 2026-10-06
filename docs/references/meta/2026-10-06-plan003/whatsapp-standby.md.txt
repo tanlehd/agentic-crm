@@ -1,0 +1,421 @@
+# Standby webhooks
+
+
+
+## Overview
+
+### What is a message echo?
+
+## Prerequisites
+
+## Subscribing to standby webhooks
+
+To receive standby webhooks, subscribe to the `standby` field in your app&#039;s Webhooks configuration:
+
+1. Go to your app in the [Meta Developer Portal](https://developers.facebook.com/apps).
+2. Navigate to **WhatsApp &gt; Configuration &gt; Webhook fields**.
+3. Subscribe to the **standby** field.
+
+## When you receive each webhook type
+
+## What you will NOT receive
+
+You will **not** receive standby webhooks when:
+
+## Payload structure
+
+### Common envelope
+
+Every standby webhook uses this envelope:
+
+```html
+&#123;
+  &quot;object&quot;: &quot;whatsapp_business_account&quot;,
+  &quot;entry&quot;: [
+    &#123;
+      &quot;id&quot;: &quot;&lt;WHATSAPP_BUSINESS_ACCOUNT_ID&gt;&quot;,
+      &quot;changes&quot;: [
+        &#123;
+          &quot;value&quot;: &#123;
+            &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+            &quot;metadata&quot;: &#123;
+              &quot;display_phone_number&quot;: &quot;&lt;BUSINESS_PHONE_NUMBER&gt;&quot;,
+              &quot;phone_number_id&quot;: &quot;&lt;PHONE_NUMBER_ID&gt;&quot;
+            &#125;,
+            &quot;standby&quot;: &#123;&#125;
+          &#125;,
+          &quot;field&quot;: &quot;standby&quot;
+        &#125;
+      ]
+    &#125;
+  ]
+&#125;
+```
+
+The `standby` object contains one of: `messages`, `message_echoes`, or `statuses`.
+
+### Parameters
+
+## Standby inbound message
+
+### Example payload
+
+```html
+&#123;
+  &quot;object&quot;: &quot;whatsapp_business_account&quot;,
+  &quot;entry&quot;: [
+    &#123;
+      &quot;id&quot;: &quot;&lt;WHATSAPP_BUSINESS_ACCOUNT_ID&gt;&quot;,
+      &quot;changes&quot;: [
+        &#123;
+          &quot;value&quot;: &#123;
+            &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+            &quot;metadata&quot;: &#123;
+              &quot;display_phone_number&quot;: &quot;&lt;BUSINESS_PHONE_NUMBER&gt;&quot;,
+              &quot;phone_number_id&quot;: &quot;&lt;PHONE_NUMBER_ID&gt;&quot;
+            &#125;,
+            &quot;standby&quot;: &#123;
+              &quot;contacts&quot;: [
+                &#123;
+                  &quot;profile&quot;: &#123;
+                    &quot;name&quot;: &quot;Test User&quot;
+                  &#125;,
+                  &quot;wa_id&quot;: &quot;&lt;WA_ID&gt;&quot;
+                &#125;
+              ],
+              &quot;messages&quot;: [
+                &#123;
+                  &quot;from&quot;: &quot;&lt;WA_ID&gt;&quot;,
+                  &quot;id&quot;: &quot;&lt;MESSAGE_ID&gt;&quot;,
+                  &quot;timestamp&quot;: &quot;&lt;TIMESTAMP&gt;&quot;,
+                  &quot;text&quot;: &#123;
+                    &quot;body&quot;: &quot;Test standby message&quot;
+                  &#125;,
+                  &quot;type&quot;: &quot;text&quot;
+                &#125;
+              ]
+            &#125;
+          &#125;,
+          &quot;field&quot;: &quot;standby&quot;
+        &#125;
+      ]
+    &#125;
+  ]
+&#125;
+```
+
+### Parameters
+
+| Name | Type | Description |
+|------|------|-------------|
+| `standby.contacts` | array | Array of contact objects describing the message sender. |
+| `standby.contacts[].profile.name` | string | The WhatsApp user&#039;s profile name. |
+| `standby.contacts[].wa_id` | string | The WhatsApp user&#039;s WhatsApp ID (phone number). |
+| `standby.messages` | array | Array of message objects. |
+| `standby.messages[].from` | string | Sender&#039;s WhatsApp ID. |
+| `standby.messages[].id` | string | Unique message identifier (`wamid.*`). |
+| `standby.messages[].timestamp` | string | Unix epoch timestamp in seconds. |
+| `standby.messages[].type` | string | Message type — for example, `text`, `image`, `document`, `audio`, `video`, `location`, `contacts`, `interactive`, `button`, `reaction`. |
+| `standby.messages[].text.body` | string | Text content (present when `type` is `text`). |
+
+**Note:** All message types supported by WhatsApp (such as image, document, audio, video, location, contacts, interactive, and reaction) are delivered in standby using the same schema as [standard incoming message webhooks](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages). The example above shows a `text` message; other types include their respective content objects.
+
+## Standby message echo
+
+### Text message echo
+
+```html
+&#123;
+  &quot;object&quot;: &quot;whatsapp_business_account&quot;,
+  &quot;entry&quot;: [
+    &#123;
+      &quot;id&quot;: &quot;&lt;WHATSAPP_BUSINESS_ACCOUNT_ID&gt;&quot;,
+      &quot;changes&quot;: [
+        &#123;
+          &quot;value&quot;: &#123;
+            &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+            &quot;metadata&quot;: &#123;
+              &quot;display_phone_number&quot;: &quot;&lt;BUSINESS_PHONE_NUMBER&gt;&quot;,
+              &quot;phone_number_id&quot;: &quot;&lt;PHONE_NUMBER_ID&gt;&quot;
+            &#125;,
+            &quot;standby&quot;: &#123;
+              &quot;message_echoes&quot;: [
+                &#123;
+                  &quot;id&quot;: &quot;&lt;MESSAGE_ID&gt;&quot;,
+                  &quot;timestamp&quot;: &quot;&lt;TIMESTAMP&gt;&quot;,
+                  &quot;message&quot;: &#123;
+                    &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+                    &quot;to&quot;: &quot;&lt;WHATSAPP_USER_PHONE_NUMBER&gt;&quot;,
+                    &quot;recipient_type&quot;: &quot;individual&quot;,
+                    &quot;type&quot;: &quot;text&quot;,
+                    &quot;text&quot;: &#123;
+                      &quot;body&quot;: &quot;Hello! Your order #12345 has shipped.&quot;,
+                      &quot;preview_url&quot;: true
+                    &#125;,
+                    &quot;context&quot;: &#123;
+                      &quot;message_id&quot;: &quot;&lt;PREVIOUS_MESSAGE_ID&gt;&quot;
+                    &#125;
+                  &#125;
+                &#125;
+              ]
+            &#125;
+          &#125;,
+          &quot;field&quot;: &quot;standby&quot;
+        &#125;
+      ]
+    &#125;
+  ]
+&#125;
+```
+
+### Template message echo
+
+For template messages, the echo contains two template-related objects:
+
+- **`message.template`** — The send-time parameters (template name, language, component variable values) as passed to the [Send Message API](https://developers.facebook.com/documentation/business-messaging/whatsapp/reference/whatsapp-business-phone-number/message-api#message-templates). This tells you *what values* were substituted.
+- **`template`** (sibling of `message`, inside each echo object) — The full unhydrated template definition, matching the format described in [Templates overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/overview). This tells you the *template structure* with placeholder markers (for example, `&#123;&#123;1&#125;&#125;`), not the rendered text.
+
+**Note:** Use the sibling `template` object to understand the template layout, and `message.template` to see which parameter values were filled in at send time.
+
+```html
+&#123;
+  &quot;object&quot;: &quot;whatsapp_business_account&quot;,
+  &quot;entry&quot;: [
+    &#123;
+      &quot;id&quot;: &quot;&lt;WHATSAPP_BUSINESS_ACCOUNT_ID&gt;&quot;,
+      &quot;changes&quot;: [
+        &#123;
+          &quot;value&quot;: &#123;
+            &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+            &quot;metadata&quot;: &#123;
+              &quot;display_phone_number&quot;: &quot;&lt;BUSINESS_PHONE_NUMBER&gt;&quot;,
+              &quot;phone_number_id&quot;: &quot;&lt;PHONE_NUMBER_ID&gt;&quot;
+            &#125;,
+            &quot;standby&quot;: &#123;
+              &quot;message_echoes&quot;: [
+                &#123;
+                  &quot;id&quot;: &quot;&lt;MESSAGE_ID&gt;&quot;,
+                  &quot;timestamp&quot;: &quot;&lt;TIMESTAMP&gt;&quot;,
+                  &quot;message&quot;: &#123;
+                    &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+                    &quot;to&quot;: &quot;&lt;WHATSAPP_USER_PHONE_NUMBER&gt;&quot;,
+                    &quot;recipient_type&quot;: &quot;individual&quot;,
+                    &quot;type&quot;: &quot;template&quot;,
+                    &quot;template&quot;: &#123;
+                      &quot;name&quot;: &quot;summer_sale_2026&quot;,
+                      &quot;language&quot;: &#123; &quot;code&quot;: &quot;en_US&quot; &#125;,
+                      &quot;components&quot;: [
+                        &#123;
+                          &quot;type&quot;: &quot;header&quot;,
+                          &quot;parameters&quot;: [
+                            &#123; &quot;type&quot;: &quot;image&quot;, &quot;image&quot;: &#123; &quot;id&quot;: &quot;&lt;MEDIA_ID&gt;&quot; &#125; &#125;
+                          ]
+                        &#125;,
+                        &#123;
+                          &quot;type&quot;: &quot;body&quot;,
+                          &quot;parameters&quot;: [
+                            &#123; &quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;Maria&quot; &#125;,
+                            &#123; &quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;25%&quot; &#125;
+                          ]
+                        &#125;,
+                        &#123;
+                          &quot;type&quot;: &quot;button&quot;,
+                          &quot;sub_type&quot;: &quot;url&quot;,
+                          &quot;index&quot;: 0,
+                          &quot;parameters&quot;: [
+                            &#123; &quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;summer2026&quot; &#125;
+                          ]
+                        &#125;
+                      ]
+                    &#125;
+                  &#125;,
+                  &quot;template&quot;: &#123;
+                    &quot;name&quot;: &quot;summer_sale_2026&quot;,
+                    &quot;language&quot;: &quot;en_US&quot;,
+                    &quot;category&quot;: &quot;MARKETING&quot;,
+                    &quot;components&quot;: [
+                      &#123; &quot;type&quot;: &quot;HEADER&quot;, &quot;format&quot;: &quot;IMAGE&quot; &#125;,
+                      &#123; &quot;type&quot;: &quot;BODY&quot;, &quot;text&quot;: &quot;Hi &#123;&#123;1&#125;&#125;, enjoy &#123;&#123;2&#125;&#125; off!&quot; &#125;,
+                      &#123; &quot;type&quot;: &quot;FOOTER&quot;, &quot;text&quot;: &quot;Limited time&quot; &#125;,
+                      &#123;
+                        &quot;type&quot;: &quot;BUTTONS&quot;,
+                        &quot;buttons&quot;: [
+                          &#123; &quot;type&quot;: &quot;URL&quot;, &quot;text&quot;: &quot;Shop Now&quot;, &quot;url&quot;: &quot;https://example.com/&#123;&#123;1&#125;&#125;&quot; &#125;
+                        ]
+                      &#125;
+                    ],
+                    &quot;status&quot;: &quot;APPROVED&quot;
+                  &#125;
+                &#125;
+              ]
+            &#125;
+          &#125;,
+          &quot;field&quot;: &quot;standby&quot;
+        &#125;
+      ]
+    &#125;
+  ]
+&#125;
+```
+
+### Interactive flow message echo
+
+```html
+&#123;
+  &quot;object&quot;: &quot;whatsapp_business_account&quot;,
+  &quot;entry&quot;: [
+    &#123;
+      &quot;id&quot;: &quot;&lt;WHATSAPP_BUSINESS_ACCOUNT_ID&gt;&quot;,
+      &quot;changes&quot;: [
+        &#123;
+          &quot;value&quot;: &#123;
+            &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+            &quot;metadata&quot;: &#123;
+              &quot;display_phone_number&quot;: &quot;&lt;BUSINESS_PHONE_NUMBER&gt;&quot;,
+              &quot;phone_number_id&quot;: &quot;&lt;PHONE_NUMBER_ID&gt;&quot;
+            &#125;,
+            &quot;standby&quot;: &#123;
+              &quot;message_echoes&quot;: [
+                &#123;
+                  &quot;id&quot;: &quot;&lt;MESSAGE_ID&gt;&quot;,
+                  &quot;timestamp&quot;: &quot;&lt;TIMESTAMP&gt;&quot;,
+                  &quot;message&quot;: &#123;
+                    &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+                    &quot;to&quot;: &quot;&lt;WHATSAPP_USER_PHONE_NUMBER&gt;&quot;,
+                    &quot;recipient_type&quot;: &quot;individual&quot;,
+                    &quot;type&quot;: &quot;interactive&quot;,
+                    &quot;interactive&quot;: &#123;
+                      &quot;type&quot;: &quot;flow&quot;,
+                      &quot;header&quot;: &#123;
+                        &quot;type&quot;: &quot;text&quot;,
+                        &quot;text&quot;: &quot;Book Appointment&quot;
+                      &#125;,
+                      &quot;body&quot;: &#123;
+                        &quot;text&quot;: &quot;Schedule your visit with us.&quot;
+                      &#125;,
+                      &quot;footer&quot;: &#123;
+                        &quot;text&quot;: &quot;Tap below to continue&quot;
+                      &#125;,
+                      &quot;action&quot;: &#123;
+                        &quot;name&quot;: &quot;flow&quot;,
+                        &quot;parameters&quot;: &#123;
+                          &quot;flow_id&quot;: &quot;&lt;FLOW_ID&gt;&quot;,
+                          &quot;flow_cta&quot;: &quot;Book Now&quot;,
+                          &quot;flow_action&quot;: &quot;navigate&quot;,
+                          &quot;flow_action_payload&quot;: &#123;
+                            &quot;screen&quot;: &quot;APPOINTMENT_SCREEN&quot;
+                          &#125;
+                        &#125;
+                      &#125;
+                    &#125;
+                  &#125;,
+                  &quot;flow&quot;: &#123;
+                    &quot;id&quot;: &quot;&lt;FLOW_ID&gt;&quot;,
+                    &quot;name&quot;: &quot;Appointment Booking&quot;,
+                    &quot;status&quot;: &quot;PUBLISHED&quot;,
+                    &quot;categories&quot;: [&quot;APPOINTMENT_BOOKING&quot;]
+                  &#125;
+                &#125;
+              ]
+            &#125;
+          &#125;,
+          &quot;field&quot;: &quot;standby&quot;
+        &#125;
+      ]
+    &#125;
+  ]
+&#125;
+```
+
+### Parameters
+
+| Name | Type | Description |
+|------|------|-------------|
+| `standby.message_echoes` | array | Array of echo objects. |
+| `standby.message_echoes[].id` | string | Unique message ID (`wamid.*`) assigned at send time. |
+| `standby.message_echoes[].timestamp` | string | Unix epoch in seconds when the message was sent. |
+| `standby.message_echoes[].message` | object | The exact request body as passed to [POST /&#123;phone-number-id&#125;/messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/reference/whatsapp-business-phone-number/message-api). Contains all send-time parameters. |
+| `standby.message_echoes[].template` | object | *(Optional)* Present only for template messages. The full unhydrated template definition. See [Templates overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/overview). |
+| `standby.message_echoes[].flow` | object | *(Optional)* Present only for flow messages. The full flow definition as returned by GET /&#123;flow-id&#125;. |
+
+**Note:** For template messages, `message.template` carries only the send-time **parameters** (variable values) — see [Cloud API — Send message templates](https://developers.facebook.com/documentation/business-messaging/whatsapp/reference/whatsapp-business-phone-number/message-api#message-templates). The sibling `template` object contains the full template definition format as described in [Templates overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/overview).
+
+## Standby status receipt
+
+### Example payload
+
+```html
+&#123;
+  &quot;object&quot;: &quot;whatsapp_business_account&quot;,
+  &quot;entry&quot;: [
+    &#123;
+      &quot;id&quot;: &quot;&lt;WHATSAPP_BUSINESS_ACCOUNT_ID&gt;&quot;,
+      &quot;changes&quot;: [
+        &#123;
+          &quot;value&quot;: &#123;
+            &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+            &quot;metadata&quot;: &#123;
+              &quot;display_phone_number&quot;: &quot;&lt;BUSINESS_PHONE_NUMBER&gt;&quot;,
+              &quot;phone_number_id&quot;: &quot;&lt;PHONE_NUMBER_ID&gt;&quot;
+            &#125;,
+            &quot;standby&quot;: &#123;
+              &quot;statuses&quot;: [
+                &#123;
+                  &quot;id&quot;: &quot;&lt;MESSAGE_ID&gt;&quot;,
+                  &quot;status&quot;: &quot;delivered&quot;,
+                  &quot;timestamp&quot;: &quot;&lt;TIMESTAMP&gt;&quot;,
+                  &quot;recipient_id&quot;: &quot;&lt;RECIPIENT_WA_ID&gt;&quot;,
+                  &quot;conversation&quot;: &#123;
+                    &quot;id&quot;: &quot;&lt;CONVERSATION_ID&gt;&quot;,
+                    &quot;origin&quot;: &#123;
+                      &quot;type&quot;: &quot;utility&quot;
+                    &#125;
+                  &#125;,
+                  &quot;pricing&quot;: &#123;
+                    &quot;billable&quot;: true,
+                    &quot;pricing_model&quot;: &quot;PMP&quot;,
+                    &quot;category&quot;: &quot;utility&quot;,
+                    &quot;type&quot;: &quot;regular&quot;
+                  &#125;
+                &#125;
+              ]
+            &#125;
+          &#125;,
+          &quot;field&quot;: &quot;standby&quot;
+        &#125;
+      ]
+    &#125;
+  ]
+&#125;
+```
+
+### Parameters
+
+| Name | Type | Description |
+|------|------|-------------|
+| `standby.statuses` | array | Array of status objects. |
+| `standby.statuses[].id` | string | The message ID this status refers to. |
+| `standby.statuses[].status` | string | Delivery status: `sent`, `delivered`, or `read`. |
+| `standby.statuses[].timestamp` | string | Unix epoch in seconds of the status event. |
+| `standby.statuses[].recipient_id` | string | WhatsApp ID of the message recipient. |
+| `standby.statuses[].conversation.id` | string | Conversation ID. |
+| `standby.statuses[].conversation.origin.type` | string | Conversation origin: `utility`, `marketing`, `authentication`, `service`, or `referral_conversion`. |
+| `standby.statuses[].pricing.billable` | boolean | Whether this message is billable. |
+| `standby.statuses[].pricing.pricing_model` | string | Pricing model (for example, `PMP`). |
+| `standby.statuses[].pricing.category` | string | Pricing category. |
+| `standby.statuses[].pricing.type` | string | Pricing type (for example, `regular`). |
+
+## Best practices
+
+## See also
+
+- [Webhooks overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/overview) — General webhook setup and verification
+- [Webhooks reference — Messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages) — Standard incoming message webhook reference
+- [Send Message API](https://developers.facebook.com/documentation/business-messaging/whatsapp/reference/whatsapp-business-phone-number/message-api) — Message API reference (echoed `message` field mirrors this)
+- [Send message templates](https://developers.facebook.com/documentation/business-messaging/whatsapp/reference/whatsapp-business-phone-number/message-api#message-templates) — Template send parameters reference
+- [Templates overview](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/overview) — Template definition format
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/business-messaging/whatsapp/llms.txt

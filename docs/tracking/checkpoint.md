@@ -1,29 +1,27 @@
 # Checkpoint — điểm tiếp tục
 
-Updated2026-10-06, S-20261006-04 (SRC-025 Git sync).
+Updated2026-10-06, S-20261006-15. SRC-001…031 DONE; PLAN-004D scoped design DONE. M3 overall/local release incomplete. [Tracker](tasks.md) · [Evidence](details/SRC-031.md). No task active, no background agents/automation.
 
-## Trạng thái
+## User objective and decisions
 
-SRC-001…025 DONE (25/25). M1 và M2 local/mock release gates PASS. Không task active. [Tracker](tasks.md) · [SRC-025 evidence](details/SRC-025.md) · [release runbook](../development/m2-release.md).
+Hoàn thiện M3 local; no Meta sandbox. Latest priority: Admin configuration→Channels→Facebook Page list and Connect Facebook, real OAuth discovery (explicitly selected by user), DB-managed Page tokens; user may replace token manually later for demo. Unified conversations need channel/icon/channel_id and filtering/report dimensions by Page ID. CRM DB remains SoT for canonical identity→Contact; Connector/Chat cache-aside and crm_contact_id contracts from SRC-030 retained.
 
-Release backend/web đã build và chạy ARM64 native + AMD64 emulated. Actual M1 baseline f575a8e/schema8→17 giữ31 bảng cũ/10 CRM records, journal checksum và migration no-op. Whole-stack stop/start giữ all-table hashes; timer đã persist hoàn tất đúng một lần. Hai architecture đều qua cold database + real Chrome/OIDC/API/worker CTM→AI-owned qualification→Sales UI accept; Human takeover/form/completion/handoff, owner independence/prospect và tenant denial.
+## Delivered this session
 
-## Git và file
+SRC-031 implements OAuth state/session/tenant binding, fixed Graph v26.0 code exchange and bounded Page discovery, encrypted Page credentials and verified manual stdin token CLI. Admin UI and callback return to selected tenant, Page list and configuration state. Migration19 adds Page/OAuth tables, channel provider extension, Conversation channel and generated channel_id, FK/indexes. Inbox Messenger icon and channel/channel_id/page_id filters honor tenant/field/record ACL. [Contract](../contracts/facebook-configuration.md) · [Runbook](../development/facebook-configuration.md).
 
-Branch main. SRC-024 commit3476707 và SRC-025 commit `f35ea60` đã push origin/main theo user. Checkpoint/log/evidence Git sync được ghi trong docs commit tiếp theo. Không product source/schema/API/event/migration change, không production deploy.
+Baseline Channels module owns configuration; independent Connector DB/capture remains unchanged. Page token stored does not activate receive/send: transport stays disabled, no real Page relabelled as mock. Real capture→Chat, subscription/send/control and provider profile enrichment are pending. Existing event/envelope versions unchanged.
 
-## Evidence
+## Verification / workspace
 
-`artifacts/SRC-025/arm64-final/release-summary.json` và `amd64/release-summary.json`: PASS; image IDs/platform, actual runtime arch/uid, upgrade/restart fingerprints, demo trace IDs và screenshots theo thư mục. `regression-final.log`:180/180 PASS (gồm healthcare12/4/3 và2/3, fault/ACL/races). `verify-final/summary.json`:9/9 PASS (66 unit/contract+7 tooling/build/typecheck/smoke). Final harness refinements validated by both release gates and final lint; final docs status checked separately (`lint-final.log`, `docs-final.log`, `whitespace.log`). Exact commands in task detail.
+Main HEAD1111839 dirty, pre-existing work preserved; no commit/push/deploy/preview migration. Canonical Node24.21.0/pnpm10.33.0 Linux arm649/9 PASS (96 unit/contract/renderer +7 tooling). MySQL196/196 PASS including upgrade18→19, OAuth replay/supersession/revocation/cross-tenant rollback/encryption, channel filter/field ACL/cursor. Next+Chrome desktop/mobile synthetic browser smoke PASS; current nginx config syntax PASS. Screenshots inspected. Artifacts `artifacts/SRC-031/{verify-final.log,verify-summary.json,integration-complete.log,ui-smoke-final.log,gateway-config.log,docs-check.log,whitespace.log,services.log}`.
 
-Linux app/build Node24.21.0/pnpm10.33.0, MySQL8.4.11/Redis7.4.11; host Node25 only Docker/Chrome orchestration. Native AMD64 hardware/Windows/production NOT_RUN; remote CI NOT_VERIFIED. AMD64 app uses emulation, native infrastructure and ARM64 M1 baseline.
+All disposable containers cleaned exit0. Isolated Next3101 test server stopped; seven existing preview containers healthy and still old schema17, not updated. Host Node25 orchestration/preflight/UI only. Full-stack release smoke expected schema19 but not rerun. Live Meta OAuth NOT_RUN; needs App ID/secret/key/valid redirect and eligible app account. No real secret read or stored during this task.
 
-Initial Docker disk100% issue: removed only unused build cache older1h; no database volume/image tag deleted. Existing test DB/OIDC recovered without reset. Earlier harness selector/unique-credential failures retained; final named runs PASS. No blocker/unresolved decision.
+## Next action
 
-## Services và bàn giao
+Complete exact provider-ingestion/provisioning contract, then connect configured Facebook Pages and independent signed capture to CRM resolve/cache→Chat delivery as the next scoped source task. Keep subscription/send/control/profile enrichment and local M3 release explicit; do not bypass mock guards or give services direct SQL to the catalog. Real setup is documented; no unresolved business decision blocks the next design/source gate.
 
-Preview localhost8080 remains existing SRC-022 application/schema17; no preview build/stop/restart/deploy by SRC-025. Final7 services healthy (`services-final.log`), no running test containers. Test containers/networks cleaned; named test volumes deliberately retained (all runs in `retained-test-volumes.log`, successful run/private credential directory in each release-summary.json). No background job/automation/subagent started.
+## Git handoff — S-20261006-16
 
-Run `pnpm release:smoke` for fresh isolated reproduction; it requires local Chrome, dependencies, Docker space and Git history including f575a8e. Real Meta/LLM, production ops, M4 Deal/won/Customer/appointments and M5 builders/report engine remain outside this release.
-
-Next action: review/prioritize M3 design requirements before claiming any real Meta/AI integration task; no further M1–M2 source task remains.
+User authorized committing/pushing accumulated SRC-026…031 work to origin/main. This checkpoint is included in that handoff commit; resolve its actual hash with Git history. Earlier uncommitted references describe implementation/test sessions. Preview remains old and Channels is not visible there until explicit preview update; admin still requires configured integration.read/configure grants, no username bypass. User will continue remaining tasks individually.

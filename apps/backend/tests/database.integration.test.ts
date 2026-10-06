@@ -1,3 +1,5 @@
+import { facebookCases } from './facebook-cases.js';
+import { messengerIngressCases } from './messenger-ingress-cases.js';
 import { healthcareCases } from './healthcare-cases.js';
 import { salesHandoffCases } from './sales-handoff-cases.js';
 import { chatflowCases } from './chatflow-cases.js';
@@ -186,6 +188,7 @@ describe.skipIf(!enabled)('SRC-004 real MySQL', () => {
   registryCases(isolated);
   propertiesCases(isolated);
   crmCoreCases(isolated);
+  facebookCases(isolated);
   conversationCases(isolated);
   routingCases(isolated);
   runtimeCases(isolated);
@@ -193,6 +196,7 @@ describe.skipIf(!enabled)('SRC-004 real MySQL', () => {
   chatflowCases(isolated);
   salesHandoffCases(isolated);
   intakeCases(isolated);
+  messengerIngressCases(isolated);
   healthcareCases(isolated);
   it('runtime user can perform DML but cannot execute DDL', async () => {
     const user=process.env.MYSQL_USER!, password=process.env.MYSQL_PASSWORD!;

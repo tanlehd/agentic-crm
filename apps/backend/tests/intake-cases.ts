@@ -1,3 +1,5 @@
+import { contactResolutionCases } from './contact-resolution-cases.js';
+import { connectorBridgeCases } from './connector-bridge-cases.js';
 import { AuthService } from '../src/modules/identity/auth/service.js';
 import { hash } from '../src/modules/identity/auth/security.js';
 import { redisCut } from './fixtures/redis-cut.js';
@@ -98,6 +100,8 @@ export function intakeCases(isolated:(name:string)=>Promise<DataSource>){describ
     class TestModule{}Module({controllers:[ChannelsController],providers:[{provide:ChannelsRuntime,useValue:{ready:async()=>{},intake:app}},{provide:AuthRuntime,useValue:{service:{session:async()=>({account_id:account}),requireMutation:async()=>({account_id:account})}}}]})(TestModule);
     const server=await NestFactory.create(TestModule,{logger:false});server.setGlobalPrefix('api/v1');await server.listen(0,'127.0.0.1');
     try{const base=await server.getUrl(),headers={'Content-Type':'application/json','Authorization':bearer,'X-Connection-Id':connection},body=JSON.stringify(payload());
+      const content={version:1,message_type:'media',text:'Synthetic extracted image text',text_source:'extracted',reply_to:null,attachment:{version:1,kind:'media',items:[{media_type:'image',external_media_id:'synthetic-image',name:null}]}};
+      const rich=await fetch(`${base}/api/v1/integrations/mock-messenger/deliveries`,{method:'POST',headers,body:JSON.stringify(payload({message:{type:'rich',content}}))});expect(rich.status).toBe(202);const richAck:any=await rich.json();await processAll();const richReceipt=await read(richAck.data.delivery_id);expect(((await conversations.read(account,tenant,richReceipt.conversation_id,'rich')).data as any[]).find(m=>m.id===richReceipt.message_id)).toMatchObject({text:content.text,text_source:'extracted',attachment:content.attachment});
       const response=await fetch(`${base}/api/v1/integrations/mock-messenger/deliveries`,{method:'POST',headers,body});expect(response.status).toBe(202);const ack=await response.json() as any;
       for(const extra of [{'X-Tenant-Id':beta},{Cookie:'crm_session=synthetic'},{Origin:'http://localhost:8080'}])expect((await fetch(`${base}/api/v1/integrations/mock-messenger/deliveries`,{method:'POST',headers:{...headers,...extra},body})).status).toBe(403);
       const get=await fetch(`${base}/api/v1/integrations/deliveries/${ack.data.delivery_id}`,{headers});expect(get.status).toBe(200);expect(JSON.stringify(await get.json())).not.toContain('Synthetic message content');
@@ -151,4 +155,12 @@ export function intakeCases(isolated:(name:string)=>Promise<DataSource>){describ
  it('SRC-022 operations list sanitized, reason required, retry same delivery once',async()=>{
   const ack=await accept(),id=ack.data.delivery_id;await ds.query('UPDATE service_actor SET active=0 WHERE id=?',[service]);await app.dispatch(await claim(id));await ds.query('UPDATE service_actor SET active=1 WHERE id=?',[service]);const list=await app.failedDeliveries(account,tenant,{limit:'50'});expect(list.data.some((r:any)=>r.id===id&&r.can_retry)).toBe(true);expect(JSON.stringify(list)).not.toContain('Synthetic message content');expect((await app.failedDeliveries(account,beta,{})).data.some((r:any)=>r.id===id)).toBe(false);expect(()=>app.retry(account,tenant,id,{},randomUUID(),'synthetic',true)).toThrow('INVALID_REQUEST');const key=randomUUID(),one=await app.retry(account,tenant,id,{reason:'operator_retry'},key,'synthetic',true);expect(await app.retry(account,tenant,id,{reason:'operator_retry'},key,'synthetic',true)).toEqual(one);await processAll();expect((await read(id)).status).toBe('processed');expect(await ds.query("SELECT id FROM audit_entry WHERE resource_id=? AND action='intake.retry' AND reason='operator_retry'",[id])).toHaveLength(1);
  });
+  it('SRC-027 durable rich mock roundtrip and repeated event preserves content',async()=>{
+    const content={version:1,message_type:'template',text:null,reply_to:null,attachment:{version:1,kind:'gallery',cards:[{title:'Synthetic rich intake',subtitle:null,buttons:[]}]}};
+    const input=payload({external_subject_id:'synthetic-rich',message:{type:'rich',content}}),ack=await accept(input);expect(await accept(input)).toEqual(ack);await processAll();const receipt=await read(ack.data.delivery_id);expect(receipt.status).toBe('processed');
+    const [stored]=await ds.query('SELECT content FROM message_content WHERE tenant_id=? AND message_id=?',[tenant,receipt.message_id]);expect(typeof stored.content==='string'?JSON.parse(stored.content):stored.content).toEqual(content);
+    await expect(accept({...input,message:{type:'rich',content:{...content,text:'Changed'}}})).rejects.toThrow('IDEMPOTENCY_CONFLICT');
+  });
+  connectorBridgeCases(isolated,()=>({ds,app,tenant,connection,token,beta,betaConnection,betaToken}));
+  contactResolutionCases(()=>({ds,app,tenant,connection,token,beta,betaConnection,betaToken}));
 });}

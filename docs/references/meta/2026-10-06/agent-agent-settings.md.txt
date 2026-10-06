@@ -1,0 +1,287 @@
+
+
+# Agent Settings
+
+Manage AI agent settings for a specific entity (WhatsApp Business Phone Number).
+
+This endpoint manages the core operational settings for the AI agent on a specific entity (WhatsApp Business Phone Number ID), such as its active status and policies for handoff and followup. The resource is a singleton — one settings object per entity_id. Uses GET to retrieve and PUT to create or update (partial update — any field you omit retains its current value; PUT is retained for backward compatibility).
+
+Set up billing before you turn your agent on — Meta Business Agent messages are not delivered unless your Business Agent account has a payment method attached. Turning the agent on with `ai_audience` set to `ALLOWLISTED_ONLY` does not require a payment method, so you can test with allowlisted consumers before you set up billing. See [Billing for Meta Business Agent messages](https://developers.facebook.com/documentation/business-messaging/whatsapp/pricing/non-template-messages#billing-for-meta-business-agent-messages).
+
+## Base URL
+
+| URL | Description |
+|-----|-------------|
+| https://api.facebook.com/&#123;entity_id&#125;/agent_config/settings |  |
+
+## Authorization
+
+This API requires:
+
+any of the following
+  - Capability: bizai_wa_enterprise_api_3p_access
+  - Capability: bizai_ig_enterprise_api_3p_access
+  - Permission: whatsapp_business_messaging
+
+## APIs
+
+| Method | Endpoint |
+|--------|----------|
+| GET | [/](#get) |
+| PUT | [/](#put) |
+
+&lt;jumplink id=&quot;get&quot;&gt;&lt;/jumplink&gt;
+## GET /
+
+Get AI agent settings
+
+Retrieve the current AI settings for the specified entity.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID, Instagram business account ID, or Instagram username for the Meta Business Agent. |
+
+### Query Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| agent_id | string |  | Optional agent ID. When provided, returns the specific agent configuration. When absent, returns all settings for the given channel. |
+
+### Responses
+
+**200**
+
+The AI settings for the entity
+
+**Content Type**: `application/json`
+
+**Schema**: array of [BizAIOmniChannelSettingsResponse](#bizaiomnichannelsettingsresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**403**
+
+Forbidden
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;put&quot;&gt;&lt;/jumplink&gt;
+## PUT /
+
+Update AI agent settings
+
+Create or update the AI settings for the specified entity. Send only the fields you want to change — any field you omit keeps its current value (partial update; PUT is retained for backward compatibility). Note that disabling the agent will make the AI stop responding to all threads. Re-enabling it will make the AI start responding to new threads only. Enabling the agent requires a payment method on your Business Agent account, unless `ai_audience` is `ALLOWLISTED_ONLY`: an allowlisted-only agent responds only to consumers on the channel allowlist, so you can turn it on and test before you set up billing. Expanding `ai_audience` to `EVERYONE` afterwards does require a payment method.
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID, Instagram business account ID, or Instagram username for the Meta Business Agent. |
+
+### Query Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| agent_id | string |  | Optional agent ID. When provided, updates the specific agent configuration. When absent, uses create-or-fetch behavior. |
+
+### Request Body (Required)
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelSettingsRequest](#bizaiomnichannelsettingsrequest)
+
+### Responses
+
+**200**
+
+The updated AI settings for the entity
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelSettingsResponse](#bizaiomnichannelsettingsresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**403**
+
+Forbidden
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+# Components
+
+## Schemas
+
+&lt;jumplink id=&quot;bizaiomnichannelsettingsrollout&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelSettingsRollout
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| enabled | boolean | ✓ | Whether the AI agent is currently enabled. true for on, false for off |
+
+&lt;jumplink id=&quot;bizaiomnichannelsettingshandoff&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelSettingsHandoff
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| enabled | boolean | ✓ | Controls whether the agent will release thread control after sending a handoff message. true = agent will release control, false = agent will not release control. |
+| message | string |  | The message displayed to the user when a handoff to a human agent occurs |
+| message_selection | One of &quot;DEFAULT&quot;, &quot;AGENT&quot;, &quot;CUSTOM&quot; |  | Controls the source of the consumer-facing handoff message. CUSTOM: the business supplies its own handoff message. AGENT: the AI agent composes a handoff message for each conversation. DEFAULT: a fixed, standard handoff message is used. |
+
+&lt;jumplink id=&quot;bizaiomnichannelsettingsfollowup&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelSettingsFollowup
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| enabled | boolean | ✓ | Whether followup is enabled. true to enable, false to disable |
+| followup_interval_in_seconds | One of 0, 300, 900, 1800, 3600, 7200, 28800, 86400 |  | The time in seconds of user inactivity before the followup message is sent. Setting to 0 will disable followup |
+| message | string |  | The message sent to follow up with the user after inactivity |
+
+&lt;jumplink id=&quot;bizaiomnichannelsettingsresponse&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelSettingsResponse
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| agent_id | string | ✓ | Unique identifier for this agent configuration. Use this ID to target a specific agent in update or delete operations |
+| channel | One of &quot;email&quot;, &quot;instagram&quot;, &quot;line&quot;, &quot;messenger&quot;, &quot;sms&quot;, &quot;tiktok&quot;, &quot;unknown&quot;, &quot;webchat&quot;, &quot;whatsapp&quot; | ✓ | The channel/platform these settings apply to |
+| rollout | [BizAIOmniChannelSettingsRollout](#bizaiomnichannelsettingsrollout) | ✓ | Rollout configuration for the AI agent, containing the enabled flag and future gradual rollout fields |
+| handoff | [BizAIOmniChannelSettingsHandoff](#bizaiomnichannelsettingshandoff) |  | Settings for handing over the conversation to a human agent. Null if not configured |
+| followup | [BizAIOmniChannelSettingsFollowup](#bizaiomnichannelsettingsfollowup) |  | Settings for following up with an inactive user. Null if not configured |
+| ai_audience | One of &quot;ALLOWLISTED_ONLY&quot;, &quot;EVERYONE&quot; |  | Controls which consumers the AI agent responds to. EVERYONE = all consumers (default), ALLOWLISTED_ONLY = only consumers in the channel allowlist. Null for unsupported channel entities. |
+
+&lt;jumplink id=&quot;standarderror&quot;&gt;&lt;/jumplink&gt;
+### StandardError
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| title | string | ✓ |  |
+| detail | string | ✓ |  |
+| type | string |  |  |
+| status | integer |  |  |
+
+&lt;jumplink id=&quot;bizaiomnichannelsettingsrequest&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelSettingsRequest
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| rollout | [BizAIOmniChannelSettingsRollout](#bizaiomnichannelsettingsrollout) |  | Rollout configuration for the AI agent, containing the enabled flag and future gradual rollout fields |
+| handoff | [BizAIOmniChannelSettingsHandoff](#bizaiomnichannelsettingshandoff) |  | Settings for handing over the conversation to a human agent |
+| followup | [BizAIOmniChannelSettingsFollowup](#bizaiomnichannelsettingsfollowup) |  | Settings for following up with an inactive user in conversation |
+| ai_audience | One of &quot;ALLOWLISTED_ONLY&quot;, &quot;EVERYONE&quot; |  | Controls which consumers the AI agent responds to. EVERYONE = all consumers (default), ALLOWLISTED_ONLY = only consumers in the channel allowlist. Supported for WhatsApp and Instagram entities. |
+| never_say_phrases | array of string |  | Exact phrases the AI agent must never include in a response. Each turn is checked against this list and a matching response is withheld. Provide the full replacement list; omit to leave the current list unchanged, or send an empty list to clear it. |
+
+## Authentication
+
+| Scheme | Type | Location |
+|--------|------|----------|
+| OAuthToken__Authorization | HTTP Bearer | Header: `Authorization` |
+
+### Usage Examples
+
+- **OAuthToken__Authorization**: Include `Authorization: Bearer your-token-here` in request headers
+
+### Global Authentication Requirements
+
+All endpoints require: OAuthToken__Authorization
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/meta-business-agent/llms.txt

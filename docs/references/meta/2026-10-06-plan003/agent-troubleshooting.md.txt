@@ -1,0 +1,107 @@
+# Troubleshooting Meta Business Agent
+
+
+## Service status &#123;#service-status&#125;
+
+Before you debug a failing request, check whether the platform itself is healthy. The [Meta Business Agent Platform](https://metastatus.com/whatsapp-business-api#meta-business-agent-platform) section of the WhatsApp Business Platform status page reports current availability and any open incident, and [incident history](https://metastatus.com/whatsapp-business-api/history) lists resolved ones.
+
+Failures that arrive across many requests at once, or on requests that worked unchanged a moment earlier, are the ones worth checking here first. Failures scoped to a single entity, token, or endpoint are usually configuration, and the rest of this page covers those.
+
+## API errors &#123;#api-errors&#125;
+
+All Meta Business Agent Platform APIs return a JSON error object on failure with the following fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `title` | string | Short error name |
+| `detail` | string | Human-readable explanation of the error |
+| `status` | integer | HTTP status code |
+| `type` | string | Error type identifier (optional) |
+| `fbtrace_id` | string | Opaque identifier for this request. Include it when you contact support. |
+
+Every response also returns the same value in the `X-FB-Request-ID` response header, including responses that have no body. The header is exposed to cross-origin callers, so browser-based clients can read it. Log it alongside your own request records — it is the fastest way for support to locate a specific failed call.
+
+### HTTP status codes &#123;#http-status-codes&#125;
+
+| Status | Meaning | What to do |
+|--------|---------|------------|
+| `400 Bad Request` | The request is not valid for this entity — either the body or query parameters are malformed, or a prerequisite step has not been completed. | Read `detail`: it names the specific field or condition that failed. Correct it and retry. |
+| `401 Unauthorized` | The access token is missing or invalid, or it lacks the `whatsapp_business_messaging` permission. | Include a valid system user token or Business Integration System User (BISU) token that has the `whatsapp_business_messaging` permission in the `Authorization: Bearer` header. See [Generate an access token](https://developers.facebook.com/documentation/meta-business-agent/get-started#generate-an-access-token). |
+| `403 Forbidden` | The required Terms of Service have not been accepted, or the token is not authorized for this business or entity. | If the error mentions Terms of Service, accept them in [WhatsApp Manager](https://business.facebook.com/latest/whatsapp_manager/) and in the [Facebook Developer Portal](https://developers.facebook.com/apps/). Otherwise confirm the token&#039;s business has access to the target `entity_id`. |
+| `404 Not Found` | The requested resource (agent, connector, tool, or allowlist entry) does not exist. | Check the entity ID, connector ID, or other path parameters in the request. |
+| `429 Too Many Requests` | The rate limit for this endpoint has been reached. | Wait and retry with exponential backoff. |
+| `500 Internal Server Error` | An unexpected error occurred on Meta&#039;s servers. | Retry the request. If the error persists, check [Service status](#service-status) for an open incident before contacting support, and include the `fbtrace_id` from the error response. |
+
+---
+
+## Connector errors &#123;#connector-errors&#125;
+
+When a connector tool call fails, the failure is recorded in the connector&#039;s logs. Retrieve logs with `GET /&#123;entity_id&#125;/agent_connectors/&#123;connector_id&#125;/logs`. Each log entry includes a `failure_code_name` field and an `error_message` field with additional detail. The table below covers the codes you are most likely to see; it is not the full set.
+
+| `failure_code_name` | Cause | What to do |
+|---------------------|-------|------------|
+| `UNAUTHORIZED` | The third-party API rejected the request because authentication failed. | Rotate the connector&#039;s credentials. Update them via `POST /&#123;entity_id&#125;/agent_connectors/&#123;connector_id&#125;/upsertApiKey` (API key) or `upsertOAuth` (OAuth). |
+| `AUTHORIZATION_CHECK_FAILED` | The credentials are valid but the API key or OAuth token lacks the required permission or scope. | Check the OAuth scopes in `auth_config.oauth2_client_credentials.scopes_to_request`. Update the key&#039;s permissions on the third-party side. |
+| `TRANSPORT_ERROR` | The outbound request failed at the network level — no response was received. | Confirm `base_url` is a publicly accessible HTTPS URL. Check that DNS resolves and the TLS certificate is valid and not expired. |
+| `NOT_FOUND` | The resource requested from the third-party API does not exist. | Check the path parameters and IDs the connector tool is sending. Confirm the resource has not been deleted on the third-party side. |
+| `INVALID_REQUEST_USER` | The request the agent sent to the third-party API was malformed or contained an invalid field value. | Review the connector tool&#039;s request schema and parameter bindings. Confirm that macro values resolve to valid types and formats. |
+| `API_RATE_LIMIT_EXCEEDED` | The third-party API&#039;s rate limit was exceeded. | Add retry logic with backoff on the third-party side. Reduce call frequency, or check whether the third-party API tier supports higher throughput. |
+| `CONFLICT_TOO_MANY_SIMULTANEOUS_REQUESTS` | The third-party API rejected the request due to concurrency limits. | Add retry logic with jitter. Reduce the number of concurrent calls your connectors make. |
+| `EXTERNAL_API_ERROR` | The third-party API returned an error that does not map to a specific failure type. | Check the `error_message` field for the third-party API&#039;s own error text. Consult the third-party API documentation for the specific error. |
+| `UNKNOWN` | A generic or unmapped failure occurred. | Check `error_message` for details. If the error originates from the third-party system, contact your third-party provider. |
+
+---
+
+## Connector status &#123;#connector-status&#125;
+
+Each connector has a `connection_status` field that reflects whether it is currently able to make API calls.
+
+| `connection_status.status` | Meaning | What to do |
+|---------------------------|---------|------------|
+| `ACTIVE` | The connector is connected and healthy. | No action needed. |
+| `PENDING_OAUTH` | OAuth authorization has not been completed. | Complete the OAuth flow for this connector. |
+| `EXPIRED` | The OAuth token or API key has expired. | Rotate credentials via `POST /&#123;entity_id&#125;/agent_connectors/&#123;connector_id&#125;/upsertOAuth` or `upsertApiKey`. |
+| `ERROR` | The connector is in an error state. | Check the `error_message` field. Confirm that `base_url` is reachable and that credentials are valid. |
+
+---
+
+## Common issues &#123;#common-issues&#125;
+
+| Issue | Likely cause | What to do |
+|-------|-------------|------------|
+| The **Meta Business Agent** tab doesn&#039;t appear in WhatsApp Manager. | None of the phone numbers in the WhatsApp Business Account (WABA) are eligible for Meta Business Agent, or the WhatsApp Manager URL is missing the required query parameters. | Use the [Eligibility](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-eligibility) endpoint to check eligibility programmatically. Review the [eligibility criteria](https://developers.facebook.com/documentation/meta-business-agent/overview#which-phone-numbers-are-eligible). If eligibility is confirmed, check that the WhatsApp Manager URL includes the correct `business_id` and `asset_id` parameters: `https://business.facebook.com/latest/whatsapp_manager/business_ai?business_id=&#123;BUSINESS_PORTFOLIO_ID&#125;&amp;asset_id=&#123;WABA_ID&#125;`. |
+| API calls return `403` with a Terms of Service error. | The required Terms of Service have not been accepted. | Accept the Meta Business Agent Terms of Service in [WhatsApp Manager](https://business.facebook.com/latest/whatsapp_manager/). Tech Providers and Solution Partners must also accept the Tech Provider Terms of Service in the [Facebook Developer Portal](https://developers.facebook.com/apps/). |
+| A read call returns `200` but the result is empty (for example, no evaluation cases or results). | The token authenticates with `whatsapp_business_messaging` but lacks `whatsapp_business_management`, which is required to read agent data. | Grant `whatsapp_business_management` to your app and generate a new token. See [Generate an access token](https://developers.facebook.com/documentation/meta-business-agent/get-started#generate-an-access-token). If the result is still empty after adding it, a few endpoints require additional Meta-granted access — contact your Meta representative to confirm your app&#039;s access. |
+| The agent responds to allowlisted consumers but not to everyone. | `ai_audience` is set to `ALLOWLISTED_ONLY`, so the agent responds only to allowlisted consumers. Reaching everyone requires `ai_audience` set to `EVERYONE`, which needs a payment method — without one, the agent can&#039;t be enabled for everyone. | Confirm the current setting with `GET /&#123;entity_id&#125;/agent_config/settings`. If it&#039;s `ALLOWLISTED_ONLY`, attach a payment method in [Billing Hub](https://business.facebook.com/latest/billing_hub/) and set `ai_audience` to `EVERYONE`. See [Set up billing](https://developers.facebook.com/documentation/meta-business-agent/get-started#set-up-billing). |
+| Your app is not receiving messages on the `standby` webhook. | The app is not subscribed to the `standby` webhook field, or it currently holds control of the conversation. | Subscribe to the `standby` field in your app&#039;s webhook configuration. See [Subscribe to webhook fields](https://developers.facebook.com/documentation/meta-business-agent/get-started#subscribe-to-webhook-fields). If your app sent a message and took control, call the [Thread Control](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/thread-control-cloud-api) endpoint with the `release` action to return control to the agent. |
+| The agent is not responding to conversations. | The agent is not enabled, or its knowledge and instructions have not been configured. | Call `GET /&#123;entity_id&#125;/agent_config/settings` to confirm the agent is enabled. Call the [Onboarding](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-onboarding) endpoint if you have not done so, and set `rollout.enabled` to `true` via [Settings](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-settings). |
+| API requests return errors about `X-API-Version`. | The request omits `X-API-Version` and resolves to an older version that predates these field names, or carries a version the endpoint doesn&#039;t serve. | Use the `X-API-Version` shown on each endpoint&#039;s reference page and set `2.0.0` explicitly. Without the header, a request resolves to the oldest version that endpoint supports — `1.0.0` for endpoints that predate these field names. Cloud API endpoints differ — [Thread Control](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/thread-control-cloud-api), for example, takes `1.0.0`. |
+| Connector tool calls are failing with `TRANSPORT_ERROR`. | The `base_url` is not reachable from Meta&#039;s servers. | Confirm the endpoint is a publicly accessible HTTPS URL. Check TLS certificate validity and DNS resolution. Do not use `localhost` or private network addresses. |
+| The agent responds when tested with the [Agent test](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/agent-test) endpoint but does not respond in live WhatsApp conversations. | Your app sent a message to the conversation and took control from the agent. Sending any message from your app to a conversation makes your app the primary responder — the agent stops replying until control is released. | Call the [Thread Control (Cloud API)](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/thread-control-cloud-api) endpoint with the `release` action to return control to the agent. |
+| Connector API calls return a `400` error. | The [Onboarding](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-onboarding) endpoint has not been called for this phone number, so the connector workspace isn&#039;t provisioned yet. | Call the Onboarding endpoint first, then retry the connector call. |
+| Enabling Meta Business Agent on a phone number that has an existing Cloud API integration causes the agent to intercept messages the app was previously handling. | When Meta Business Agent is enabled, it becomes the primary responder for all new conversations on that phone number. Your app moves to the standby role and no longer receives messages on the `messages` webhook field. | To coexist with your existing integration, use the [Thread Control (Cloud API)](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/thread-control-cloud-api) endpoint to transfer control to your app when needed, then return it to the agent when done. To disable the agent entirely, set `rollout.enabled` to `false` via the [Settings](https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-settings) endpoint. |
+
+---
+
+## Thread control and message routing &#123;#thread-control-and-message-routing&#125;
+
+When Meta Business Agent is enabled, it is the **primary responder** for new conversations — it replies to the consumer directly. Your app is a **standby participant**: it receives the consumer&#039;s messages on the `standby` webhook field, plus copies of the agent&#039;s outgoing messages and their delivery and read receipts, so it stays in sync.
+
+**Sending any message from your app to a conversation immediately transfers primary control to your app.** This is a common cause of agents that respond correctly in testing but go silent in production. Once your app holds control, the agent does not reply until control is explicitly released.
+
+To return control to the agent, call the [Thread Control (Cloud API)](https://developers.facebook.com/documentation/meta-business-agent/reference/operate/thread-control-cloud-api) endpoint with the `release` action.
+
+### Webhook field reference &#123;#webhook-field-reference&#125;
+
+| Webhook field | When you receive messages on it |
+|---------------|--------------------------------|
+| `standby` | Meta Business Agent holds control (default for new conversations when the agent is enabled) |
+| `messages` | Your app holds control |
+| `messaging_handovers` | Fires whenever control changes hands, in either direction |
+
+Subscribe to all three fields to track the full conversation lifecycle. See [Subscribe to webhook fields](https://developers.facebook.com/documentation/meta-business-agent/get-started#subscribe-to-webhook-fields).
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/meta-business-agent/llms.txt

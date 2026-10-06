@@ -1,5 +1,6 @@
 # MOD-01 — Identity & Administration
 
+> Kiến trúc đích microservice theo ADR-017: [Identity & Access](../services/identity.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.
 Status: OIDC SRC-006 và Identity/admin SRC-007 và local seed SRC-009 implemented/tested M1; full Admin UI tiếp tục SRC-013. Requirements: REQ-01, REQ-02, REQ-07.
 
 ## Mục tiêu và phạm vi

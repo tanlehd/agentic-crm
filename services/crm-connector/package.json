@@ -1,0 +1,26 @@
+{
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "name": "@agentic-crm/crm-connector",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "node dist/main.js api",
+    "worker": "node dist/main.js worker"
+  },
+  "dependencies": {
+    "@agentic-crm/contracts": "workspace:*",
+    "@nestjs/common": "12.1.2",
+    "@nestjs/core": "12.1.2",
+    "@nestjs/platform-express": "12.1.2",
+    "mysql2": "3.24.5",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.2",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1"
+  },
+  "files": [
+    "dist"
+  ]
+}

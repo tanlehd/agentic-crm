@@ -1,0 +1,152 @@
+
+
+# Agent Onboarding
+
+Trigger AI agent onboarding for a specific entity.
+
+This endpoint triggers the onboarding flow for a Business AI agent on a specific entity. It creates the necessary entities and schedules async jobs for data preparation. An optional catalog can be linked during onboarding.
+
+## Base URL
+
+| URL | Description |
+|-----|-------------|
+| https://api.facebook.com/&#123;entity_id&#125;/agent_onboarding |  |
+
+## Authorization
+
+This API requires:
+
+any of the following
+  - Capability: bizai_wa_enterprise_api_3p_access
+  - Capability: bizai_ig_enterprise_api_3p_access
+  - Permission: whatsapp_business_messaging
+
+## APIs
+
+| Method | Endpoint |
+|--------|----------|
+| POST | [/](#post) |
+
+&lt;jumplink id=&quot;post&quot;&gt;&lt;/jumplink&gt;
+## POST /
+
+Create an onboarding session
+
+Trigger AI agent onboarding for the specified entity. Creates the necessary entities and schedules async jobs for data preparation. An optional catalog can be linked during onboarding.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID, Instagram business account ID, or Instagram username for the Meta Business Agent. |
+
+### Request Body (Required)
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelOnboardingRequest](#bizaiomnichannelonboardingrequest)
+
+### Responses
+
+**201**
+
+Onboarding triggered successfully
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelOnboardingResponse](#bizaiomnichannelonboardingresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**403**
+
+Forbidden
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+# Components
+
+## Schemas
+
+&lt;jumplink id=&quot;bizaiomnichannelonboardingrequest&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelOnboardingRequest
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| catalog_id | string |  | Canonical numeric catalog ID to link to the agent during onboarding. This is the ID shown in Commerce Manager and returned by the Marketing API. |
+
+&lt;jumplink id=&quot;bizaiomnichannelonboardingresponse&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelOnboardingResponse
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| agent_id | string | ✓ | The ID of the agent settings entity |
+
+&lt;jumplink id=&quot;standarderror&quot;&gt;&lt;/jumplink&gt;
+### StandardError
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| title | string | ✓ |  |
+| detail | string | ✓ |  |
+| type | string |  |  |
+| status | integer |  |  |
+
+## Authentication
+
+| Scheme | Type | Location |
+|--------|------|----------|
+| OAuthToken__Authorization | HTTP Bearer | Header: `Authorization` |
+
+### Usage Examples
+
+- **OAuthToken__Authorization**: Include `Authorization: Bearer your-token-here` in request headers
+
+### Global Authentication Requirements
+
+All endpoints require: OAuthToken__Authorization
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/meta-business-agent/llms.txt

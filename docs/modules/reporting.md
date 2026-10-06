@@ -1,5 +1,6 @@
 # MOD-10 — Reporting & Dashboard
 
+> Kiến trúc đích microservice theo ADR-017: [Reporting & Analytics](../services/reporting.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.
 Status: Ready for implementation metric semantics/fixtures; custom report engine/API Draft M5. Requirements: REQ-11.
 
 ## Mục tiêu và phạm vi

@@ -1,0 +1,108 @@
+# messaging_referrals Webhook Event Reference
+
+
+
+This callback will occur when the user already has a thread with the bot and user comes to the thread from:
+
+- Following an [m.me link with a referral parameter](https://developers.facebook.com/documentation/business-messaging/messenger-platform/discovery/m-me-links)
+- Clicking on a [Messenger Conversation Ad](https://developers.facebook.com/docs/messenger-platform/guides/ads)
+
+For tracking referrals in new threads, refer to [Postback Event](https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks/webhook-events/messaging_postbacks).
+
+To start receiving these events you need to subscribe to `messaging_referrals` in the webhook settings for your app.
+
+### Contents
+- [Examples](#examples)
+    - [m.me Links](#m-me)
+    - [Ad Referral](#ads)
+- [Properties](#properties)
+
+## Examples &#123;#examples&#125;
+### m.me Link &#123;#m-me&#125;
+
+```
+&#123;
+  &quot;sender&quot;: &#123;
+    &quot;id&quot;: &quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;recipient&quot;: &#123;
+    &quot;id&quot;: &quot;&lt;PAGE_ID&gt;&quot;
+  &#125;,
+  &quot;timestamp&quot;: 1458692752478,
+  &quot;referral&quot;: &#123;
+    &quot;ref&quot;: &lt;REF_DATA_PASSED_IN_M.ME_PARAM&gt;,
+    &quot;source&quot;: &quot;SHORTLINK&quot;,
+    &quot;type&quot;: &quot;OPEN_THREAD&quot;,
+  &#125;
+&#125;
+```
+
+### Ad Referral &#123;#ads&#125;
+
+```
+&#123;
+  &quot;sender&quot;: &#123;
+    &quot;id&quot;: &quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;recipient&quot;: &#123;
+    &quot;id&quot;: &quot;&lt;PAGE_ID&gt;&quot;
+  &#125;,
+  &quot;timestamp&quot;: 1458692752478,
+  &quot;referral&quot;: &#123;
+    &quot;ref&quot;: &lt;REF_DATA_IF_SPECIFIED_IN_THE_AD&gt;,
+    &quot;ad_id&quot;: &lt;ID_OF_THE_AD&gt;,
+    &quot;source&quot;: &quot;ADS&quot;,
+    &quot;type&quot;: &quot;OPEN_THREAD&quot;,
+    &quot;ads_context_data&quot;: &#123;
+      &quot;ad_title&quot;: &lt;TITLE_OF_THE_AD&gt;,
+      &quot;photo_url&quot;: &lt;URL_OF_THE_IMAGE_FROM_AD_THE_USER_IS_INTERESTED_IN&gt;,
+      &quot;video_url&quot;: &lt;THUMBNAIL_URL_OF_THE_VIDEO_FROM_THE_AD&gt;,
+      &quot;post_id&quot;: &lt;ID_OF_THE_POST&gt;,
+      &quot;product_id&quot;: &lt;PRODUCT_ID&gt;,
+      &quot;flow_id&quot;: &lt;ID_OF_THE_PARTNER_APP_WELCOME_MESSAGE_FLOW&gt;
+    &#125;
+  &#125;
+&#125;
+```
+
+For more information about the flow ID, please refer to [Welcome Message Flows](https://developers.facebook.com/documentation/business-messaging/messenger-platform/ads/ads-welcome-message-flows).
+
+## Properties &#123;#properties&#125;
+
+### `sender`
+
+| `sender` Field | Description |
+| --- | --- |
+| `id` *string* | The Page-scoped ID for the person who sent a message to your business |
+
+### `recipient`
+
+| `recipient` Field | Description |
+| --- | --- |
+| `id` *string* | The ID for your Facebook Page |
+
+### `referral`
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `source` | String | The source of the referral. Supported values:&lt;br&gt;&lt;br&gt;- `ADS`&lt;br&gt;- `SHORTLINK` |
+| `type` | String | The referral type. Currently supports `OPEN_THREAD`. |
+| `ref` | String | The optional `ref` attribute set in the referrer.  Only alphanumeric characters as well as -, _, and = are supported. |
+| `referer_uri` | String | The URI of the site where the message was sent. |
+| `ads_context_data` | Object | The data contaning information about the CTM ad, the user initiated the thread from. |
+
+### `ads_context_data`
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `ad_title` | String | Title of the Ad. |
+| `photo_url` | String | [Optional] Url of the image from the Ad the user is interested. |
+| `video_url` | String | [Optional] Thumbnail url of the the video from the ad. |
+| `post_id` | String | ID of the post. |
+| `product_id` | String | [Optional] Product ID from the Ad the user is interested. |
+
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/business-messaging/messenger-platform/llms.txt

@@ -1,5 +1,6 @@
 # MOD-08 — Workflow
 
+> Kiến trúc đích microservice theo ADR-017: [Workflow Orchestrator](../services/workflow.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.
 Status: Primitive engine M2 implemented SRC-019; visual builder Draft M5. Requirements: REQ-08, REQ-09.
 
 ## Mục tiêu và phạm vi

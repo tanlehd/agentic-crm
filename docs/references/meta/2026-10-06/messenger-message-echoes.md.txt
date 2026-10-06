@@ -1,0 +1,419 @@
+# message_echoes Webhook Event Reference
+
+
+
+This callback occurs when your page sends a message. You may receive `text` messages or messages with attachments (`image`, `video`, `audio`, `sticker`, `template` or `fallback`). The payload will also include an optional custom `metadata` sent by the sender, and the corresponding `app_id`.  
+You can subscribe to this callback by selecting the `message_echoes` field when [setting up](https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks#setup) your webhook.
+
+Multiple types of messages are supported:
+
+* [Text message](#text)
+* [Message with image, audio, video, file, or sticker attachment](#binary)
+* [Message with appointment booking](#appointment)
+* [Message with template attachment](#template)
+* [Message with fallback attachment](#fallback)
+* [Message with products](#products)
+* [Message which is a reply to another message](#reply)
+
+## Common format &#123;#format&#125;
+
+### Example 1
+
+```json
+&#123;
+  &quot;sender&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PAGE_ID&gt;&quot;
+  &#125;,
+  &quot;recipient&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;timestamp&quot;:1457764197627,
+  &quot;message&quot;:&#123;
+    &quot;is_echo&quot;:true,
+    &quot;app_id&quot;:1517776481860111,
+    &quot;metadata&quot;: &quot;&lt;DEVELOPER_DEFINED_METADATA_STRING&gt;&quot;,
+    &quot;mid&quot;:&quot;mid.1457764197618:41d102a3e1ae206a38&quot;,
+    ...
+  &#125;
+&#125;
+```
+
+### Example 2 &#123;#example_2&#125;
+
+```json
+&#123;
+    &quot;object&quot;: &quot;page&quot;,
+    &quot;entry&quot;: [
+        &#123;
+            &quot;id&quot;: &quot;&lt;PAGE_ID&gt;&quot;,
+            &quot;time&quot;: 1570053170926,
+            &quot;standby&quot;: [
+                &#123;
+                    &quot;sender&quot;: &#123;
+                        &quot;id&quot;: &quot;&lt;PAGE_ID&gt;&quot;
+                    &#125;,
+                    &quot;recipient&quot;: &#123;
+                        &quot;id&quot;: &quot;&lt;PSID&gt;&quot;
+                    &#125;,
+                    &quot;timestamp&quot;: 1570053170673,
+                    &quot;message&quot;: &#123;
+                        &quot;mid&quot;: &quot;qT7ywaKpO9kkQR7Gv-nM8LIfLZDamVrALniheUYEDdHJXjDXEAyaS1xxONzb2Iv-DFzmTihfWJV012P5pK0AhQ&quot;,
+                        &quot;is_echo&quot;: true,
+                        &quot;app_id&quot;: &lt;APPID&gt;,
+                        &quot;attachments&quot;: [
+                            &#123;
+                                &quot;title&quot;: &quot;&quot;,
+                                &quot;url&quot;: &quot;https:\/\/www.facebook.com\/commerce\/update\/&quot;,
+                                &quot;type&quot;: &quot;template&quot;,
+                                &quot;payload&quot;: &#123;
+                                    &quot;template_type&quot;: &quot;media&quot;,
+                                    &quot;elements&quot;: [
+                                        &#123;
+                                            &quot;media_type&quot;: &quot;image&quot;,
+                                            &quot;attachment_id&quot;: 2457235337685388
+                                        &#125;
+                                    ]
+                                &#125;
+                            &#125;
+                        ]
+                    &#125;
+                &#125;
+            ]
+        &#125;
+    ]
+&#125;
+```
+
+### Properties &#123;#properties&#125;
+
+### `sender`
+| `sender` Field | Description |
+| --- | --- |
+| `id` *string* | The ID for your Facebook Page |
+
+### `recipient`
+
+| `recipient` Field | Description |
+| --- | --- |
+| `id` *string* | The Page-scoped ID for the person who received a message from your business |
+
+### `message`
+
+| Field Name | Type | Description |
+| --- | --- | --- |
+| `is_echo` | Boolean | Indicates the message sent from the page itself |
+| `app_id` | String | ID of the app from which the message was sent. Starting Graph API `v12.0`+, `app_id` field will return Facebook Page inbox app id (`26390203743090`) whenever the message is sent via Facebook Page inbox. |
+| `metadata` | String | Custom string passed to the [Send API](https://developers.facebook.com/documentation/business-messaging/messenger-platform/reference/send-api#request) as the `metadata` field. Only present if the `metadata` property was set in the original message. |
+| `mid` | String | Message ID |
+
+## Text message &#123;#text&#125;
+
+### Example
+
+```json
+&#123;
+  &quot;sender&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PAGE_ID&gt;&quot;
+  &#125;,
+  &quot;recipient&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;timestamp&quot;:1457764197627,
+  &quot;message&quot;:&#123;
+    &quot;is_echo&quot;:true,
+    &quot;app_id&quot;:1517776481860111,
+    &quot;metadata&quot;: &quot;&lt;DEVELOPER_DEFINED_METADATA_STRING&gt;&quot;,
+    &quot;mid&quot;:&quot;mid.1457764197618:41d102a3e1ae206a38&quot;,
+    &quot;text&quot;:&quot;hello, world!&quot;
+  &#125;
+&#125;
+```
+
+### Properties
+
+### `message`
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `text` | String | Text of message |
+
+## Message with image, audio, video, file, or sticker attachment &#123;#binary&#125;
+
+### Example
+
+```json
+&#123;
+  &quot;sender&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PAGE_ID&gt;&quot;
+  &#125;,
+  &quot;recipient&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;timestamp&quot;:1458696618268,
+  &quot;message&quot;:&#123;
+    &quot;is_echo&quot;:true,
+    &quot;app_id&quot;:1517776481860111,
+    &quot;metadata&quot;: &quot;&lt;DEVELOPER_DEFINED_METADATA_STRING&gt;&quot;,
+    &quot;mid&quot;:&quot;mid.1458696618141:b4ef9d19ec21086067&quot;,
+    &quot;attachments&quot;:[
+      &#123;
+        &quot;type&quot;:&quot;image&quot;,
+        &quot;payload&quot;:&#123;
+          &quot;url&quot;:&quot;&lt;IMAGE_URL&gt;&quot;
+        &#125;
+      &#125;
+    ]
+  &#125;
+&#125;
+```
+
+### Properties
+
+### `message.attachments`
+
+| Properties | Type | Description |
+| --- | --- | --- |
+| `type` | String | Type of attachment: `image`, `audio`, `video`, `file` or `sticker` |
+| `payload.url` | String | URL of attachment |
+
+## Message with appointment booking &#123;#appointment&#125;
+
+### Example
+
+```json
+&#123;
+  &quot;sender&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PAGE_ID&gt;&quot;
+  &#125;,
+  &quot;recipient&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;timestamp&quot;:1458696618268,
+  &quot;message&quot;:&#123;
+    &quot;is_echo&quot;:true,
+    &quot;app_id&quot;:1517776481860111,
+    &quot;metadata&quot;: &quot;&lt;DEVELOPER_DEFINED_METADATA_STRING&gt;&quot;,
+    &quot;mid&quot;:&quot;mid.1458696618141:b4ef9d19ec21086067&quot;,
+    &quot;attachments&quot;:[
+      &#123;
+        &quot;type&quot;:&quot;appointment_booking&quot;,
+        &quot;payload&quot;: &#123;
+           &quot;booking_id&quot;: &quot;&lt;BOOKING_ID&gt;&quot;
+           &quot;status&quot;: &quot;&lt;requested|confirmed|declined|cancelled&gt;&quot;,
+           &quot;start_time&quot;: 1739612400,
+           &quot;end_time&quot;: 1739616000,
+           &quot;timezone&quot;: &quot;America/Los_Angeles&quot;
+        &#125;
+      &#125;
+    ]
+  &#125;
+&#125;
+```
+
+### Properties
+
+### `message.attachments`
+
+| Properties | Type | Description |
+| --- | --- | --- |
+| `type` | String | Type of attachment: `appointment_booking` |
+| `payload.booking_id` | String | ID of the booking associated with the appointment |
+| `payload.status` | String | Current status of the appointment. Can be `requested`, `confirmed`, `declined`, `cancelled` |
+| `payload.start_time` | Integer | Appointment start time as a Unix timestamp (seconds). |
+| `payload.end_time` | Integer | Appointment end time as a Unix timestamp (seconds). |
+| `payload.timezone` | String | IANA timezone identifier (e.g., `America/Los_Angeles`) |
+
+## Message with template attachment &#123;#template&#125;
+
+### Example
+
+```json
+&#123;
+  &quot;sender&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PAGE_ID&gt;&quot;
+  &#125;,
+  &quot;recipient&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;timestamp&quot;:1458696618268,
+  &quot;message&quot;:&#123;
+    &quot;is_echo&quot;:true,
+    &quot;app_id&quot;:1517776481860111,
+    &quot;metadata&quot;: &quot;&lt;DEVELOPER_DEFINED_METADATA_STRING&gt;&quot;,
+    &quot;mid&quot;:&quot;mid.1458696618141:b4ef9d19ec21086067&quot;,
+    &quot;attachments&quot;:[
+      &#123;
+        &quot;type&quot;:&quot;template&quot;,
+        &quot;payload&quot;:&#123;
+          &quot;template_type&quot;:&quot;button&quot;,
+          &quot;buttons&quot;:[
+            &#123;
+              &quot;type&quot;:&quot;web_url&quot;,
+              &quot;url&quot;:&quot;https:\/\/www.messenger.com\/&quot;,
+              &quot;title&quot;:&quot;Visit Messenger&quot;
+            &#125;
+          ]
+        &#125;
+      &#125;
+    ]
+  &#125;
+&#125;
+```
+
+### Properties
+
+### `message.attachments`
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `type` | String | `template` |
+| `payload` | String | Template payload as described in the [Send API Reference](https://developers.facebook.com/documentation/business-messaging/messenger-platform/reference/send-api#request) |
+
+**Note:** Note that in the case of a `payload` with attachments, the attachment id sent is a number not a string. See [example 2](#example_2)
+
+This does not match the format of [Send API](https://developers.facebook.com/documentation/business-messaging/messenger-platform/reference/send-api#request) that needs the attachment id to be sent as a string.
+
+## Message with fallback attachment &#123;#fallback&#125;
+
+A fallback attachment is any attachment not currently recognized or supported by the Message Echo feature.
+
+### Example
+
+```json
+&#123;
+  &quot;sender&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PAGE_ID&gt;&quot;
+  &#125;,
+  &quot;recipient&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;timestamp&quot;:1458696618268,
+  &quot;message&quot;:&#123;
+    &quot;is_echo&quot;:true,
+    &quot;app_id&quot;:1517776481860111,
+    &quot;metadata&quot;: &quot;&lt;DEVELOPER_DEFINED_METADATA_STRING&gt;&quot;,
+    &quot;mid&quot;:&quot;mid.1458696618141:b4ef9d19ec21086067&quot;,
+    &quot;attachments&quot;:[
+      &#123;
+        &quot;title&quot;:&quot;Legacy Attachment&quot;,
+        &quot;url&quot;:&quot;https:\/\/www.messenger.com\/&quot;,
+        &quot;type&quot;:&quot;fallback&quot;,
+        &quot;payload&quot;:null
+      &#125;
+    ]
+  &#125;
+&#125;
+```
+
+### Properties
+
+### `message.attachments`
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `type` | String | `fallback` |
+| `title` | String | Title of attachment (optional) |
+| `url` | String | URL of attachment (optional) |
+| `payload` | String | Payload of attachment (optional) |
+
+## Message with products &#123;#products&#125;
+
+**Warning:** Message with products echo webhook is only available on Graph API v8.0+
+
+App will need to have [`catalog_management`](https://developers.facebook.com/docs/permissions/reference/catalog_management) permission approved to receive product details in webhooks.
+
+### Example
+
+```json
+&#123;
+  &quot;sender&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PAGE_ID&gt;&quot;
+  &#125;,
+  &quot;recipient&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;timestamp&quot;:1458696618268,
+  &quot;message&quot;:&#123;
+    &quot;is_echo&quot;:true,
+    &quot;app_id&quot;:1517776481860111,
+    &quot;metadata&quot;: &quot;&lt;DEVELOPER_DEFINED_METADATA_STRING&gt;&quot;,
+    &quot;mid&quot;:&quot;mid.1458696618141:b4ef9d19ec21086067&quot;,
+    &quot;attachments&quot;:[
+      &#123;
+        &quot;type&quot;:&quot;template&quot;,
+        &quot;payload&quot;:&#123;
+          &quot;product&quot;:&#123;
+             &quot;elements&quot;:[ // multiple elements for Hscroll
+               &#123;
+                 &quot;id&quot;:&quot;&lt;PRODUCT_ID&gt;&quot;,
+                 &quot;retailer_id&quot;:&quot;&lt;EXTERNAL_ID&gt;&quot;,
+                 &quot;image_url&quot;:&quot;https://fb.cdn.com/sdsd&quot;,
+                 &quot;title&quot;:&quot;Some product title&quot;,
+                 &quot;subtitle&quot;: &quot;40&quot;,
+               &#125;,
+               &#123;...&#125;,
+             ]
+            &#125;
+
+          ]
+        &#125;
+      &#125;
+    ]
+  &#125;
+&#125;
+```
+
+### Properties
+
+### `product.elements`
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `id` | String | Product ID from [product catalog](https://developers.facebook.com/documentation/ads-commerce/catalog/overview) |
+| `retailer_id` | String | External ID that is associated with the Product. (ex: SKU/ Content ID) |
+| `image_url` | String | URL of product image |
+| `title` | String | Title of product |
+| `subtitle` | String | Subtitle of product |
+
+## Message which is a reply to another message &#123;#reply&#125;
+
+A fallback attachment is any attachment not currently recognized or supported by the Message Echo feature.
+
+### Example
+
+```json
+&#123;
+  &quot;sender&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PAGE_ID&gt;&quot;
+  &#125;,
+  &quot;recipient&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;timestamp&quot;:1458696618268,
+  &quot;message&quot;:&#123;
+    &quot;is_echo&quot;:true,
+    &quot;app_id&quot;:1517776481860111,
+    &quot;metadata&quot;: &quot;&lt;DEVELOPER_DEFINED_METADATA_STRING&gt;&quot;,
+    &quot;mid&quot;:&quot;mid.1458696618141:b4ef9d19ec21086067&quot;,
+    &quot;reply_to&quot;: &#123;
+      &quot;mid&quot;: &quot;QUOTED-MESSAGE-ID&quot;,
+      &quot;is_self_reply&quot; : false
+     &#125;
+   &#125;
+&#125;
+```
+
+### Properties
+
+### `message.reply_to`
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `mid` | String | Reference to the message id that this message is replying to |
+| `is_self_reply` | Boolean | Indicates whether the message is a self reply or not. |
+
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/business-messaging/messenger-platform/llms.txt

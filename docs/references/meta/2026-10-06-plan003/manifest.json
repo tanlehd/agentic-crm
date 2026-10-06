@@ -1,0 +1,318 @@
+{
+  "scope": "PLAN-003 supplementary source dossier",
+  "sources": [
+    {
+      "file": "whatsapp-business-phone-numbers--ai-enabled-numbers.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/business-phone-numbers/ai-enabled-numbers.md",
+      "status": "failed",
+      "error": "not Markdown",
+      "retrieved_date": "2026-10-06",
+      "http_status_observed": 200,
+      "content_type_observed": "text/html; charset=utf-8",
+      "disposition": "No usable Markdown; not a capability denial. See gap register."
+    },
+    {
+      "file": "whatsapp-get-started.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/get-started.md",
+      "bytes": 11582,
+      "sha256": "29b6a7542e08f7385602a1a512804374387a29b287e9be7c8209486117be9d64",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "whatsapp-business-phone-numbers--media.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/business-phone-numbers/media.md",
+      "bytes": 11322,
+      "sha256": "fc9a13003c02d63a63d1f8cb81c06d03b75c24054939c1fb3cc1a74f5f9c03a5",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "whatsapp-access-tokens.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/access-tokens.md",
+      "bytes": 8921,
+      "sha256": "2ce5d1d34be96f548b925f337b16a6c2f5ae1f1dce7d1e3ce934341a0b80a4ed",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "whatsapp-messages--send-messages.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/send-messages.md",
+      "bytes": 17953,
+      "sha256": "08420f192277e8188c44710e9d805033b0d756cd26fe4968b5a7b208dd2d6697",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "whatsapp-messages--image-messages.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/image-messages.md",
+      "bytes": 4965,
+      "sha256": "6404ddb39ed422ffe3f248da865ec7b999705ae2f8aa980c6292b18d023b02f1",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "whatsapp-messages--interactive-media-carousel-messages.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/interactive-media-carousel-messages.md",
+      "bytes": 14472,
+      "sha256": "34dcd46c9379fa318e1bf2b7ecbc58d8dbc6efc3d7d6855deee63192196cfb90",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "whatsapp-messages--text-messages.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/messages/text-messages.md",
+      "bytes": 4182,
+      "sha256": "da7f545e3a6ccba310b6c34938206dae21c20bbb1222f43b632f6a758d42a4e4",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "whatsapp-webhooks--overview.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/overview.md",
+      "bytes": 15414,
+      "sha256": "8635b1574fe892bd4ee3d98e5e1d30c873760f31267ab2ef4385aba13429501a",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "whatsapp-webhooks--create-webhook-endpoint.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/create-webhook-endpoint.md",
+      "bytes": 7086,
+      "sha256": "9d2189ca896b5278d5ccd5da50e21fd15a96be73fee95236c400c3772f7de03f",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "whatsapp-webhooks--message_echoes.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/message_echoes.md",
+      "status": "failed",
+      "error": "not Markdown",
+      "retrieved_date": "2026-10-06",
+      "http_status_observed": 200,
+      "content_type_observed": "text/html; charset=utf-8",
+      "disposition": "No usable Markdown; not a capability denial. See gap register."
+    },
+    {
+      "file": "whatsapp-webhooks--reference--messages.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages.md",
+      "bytes": 5434,
+      "sha256": "8d726d4082ad5c7c616689d4fdea7a60b24f3426a23c37de93ebcc22422322d6",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "whatsapp-webhooks--reference--messages--image.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/image.md",
+      "bytes": 10539,
+      "sha256": "b967418aa25280b8cb9c2fd529d77dea2156fd5e744404c26a6f4722e7ab5cf6",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "whatsapp-webhooks--reference--messages--interactive.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/interactive.md",
+      "bytes": 9778,
+      "sha256": "12ff0de4ff43f229a6bade4a8a89c92ad6b225f3791475b56d303e8a4e5edac3",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "whatsapp-webhooks--reference--messages--status.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/status.md",
+      "bytes": 18258,
+      "sha256": "fad358ba51ab83a546b438222c84a52f2383873adcfc4fd911de0bec26d8a2d4",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "whatsapp-webhooks--reference--messages--text.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/text.md",
+      "bytes": 15430,
+      "sha256": "f3e51a935bfa63f57c60546ebf1e51f0653f10b631d326228d5efd5932407123",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "whatsapp-webhooks--reference--messages--unsupported.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messages/unsupported.md",
+      "bytes": 8588,
+      "sha256": "e83c0f42e7537af6e6c4e8c839249e40fb20912446ebbf965e47eaaac478b650",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "whatsapp-overview.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/overview.md",
+      "status": "failed",
+      "error": "not Markdown",
+      "retrieved_date": "2026-10-06",
+      "http_status_observed": 200,
+      "content_type_observed": "text/html; charset=utf-8",
+      "disposition": "No usable Markdown; not a capability denial. See gap register."
+    },
+    {
+      "file": "agent-agent-budget.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-budget.md",
+      "bytes": 8906,
+      "sha256": "be9224968e6d82eaf3d48aca763ce7d249632cf316af73502b64c65fde6a3c0b",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "agent-agent-allowlist.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/reference/onboard/agent-allowlist.md",
+      "bytes": 7695,
+      "sha256": "539b79681e749a7043f963e5c2c3ca86a044a87be6b4a6a1d9f61a8520be4ff1",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "agent-agent-eval.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/reference/operate/agent-eval.md",
+      "bytes": 15009,
+      "sha256": "ab11f2bae705833abde61fee59b92f06e2f72c71665d5daa9dd420d031064b33",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "agent-ui-skills.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/reference/configure/ui-skills.md",
+      "bytes": 15558,
+      "sha256": "9d5398afbf05c94d889adb2c2773db6caac50cf4000ef9e9a8b9c8b483157d7f",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "agent-agent-knowledge-faqs.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-knowledge-faqs.md",
+      "bytes": 11656,
+      "sha256": "62ea887ba0618456147693f5dfdd655eb29ed27d3e6cef563168068eb93829b5",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "agent-agent-knowledge-files.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-knowledge-files.md",
+      "bytes": 9536,
+      "sha256": "13d92a779c4e40272832c982951d0d245033c331b3f97baf50f3912366321b5d",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "agent-agent-knowledge-websites.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/reference/configure/agent-knowledge-websites.md",
+      "bytes": 12667,
+      "sha256": "66c36cbf1e1598bd459d9c93f06afbec8e16263035e49f706087649b034424fa",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "agent-troubleshooting.md.txt",
+      "url": "https://developers.facebook.com/documentation/meta-business-agent/troubleshooting.md",
+      "bytes": 15244,
+      "sha256": "023495c1e9d807600422428193c4dd1e25fea3a593b73784dd2e498cd6f323be",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "messenger-overview.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/messenger-platform/overview.md",
+      "bytes": 6052,
+      "sha256": "03f35da62b0f1c4d9fdf591b0f911e979e4df2bfffc528e5567753cd01ffb210",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "messenger-overview--rate-limiting.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/messenger-platform/overview/rate-limiting.md",
+      "bytes": 3426,
+      "sha256": "f0167ac9d60f6a7e27b062747d5eadbc2e69282abaf381d5d04bbd39fd15cfb0",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "messenger-webhooks--webhook-events--messaging_handovers.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks/webhook-events/messaging_handovers.md",
+      "bytes": 6739,
+      "sha256": "78e2d6ed64ffd92854b71f354443937640701cfcc9a7f17227b9a6076c03e5fa",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "messenger-webhooks--webhook-events--messaging_referrals.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks/webhook-events/messaging_referrals.md",
+      "bytes": 3990,
+      "sha256": "d836e780f41eb843953bd69cf51d2c8efd01ff06f151700ed4b4f52c1f8e2c7c",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "messenger-webhooks--webhook-events--standby.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks/webhook-events/standby.md",
+      "bytes": 3409,
+      "sha256": "1eacd08c0d7499af4372699fae42cbc87c53c46bfb488c516dd437d62d8023b8",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "messenger-send-messages.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/messenger-platform/send-messages.md",
+      "bytes": 20668,
+      "sha256": "6bd59587bda2be1fa513c36b5b11eb380418831f94c6171d8a14fe7271e7fea9",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "messenger-policy.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/messenger-platform/policy.md",
+      "bytes": 14800,
+      "sha256": "b9162ea2c021bbbeb910387eb925c146e0dbb04611409d785f782d1d3078e239",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "whatsapp-standby.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/standby.md",
+      "bytes": 19618,
+      "sha256": "8c6486c7d31c00db27503a06e7cecb4f5642c1e25e4b4652991739dfa6cfae60",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "whatsapp-llms.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/llms.txt",
+      "bytes": 47550,
+      "sha256": "140da5a59ed0cbcac4d84ba88a537593e7023d7032bde6ab83180d8d9fba2570",
+      "retrieved_date": "2026-10-06",
+      "status": "downloaded"
+    },
+    {
+      "file": "whatsapp-messaging-handovers.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/webhooks/reference/messaging_handovers.md",
+      "status": "failed",
+      "error": "not Markdown",
+      "retrieved_date": "2026-10-06",
+      "http_status_observed": 200,
+      "content_type_observed": "text/html; charset=utf-8",
+      "disposition": "No usable Markdown; not a capability denial. See gap register.",
+      "discovery": "Candidate route from documented field name; not linked in llms index; browser article empty."
+    },
+    {
+      "file": "whatsapp-message-api.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/reference/whatsapp-business-phone-number/message-api.md",
+      "status": "downloaded",
+      "bytes": 13661,
+      "sha256": "55ac95f3f363f325808abe095f85997df7b188cf86441b74f0677823e51a6988",
+      "retrieved_date": "2026-10-06"
+    },
+    {
+      "file": "whatsapp-subscribed-apps-api.md.txt",
+      "url": "https://developers.facebook.com/documentation/business-messaging/whatsapp/reference/whatsapp-business-account/subscribed-apps-api.md",
+      "status": "downloaded",
+      "bytes": 18781,
+      "sha256": "202f3c01c6fb286e822b8c4b575756431548dfd63543376295e08c0577ee9d4c",
+      "retrieved_date": "2026-10-06"
+    }
+  ]
+}

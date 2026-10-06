@@ -591,6 +591,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/conversations/{id}/message-envelopes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["conversation-get-conversations-id-message-envelopes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversations/{id}/message-envelopes-v3": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["conversation-get-conversations-id-message-envelopes-v3"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/conversations/{id}/outbound-intents/{intentId}": {
         parameters: {
             query?: never;
@@ -687,6 +719,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/integrations/mock-messenger/binding": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["intake-binding"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/connector/v1/deliveries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["connector-ack"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/connector/v1/deliveries/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["connector-response"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/records/{id}/assignment": {
         parameters: {
             query?: never;
@@ -745,6 +825,23 @@ export interface paths {
         get: operations["routing-history"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/connector/v1/messenger/{appId}/webhook": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["messenger-challenge"];
+        put?: never;
+        /** @description Optional signed capture only. HMAC SHA256 over exact raw uncompressed bytes <=64KiB; max100 total events. Every Page must be explicitly bound. No Chat delivery implied. */
+        post: operations["messenger-capture"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1065,6 +1162,134 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["m2-delivery-retry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/integrations/contact-identities/lookup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["contact-lookup-request"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/integrations/contact-identities/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["contact-resolve-request"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/integrations/mock-messenger/deliveries-v2": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["contact-delivery-request"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversations/{id}/messages-v2": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["contact-bound-send"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/channels/facebook/pages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["admin-channels-facebook-pages"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversation-channels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["conversation-channels"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/channels/facebook/connect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["facebook-connect"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/channels/facebook/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["facebook-callback"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1805,6 +2030,12 @@ export interface components {
                 /** Format: date-time */
                 received_at: string;
             } | null;
+            /** @enum {unknown} */
+            channel?: "mock_messenger" | "messenger";
+            /** Format: uuid */
+            channel_id?: string;
+            page_id?: string;
+            channel_name?: string;
         };
         "conversation-message": {
             /** Format: uuid */
@@ -1904,6 +2135,115 @@ export interface components {
                 correlation_id: string;
             };
         };
+        "conversation-message-envelope-v2": {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            conversation_id: string;
+            /** @enum {unknown} */
+            direction: "inbound" | "outbound";
+            text?: string;
+            /** @enum {unknown} */
+            status: "received" | "queued" | "sending" | "sent" | "failed" | "unknown" | "cancelled";
+            outbound_intent_id: string | null;
+            /** Format: date-time */
+            occurred_at: string;
+            /** Format: date-time */
+            received_at: string;
+            external_msg_id: string | null;
+            /** @constant */
+            schema_version: 2;
+            /** Format: uuid */
+            connection_id: string;
+            /** @constant */
+            platform: "mock_messenger";
+            /** @constant */
+            message_type: "text";
+            reply_to?: null;
+            attachment?: null;
+        };
+        "conversation-envelope-timeline": {
+            data: components["schemas"]["conversation-message-envelope-v2"][];
+            next_cursor: string | null;
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "conversation-message-envelope-v3": {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            conversation_id: string;
+            /** @enum {unknown} */
+            direction: "inbound" | "outbound";
+            text?: string;
+            /** @enum {unknown} */
+            status: "received" | "queued" | "sending" | "sent" | "failed" | "unknown" | "cancelled";
+            outbound_intent_id: string | null;
+            /** Format: date-time */
+            occurred_at: string;
+            /** Format: date-time */
+            received_at: string;
+            external_msg_id: string | null;
+            /** @constant */
+            schema_version: 3;
+            /** Format: uuid */
+            connection_id: string;
+            /** @constant */
+            platform: "mock_messenger";
+            /** @enum {unknown} */
+            message_type: "text" | "media" | "template" | "unsupported";
+            reply_to?: {
+                external_msg_id: string;
+                internal_message_id: string | null;
+            } | null;
+            attachment?: null | {
+                /** @constant */
+                version: 1;
+                /** @constant */
+                kind: "media";
+                items: {
+                    /** @enum {unknown} */
+                    media_type: "image" | "audio" | "video" | "file";
+                    external_media_id: string;
+                    name: string | null;
+                }[];
+            } | {
+                /** @constant */
+                version: 1;
+                /** @constant */
+                kind: "gallery";
+                cards: {
+                    title: string;
+                    subtitle: string | null;
+                    buttons: {
+                        label: string;
+                    }[];
+                }[];
+            } | {
+                /** @constant */
+                version: 1;
+                /** @constant */
+                kind: "csat";
+                title: string;
+                prompt: string;
+            } | {
+                /** @constant */
+                version: 1;
+                /** @constant */
+                kind: "unsupported";
+                label: string;
+            };
+            /** @enum {unknown} */
+            text_source: "original" | "extracted" | "preview";
+        };
+        "conversation-rich-timeline": {
+            data: components["schemas"]["conversation-message-envelope-v3"][];
+            next_cursor: string | null;
+            meta: {
+                correlation_id: string;
+            };
+        };
         "intake-request": {
             provider_event_id: string;
             provider_message_id: string;
@@ -1915,6 +2255,92 @@ export interface components {
                 /** @constant */
                 type: "text";
                 text: string;
+            } | {
+                /** @constant */
+                type: "rich";
+                content: {
+                    /** @constant */
+                    version: 1;
+                    /** @constant */
+                    message_type: "text";
+                    text: string;
+                    reply_to: {
+                        external_msg_id: string;
+                    } | null;
+                    attachment: null;
+                } | {
+                    /** @constant */
+                    version: 1;
+                    /** @constant */
+                    message_type: "media";
+                    text: string | null;
+                    reply_to: {
+                        external_msg_id: string;
+                    } | null;
+                    attachment: {
+                        /** @constant */
+                        version: 1;
+                        /** @constant */
+                        kind: "media";
+                        items: {
+                            /** @enum {unknown} */
+                            media_type: "image" | "audio" | "video" | "file";
+                            external_media_id: string;
+                            name: string | null;
+                        }[];
+                    };
+                    /** @enum {unknown} */
+                    text_source?: "extracted" | "preview";
+                } | {
+                    /** @constant */
+                    version: 1;
+                    /** @constant */
+                    message_type: "template";
+                    text: string | null;
+                    reply_to: {
+                        external_msg_id: string;
+                    } | null;
+                    attachment: {
+                        /** @constant */
+                        version: 1;
+                        /** @constant */
+                        kind: "gallery";
+                        cards: {
+                            title: string;
+                            subtitle: string | null;
+                            buttons: {
+                                label: string;
+                            }[];
+                        }[];
+                    } | {
+                        /** @constant */
+                        version: 1;
+                        /** @constant */
+                        kind: "csat";
+                        title: string;
+                        prompt: string;
+                    };
+                    /** @enum {unknown} */
+                    text_source?: "extracted" | "preview";
+                } | {
+                    /** @constant */
+                    version: 1;
+                    /** @constant */
+                    message_type: "unsupported";
+                    text: string | null;
+                    reply_to: {
+                        external_msg_id: string;
+                    } | null;
+                    attachment: {
+                        /** @constant */
+                        version: 1;
+                        /** @constant */
+                        kind: "unsupported";
+                        label: string;
+                    };
+                    /** @enum {unknown} */
+                    text_source?: "extracted" | "preview";
+                };
             };
             referral?: {
                 /** @constant */
@@ -1959,6 +2385,82 @@ export interface components {
             };
         };
         "intake-retry": Record<string, never>;
+        "intake-binding": {
+            data: {
+                /** Format: uuid */
+                tenant_id: string;
+                /** Format: uuid */
+                connection_id: string;
+                /** @constant */
+                platform: "mock_messenger";
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "connector-ack": {
+            data: {
+                /** Format: uuid */
+                delivery_id: string;
+                /** @enum {unknown} */
+                status: "queued" | "forwarded" | "completed" | "blocked" | "attention";
+            };
+            meta: {
+                /** Format: uuid */
+                correlation_id: string;
+            };
+        };
+        "connector-response": {
+            data: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {unknown} */
+                status: "queued" | "forwarded" | "completed" | "blocked" | "attention";
+                attempts: number;
+                error_code: string | null;
+                remote_delivery_id: string | null;
+            };
+            meta: {
+                /** Format: uuid */
+                correlation_id: string;
+            };
+        };
+        "connector-error": {
+            error: {
+                code: string;
+                retryable: boolean;
+            };
+            meta: {
+                /** Format: uuid */
+                correlation_id: string;
+            };
+        };
+        "messenger-webhook": {
+            /** @constant */
+            object: "page";
+            entry: ({
+                id: string;
+                time?: number;
+                messaging?: {
+                    sender: {
+                        id: string;
+                    };
+                    recipient: {
+                        id: string;
+                    };
+                    timestamp: number;
+                }[];
+                standby?: {
+                    sender: {
+                        id: string;
+                    };
+                    recipient: {
+                        id: string;
+                    };
+                    timestamp: number;
+                }[];
+            } | unknown | unknown)[];
+        };
         "routing-assignment": {
             /** Format: uuid */
             owner_principal_id: string | null;
@@ -2780,6 +3282,258 @@ export interface components {
                 /** Format: date-time */
                 created_at: string;
                 error_code: string | null;
+            }[];
+            next_cursor: string | null;
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "contact-mapping": {
+            /** Format: uuid */
+            tenant_id: string;
+            /** Format: uuid */
+            connection_id: string;
+            external_subject_id: string;
+            /** Format: uuid */
+            crm_contact_id: string;
+            /** Format: uuid */
+            crm_identity_id: string;
+            /** @constant */
+            mapping_revision: "1";
+        };
+        "contact-lookup-request": {
+            external_subject_id: string;
+        };
+        "contact-resolve-request": {
+            external_subject_id: string;
+            /** Format: uuid */
+            operation_id: string;
+            display_label?: string;
+        };
+        "contact-lookup-response": {
+            data: {
+                mapping: {
+                    /** Format: uuid */
+                    tenant_id: string;
+                    /** Format: uuid */
+                    connection_id: string;
+                    external_subject_id: string;
+                    /** Format: uuid */
+                    crm_contact_id: string;
+                    /** Format: uuid */
+                    crm_identity_id: string;
+                    /** @constant */
+                    mapping_revision: "1";
+                } | null;
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "contact-resolve-response": {
+            data: {
+                mapping: {
+                    /** Format: uuid */
+                    tenant_id: string;
+                    /** Format: uuid */
+                    connection_id: string;
+                    external_subject_id: string;
+                    /** Format: uuid */
+                    crm_contact_id: string;
+                    /** Format: uuid */
+                    crm_identity_id: string;
+                    /** @constant */
+                    mapping_revision: "1";
+                };
+                created: boolean;
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "contact-delivery-request": {
+            /** Format: uuid */
+            crm_contact_id: string;
+            /** Format: uuid */
+            crm_identity_id: string;
+            intake: {
+                provider_event_id: string;
+                provider_message_id: string;
+                external_subject_id: string;
+                /** Format: date-time */
+                occurred_at: string;
+                display_label?: string;
+                message: {
+                    /** @constant */
+                    type: "text";
+                    text: string;
+                } | {
+                    /** @constant */
+                    type: "rich";
+                    content: {
+                        /** @constant */
+                        version: 1;
+                        /** @constant */
+                        message_type: "text";
+                        text: string;
+                        reply_to: {
+                            external_msg_id: string;
+                        } | null;
+                        attachment: null;
+                    } | {
+                        /** @constant */
+                        version: 1;
+                        /** @constant */
+                        message_type: "media";
+                        text: string | null;
+                        reply_to: {
+                            external_msg_id: string;
+                        } | null;
+                        attachment: {
+                            /** @constant */
+                            version: 1;
+                            /** @constant */
+                            kind: "media";
+                            items: {
+                                /** @enum {unknown} */
+                                media_type: "image" | "audio" | "video" | "file";
+                                external_media_id: string;
+                                name: string | null;
+                            }[];
+                        };
+                        /** @enum {unknown} */
+                        text_source?: "extracted" | "preview";
+                    } | {
+                        /** @constant */
+                        version: 1;
+                        /** @constant */
+                        message_type: "template";
+                        text: string | null;
+                        reply_to: {
+                            external_msg_id: string;
+                        } | null;
+                        attachment: {
+                            /** @constant */
+                            version: 1;
+                            /** @constant */
+                            kind: "gallery";
+                            cards: {
+                                title: string;
+                                subtitle: string | null;
+                                buttons: {
+                                    label: string;
+                                }[];
+                            }[];
+                        } | {
+                            /** @constant */
+                            version: 1;
+                            /** @constant */
+                            kind: "csat";
+                            title: string;
+                            prompt: string;
+                        };
+                        /** @enum {unknown} */
+                        text_source?: "extracted" | "preview";
+                    } | {
+                        /** @constant */
+                        version: 1;
+                        /** @constant */
+                        message_type: "unsupported";
+                        text: string | null;
+                        reply_to: {
+                            external_msg_id: string;
+                        } | null;
+                        attachment: {
+                            /** @constant */
+                            version: 1;
+                            /** @constant */
+                            kind: "unsupported";
+                            label: string;
+                        };
+                        /** @enum {unknown} */
+                        text_source?: "extracted" | "preview";
+                    };
+                };
+                referral?: {
+                    /** @constant */
+                    source: "ctm";
+                    ad_id?: string | null;
+                    campaign_id?: string | null;
+                };
+            };
+        };
+        "contact-send-request": {
+            /** Format: uuid */
+            crm_contact_id: string;
+            owner_revision: string;
+            text: string;
+        };
+        "facebook-connect-request": {
+            /** Format: uuid */
+            team_id: string;
+        };
+        "facebook-connect-response": {
+            data: {
+                /** Format: uri */
+                authorization_url: string;
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "facebook-page": {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            channel: "messenger";
+            /** Format: uuid */
+            channel_id: string;
+            page_id: string;
+            app_id: string;
+            name: string;
+            /** Format: uuid */
+            team_id: string;
+            /** @enum {unknown} */
+            credential_status: "stored" | "missing";
+            version: string;
+            /** Format: date-time */
+            connected_at: string;
+        };
+        "facebook-page-list": {
+            data: {
+                /** Format: uuid */
+                id: string;
+                /** @constant */
+                channel: "messenger";
+                /** Format: uuid */
+                channel_id: string;
+                page_id: string;
+                app_id: string;
+                name: string;
+                /** Format: uuid */
+                team_id: string;
+                /** @enum {unknown} */
+                credential_status: "stored" | "missing";
+                version: string;
+                /** Format: date-time */
+                connected_at: string;
+            }[];
+            next_cursor: string | null;
+            oauth_configured: boolean;
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "conversation-channel-options": {
+            data: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {unknown} */
+                channel: "messenger" | "mock_messenger";
+                /** Format: uuid */
+                channel_id: string;
+                page_id: string;
+                channel_name: string;
             }[];
             next_cursor: string | null;
             meta: {
@@ -7102,6 +7856,9 @@ export interface operations {
                 state?: string;
                 owner?: string;
                 team?: string;
+                channel?: "messenger" | "mock_messenger";
+                channel_id?: string;
+                page_id?: string;
             };
             header: {
                 "X-Tenant-Id": string;
@@ -7416,6 +8173,204 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["conversation-send-response"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "conversation-get-conversations-id-message-envelopes": {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized Conversation result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["conversation-envelope-timeline"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "conversation-get-conversations-id-message-envelopes-v3": {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized Conversation result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["conversation-rich-timeline"];
                 };
             };
             /** @description Sanitized identity failure */
@@ -8193,6 +9148,276 @@ export interface operations {
             };
         };
     };
+    "intake-binding": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Connection-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authenticated immutable tenant binding */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["intake-binding"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "connector-ack": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Connection-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["intake-request"];
+            };
+        };
+        responses: {
+            /** @description Independent durable Connector ingress; sanitized errors follow connector-bridge contract */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["connector-ack"];
+                };
+            };
+            /** @description Sanitized Connector failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["connector-error"];
+                };
+            };
+            /** @description Sanitized Connector failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["connector-error"];
+                };
+            };
+            /** @description Sanitized Connector failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["connector-error"];
+                };
+            };
+            /** @description Sanitized Connector failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["connector-error"];
+                };
+            };
+            /** @description Sanitized Connector failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["connector-error"];
+                };
+            };
+            /** @description Sanitized Connector failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["connector-error"];
+                };
+            };
+            /** @description Sanitized Connector failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["connector-error"];
+                };
+            };
+        };
+    };
+    "connector-response": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Connection-Id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Independent durable Connector ingress; sanitized errors follow connector-bridge contract */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["connector-response"];
+                };
+            };
+            /** @description Sanitized Connector failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["connector-error"];
+                };
+            };
+            /** @description Sanitized Connector failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["connector-error"];
+                };
+            };
+            /** @description Sanitized Connector failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["connector-error"];
+                };
+            };
+            /** @description Sanitized Connector failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["connector-error"];
+                };
+            };
+            /** @description Sanitized Connector failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["connector-error"];
+                };
+            };
+            /** @description Sanitized Connector failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["connector-error"];
+                };
+            };
+            /** @description Sanitized Connector failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["connector-error"];
+                };
+            };
+        };
+    };
     "routing-assignment": {
         parameters: {
             query?: never;
@@ -8591,6 +9816,132 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "messenger-challenge": {
+        parameters: {
+            query: {
+                "hub.mode": string;
+                "hub.verify_token": string;
+                "hub.challenge": string;
+            };
+            header?: never;
+            path: {
+                appId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Exact verification challenge */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/plain": string;
+                };
+            };
+            /** @description Sanitized webhook error; parser failures may use the standard JSON error envelope */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/plain": string;
+                };
+            };
+            /** @description Sanitized webhook error; parser failures may use the standard JSON error envelope */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/plain": string;
+                };
+            };
+            /** @description Sanitized webhook error; parser failures may use the standard JSON error envelope */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/plain": string;
+                };
+            };
+            /** @description Sanitized webhook error; parser failures may use the standard JSON error envelope */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/plain": string;
+                };
+            };
+        };
+    };
+    "messenger-capture": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Hub-Signature-256": string;
+            };
+            path: {
+                appId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["messenger-webhook"];
+            };
+        };
+        responses: {
+            /** @description Atomic durable capture committed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/plain": "EVENT_RECEIVED";
+                };
+            };
+            /** @description Sanitized webhook error; parser failures may use the standard JSON error envelope */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/plain": string;
+                };
+            };
+            /** @description Sanitized webhook error; parser failures may use the standard JSON error envelope */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/plain": string;
+                };
+            };
+            /** @description Sanitized webhook error; parser failures may use the standard JSON error envelope */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/plain": string;
+                };
+            };
+            /** @description Sanitized webhook error; parser failures may use the standard JSON error envelope */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/plain": string;
                 };
             };
         };
@@ -11095,6 +12446,721 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["AuthErrorResponse"];
                 };
+            };
+        };
+    };
+    "contact-lookup-request": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Connection-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["contact-lookup-request"];
+            };
+        };
+        responses: {
+            /** @description Authorized contact-bound result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["contact-lookup-response"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "contact-resolve-request": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Connection-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["contact-resolve-request"];
+            };
+        };
+        responses: {
+            /** @description Authorized contact-bound result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["contact-resolve-response"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "contact-delivery-request": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Connection-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["contact-delivery-request"];
+            };
+        };
+        responses: {
+            /** @description Authorized contact-bound result */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["intake-ack"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "contact-bound-send": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["contact-send-request"];
+            };
+        };
+        responses: {
+            /** @description Authorized Conversation result */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["conversation-send-response"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "admin-channels-facebook-pages": {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized channel projection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["facebook-page-list"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "conversation-channels": {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized channel projection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["conversation-channel-options"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "facebook-connect": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["facebook-connect-request"];
+            };
+        };
+        responses: {
+            /** @description One-use Facebook authorization URL */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["facebook-connect-response"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "facebook-callback": {
+        parameters: {
+            query: {
+                state: string;
+                code?: string;
+                error?: string;
+                error_reason?: string;
+                error_description?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Fixed UI redirect with sanitized result; never tokens or provider error */
+            303: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

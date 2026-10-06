@@ -1,0 +1,156 @@
+
+
+# Agent Eligibility
+
+Check whether a WhatsApp or Instagram business entity is eligible for the business AI agent.
+
+This endpoint reports whether the business AI agent can be enabled for a WhatsApp Business Phone Number or Instagram business account. The resource is a singleton — one eligibility result per entity_id.
+
+## Base URL
+
+| URL | Description |
+|-----|-------------|
+| https://api.facebook.com/&#123;entity_id&#125;/agent_eligibility |  |
+
+## Authorization
+
+This API requires:
+
+any of the following
+  - Capability: bizai_wa_enterprise_api_3p_access
+  - Capability: bizai_ig_enterprise_api_3p_access
+  - Permission: whatsapp_business_messaging
+
+## APIs
+
+| Method | Endpoint |
+|--------|----------|
+| GET | [/](#get) |
+
+&lt;jumplink id=&quot;get&quot;&gt;&lt;/jumplink&gt;
+## GET /
+
+Get agent eligibility
+
+Check whether the business AI agent can be enabled for a specific WhatsApp Business phone number or Instagram business account. Call this before onboarding, so an entity that cannot use the agent fails fast instead of erroring partway through setup.
+
+For WhatsApp, pass the Business Phone Number ID as `entity_id`. For Instagram, pass the business account ID or username without the leading `&#064;`.
+
+**Check the version header.** Send the `X-API-Version` value shown under Header Parameters below. It does not necessarily match the version used by other Meta Business Agent Platform APIs, so do not reuse a single shared header value across every call.
+
+**When to check.** Use this endpoint to confirm an entity can use the agent before opening its channel management interface. For example, to filter a large set of accounts before onboarding them, to build a self-serve flow where a business connects its own account, or to diagnose why agent onboarding is unavailable for an account.
+
+**Interpreting the result.** The response is a single boolean, so it reports whether the entity is eligible but no reasons if not.
+
+- `true` — the entity can use the agent. Continue with onboarding, then apply agent settings.
+- `false` — the entity cannot use the agent. Check the account against the eligibility criteria for its messaging channel.
+
+Eligibility is not permanent. It can change when a business updates its category, or when its standing changes, so re-check an entity rather than caching the result indefinitely.
+
+**An error is not a negative answer.** A `401`, `404`, or `429` means the request could not be evaluated. Do not treat a failed request as &quot;not eligible&quot;.
+
+**Rate limit.** This endpoint allows 1000 requests per hour. Once that is exhausted, further requests return `429` until the limit resets. Eligibility changes slowly, so when you are filtering a large set of accounts, spread the checks across that budget and reuse the result for a while rather than re-checking an entity on every call.
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID, Instagram business account ID, or Instagram username to check eligibility for. |
+
+### Responses
+
+**200**
+
+Response containing the eligibility result for the entity
+
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelEligibilityResponse](#bizaiomnichanneleligibilityresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+# Components
+
+## Schemas
+
+&lt;jumplink id=&quot;bizaiomnichanneleligibilityresponse&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelEligibilityResponse
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| is_eligible | boolean | ✓ | Whether the entity is eligible for the business AI agent. true for eligible, false for not eligible |
+
+&lt;jumplink id=&quot;standarderror&quot;&gt;&lt;/jumplink&gt;
+### StandardError
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| title | string | ✓ |  |
+| detail | string | ✓ |  |
+| type | string |  |  |
+| status | integer |  |  |
+
+## Authentication
+
+| Scheme | Type | Location |
+|--------|------|----------|
+| OAuthToken__Authorization | HTTP Bearer | Header: `Authorization` |
+
+### Usage Examples
+
+- **OAuthToken__Authorization**: Include `Authorization: Bearer your-token-here` in request headers
+
+### Global Authentication Requirements
+
+All endpoints require: OAuthToken__Authorization
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/meta-business-agent/llms.txt

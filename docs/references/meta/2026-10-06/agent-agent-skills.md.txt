@@ -1,0 +1,491 @@
+
+
+# Agent Skills
+
+Manage AI agent skills for a specific entity (WhatsApp Business Phone Number).
+
+This endpoint provides CRUD operations for managing AI agent skills for a specific entity (WhatsApp Business Phone Number). Skills define behavioral guidelines, tone of voice, and response patterns for the AI agent. The agent follows skills as written, so write them as clear directives. Avoid conflicting skills — if two skills both claim priority for the same situation (e.g., both say &quot;do this first&quot; when a customer messages), the agent may produce duplicate or inconsistent responses. When multiple actions should happen on the same trigger, consolidate them into a single skill with explicitly ordered steps. Every operation on this resource shares a budget of 1000 requests per hour; once it is exhausted, further requests return `429` until the limit resets.
+
+## Base URL
+
+| URL | Description |
+|-----|-------------|
+| https://api.facebook.com/&#123;entity_id&#125;/agent_config/skills |  |
+
+## Authorization
+
+This API requires:
+
+any of the following
+  - Capability: bizai_wa_enterprise_api_3p_access
+  - Capability: bizai_ig_enterprise_api_3p_access
+  - Permission: whatsapp_business_messaging
+
+## APIs
+
+| Method | Endpoint |
+|--------|----------|
+| DELETE | [/&#123;skill_id&#125;](#delete-skill-id) |
+| GET | [/](#get) |
+| GET | [/&#123;skill_id&#125;](#get-skill-id) |
+| POST | [/](#post) |
+| PUT | [/&#123;skill_id&#125;](#put-skill-id) |
+
+&lt;jumplink id=&quot;delete-skill-id&quot;&gt;&lt;/jumplink&gt;
+## DELETE /&#123;skill_id&#125;
+
+Delete a skill
+
+Delete a skill by its ID. The agent stops applying it. Deleting every skill does not disable the agent. It falls back to its default behavior and its configured knowledge sources.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID, Instagram business account ID, or Instagram username for the Meta Business Agent. |
+| skill_id | string | ✓ | The identifier of the skill, as returned in the `id` field when the skill was created or listed. Pass that value through unchanged. |
+
+### Responses
+
+**204**
+
+Skill successfully deleted
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**409**
+
+Conflict
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;get&quot;&gt;&lt;/jumplink&gt;
+## GET /
+
+List skills
+
+Retrieve every skill configured for the specified entity. The response is the agent&#039;s full behavioral configuration, so read it before creating a skill to check that the situation you are targeting is not already covered by an existing one. The response is a single complete list rather than a page, so there is no cursor to follow and no further request to make. Each entry carries the `id` to pass as `skill_id` when reading, updating, or deleting that skill.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID, Instagram business account ID, or Instagram username for the Meta Business Agent. |
+
+### Query Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| agent_id | string |  | Optional settings ID. When provided, returns skills for the specified settings. When absent, returns skills for the most recently created settings for the given channel. |
+
+### Responses
+
+**200**
+
+A list of all skills
+
+**Content Type**: `application/json`
+
+**Schema**: array of [BizAIOmniChannelSkillsResponse](#bizaiomnichannelskillsresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;get-skill-id&quot;&gt;&lt;/jumplink&gt;
+## GET /&#123;skill_id&#125;
+
+Get a skill
+
+Retrieve a single skill by its ID, including the conditions under which it applies and the instructions it gives the agent.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID, Instagram business account ID, or Instagram username for the Meta Business Agent. |
+| skill_id | string | ✓ | The identifier of the skill, as returned in the `id` field when the skill was created or listed. Pass that value through unchanged. |
+
+### Responses
+
+**200**
+
+The requested skill
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelSkillsResponse](#bizaiomnichannelskillsresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;post&quot;&gt;&lt;/jumplink&gt;
+## POST /
+
+Create a skill
+
+Create a skill for the agent. A skill is a named, scoped instruction that tells the agent how to behave in a particular situation: the `description` field states when the skill applies, and the `skill` field states what the agent should do once it applies. The agent evaluates the entity&#039;s skills against the conversation and applies the ones whose stated conditions match, so each skill should describe a distinct situation. Skills replace the instructions resource used in API version 1.0.0.
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID, Instagram business account ID, or Instagram username for the Meta Business Agent. |
+
+### Query Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| agent_id | string |  | Optional settings ID. When provided, creates the skill under the specified settings. When absent, uses the most recently created settings for the given channel. |
+
+### Request Body (Required)
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelSkillsRequest](#bizaiomnichannelskillsrequest)
+
+### Responses
+
+**201**
+
+The newly created skill
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelSkillsResponse](#bizaiomnichannelskillsresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**409**
+
+Conflict
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+&lt;jumplink id=&quot;put-skill-id&quot;&gt;&lt;/jumplink&gt;
+## PUT /&#123;skill_id&#125;
+
+Update a skill
+
+Update a skill by its ID. Send only the fields you want to change. Any field you omit keeps its current value. Editing the `description` changes when the agent applies the skill; editing the `skill` body changes what it does once applied.
+
+
+### Header Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| X-API-Version | &quot;2.0.0&quot; |  |  |
+
+### Path Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| entity_id | string | ✓ | The WhatsApp Business Phone Number ID, Instagram business account ID, or Instagram username for the Meta Business Agent. |
+| skill_id | string | ✓ | The identifier of the skill, as returned in the `id` field when the skill was created or listed. Pass that value through unchanged. |
+
+### Request Body (Required)
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelSkillsRequest](#bizaiomnichannelskillsrequest)
+
+### Responses
+
+**200**
+
+The updated skill
+
+**Content Type**: `application/json`
+
+**Schema**: [BizAIOmniChannelSkillsResponse](#bizaiomnichannelskillsresponse)
+
+**400**
+
+Bad request
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**404**
+
+Not found
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**401**
+
+Unauthorized
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**409**
+
+Conflict
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**429**
+
+Too many requests
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+**500**
+
+Server error
+
+**Content Type**: `application/json`
+
+**Schema**: [StandardError](#standarderror)
+
+
+# Components
+
+## Schemas
+
+&lt;jumplink id=&quot;bizaiomnichannelskillsrequest&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelSkillsRequest
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| title | string |  | A human-readable name for the skill. Max 64 characters. Must contain only lowercase letters, numbers, and hyphens, and must not start or end with a hyphen. Use a descriptive title that makes the skill&#039;s purpose clear (e.g., `greeting-skill`, `product-return-policy`). Avoid generic titles like `skill-1`. |
+| description | string |  | A description telling the AI when to apply this skill. Max 1024 characters. Be specific about the trigger or context — for example, &quot;Apply when the customer first messages the agent&quot; or &quot;Apply when the customer asks about returns or refunds.&quot; The agent uses this to decide which skills are relevant to the current conversation. |
+| skill | string |  | The body containing the actual instructions for the AI. Max 20000 characters. Write clear, non-conflicting directives. Avoid having multiple skills that each claim priority for the same situation (e.g., two skills that both say &quot;do this first&quot; on the first message) — the agent cannot resolve conflicting priorities and may produce duplicate or inconsistent responses. If multiple actions should happen on the same trigger, consolidate them into a single skill with an explicit sequence of steps. |
+
+&lt;jumplink id=&quot;bizaiomnichannelskillsresponse&quot;&gt;&lt;/jumplink&gt;
+### BizAIOmniChannelSkillsResponse
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| id | string | ✓ | A unique identifier for the skill. Pass this value unchanged as the `skill_id` path parameter to read, update, or delete the skill. |
+| title | string |  | An optional, human-readable name for the skill |
+| description | string |  | A description telling the AI when to apply this skill |
+| skill | string | ✓ | The body containing the actual instructions for the AI. Has no specific restrictions on structure or content. |
+| channel | One of &quot;email&quot;, &quot;instagram&quot;, &quot;line&quot;, &quot;messenger&quot;, &quot;sms&quot;, &quot;tiktok&quot;, &quot;unknown&quot;, &quot;webchat&quot;, &quot;whatsapp&quot; | ✓ | The channel/platform this skill applies to |
+| created_at | integer |  | The timestamp when the skill was created |
+| metadata | [Metadata](#object-metadata-1) |  | A map of key-value pairs for additional metadata |
+| status | One of &quot;active&quot;, &quot;pending_review&quot;, &quot;blocked&quot; |  | Whether the agent is applying this skill. `active` means the skill passed the automated content review. `pending_review` means the review has not finished yet; a skill read back immediately after a create or update is normally in this state. `blocked` means the skill did not pass the review and the agent never applies it — most often because the text asks for or refers to sensitive personal information. Edit the skill to clear the block. |
+
+&lt;jumplink id=&quot;standarderror&quot;&gt;&lt;/jumplink&gt;
+### StandardError
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| title | string | ✓ |  |
+| detail | string | ✓ |  |
+| type | string |  |  |
+| status | integer |  |  |
+
+## Inline Object Definitions
+
+&lt;jumplink id=&quot;object-metadata-1&quot;&gt;&lt;/jumplink&gt;
+### Metadata
+
+A map of key-value pairs for additional metadata
+
+
+**Additional Properties**: string
+
+## Authentication
+
+| Scheme | Type | Location |
+|--------|------|----------|
+| OAuthToken__Authorization | HTTP Bearer | Header: `Authorization` |
+
+### Usage Examples
+
+- **OAuthToken__Authorization**: Include `Authorization: Bearer your-token-here` in request headers
+
+### Global Authentication Requirements
+
+All endpoints require: OAuthToken__Authorization
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/meta-business-agent/llms.txt

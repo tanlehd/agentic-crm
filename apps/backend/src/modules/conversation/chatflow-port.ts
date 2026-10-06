@@ -5,10 +5,16 @@ import type { Access } from '../identity/domain/authorization.js';
 import { fieldAllowed } from '../identity/domain/authorization.js';
 import { ChannelReferences } from '../channels/ports.js';
 import { conversation,requirePermission,messageText,cancelQueued } from './domain.js';
+const originalOnly="AND NOT EXISTS (SELECT 1 FROM message_content mc WHERE mc.tenant_id=message.tenant_id AND mc.message_id=message.id AND JSON_UNQUOTE(JSON_EXTRACT(mc.content,'$.message_type'))<>'text')";
 export class ChatflowConversationPort {
   async read(s:TransactionScope,id:string,a?:Access){const c=await conversation(s,id,true);if(a)requirePermission(a,c.record,'read');return c;}
-  async inbound(s:TransactionScope,id:string,message:string){const [m]=await s.query("SELECT id,text FROM message WHERE tenant_id=? AND conversation_id=? AND id=? AND direction='inbound'",[s.context.tenantId,id,message]);if(!m)throw new CommandError(422,'CONSENT_MESSAGE_INVALID');return m as {id:string;text:string};}
-  async next(s:TransactionScope,id:string,used:string[]){const [m]=await s.query(`SELECT id,text FROM message WHERE tenant_id=? AND conversation_id=? AND direction='inbound' ${used.length?'AND id NOT IN ('+used.map(()=>'?').join(',')+')':''} ORDER BY received_at,id LIMIT 1`,[s.context.tenantId,id,...used]);return m as {id:string;text:string}|undefined;}
+  async inbound(s:TransactionScope,id:string,message:string,purpose:'consent'|'inference'='consent'){
+    const [m]=await s.query(`SELECT id,text FROM message WHERE tenant_id=? AND conversation_id=? AND id=? AND direction='inbound' ${purpose==='consent'?originalOnly:''}`,[s.context.tenantId,id,message]);
+    if(!m)throw new CommandError(422,'CONSENT_MESSAGE_INVALID');return m as {id:string;text:string};
+  }
+  async next(s:TransactionScope,id:string,used:string[],purpose:'consent'|'inference'='inference'){
+    const [m]=await s.query(`SELECT id,text FROM message WHERE tenant_id=? AND conversation_id=? AND direction='inbound' ${purpose==='consent'?originalOnly:''} ${used.length?'AND id NOT IN ('+used.map(()=>'?').join(',')+')':''} ORDER BY received_at,id LIMIT 1`,[s.context.tenantId,id,...used]);return m as {id:string;text:string}|undefined;
+  }
   async prompt(s:TransactionScope,id:string,a:Access,ownerRevision:string,text:string,key:string,session:string){
     messageText(text);const c=await this.read(s,id,a);requirePermission(a,c.record,'reply');
     if(c.row.status==='closed'||c.record.ownerPrincipalId!==a.principalId||c.record.ownerRevision!==ownerRevision)throw new CommandError(409,'OWNER_CONFLICT');

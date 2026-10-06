@@ -1,5 +1,6 @@
 # Workflow primitive contract — SRC-019
 
+> Microservices target ADR-017 dùng [cross-service rules](service-boundaries.md). APIs/UoW trong tài liệu này là baseline implementation hiện tại; exact remote contracts và sagas cần PLAN-006 trước extraction.
 Status: Ready for implementation M2. CHG-20261005-05.
 
 All routes use session, X-Tenant-Id; mutations require Origin/CSRF and Idempotency-Key. Definition PATCH and publish require If-Match definition version. POST /workflows accepts {key,name,service_actor_id}; starts disabled. POST /workflows/{id}/versions accepts {graph,execution_role_id}; creates immutable draft snapshot with increasing number. POST /workflows/{id}/versions/{version}/publish accepts {}; version path is number; validates graph and references, pins role, sets active version. PATCH /workflows/{id} accepts {enabled:boolean}. GET /workflows and GET /workflows/{id}/versions return bounded collections (limit1..100, default50). GET /workflow-runs/{id} returns sanitized run/steps/waits, no inputs/context. POST /workflow-runs/{id}/cancel accepts {reason:"operator_cancelled"}. Cancel terminal is idempotent; does not reverse committed actions. No arbitrary execute endpoint.

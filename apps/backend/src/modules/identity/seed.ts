@@ -23,7 +23,7 @@ export function seedGuard(env: NodeJS.ProcessEnv): string {
 }
 const grants=(resource:string, actions:string[], scope='team')=>actions.map(action=>({resource,action,scope}));
 const roles={
-  tenant_admin: ['membership','role','team','agent'].flatMap(r=>grants(r,['read','create','update'],'all')),
+  tenant_admin: [...['membership','role','team','agent'].flatMap(r=>grants(r,['read','create','update'],'all')),...grants('integration',['read','configure'],'all')],
   chat_agent: [...grants('conversation',['read','reply','note','takeover']),...grants('contact',['read']),...grants('lead',['create','qualify','handoff'])],
   sales_agent: [...grants('lead',['read','accept']),...grants('contact',['read'])],
   supervisor: [...grants('conversation',['read','reply','note','takeover','assign']),...grants('lead',['read','assign']),...grants('contact',['read'])],

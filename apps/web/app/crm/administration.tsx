@@ -1,11 +1,13 @@
 'use client';
-import { useState } from 'react';
+import { useEffect,useState } from 'react';
 import { Button } from '../../components/ui/button';
 import { useApi,useCommand,ErrorNotice,can,type Context } from './api';
-const routes=[['memberships','Thành viên','membership'],['roles','Vai trò','role'],['teams','Nhóm','team'],['ai-agents','AI Agents','agent']] as const;
+import { FacebookSettings } from './facebook-settings';
+const routes=[['memberships','Thành viên','membership'],['roles','Vai trò','role'],['teams','Nhóm','team'],['ai-agents','AI Agents','agent'],['channels','Channels','integration']] as const;
 export function Administration({tenant,context}:{tenant:string;context:Context}){
   const [route,setRoute]=useState<string>('memberships');
-  return <div className="crm-card"><h3>Quản trị tổ chức</h3><p>Seat cho phép sử dụng công cụ; role quy định thao tác và phạm vi dữ liệu.</p><div className="crm-tabs">{routes.filter(([, ,resource])=>can(context,resource,'read')).map(([key,label])=><Button key={key} variant={route===key?'default':'outline'} onClick={()=>setRoute(key)}>{label}</Button>)}</div><AdminCollection key={route} tenant={tenant} context={context} route={route}/></div>;
+  useEffect(()=>{if(new URLSearchParams(window.location.search).has('facebook'))setRoute('channels');},[]);
+  return <div className="crm-card"><h3>Quản trị tổ chức</h3><p>Seat cho phép sử dụng công cụ; role quy định thao tác và phạm vi dữ liệu.</p><div className="crm-tabs">{routes.filter(([, ,resource])=>can(context,resource,'read')).map(([key,label])=><Button key={key} variant={route===key?'default':'outline'} onClick={()=>setRoute(key)}>{label}</Button>)}</div>{route==='channels'?<FacebookSettings tenant={tenant} context={context}/>:<AdminCollection key={route} tenant={tenant} context={context} route={route}/>}</div>;
 }
 function AdminCollection({tenant,context,route}:{tenant:string;context:Context;route:string}){
   const [cursor,setCursor]=useState<string|null>(null),[selected,setSelected]=useState<any>(null),[creating,setCreating]=useState(false);

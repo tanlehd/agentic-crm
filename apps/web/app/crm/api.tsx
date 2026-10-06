@@ -23,6 +23,6 @@ export function ErrorNotice({error,reload}:{error:ApiError|null|undefined;reload
 }
 export interface Context {principal_id:string;capabilities:string[];grants:{resource:string;action:string;scope:string}[];objects:{id:string;key:string;label:string;kind:string;version:string}[]}
 export function can(context:Context,resource:string,action:string,record?:any){
-  const capable=resource==='schema'||['membership','role','team','agent'].includes(resource)?context.capabilities.includes('configure'):action==='read'?context.capabilities.includes('read'):context.capabilities.some(c=>['chat','sales','service'].includes(c));
+  const capable=resource==='schema'||resource==='integration'||['membership','role','team','agent'].includes(resource)?context.capabilities.includes('configure'):action==='read'?context.capabilities.includes('read'):context.capabilities.some(c=>['chat','sales','service'].includes(c));
   return capable&&context.grants.some(g=>g.resource===resource&&g.action===action&&(g.scope==='all'||!record||g.scope==='own'&&record.owner_principal_id===context.principal_id||g.scope==='team'));
 }

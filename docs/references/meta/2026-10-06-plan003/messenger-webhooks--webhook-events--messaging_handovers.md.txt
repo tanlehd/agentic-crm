@@ -1,0 +1,188 @@
+# messaging_handovers Webhook Event Reference
+
+
+
+The `messaging_handovers` webhook event is used to notify your webhook when certain actions are taken using the Messenger Platform&#039;s [handover protocol](https://developers.facebook.com/docs/messenger-platform/handover-protocol), including [pass thread control](https://developers.facebook.com/docs/messenger-platform/handover-protocol#pass_thread_control), [take thread control](https://developers.facebook.com/docs/messenger-platform/handover-protocol#take_thread_control), and [role change](https://developers.facebook.com/docs/messenger-platform/handover-protocol#app_roles) events.
+
+For more information on the handover protocol, see [Handover Protocol](https://developers.facebook.com/docs/messenger-platform/handover-protocol).
+
+### Contents
+- [pass_thread_control](#pass_thread_control)
+- [take_thread_control](#take_thread_control)
+- [app_roles](#app_roles)
+- [request_thread_control](#request_thread_control)
+
+## `pass_thread_control` &#123;#pass_thread_control&#125;
+This callback will occur when thread ownership for a user has been passed to your application.
+
+For details on implementing pass thread control, see [Pass Thread Control](https://developers.facebook.com/docs/messenger-platform/handover-protocol/pass-thread-control).
+
+```
+&#123;
+   &quot;sender&quot;:&#123;
+      &quot;id&quot;:&quot;&lt;PSID&gt;&quot;
+   &#125;,
+   &quot;recipient&quot;:&#123;
+      &quot;id&quot;:&quot;&lt;PAGE_ID&gt;&quot;
+   &#125;,
+   &quot;timestamp&quot;:1458692752478,
+   &quot;pass_thread_control&quot;:&#123;
+      &quot;previous_owner_app_id&quot;:&quot;&lt;previous_app_id or null (idle_mode)&gt;&quot;,
+      &quot;new_owner_app_id&quot;:&quot;123456789&quot;,
+      &quot;metadata&quot;:&quot;Additional content that the caller wants to set&quot;
+   &#125;
+&#125;
+```
+
+### Properties &#123;#pass_thread_control_properties&#125;
+
+### `sender`
+
+| `sender` Field | Description |
+| --- | --- |
+| `id` *string* | The Page-scoped ID for the person who sent a message to your business |
+
+### `recipient`
+
+| `recipient` Field | Description |
+| --- | --- |
+| `id` *string* | The ID for your Facebook Page |
+
+### `pass_thread_control`
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `new_owner_app_id` | String | App ID that thread control is passed to. |
+| `previous_owner_app_id` | String | App ID that thread control is passed from. |
+| `metadata` | String | Custom string specified in the API request. |
+
+## `take_thread_control` &#123;#take_thread_control&#125;
+This callback will occur when thread ownership for a user has been taken away from your application.
+
+For details on implementing take thread control, see [Take Thread Control](https://developers.facebook.com/docs/messenger-platform/handover-protocol/take-thread-control).
+
+```
+&#123;
+  &quot;sender&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;recipient&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PAGE_ID&gt;&quot;
+  &#125;,
+  &quot;timestamp&quot;:1458692752478,
+  &quot;take_thread_control&quot;:&#123;
+    &quot;previous_owner_app_id&quot;:&quot;123456789&quot;, //could be null if thread was in idle mode
+    &quot;new_owner_app_id&quot;: &lt;new_app_id&gt;,
+    &quot;metadata&quot;:&quot;additional content that the caller wants to set&quot;
+  &#125;
+&#125;
+```
+
+### Properties &#123;#take_thread_control_properties&#125;
+
+### `sender`
+
+| `sender` Field | Description |
+| --- | --- |
+| `id` *string* | The Page-scoped ID for the person who sent a message to your business |
+
+### `recipient`
+
+| `recipient` Field | Description |
+| --- | --- |
+| `id` *string* | The ID for your Facebook Page |
+
+### `take_thread_control`
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `previous_owner_app_id ` | String | App ID that thread control was taken from. |
+| `new_owner_app_id ` | String | App ID that thread control was given to. |
+| `metadata` | String | Custom string specified in the API request. |
+
+## `request_thread_control` &#123;#request_thread_control&#125;
+This callback will be sent to the Primary Receiver app when a Secondary Receiver app calls the [Request Thread Control API](https://developers.facebook.com/docs/messenger-platform/handover-protocol/request-thread-control). The Primary Receiver may then choose to honor the request and pass thread control, or ignore the request.
+
+For details on implementing take thread control, see [Take Thread Control](https://developers.facebook.com/docs/messenger-platform/handover-protocol/request-thread-control).
+
+```http
+&#123;
+  &quot;sender&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;USER_ID&gt;&quot;
+  &#125;,
+  &quot;recipient&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;timestamp&quot;:1458692752478,
+  &quot;request_thread_control&quot;:&#123;
+    &quot;requested_owner_app_id&quot;:123456789,
+    &quot;metadata&quot;:&quot;additional content that the caller wants to set&quot;
+  &#125;
+&#125;
+```
+
+
+### Properties &#123;#request_thread_control_properties&#125;
+
+### `sender`
+
+| `sender` Field | Description |
+| --- | --- |
+| `id` *string* | The Page-scoped ID for the person who sent a message to your business |
+
+### `recipient`
+
+| `recipient` Field | Description |
+| --- | --- |
+| `id` *string* | The ID for your Facebook Page |
+
+### `request_thread_control`
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `requested_owner_app_id` | String | App ID of the Secondary Receiver that is requesting thread control. |
+| `metadata` | String | Custom string specified in the API request. |
+
+## `app_roles` &#123;#app_roles&#125;
+
+This callback will occur when a page admin changes the role of your application. An app can be assigned the roles of `primary_receiver` or `secondary_receiver`.
+
+For information on assigning app roles, see [Assign App Roles](https://developers.facebook.com/docs/messenger-platform/handover-protocol/assign-app-roles).
+
+```
+&#123;
+  &quot;recipient&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;timestamp&quot;:1458692752478,
+  &quot;app_roles&quot;:&#123;
+    &quot;123456789&quot;:[&quot;primary_receiver&quot;]
+  &#125;
+&#125;
+```
+
+### Properties &#123;#app_rolesproperties&#125;
+
+### `sender`
+
+| `sender` Field | Description |
+| --- | --- |
+| `id` *string* | The Page-scoped ID for the person who sent a message to your business |
+
+### `recipient`
+
+| `recipient` Field | Description |
+| --- | --- |
+| `id` *string* | The ID for your Facebook Page |
+
+### `app_roles`
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `id` | String | Your Page ID. |
+
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/business-messaging/messenger-platform/llms.txt

@@ -1,5 +1,6 @@
 # Physical schema baseline M1
 
+> Baseline monolith hiện có, không phải physical schema của các microservice đích. Xem [data ownership ADR-017](service-ownership.md); FK/UoW cross-module dưới đây chỉ áp dụng trong DB hiện tại. Extraction không sửa applied migrations1–18.
 Status: Ready for implementation; source migration tạo dần từ SRC-004. Quy tắc dưới bổ sung [dictionary](dictionary.md), không thay lifecycle.
 
 ## Types và defaults chuẩn
@@ -118,3 +119,22 @@ Add workflow_definition/version/run/step_run/wait/action/trigger_selection. UUID
 V14 adds definition/version/session/node_run/turn and session-bound outbound intent FK. Tenant composite FKs, immutable graph snapshots, unique active Conversation and start key; node lease/token and prompt attempt, turn session/message dedup; variables/draft/provenance JSON. Lead null-only v8 guards lifted for Conversation/session/touchpoint and replaced with tenant FKs; unique session Lead retained. V15 CHECK prevents null conversation bypassing the composite session FK. V16 stores a private proposed reply on node; only successful runtime completion creates outbound. Source SQL files are separate immutable migrations; v1–v13 unchanged. Details: [dictionary](dictionary.md), [Chatflow contract](../contracts/chatflow.md). Runtime execution session is an application-port-bound reference; private legacy runtime harness rows are not retroactively converted into production sessions.
 
 SRC-021 migration17: additive lead_handoff as specified in [Sales contract](../contracts/sales-handoff.md); v1–16 preserved.
+
+
+SRC-026 legacy projection không migration/backfill: giữ schema17, text NOT NULL, unique tenant+connection+provider_message_id và toàn bộ journal.
+
+
+v18 Ready: message_content composite PK/FK tenant+message, JSON OBJECT CHECK và OCTET_LENGTH<=65536. Immutable1–17; legacy message không ALTER/backfill. [Migration/rollback policy](../contracts/rich-messages.md).
+
+
+SRC-028 independent Connector schema1 per [contract](../contracts/connector-bridge.md). Monolith schema18 unchanged; no implicit migration19.
+
+## Independent Connector lineage2
+
+SRC-029 adds Page binding/event/audit tables only in the Connector private database. [Exact columns and constraints](../contracts/messenger-ingress.md). Monolith1–18 unchanged; migration journal validates historical checksums before1→2 upgrade. No auto-sync/down migration or preview upgrade.
+
+ADR-019 [target identity/cache/contact message contract](../contracts/contact-resolution.md) requires future versioned migrations and mapping backfill/single-writer transfer. No DDL applied or existing migration modified by PLAN-006B.
+
+## SRC-031 Facebook configuration and channel dimensions
+
+[Exact OAuth/Page/schema19 contract](../contracts/facebook-configuration.md) and [operator runbook](../development/facebook-configuration.md) define Admin→Channels→Facebook, session/state-bound OAuth, encrypted DB Page credentials and manual verified token replacement. Baseline Channels remains sole writer of catalog/credentials; independent Connector capture is unchanged until API-based extraction/provisioning. Conversation channel and generated channel_id retain existing connection IDs, with Page metadata and tenant/field-authorized filters/options. Messaging activation and real sandbox acceptance remain separate.

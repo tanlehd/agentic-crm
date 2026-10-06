@@ -9,6 +9,10 @@ x-backend: &backend
     MYSQL_USER: ${MYSQL_USER:?Run pnpm env:init}
     MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Run pnpm env:init}
     REDIS_HOST: redis
+    FACEBOOK_APP_ID: ${FACEBOOK_APP_ID:-}
+    FACEBOOK_APP_SECRET: ${FACEBOOK_APP_SECRET:-}
+    FACEBOOK_TOKEN_ENCRYPTION_KEY: ${FACEBOOK_TOKEN_ENCRYPTION_KEY:-}
+    FACEBOOK_LOGIN_CONFIG_ID: ${FACEBOOK_LOGIN_CONFIG_ID:-}
   depends_on:
     mysql: {condition: service_healthy}
     redis: {condition: service_healthy}

@@ -3,6 +3,7 @@ import { spawnSync } from 'node:child_process';
 for (const args of [
   ['--filter', '@agentic-crm/contracts', 'build'],
   ['--filter', '@agentic-crm/backend', 'build'],
+  ['--filter', '@agentic-crm/crm-connector', 'build'],
   ['exec', 'vitest', 'run', 'apps/backend/tests/database.integration.test.ts', '--testNamePattern', process.env.TEST_CASE_FILTER || '.'],
 ]) {
   const result = spawnSync('pnpm', args, { stdio: 'inherit' });

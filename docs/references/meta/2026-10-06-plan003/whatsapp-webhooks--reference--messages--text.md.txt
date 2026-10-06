@@ -1,0 +1,286 @@
+# Text messages webhook reference
+
+
+
+This reference describes trigger events and payload contents for the WhatsApp Business account **messages** webhook for messages containing only text.
+
+## Triggers
+
+- A WhatsApp user sends a text message to a WhatsApp Business phone number.
+- A WhatsApp user forwards a text message to a business phone number.
+- A WhatsApp user uses the **Message business** button in a [catalog, single-, or multi-product message](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/catalogs-overview) to send a message to the business.
+- A WhatsApp user sends a text message to a business via a [Click to WhatsApp ad](https://www.facebook.com/business/help/447934475640650?id=371525583593535) (an ad with a WhatsApp **message destination**).
+
+## Syntax
+
+```html
+&#123;
+  &quot;object&quot;: &quot;whatsapp_business_account&quot;,
+  &quot;entry&quot;: [
+    &#123;
+      &quot;id&quot;: &quot;&lt;WHATSAPP_BUSINESS_ACCOUNT_ID&gt;&quot;,
+      &quot;changes&quot;: [
+        &#123;
+          &quot;value&quot;: &#123;
+            &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+            &quot;metadata&quot;: &#123;
+              &quot;display_phone_number&quot;: &quot;&lt;BUSINESS_DISPLAY_PHONE_NUMBER&gt;&quot;,
+              &quot;phone_number_id&quot;: &quot;&lt;BUSINESS_PHONE_NUMBER_ID&gt;&quot;
+            &#125;,
+            &quot;contacts&quot;: [
+              &#123;
+                &quot;profile&quot;: &#123;
+                  &quot;name&quot;: &quot;&lt;WHATSAPP_USER_PROFILE_NAME&gt;&quot;
+                &#125;,
+                &quot;wa_id&quot;: &quot;&lt;WHATSAPP_USER_ID&gt;&quot;,
+                &quot;identity_key_hash&quot;: &quot;&lt;IDENTITY_KEY_HASH&gt;&quot; &lt;!-- only included if identity change check enabled --&gt;
+              &#125;
+            ],
+            &quot;messages&quot;: [
+              &#123;
+                &quot;from&quot;: &quot;&lt;WHATSAPP_USER_PHONE_NUMBER&gt;&quot;,
+                &quot;id&quot;: &quot;&lt;WHATSAPP_MESSAGE_ID&gt;&quot;,
+                &quot;timestamp&quot;: &quot;&lt;WEBHOOK_TRIGGER_TIMESTAMP&gt;&quot;,
+                &quot;type&quot;: &quot;text&quot;,
+                &quot;text&quot;: &#123;
+                  &quot;body&quot;: &quot;&lt;MESSAGE_TEXT_BODY&gt;&quot;
+                &#125;,
+
+                &lt;!-- only if message originated from a &quot;Message business&quot; button --&gt;
+                &quot;context&quot;: &#123;
+                  &quot;from&quot;: &quot;&lt;BUSINESS_DISPLAY_PHONE_NUMBER&gt;&quot;,
+                  &quot;id&quot;: &quot;&lt;CONTEXTUAL_WHATSAPP_MESSAGE_ID&gt;&quot;,
+                  &quot;referred_product&quot;: &#123;
+                    &quot;catalog_id&quot;: &quot;&lt;PRODUCT_CATALOG_ID&gt;&quot;,
+                    &quot;product_retailer_id&quot;: &quot;&lt;PRODUCT_ID&gt;&quot;
+                  &#125;
+                &#125;,
+
+                &lt;!-- only if message forwarded to business by a user --&gt;
+                &quot;context&quot;: &#123;
+                  &quot;forwarded&quot;: true,            &lt;!-- only included if forwarded 5 times or less --&gt;
+                  &quot;frequently_forwarded&quot;: true  &lt;!-- only included if forwarded more than 5 times --&gt;
+                &#125;,
+
+                &lt;!-- only included if message sent via a Click to WhatsApp ad --&gt;
+                &quot;referral&quot;: &#123;
+                  &quot;source_url&quot;: &quot;&lt;AD_URL&gt;&quot;,
+                  &quot;source_id&quot;: &quot;&lt;AD_ID&gt;&quot;,
+                  &quot;source_type&quot;: &quot;ad&quot;,
+                  &quot;body&quot;: &quot;&lt;AD_PRIMARY_TEXT&gt;&quot;,
+                  &quot;headline&quot;: &quot;&lt;AD_HEADLINE&gt;&quot;,
+                  &quot;media_type&quot;: &quot;&lt;AD_MEDIA_TYPE&gt;&quot;,
+                  &quot;image_url&quot;: &quot;&lt;AD_IMAGE_URL&gt;&quot;,
+                  &quot;video_url&quot;: &quot;&lt;AD_VIDEO_URL&gt;&quot;,
+                  &quot;thumbnail_url&quot;: &quot;&lt;AD_VIDEO_THUMBNAIL&gt;&quot;,
+                  &quot;ctwa_clid&quot;: &quot;&lt;AD_CLICK_ID&gt;&quot;,  &lt;!-- omitted if message sent via a WhatsApp Status ad placement --&gt;
+                  &quot;welcome_message&quot;: &#123;
+                    &quot;text&quot;: &quot;&lt;AD_GREETING_TEXT&gt;&quot;
+                  &#125;
+                &#125;
+              &#125;
+            ]
+          &#125;,
+          &quot;field&quot;: &quot;messages&quot;
+        &#125;
+      ]
+    &#125;
+  ]
+&#125;
+```
+
+## Parameters
+
+| Placeholder | Description | Example value |
+| --- | --- | --- |
+| `&lt;AD_CLICK_ID&gt;`&lt;br&gt;&lt;br&gt;_String_ | Click to WhatsApp ad click ID.&lt;br&gt;&lt;br&gt;The `ctwa_clid` property is omitted entirely for messages originating from an ad in WhatsApp Status ([WhatsApp Status ad placements](https://www.facebook.com/business/help/1074444721456755)). | `Aff-n8ZTODiE79d22KtAwQKj9e_mIEOOj27vDVwFjN80dp4_0NiNhEgpGo0AHemvuSoifXaytfTzcchptiErTKCqTrJ5nW1h7IHYeYymGb5K5J5iTROpBhWAGaIAeUzHL50` |
+| `&lt;AD_GREETING_TEXT&gt;`&lt;br&gt;&lt;br&gt;_String_ | Click to WhatsApp ad greeting text. | `Hi there! Let us know how we can help!` |
+| `&lt;AD_HEADLINE&gt;`&lt;br&gt;&lt;br&gt;_String_ | Click to WhatsApp ad headline. | `Chat with us` |
+| `&lt;AD_ID&gt;`&lt;br&gt;&lt;br&gt;_String_ | Click to WhatsApp ad ID. | `120226305854810726` |
+| `&lt;AD_IMAGE_URL&gt;`&lt;br&gt;&lt;br&gt;_String_ | Click to WhatsApp ad image URL. Only included if the ad is an image ad. | `https://scontent.xx.fbcdn.net/v/t45.1...` |
+| `&lt;AD_MEDIA_TYPE&gt;`&lt;br&gt;&lt;br&gt;_String_ | Click to WhatsApp ad media type. Values can be:&lt;br&gt;&lt;br&gt;`image` — Indicates an image ad.&lt;br&gt;&lt;br&gt;`video` — Indicates a video ad. | `image` |
+| `&lt;AD_PRIMARY_TEXT&gt;`&lt;br&gt;&lt;br&gt;_String_ | Click to WhatsApp ad primary text. | `Summer succulents are here!` |
+| `&lt;AD_URL&gt;`&lt;br&gt;&lt;br&gt;_String_ | Click to WhatsApp ad URL. | `https://fb.me/3cr4Wqqkv` |
+| `&lt;AD_VIDEO_THUMBNAIL&gt;`&lt;br&gt;&lt;br&gt;_String_ | Click to WhatsApp ad video thumbnail URL. Only included if ad is a video ad. | `https://scontent.xx.fbcdn.net/v/t45.3...` |
+| `&lt;AD_VIDEO_URL&gt;`&lt;br&gt;&lt;br&gt;_String_ | Click to WhatsApp ad video URL. Only included if ad is a video ad. | `https://scontent.xx.fbcdn.net/v/t45.2...` |
+| `&lt;BUSINESS_DISPLAY_PHONE_NUMBER&gt;`&lt;br&gt;&lt;br&gt;_String_ | Business display phone number. | `15550783881` |
+| `&lt;BUSINESS_PHONE_NUMBER_ID&gt;`&lt;br&gt;&lt;br&gt;_String_ | Business phone number ID. | `106540352242922` |
+| `&lt;CONTEXTUAL_WHATSAPP_MESSAGE_ID&gt;`&lt;br&gt;&lt;br&gt;_String_ | WhatsApp message ID of the message the WhatsApp user used to access the Message business button. | `wamid.HBgLMTY1MDM4Nzk0MzkVAgARGA9wcm9kdWN0X2lucXVpcnkA` |
+| `&lt;IDENTITY_KEY_HASH&gt;`&lt;br&gt;&lt;br&gt;_String_ | Identity key hash. Only included if you have enabled the [identity change check](https://developers.facebook.com/documentation/business-messaging/whatsapp/business-phone-numbers/phone-numbers) feature. | `DF2lS5v2W6x=` |
+| `&lt;MESSAGE_TEXT_BODY&gt;`&lt;br&gt;&lt;br&gt;_String_ | Text body of the message. | `Is it available in another color?` |
+| `&lt;PRODUCT_CATALOG_ID&gt;`&lt;br&gt;&lt;br&gt;_String_ | [Product catalog ID](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/catalogs-overview). | `194836987003835` |
+| `&lt;PRODUCT_ID&gt;`&lt;br&gt;&lt;br&gt;_String_ | [Product ID](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/catalogs-overview). | `di9ozbzfi4` |
+| `&lt;WEBHOOK_TRIGGER_TIMESTAMP&gt;`&lt;br&gt;&lt;br&gt;_String_ | Unix timestamp indicating when the webhook was triggered. | `1739321024` |
+| `&lt;WHATSAPP_BUSINESS_ACCOUNT_ID&gt;`&lt;br&gt;&lt;br&gt;_String_ | WhatsApp Business Account ID. | `102290129340398` |
+| `&lt;WHATSAPP_MESSAGE_ID&gt;`&lt;br&gt;&lt;br&gt;_String_ | WhatsApp message ID. | `wamid.HBgLMTY1MDM4Nzk0MzkVAgASGBQzQUFERjg0NDEzNDdFODU3MUMxMAA=` |
+| `&lt;WHATSAPP_USER_ID&gt;`&lt;br&gt;&lt;br&gt;_String_ | WhatsApp user ID. Note that a WhatsApp user&#039;s ID and phone number may not always match. | `16505551234` |
+| `&lt;WHATSAPP_USER_PHONE_NUMBER&gt;`&lt;br&gt;&lt;br&gt;_String_ | WhatsApp user phone number. This is the same value returned by the API as the `input` value when sending a message to a WhatsApp user. Note that a WhatsApp user&#039;s phone number and ID may not always match. | `+16505551234` |
+| `&lt;WHATSAPP_USER_PROFILE_NAME&gt;`&lt;br&gt;&lt;br&gt;_String_ | WhatsApp user&#039;s name as it appears in their profile in the WhatsApp client. | `Sheena Nelson` |
+
+## Examples
+
+### Text message
+
+This example describes a text message sent by a WhatsApp user (the user just typed something into the chat field and sends).
+
+```json
+&#123;
+  &quot;object&quot;: &quot;whatsapp_business_account&quot;,
+  &quot;entry&quot;: [
+    &#123;
+      &quot;id&quot;: &quot;102290129340398&quot;,
+      &quot;changes&quot;: [
+        &#123;
+          &quot;value&quot;: &#123;
+            &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+            &quot;metadata&quot;: &#123;
+              &quot;display_phone_number&quot;: &quot;15550783881&quot;,
+              &quot;phone_number_id&quot;: &quot;106540352242922&quot;
+            &#125;,
+            &quot;contacts&quot;: [
+              &#123;
+                &quot;profile&quot;: &#123;
+                  &quot;name&quot;: &quot;Sheena Nelson&quot;
+                &#125;,
+                &quot;wa_id&quot;: &quot;16505551234&quot;
+              &#125;
+            ],
+            &quot;messages&quot;: [
+              &#123;
+                &quot;from&quot;: &quot;16505551234&quot;,
+                &quot;id&quot;: &quot;wamid.HBgLMTY1MDM4Nzk0MzkVAgASGBQzQTRBNjU5OUFFRTAzODEwMTQ0RgA=&quot;,
+                &quot;timestamp&quot;: &quot;1749416383&quot;,
+                &quot;type&quot;: &quot;text&quot;,
+                &quot;text&quot;: &#123;
+                  &quot;body&quot;: &quot;Does it come in another color?&quot;
+                &#125;
+              &#125;
+            ]
+          &#125;,
+          &quot;field&quot;: &quot;messages&quot;
+        &#125;
+      ]
+    &#125;
+  ]
+&#125;
+```
+
+### Message business button
+
+This example describes a text message sent by a WhatsApp user who used a **Message business** button when [viewing a single product](https://developers.facebook.com/documentation/business-messaging/whatsapp/catalogs/catalogs-overview) to send the message.
+
+```json
+&#123;
+  &quot;object&quot;: &quot;whatsapp_business_account&quot;,
+  &quot;entry&quot;: [
+    &#123;
+      &quot;id&quot;: &quot;419561257915477&quot;,
+      &quot;changes&quot;: [
+        &#123;
+          &quot;value&quot;: &#123;
+            &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+            &quot;metadata&quot;: &#123;
+              &quot;display_phone_number&quot;: &quot;15550783881&quot;,
+              &quot;phone_number_id&quot;: &quot;106540352242922&quot;
+            &#125;,
+            &quot;contacts&quot;: [
+              &#123;
+                &quot;profile&quot;: &#123;
+                  &quot;name&quot;: &quot;Sheena Nelson&quot;
+                &#125;,
+                &quot;wa_id&quot;: &quot;16505551234&quot;
+              &#125;
+            ],
+            &quot;messages&quot;: [
+              &#123;
+                &quot;context&quot;: &#123;
+                  &quot;from&quot;: &quot;15550783881&quot;,
+                  &quot;id&quot;: &quot;wamid.HBgLMTY1MDM4Nzk0MzkVAgARGA9wcm9kdWN0X2lucXVpcnkA&quot;,
+                  &quot;referred_product&quot;: &#123;
+                    &quot;catalog_id&quot;: &quot;194836987003835&quot;,
+                    &quot;product_retailer_id&quot;: &quot;di9ozbzfi4&quot;
+                  &#125;
+                &#125;,
+                &quot;from&quot;: &quot;16505551234&quot;,
+                &quot;id&quot;: &quot;wamid.HBgLMTY1MDM4Nzk0MzkVAgASGBQzQTA2NTUwRkNEMDdFQjJCRUU0NQA=&quot;,
+                &quot;timestamp&quot;: &quot;1750016800&quot;,
+                &quot;text&quot;: &#123;
+                  &quot;body&quot;: &quot;Is this still available?&quot;
+                &#125;,
+                &quot;type&quot;: &quot;text&quot;
+              &#125;
+            ]
+          &#125;,
+          &quot;field&quot;: &quot;messages&quot;
+        &#125;
+      ]
+    &#125;
+  ]
+&#125;
+```
+
+### Click to WhatsApp ad
+
+This example describes a text message sent by a WhatsApp user who tapped a [Click to WhatsApp ad](https://www.facebook.com/business/help/447934475640650) and sent the generated message to the business.
+
+Note that for messages originating from an ad in WhatsApp Status ([WhatsApp Status ad placements](https://www.facebook.com/business/help/1074444721456755)), the `referral.ctwa_clid` property is omitted entirely.
+
+```json
+&#123;
+  &quot;object&quot;: &quot;whatsapp_business_account&quot;,
+  &quot;entry&quot;: [
+    &#123;
+      &quot;id&quot;: &quot;102290129340398&quot;,
+      &quot;changes&quot;: [
+        &#123;
+          &quot;value&quot;: &#123;
+            &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+            &quot;metadata&quot;: &#123;
+              &quot;display_phone_number&quot;: &quot;15550783881&quot;,
+              &quot;phone_number_id&quot;: &quot;106540352242922&quot;
+            &#125;,
+            &quot;contacts&quot;: [
+              &#123;
+                &quot;profile&quot;: &#123;
+                  &quot;name&quot;: &quot;Sheena Nelson&quot;
+                &#125;,
+                &quot;wa_id&quot;: &quot;16505551234&quot;
+              &#125;
+            ],
+            &quot;messages&quot;: [
+              &#123;
+                &quot;referral&quot;: &#123;
+                  &quot;source_url&quot;: &quot;https://fb.me/3cr4Wqqkv&quot;,
+                  &quot;source_id&quot;: &quot;120226305854810726&quot;,
+                  &quot;source_type&quot;: &quot;ad&quot;,
+                  &quot;body&quot;: &quot;Summer Succulents are here!&quot;,
+                  &quot;headline&quot;: &quot;Chat with us&quot;,
+                  &quot;media_type&quot;: &quot;image&quot;,
+                  &quot;image_url&quot;: &quot;https://scontent.xx.fbcdn.net/v/t45.1...&quot;,
+                  &quot;ctwa_clid&quot;: &quot;Aff-n8ZTODiE79d22KtAwQKj9e_mIEOOj27vDVwFjN80dp4_0NiNhEgpGo0AHemvuSoifXaytfTzcchptiErTKCqTrJ5nW1h7IHYeYymGb5K5J5iTROpBhWAGaIAeUzHL50&quot;,
+                  &quot;welcome_message&quot;: &#123;
+                    &quot;text&quot;: &quot;Hi there! Let us know how we can help!&quot;
+                  &#125;
+                &#125;,
+                &quot;from&quot;: &quot;16505551234&quot;,
+                &quot;id&quot;: &quot;wamid.HBgLMTY1MDM4Nzk0MzkVAgASGBQzQUQ0N0VFMDA2MTQ0RkJFNkNDNAA=&quot;,
+                &quot;timestamp&quot;: &quot;1750275992&quot;,
+                &quot;text&quot;: &#123;
+                  &quot;body&quot;: &quot;Can I get more info about this?&quot;
+                &#125;,
+                &quot;type&quot;: &quot;text&quot;
+              &#125;
+            ]
+          &#125;,
+          &quot;field&quot;: &quot;messages&quot;
+        &#125;
+      ]
+    &#125;
+  ]
+&#125;
+```
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/business-messaging/whatsapp/llms.txt

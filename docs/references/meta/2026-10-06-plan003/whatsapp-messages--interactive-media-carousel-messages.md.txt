@@ -1,0 +1,389 @@
+# Interactive media carousel messages
+
+
+Interactive media carousel messages display a set of horizontally scrollable media cards. Each card can display an image or video header, body text, and either quick-reply buttons or a URL button.
+
+For example, this is an interactive media card carousel message showing three cards in a scrollable area (highlighted by a dotted rectangle), each with an image header, body text, and URL button:
+
+This is the same message, but using quick-reply buttons instead of URL buttons:
+
+## Components
+
+- Messages must include between 2 and 10 cards.
+- Main message body text is required.
+- Main message headers, footers, and interactive components are not supported.
+- Cards must include either an image or video header. Other header types are not supported.
+- Card body text is optional.
+- Cards must include either one URL button, or one or more quick-reply buttons. Button types and numbers must match across all cards (for example, if you define a card with 2 quick-reply buttons, all cards must define exactly 2 quick-reply buttons).
+
+
+## Request syntax
+
+```html
+curl &#039;https://graph.facebook.com/&lt;API_VERSION&gt;/&lt;BUSINESS_PHONE_NUMBER_ID&gt;/messages&#039; \
+-H &#039;Content-Type: application/json&#039; \
+-H &#039;Authorization: Bearer &lt;ACCESS_TOKEN&gt;&#039; \
+-d &#039;
+&#123;
+  &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+  &quot;recipient_type&quot;: &quot;individual&quot;,
+  &quot;to&quot;: &quot;&lt;USER_PHONE_NUMBER&gt;&quot;,
+  &quot;type&quot;: &quot;interactive&quot;,
+  &quot;interactive&quot;: &#123;
+    &quot;type&quot;: &quot;carousel&quot;,
+    &quot;body&quot;: &#123;
+      &quot;text&quot;: &quot;&lt;MESSAGE_BODY_TEXT&gt;&quot;
+    &#125;,
+    &quot;action&quot;: &#123;
+
+      &lt;!-- First card object --&gt;
+      &quot;cards&quot;: [
+        &#123;
+          &quot;card_index&quot;: &lt;CARD_INDEX&gt;,
+          &quot;type&quot;: &quot;cta_url&quot;,
+          &quot;header&quot;: &#123;
+            &quot;type&quot;: &quot;&lt;HEADER_TYPE&gt;&quot;,
+            &quot;&lt;HEADER_TYPE&gt;&quot;: &#123;
+              &quot;link&quot;: &quot;&lt;MEDIA_ASSET_URL&gt;&quot;
+            &#125;
+          &#125;,
+
+          &lt;!-- Card body text is optional --&gt;
+          &quot;body&quot;: &#123;
+            &quot;text&quot;: &quot;&lt;CARD_BODY_TEXT&gt;&quot;
+          &#125;,
+
+          &quot;action&quot;: &#123;
+            &lt;!-- Only if using a URL button --&gt;
+            &quot;name&quot;: &quot;cta_url&quot;,
+            &quot;parameters&quot;: &#123;
+              &quot;display_text&quot;: &quot;&lt;URL_BUTTON_LABEL&gt;&quot;,
+              &quot;url&quot;: &quot;&lt;URL_BUTTON_URL&gt;&quot;
+            &#125;
+            &lt;!-- Only if using one or more quick-reply buttons --&gt;
+            &quot;buttons&quot;: [
+              &#123;
+                &quot;type&quot;: &quot;quick_reply&quot;,
+                &quot;quick_reply&quot;: &#123;
+                  &quot;id&quot;: &quot;&lt;QUICK_REPLY_BUTTON_ID&gt;&quot;,
+                  &quot;title&quot;: &quot;&lt;QUICK_REPLY_BUTTON_LABEL&gt;&quot;
+                &#125;
+              &#125;,
+              &lt;!-- Additional quick-reply buttons would follow --&gt;
+          &#125;
+        &#125;,
+        &lt;!-- Additional card objects would follow --&gt;
+      ]
+    &#125;
+  &#125;
+&#125;&#039;
+```
+
+## Request parameters
+
+| Placeholder | Description | Example value |
+| ----- | ----- | ----- |
+| `&lt;ACCESS_TOKEN&gt;` 
+
+ *String* | **Required.** 
+
+ Access token. | `EAAJB...` |
+| `&lt;API_VERSION&gt;` 
+
+ *String* | **Optional.** 
+
+ API version. | `v23.0` |
+| `&lt;BUSINESS_PHONE_NUMBER_ID&gt;` 
+
+ *Integer* | **Required.** 
+
+ Business phone number ID. | `106540352242922` |
+| `&lt;CARD_BODY_TEXT&gt;` 
+
+ *String* | **Optional.** 
+
+ Card body text. Max 160 characters, and up to 2 line breaks. | `*Blue Echeveria*\n\nA rosette-shaped succulent with powdery blue leaves, perfect for brightening up any space.` |
+| `&lt;CARD_INDEX&gt;` 
+
+ *Integer* | **Required.** 
+
+ Zero-index card index. Cards will appear left to right in scrollable view, starting from 0\. | `0` |
+| `&lt;HEADER_TYPE&gt;` 
+
+ *String* | **Required.** 
+
+ Header type. Value can be: 
+
+ `image` — Indicates a card image header. 
+
+ `video` — Indicates a card video header. 
+
+ See [Supported media types](https://developers.facebook.com/documentation/business-messaging/whatsapp/business-phone-numbers/media). | `image` |
+| `&lt;MEDIA_ASSET_URL&gt;` 
+
+ *String* | **Required.** 
+
+ Publicly available media asset URL. | `https://www.luckyshrub.com/assets/blue-echeveria.jpeg` |
+| `&lt;MESSAGE_BODY_TEXT&gt;` 
+
+ *String* | **Required.** 
+
+ Main message body text. Maximum 1024 characters. | `Of course! Here are three of our latest arrivals, each under $25:` |
+| `&lt;QUICK_REPLY_BUTTON_ID&gt;` 
+
+ *String* | **Required if using a quick-reply button.** 
+
+ Quick-reply button ID. Maximum 256 characters. | `learn-blue-echeveria` |
+| `&lt;QUICK_REPLY_BUTTON_LABEL&gt;` 
+
+ *String* | **Required if using a quick-reply button.**
+
+ Quick-reply button label text. Maximum 20 characters. | `Learn more` |
+| `&lt;URL_BUTTON_LABEL&gt;` 
+
+ *String* | **Required if using a URL button.** 
+
+ URL button label text. Maximum 20 characters. | `Buy now` |
+| `&lt;URL_BUTTON_URL&gt;` 
+
+ *String* | **Required if using a URL button.** 
+
+ URL to load in the device&#039;s default web browser when tapped by the user. | `https://shop.luckyshrub.com/latest/blue-echeveria` |
+| `&lt;USER_PHONE_NUMBER&gt;` 
+
+ *String* | **Required.** 
+
+ WhatsApp user phone number. | `16505551234` |
+
+## Example requests
+
+### URL buttons example
+
+This example request sends a media carousel message composed of 3 cards, each with an image header, card body text, and a URL button.
+
+```curl
+curl &#039;https://graph.facebook.com/v23.0/106540352242922/messages&#039; \
+-H &#039;Content-Type: application/json&#039; \
+-H &#039;Authorization: Bearer EAAJB...&#039; \
+-d &#039;
+&#123;
+  &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+  &quot;recipient_type&quot;: &quot;individual&quot;,
+  &quot;to&quot;: &quot;16505551234&quot;,
+  &quot;type&quot;: &quot;interactive&quot;,
+  &quot;interactive&quot;: &#123;
+    &quot;type&quot;: &quot;carousel&quot;,
+    &quot;body&quot;: &#123;
+      &quot;text&quot;: &quot;Of course! Here are three of our latest arrivals, each under $25:&quot;
+    &#125;,
+    &quot;action&quot;: &#123;
+      &quot;cards&quot;: [
+        &#123;
+          &quot;card_index&quot;: 0,
+          &quot;type&quot;: &quot;cta_url&quot;,
+          &quot;header&quot;: &#123;
+            &quot;type&quot;: &quot;image&quot;,
+            &quot;image&quot;: &#123;
+              &quot;link&quot;: &quot;https://www.luckyshrub.com/assets/blue-echeveria.jpeg&quot;
+            &#125;
+          &#125;,
+          &quot;body&quot;: &#123;
+            &quot;text&quot;: &quot;*Blue Echeveria*\n\nA rosette-shaped succulent with powdery blue leaves, perfect for brightening up any space.&quot;
+          &#125;,
+          &quot;action&quot;: &#123;
+            &quot;name&quot;: &quot;cta_url&quot;,
+            &quot;parameters&quot;: &#123;
+              &quot;display_text&quot;: &quot;Buy now&quot;,
+              &quot;url&quot;: &quot;https://shop.luckyshrub.com/latest/blue-echeveria&quot;
+            &#125;
+          &#125;
+        &#125;,
+        &#123;
+          &quot;card_index&quot;: 1,
+          &quot;type&quot;: &quot;cta_url&quot;,
+          &quot;header&quot;: &#123;
+            &quot;type&quot;: &quot;image&quot;,
+            &quot;image&quot;: &#123;
+              &quot;link&quot;: &quot;https://www.luckyshrub.com/assets/zebra-haworthia.jpeg&quot;
+            &#125;
+          &#125;,
+          &quot;body&quot;: &#123;
+            &quot;text&quot;: &quot;*Zebra Haworthia*\n\nStriking white stripes on deep green leaves give this compact succulent a bold, modern look.&quot;
+          &#125;,
+          &quot;action&quot;: &#123;
+            &quot;name&quot;: &quot;cta_url&quot;,
+            &quot;parameters&quot;: &#123;
+              &quot;display_text&quot;: &quot;Buy now&quot;,
+              &quot;url&quot;: &quot;https://shop.luckyshrub.com/latest/zebra-haworthia&quot;
+            &#125;
+          &#125;
+        &#125;,
+        &#123;
+          &quot;card_index&quot;: 2,
+          &quot;type&quot;: &quot;cta_url&quot;,
+          &quot;header&quot;: &#123;
+            &quot;type&quot;: &quot;image&quot;,
+            &quot;image&quot;: &#123;
+              &quot;link&quot;: &quot;https://www.luckyshrub.com/assets/panda-plant.jpeg&quot;
+            &#125;
+          &#125;,
+          &quot;body&quot;: &#123;
+            &quot;text&quot;: &quot;*Panda Plant*\n\nSoft, fuzzy leaves with chocolate-brown edges—adorable and easy to care for.&quot;
+          &#125;,
+          &quot;action&quot;: &#123;
+            &quot;name&quot;: &quot;cta_url&quot;,
+            &quot;parameters&quot;: &#123;
+              &quot;display_text&quot;: &quot;Buy now&quot;,
+              &quot;url&quot;: &quot;https://shop.luckyshrub.com/latest/panda-plant&quot;
+            &#125;
+          &#125;
+        &#125;
+      ]
+    &#125;
+  &#125;
+&#125;&#039;
+```
+
+### Quick-reply buttons example
+
+This example request sends a media carousel message composed of 3 cards, each with an image header, card body text, and two quick-reply buttons.
+
+```curl
+curl &#039;https://graph.facebook.com/v23.0/106540352242922/messages&#039; \
+-H &#039;Content-Type: application/json&#039; \
+-H &#039;Authorization: Bearer EAAJB...&#039; \
+-d &#039;
+&#123;
+  &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+  &quot;recipient_type&quot;: &quot;individual&quot;,
+  &quot;to&quot;: &quot;16505551234&quot;,
+  &quot;type&quot;: &quot;interactive&quot;,
+  &quot;interactive&quot;: &#123;
+    &quot;type&quot;: &quot;carousel&quot;,
+    &quot;body&quot;: &#123;
+      &quot;text&quot;: &quot;Of course! Here are three of our latest arrivals, each under $25:&quot;
+    &#125;,
+    &quot;action&quot;: &#123;
+      &quot;cards&quot;: [
+        &#123;
+          &quot;card_index&quot;: 0,
+          &quot;type&quot;: &quot;cta_url&quot;,
+          &quot;header&quot;: &#123;
+            &quot;type&quot;: &quot;image&quot;,
+            &quot;image&quot;: &#123;
+              &quot;link&quot;: &quot;https://www.luckyshrub.com/assets/blue-echeveria.jpeg&quot;
+            &#125;
+          &#125;,
+          &quot;body&quot;: &#123;
+            &quot;text&quot;: &quot;*Blue Echeveria*\n\nA rosette-shaped succulent with powdery blue leaves, perfect for brightening up any space.&quot;
+          &#125;,
+          &quot;action&quot;: &#123;
+            &quot;buttons&quot;: [
+              &#123;
+                &quot;type&quot;: &quot;quick_reply&quot;,
+                &quot;quick_reply&quot;: &#123;
+                  &quot;id&quot;: &quot;learn-blue-echeveria&quot;,
+                  &quot;title&quot;: &quot;Learn more&quot;
+                &#125;
+              &#125;,
+              &#123;
+                &quot;type&quot;: &quot;quick_reply&quot;,
+                &quot;quick_reply&quot;: &#123;
+                  &quot;id&quot;: &quot;fav-blue-echeveria&quot;,
+                  &quot;title&quot;: &quot;Add to favorites&quot;
+                &#125;
+              &#125;
+            ]
+          &#125;
+        &#125;,
+        &#123;
+          &quot;card_index&quot;: 1,
+          &quot;type&quot;: &quot;cta_url&quot;,
+          &quot;header&quot;: &#123;
+            &quot;type&quot;: &quot;image&quot;,
+            &quot;image&quot;: &#123;
+              &quot;link&quot;: &quot;https://www.luckyshrub.com/assets/zebra-haworthia.jpeg&quot;
+            &#125;
+          &#125;,
+          &quot;body&quot;: &#123;
+            &quot;text&quot;: &quot;*Zebra Haworthia*\n\nStriking white stripes on deep green leaves give this compact succulent a bold, modern look.&quot;
+          &#125;,
+          &quot;action&quot;: &#123;
+            &quot;buttons&quot;: [
+              &#123;
+                &quot;type&quot;: &quot;quick_reply&quot;,
+                &quot;quick_reply&quot;: &#123;
+                  &quot;id&quot;: &quot;learn-zebra-haworthia&quot;,
+                  &quot;title&quot;: &quot;Learn more&quot;
+                &#125;
+              &#125;,
+              &#123;
+                &quot;type&quot;: &quot;quick_reply&quot;,
+                &quot;quick_reply&quot;: &#123;
+                  &quot;id&quot;: &quot;fav-zebra-haworthia&quot;,
+                  &quot;title&quot;: &quot;Add to favorites&quot;
+                &#125;
+              &#125;
+            ]
+          &#125;
+        &#125;,
+        &#123;
+          &quot;card_index&quot;: 2,
+          &quot;type&quot;: &quot;cta_url&quot;,
+          &quot;header&quot;: &#123;
+            &quot;type&quot;: &quot;image&quot;,
+            &quot;image&quot;: &#123;
+              &quot;link&quot;: &quot;https://www.luckyshrub.com/assets/panda-plant.jpeg&quot;
+            &#125;
+          &#125;,
+          &quot;body&quot;: &#123;
+            &quot;text&quot;: &quot;*Panda Plant*\n\nSoft, fuzzy leaves with chocolate-brown edges—adorable and easy to care for.&quot;
+          &#125;,
+          &quot;action&quot;: &#123;
+            &quot;buttons&quot;: [
+              &#123;
+                &quot;type&quot;: &quot;quick_reply&quot;,
+                &quot;quick_reply&quot;: &#123;
+                  &quot;id&quot;: &quot;learn-panda-plant&quot;,
+                  &quot;title&quot;: &quot;Learn more&quot;
+                &#125;
+              &#125;,
+              &#123;
+                &quot;type&quot;: &quot;quick_reply&quot;,
+                &quot;quick_reply&quot;: &#123;
+                  &quot;id&quot;: &quot;fav-panda-plant&quot;,
+                  &quot;title&quot;: &quot;Add to favorites&quot;
+                &#125;
+              &#125;
+            ]
+          &#125;
+        &#125;
+      ]
+    &#125;
+  &#125;
+&#125;&#039;
+```
+
+## Example response
+
+```json
+&#123;
+  &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+  &quot;contacts&quot;: [
+    &#123;
+      &quot;input&quot;: &quot;+16505551234&quot;,
+      &quot;wa_id&quot;: &quot;16505551234&quot;
+    &#125;
+  ],
+  &quot;messages&quot;: [
+    &#123;
+      &quot;id&quot;: &quot;wamid.HBgLMTY0NjcwNDM1OTUVAgARGBI1RjQyNUE3NEYxMzAzMzQ5MkEA&quot;
+    &#125;
+  ]
+&#125;
+```
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/business-messaging/whatsapp/llms.txt

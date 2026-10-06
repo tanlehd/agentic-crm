@@ -1,0 +1,146 @@
+# Unsupported messages webhook reference
+
+
+
+This reference describes trigger events and payload contents for the WhatsApp Business account **messages** webhook for unsupported messages.
+
+## Triggers
+
+- A WhatsApp user sends a message type not supported by Cloud API.
+- You use the API to send a message to a number already in use with the API. When the number is already in use, Cloud API sends the webhook to the owner of the recipient number.
+- A WhatsApp user messages a business [onboarded with a WhatsApp Business app phone number](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/onboarding-business-app-users) for the first time. This is especially common when users tap one of the business&#039;s [ads that click to WhatsApp](https://business.whatsapp.com/products/create-ads-that-click-to-whatsapp) and immediately send a message.
+
+## Syntax
+
+```html
+&#123;
+  &quot;object&quot;: &quot;whatsapp_business_account&quot;,
+  &quot;entry&quot;: [
+    &#123;
+      &quot;id&quot;: &quot;&lt;WHATSAPP_BUSINESS_ACCOUNT_ID&gt;&quot;,
+      &quot;changes&quot;: [
+        &#123;
+          &quot;value&quot;: &#123;
+            &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+            &quot;metadata&quot;: &#123;
+              &quot;display_phone_number&quot;: &quot;&lt;BUSINESS_DISPLAY_PHONE_NUMBER&gt;&quot;,
+              &quot;phone_number_id&quot;: &quot;&lt;BUSINESS_PHONE_NUMBER_ID&gt;&quot;
+            &#125;,
+            &quot;contacts&quot;: [
+              &#123;
+                &quot;profile&quot;: &#123;
+                  &quot;name&quot;: &quot;&lt;WHATSAPP_USER_PROFILE_NAME&gt;&quot;
+                &#125;,
+                &quot;wa_id&quot;: &quot;&lt;WHATSAPP_USER_ID&gt;&quot;,
+                &quot;identity_key_hash&quot;: &quot;&lt;IDENTITY_KEY_HASH&gt;&quot; &lt;!-- only included if identity change check enabled --&gt;
+              &#125;
+            ],
+            &quot;messages&quot;: [
+              &#123;
+                &quot;from&quot;: &quot;&lt;WHATSAPP_USER_PHONE_NUMBER&gt;&quot;,
+                &quot;id&quot;: &quot;&lt;WHATSAPP_MESSAGE_ID&gt;&quot;,
+                &quot;timestamp&quot;: &quot;&lt;WEBHOOK_TRIGGER_TIMESTAMP&gt;&quot;,
+                &quot;errors&quot;: [
+                  &#123;
+                    &quot;code&quot;: &lt;ERROR_CODE&gt;,
+                    &quot;title&quot;: &quot;&lt;ERROR_TITLE&gt;&quot;,
+                    &quot;message&quot;: &quot;&lt;ERROR_MESSAGE&gt;&quot;,
+                    &quot;error_data&quot;: &#123;
+                      &quot;details&quot;: &quot;&lt;ERROR_DETAILS&gt;&quot;
+                    &#125;
+                  &#125;
+                ],
+                &quot;type&quot;: &quot;unsupported&quot;,
+                &quot;unsupported&quot;: &#123;
+                  &quot;type&quot;: &quot;&lt;UNSUPPORTED_TYPE&gt;&quot;
+                &#125;
+              &#125;
+            ]
+          &#125;,
+          &quot;field&quot;: &quot;messages&quot;
+        &#125;
+      ]
+    &#125;
+  ]
+&#125;
+```
+
+## Parameters
+
+| Placeholder | Description | Example value |
+| --- | --- | --- |
+| `&lt;BUSINESS_DISPLAY_PHONE_NUMBER&gt;`&lt;br&gt;&lt;br&gt;_String_ | Business display phone number. | `15550783881` |
+| `&lt;BUSINESS_PHONE_NUMBER_ID&gt;`&lt;br&gt;&lt;br&gt;_String_ | Business phone number ID. | `106540352242922` |
+| `&lt;IDENTITY_KEY_HASH&gt;`&lt;br&gt;&lt;br&gt;_String_ | Identity key hash. Only included if you have enabled the [identity change check](https://developers.facebook.com/documentation/business-messaging/whatsapp/business-phone-numbers/phone-numbers) feature. | `DF2lS5v2W6x=` |
+| `&lt;ERROR_CODE&gt;` | The error code. Possible values:&lt;br&gt;&lt;br&gt;- `131051` — Cloud API does not support the message type.&lt;br&gt;- `131060` — The message is currently unavailable. This typically occurs when a WhatsApp user messages a business [onboarded with a WhatsApp Business app phone number](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/onboarding-business-app-users), for the first time. | `131051` |
+| `&lt;ERROR_DETAILS&gt;` | A human-readable description of the error. | `Message type is currently not supported.` |
+| `&lt;ERROR_MESSAGE&gt;` | A human-readable error message. Same as `ERROR_TITLE`. | `Message type unknown` |
+| `&lt;ERROR_TITLE&gt;` | A human-readable error title. Possible values:&lt;br&gt;&lt;br&gt;- `Message type unknown` — Corresponds to error code `131051`.&lt;br&gt;- `This message is currently unavailable.` — Corresponds to error code `131060`. | `Message type unknown` |
+| `&lt;UNSUPPORTED_TYPE&gt;` | Contains the type of message that is unsupported.&lt;br&gt;&lt;br&gt;Values can be:&lt;br&gt;&lt;br&gt;- `button`&lt;br&gt;- `edit`&lt;br&gt;- `errors`&lt;br&gt;- `gif`&lt;br&gt;- `group_invite`&lt;br&gt;- `hsm`&lt;br&gt;- `image`&lt;br&gt;- `interactive`&lt;br&gt;- `keep_in_chat`&lt;br&gt;- `link_preview`&lt;br&gt;- `list`&lt;br&gt;- `location`&lt;br&gt;- `media_placeholder`&lt;br&gt;- `order`&lt;br&gt;- `pin`&lt;br&gt;- `poll_creation`&lt;br&gt;- `poll_update`&lt;br&gt;- `product`&lt;br&gt;- `reaction` | `poll_update` |
+| `&lt;WEBHOOK_TRIGGER_TIMESTAMP&gt;`&lt;br&gt;&lt;br&gt;_String_ | Unix timestamp indicating when the webhook was triggered. | `1739321024` |
+| `&lt;WHATSAPP_BUSINESS_ACCOUNT_ID&gt;`&lt;br&gt;&lt;br&gt;_String_ | WhatsApp Business Account ID. | `102290129340398` |
+| `&lt;WHATSAPP_MESSAGE_ID&gt;`&lt;br&gt;&lt;br&gt;_String_ | WhatsApp message ID. | `wamid.HBgLMTY1MDM4Nzk0MzkVAgASGBQzQUFERjg0NDEzNDdFODU3MUMxMAA=` |
+| `&lt;WHATSAPP_USER_ID&gt;`&lt;br&gt;&lt;br&gt;_String_ | WhatsApp user ID. Note that a WhatsApp user&#039;s ID and phone number may not always match. | `16505551234` |
+| `&lt;WHATSAPP_USER_PHONE_NUMBER&gt;`&lt;br&gt;&lt;br&gt;_String_ | WhatsApp user phone number. This is the same value returned by the API as the `input` value when sending a message to a WhatsApp user. Note that a WhatsApp user&#039;s phone number and ID may not always match. | `+16505551234` |
+| `&lt;WHATSAPP_USER_PROFILE_NAME&gt;`&lt;br&gt;&lt;br&gt;_String_ | WhatsApp user&#039;s name as it appears in their profile in the WhatsApp client. | `Sheena Nelson` |
+
+## Example
+
+The following example shows a webhook triggered by a WhatsApp user sending an unsupported message type (error code `131051`). For unavailable messages (error code `131060`), the payload structure is the same but the `errors` object values differ — see the [`ERROR_CODE`](#parameters) parameter for details.
+
+```json
+&#123;
+  &quot;object&quot;: &quot;whatsapp_business_account&quot;,
+  &quot;entry&quot;: [
+    &#123;
+      &quot;id&quot;: &quot;102290129340398&quot;,
+      &quot;changes&quot;: [
+        &#123;
+          &quot;value&quot;: &#123;
+            &quot;messaging_product&quot;: &quot;whatsapp&quot;,
+            &quot;metadata&quot;: &#123;
+              &quot;display_phone_number&quot;: &quot;15550783881&quot;,
+              &quot;phone_number_id&quot;: &quot;106540352242922&quot;
+            &#125;,
+            &quot;contacts&quot;: [
+              &#123;
+                &quot;profile&quot;: &#123;
+                  &quot;name&quot;: &quot;Sheena Nelson&quot;
+                &#125;,
+                &quot;wa_id&quot;: &quot;16505551234&quot;
+              &#125;
+            ],
+            &quot;messages&quot;: [
+              &#123;
+                &quot;from&quot;: &quot;16505551234&quot;,
+                &quot;id&quot;: &quot;wamid.HBgLMTY1MDM4Nzk0MzkVAgASGBQzQUFERjg0NDEzNDdFODU3MUMxMAA=&quot;,
+                &quot;timestamp&quot;: &quot;1750090702&quot;,
+                &quot;errors&quot;: [
+                  &#123;
+                    &quot;code&quot;: 131051,
+                    &quot;title&quot;: &quot;Message type unknown&quot;,
+                    &quot;message&quot;: &quot;Message type unknown&quot;,
+                    &quot;error_data&quot;: &#123;
+                      &quot;details&quot;: &quot;Message type is currently not supported.&quot;
+                    &#125;
+                  &#125;
+                ],
+                &quot;type&quot;: &quot;unsupported&quot;,
+                &quot;unsupported&quot;: &#123;
+                  &quot;type&quot;: &quot;edit&quot;
+                &#125;
+              &#125;
+            ]
+          &#125;,
+          &quot;field&quot;: &quot;messages&quot;
+        &#125;
+      ]
+    &#125;
+  ]
+&#125;
+```
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/business-messaging/whatsapp/llms.txt

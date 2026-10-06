@@ -1,5 +1,6 @@
 # MOD-11 — Audit & Operations
 
+> Kiến trúc đích microservice theo ADR-017: [Operations & Audit](../services/operations.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.
 Status: Ready for implementation M1–M2. Requirements: REQ-05, REQ-08, REQ-12.
 
 ## Mục tiêu và phạm vi

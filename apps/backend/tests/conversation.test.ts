@@ -19,3 +19,14 @@ describe('Conversation wire validation',()=>{
     expect(validate({...base,status:'unknown'})).toBe(true);expect(validate({...base,status:'delivered'})).toBe(false);
   });
 });
+
+describe('SRC-026 envelope contract',()=>{
+  it('keeps mock provenance, nullable external receipt and strict null-only content',()=>{
+    const validate=ajv.compile({$ref:`${schema.$id}#/definitions/conversation-message-envelope-v2`});
+    const base={id:'10000000-0000-4000-8000-000000000001',conversation_id:'10000000-0000-4000-8000-000000000002',connection_id:'10000000-0000-4000-8000-000000000003',schema_version:2,platform:'mock_messenger',message_type:'text',direction:'outbound',status:'unknown',external_msg_id:null,outbound_intent_id:'10000000-0000-4000-8000-000000000004',occurred_at:'2026-10-06T01:00:00Z',received_at:'2026-10-06T01:00:00Z'};
+    expect(validate(base)).toBe(true);
+    expect(validate({...base,text:'Synthetic',reply_to:null,attachment:null})).toBe(true);
+    expect(validate({...base,external_msg_id:'opaque/id'})).toBe(true);
+    for(const invalid of [{platform:'messenger'},{schema_version:3},{message_type:'template'},{attachment:{html:'<script/>'}},{reply_to:{id:base.id}},{provider_message_id:'duplicate-source'},{text:null}])expect(validate({...base,...invalid})).toBe(false);
+  });
+});

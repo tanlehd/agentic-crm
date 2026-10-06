@@ -2,7 +2,7 @@
 
 Nguồn chuẩn trạng thái công việc. Updated: 2026-10-06. Thiết kế có thể Ready nhưng source task vẫn TODO; hai trạng thái không đồng nghĩa.
 
-**Hiện tại:** SRC-001…025 DONE (25/25); M1 và M2 local/mock release gates PASS. Preview localhost:8080 có OIDC, Identity Admin/CRM UI, standard/custom CRUD, Lead qualification, metadata/form/view và association. SRC-014/015 Conversation và mock intake, SRC-016 inbox UI DONE; SRC-017 routing/assignment/takeover DONE; SRC-018 private mock runtime DONE; SRC-019 durable Workflow DONE; SRC-020 DONE, Codex 2026-10-05; SRC-021 DONE, Codex 2026-10-05; SRC-022 DONE, Codex 2026-10-05; SRC-023 DONE, Codex 2026-10-05; SRC-024 DONE, Codex 2026-10-06; SRC-025 DONE, Codex 2026-10-06; không task active. [Checkpoint](checkpoint.md) · [Execution log](log.md) · [Build plan](../planning/build-plan.md).
+**Hiện tại:** SRC-001…031 DONE (M1–M2:25; M3 foundation:2; independent ingress:1; signed Messenger capture:1; contact cache compatibility:1; Facebook configuration:1); M1 và M2 local/mock release gates PASS. Preview localhost:8080 có OIDC, Identity Admin/CRM UI, standard/custom CRUD, Lead qualification, metadata/form/view và association. SRC-014/015 Conversation và mock intake, SRC-016 inbox UI DONE; SRC-017 routing/assignment/takeover DONE; SRC-018 private mock runtime DONE; SRC-019 durable Workflow DONE; SRC-020 DONE, Codex 2026-10-05; SRC-021 DONE, Codex 2026-10-05; SRC-022 DONE, Codex 2026-10-05; SRC-023 DONE, Codex 2026-10-05; SRC-024 DONE, Codex 2026-10-06; SRC-025 DONE, Codex 2026-10-06; PLAN-005/006A DONE (architecture/doc-only); SRC-028 DONE; SRC-029 DONE; PLAN-006B DONE (design-only); PLAN-006C/006D DONE (scoped design); SRC-030/031 DONE; không task active, M3 local completion requested; sandbox unavailable. PLAN-002/003/004A/004B DONE; PLAN-004 remaining TODO. [Checkpoint](checkpoint.md) · [Execution log](log.md) · [Build plan](../planning/build-plan.md).
 
 Owner `—` nghĩa chưa claim. Evidence `—` nghĩa chưa kiểm thử/hoàn thành, không phải pass. Chỉ promote TODO→READY khi tất cả dependency DONE và thiết kế đúng phạm vi Ready. Một task active tại một thời điểm theo mặc định.
 
@@ -68,9 +68,18 @@ Conversation port/domain đi trước intake để giải dependency; Workflow t
 
 ## Backlog sau M2
 
+### Chuẩn bị thiết kế M3
+
+| ID | Deliverable | Deps | Status | Owner | Evidence / gate |
+|---|---|---|---|---|---|
+| PLAN-002 | Định hướng AI Agent provider, CRM Connector, message đa nền tảng; snapshot Meta khởi đầu và kế hoạch design gate | SRC-025 | DONE | Codex 2026-10-06 | [Evidence](details/PLAN-002.md); doc-only, không triển khai provider |
+| PLAN-003 | Hoàn thiện provider dossier và capability/gap matrix Meta | PLAN-002 | DONE | Codex 2026-10-06 | [Evidence](details/PLAN-003.md);56 source snapshots, capability/gap matrix, sandbox NOT_RUN |
+| PLAN-004 | Exact M3 contracts/data/UX/AC và source backlog (phần còn lại) | PLAN-003 | TODO | unassigned | Scope thiết kế theo [M3 plan](../planning/m3-provider-plan.md); live routing/tools giữ Draft khi G-04/05/08 chưa giải quyết |
+
+
 | Epic | Status | Gate trước khi chia task source |
 |---|---|---|
-| M3 — Meta thật + AI runtime thật | TODO / design gate | Verify provider docs/permissions, outbound reconciliation, secrets; đặc tả connector/runtime production Ready |
+| M3 — AI Agent providers + CRM Connectors/routing + rich messages | TODO / design gate | PLAN-002/003/004A/004B DONE, SRC-026/027 DONE; PLAN-004 remaining TODO; [M3 plan](../planning/m3-provider-plan.md); production contract/sandbox chưa Ready |
 | M4 — Deal/Customer/Appointment/Google Ads/Ticket | TODO / design gate | Chi tiết module Draft, SLA/calendar, conversion/reopen và migration |
 | M5 — Builders/custom reports/templates | TODO / design gate | Graph/query limits, schema version migration, report ACL/grain, UX authoring |
 
@@ -83,3 +92,81 @@ Mỗi DONE trỏ session log hoặc task detail có command/result/artifact, doc
 ## Defect regression
 
 DEF-001 DONE (Codex 2026-10-04): concurrent session touch gây AUTH_SESSION_BUSY; bounded wait + live reread/CAS đã qua unit và real Chrome M1. CHG-20261004-06; [evidence SRC-013](details/SRC-013.md). Không tính thêm vào 25 source tasks.
+
+## M3 foundation
+
+PLAN-004 được tách gate nhỏ theo CHG-20261006-05; phần còn lại không được tính DONE.
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-004A | Exact legacy message envelope projection | PLAN-003 | DONE | Codex 2026-10-06 | [Design](../contracts/message-envelope-v2.md) |
+
+Source backlog: SRC-026 legacy projection → thiết kế rich persistence/renderer và connector ports thuộc PLAN-004 → chia source tasks sau khi Ready. Provider config/binding, Messenger transport, WA routing và hosted tools giữ design gate riêng, không gom vào SRC-026.
+
+| ID | Deliverable | Deps | Status | Owner | Gate / acceptance cụ thể | Evidence |
+|---|---|---|---|---|---|---|
+| SRC-026 | Legacy text message envelope v2 API | SRC-025 | DONE | Codex 2026-10-06 | PLAN-004A DONE; AC-05/M3 text foundation, tenant/field ACL, history/cursor compatibility | details/SRC-026.md |
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-004B | Rich content storage và passive renderer | SRC-026 | DONE | Codex 2026-10-06 | [Contract](../contracts/rich-messages.md); không bao gồm remote media resolver |
+
+| ID | Deliverable | Deps | Status | Owner | Gate / acceptance cụ thể | Evidence |
+|---|---|---|---|---|---|---|
+| SRC-027 | Normalized rich mock storage/API/passive inbox | SRC-026 | DONE | Codex 2026-10-06 | PLAN-004B DONE; rich roundtrip/ACL/Chatflow isolation/schema18 | details/SRC-027.md |
+
+## Enterprise microservices direction
+
+| ID | Deliverable | Deps | Status | Owner | Evidence / gate |
+|---|---|---|---|---|---|
+| PLAN-005 | Service boundaries, per-service scope/architecture/data, contracts và extraction roadmap | SRC-027 | DONE | Codex 2026-10-06 | [Evidence](details/PLAN-005.md); doc-only, không claim services đã deploy |
+
+| ID | Deliverable | Deps | Status | Owner | Evidence / gate |
+|---|---|---|---|---|---|
+| PLAN-006 | Exact Connector→CRM/Chat contracts, auth/revocation/dispatch fences, broker và data extraction specification (remaining) | PLAN-005 | TODO | unassigned | Design task theo [extraction roadmap](../planning/microservices-migration.md); full domain extraction vẫn TODO |
+
+| ID | Deliverable | Deps | Status | Owner | Evidence / gate |
+|---|---|---|---|---|---|
+| PLAN-006A | Exact independent Connector durable HTTP ingress bridge | PLAN-005 | DONE | Codex 2026-10-06 | [Contract](../contracts/connector-bridge.md); scoped prerequisite, remaining006 not DONE |
+
+| ID | Deliverable | Deps | Status | Owner | Gate | Evidence |
+|---|---|---|---|---|---|---|
+| SRC-028 | Independent Connector durable HTTP ingress | SRC-027; PLAN-006A | DONE | Codex 2026-10-06 | PLAN-006A DONE; own DB, HTTP binding, retry/fencing và rich roundtrip | details/SRC-028.md |
+
+## M3 local completion — S-20261006-11
+
+User yêu cầu hoàn thiện M3, chọn hoàn thiện/kiểm thử local trước vì chưa có Meta sandbox. Không bỏ các AC provider thật; release local và sandbox ghi riêng.
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-004C | Exact Messenger signed durable webhook capture, Page binding, normalization and quarantine | SRC-028; PLAN-003 | DONE | Codex 2026-10-06 | Contract trước source; không forward real events qua mock bridge |
+| SRC-029 | Messenger signed ingress, own schema2, atomic batch/dedup and local HTTP/MySQL tests | SRC-028; PLAN-004C | DONE | Codex 2026-10-06 | [Evidence](details/SRC-029.md);185 MySQL,9 canonical gates, image/restart PASS |
+
+Remaining M3 local work: versioned Chat ingestion and dispatch/control fences (PLAN-006), provider catalog/lifecycle and capability UI, authenticated media, local provider/control fault simulation and release gate. Live eligibility/WA control and mutable hosted tools remain blocked by G-04/05/08 and unavailable sandbox. These are not completed by SRC-029.
+
+## Contact resolution responsibility design
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-006B | Connector enrichment/cache, CRM canonical identity resolution, required crm_contact_id in Chat message contracts | PLAN-005; SRC-029 | DONE | Codex 2026-10-06 | [Evidence](details/PLAN-006B.md); doc-only, not full PLAN-006/source readiness |
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-006C | Cache-aside DB lookup for Chat/Connector; create Contact+identity only on confirmed mapping miss | PLAN-006B | DONE | Codex 2026-10-06 | [Evidence](details/PLAN-006C.md); design only |
+
+## Cache-aside implementation
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-006D | Exact scoped cache-aside compatibility API and immutable mapping gate | PLAN-006C; SRC-029 | DONE | Codex 2026-10-06 | Scope existing mock connections, no domain extraction/provider relabel |
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| SRC-030 | CRM lookup/resolve + Connector/Chat cache-aside + contact-bound message APIs | PLAN-006D; SRC-029 | DONE | Codex 2026-10-06 | [Evidence](details/SRC-030.md);188 MySQL,89 unit,9 gates and image smoke PASS |
+
+## Facebook configuration and unified channel views
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-004D | Exact OAuth/Page credential catalog and conversation channel contract | SRC-030; PLAN-003 | DONE | Codex 2026-10-06 | [Contract](../contracts/facebook-configuration.md) |
+| SRC-031 | Facebook OAuth/Page admin, encrypted credentials and channel-aware inbox | PLAN-004D; SRC-030 | DONE | Codex 2026-10-06 | [Evidence](details/SRC-031.md);196 MySQL,96 unit,9 gates, browser/gateway PASS; live Meta NOT_RUN |

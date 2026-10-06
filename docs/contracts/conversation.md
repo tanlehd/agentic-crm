@@ -1,5 +1,6 @@
 # Conversation text M2 — SRC-014
 
+> Microservices target ADR-017 dùng [cross-service rules](service-boundaries.md). APIs/UoW trong tài liệu này là baseline implementation hiện tại; exact remote contracts và sagas cần PLAN-006 trước extraction.
 Status: Ready. Bổ sung tương thích cho [API](api.md), [module](../modules/conversation.md). Các route dưới `/api/v1`, session cookie, X-Tenant-Id; mutation cần Origin/CSRF và Idempotency-Key. Không public create Conversation hoặc mock inbound ở task này.
 
 - GET `/conversations`: state=open|pending|closed, owner/team UUID hoặc unassigned, limit 1–100 (default 50), cursor signed ràng buộc account/tenant/filter; scoped conversation.read.
@@ -23,3 +24,10 @@ Detail/list add optional `latest_message` (id/status/direction/received_at/text?
 GET `/conversations/{id}/notes?limit=50&cursor=<UUID>` returns `{data:[{id,created_at,body?}],next_cursor,meta}`. Requires Conversation read; only non-archived Activity kind note linked to this Conversation and independently readable by caller are returned. Body omitted when activity.body read denied. Ascending note ID cursor, limit 1–100; UI sorts loaded notes chronologically and polls loaded pages. No new persisted schema or changes to existing note creation.
 
 SRC-017 adds optional allowed_actions entries assign/takeover according to current seat/scope; ownership UI/API follows [routing contract](routing.md). Existing reply/note/update behavior and message schemas are unchanged.
+
+## M3 extension (Draft)
+
+[Platform message envelope](messaging-platforms.md) định hướng fields/rich rendering theo CHG-20261006-03. Contract text M2 này và generated schemas giữ nguyên cho đến khi có compatibility/version/migration gate. Provider-hosted messages và thread control cần contract riêng, không giả thành mock outbound receipt.
+
+
+GET message-envelopes bổ sung read-only theo [envelope v2](message-envelope-v2.md); routes/DTO v1 messages không đổi.

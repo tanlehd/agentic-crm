@@ -1,0 +1,108 @@
+# Generic template
+
+
+The generic template is a simple structured message that includes a title, subtitle, image, and up to three buttons. You may also specify a `default_action` object that sets a URL that is opened in the Messenger webview when the template is tapped.
+
+## Carousel
+
+The Messenger Platform supports sending a horizontally scrollable carousel of generic templates. To create a scrollable carousel, include up to 10 generic templates in the `elements` array of the `payload`.
+
+## Request URI
+
+```curl
+https://graph.facebook.com/v25.0/me/messages?access_token=&#123;PAGE_ACCESS_TOKEN&#125;
+```
+
+
+## Payload properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `template_type` | String | Must be `generic`. |
+| `elements` | Array | An array of `element` objects that describe each item. Maximum of 10 elements. |
+| `sharable` | Boolean | *Optional.* Set to `true` to enable the native share button in Messenger for the template message. Defaults to `false`. |
+
+### `element` properties
+
+At least one property must be set in addition to `title`.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `title` | String | The title to display in the template. 80 character limit. |
+| `subtitle` | String | *Optional.* The subtitle to display in the template. 80 character limit. |
+| `image_url` | String | *Optional.* The URL of the image to display in the template. |
+| `default_action` | Object | *Optional.* The default action executed when the template is tapped. Accepts the same properties as [URL button](https://developers.facebook.com/documentation/business-messaging/messenger-platform/send-messages/buttons/url), except `title`. |
+| `buttons` | Array | *Optional.* An array of [buttons](https://developers.facebook.com/documentation/business-messaging/messenger-platform/send-messages/buttons) to append to the template. Maximum of 3 buttons per element. |
+
+## Sample request
+
+```curl
+curl -X POST -H &quot;Content-Type: application/json&quot; -d &#039;&#123;
+  &quot;recipient&quot;:&#123;
+    &quot;id&quot;:&quot;&lt;PSID&gt;&quot;
+  &#125;,
+  &quot;message&quot;:&#123;
+    &quot;attachment&quot;:&#123;
+      &quot;type&quot;:&quot;template&quot;,
+      &quot;payload&quot;:&#123;
+        &quot;template_type&quot;:&quot;generic&quot;,
+        &quot;elements&quot;:[
+           &#123;
+            &quot;title&quot;:&quot;Welcome!&quot;,
+            &quot;image_url&quot;:&quot;https://raw.githubusercontent.com/fbsamples/original-coast-clothing/main/public/styles/male-work.jpg&quot;,
+            &quot;subtitle&quot;:&quot;We have the right hat for everyone.&quot;,
+            &quot;default_action&quot;: &#123;
+              &quot;type&quot;: &quot;web_url&quot;,
+              &quot;url&quot;: &quot;https://www.originalcoastclothing.com/&quot;,
+              &quot;webview_height_ratio&quot;: &quot;tall&quot;
+            &#125;,
+            &quot;buttons&quot;:[
+              &#123;
+                &quot;type&quot;:&quot;web_url&quot;,
+                &quot;url&quot;:&quot;https://www.originalcoastclothing.com/&quot;,
+                &quot;title&quot;:&quot;View Website&quot;
+              &#125;,&#123;
+                &quot;type&quot;:&quot;postback&quot;,
+                &quot;title&quot;:&quot;Start Chatting&quot;,
+                &quot;payload&quot;:&quot;DEVELOPER_DEFINED_PAYLOAD&quot;
+              &#125;
+            ]
+          &#125;
+        ]
+      &#125;
+    &#125;
+  &#125;
+&#125;&#039; &quot;https://graph.facebook.com/v25.0/me/messages?access_token=&lt;PAGE_ACCESS_TOKEN&gt;&quot;
+```
+
+
+## Sample response
+
+```js
+&#123;
+  &quot;recipient_id&quot;: &quot;1254477777772919&quot;,
+  &quot;message_id&quot;: &quot;AG5Hz2Uq7tuwNEhXfYYKj8mJEM_QPpz5jdCK48PnKAjSdjfipqxqMvK8ma6AC8fplwlqLP_5cgXIbu7I3rBN0P&quot;
+&#125;
+```
+
+
+## Best practices
+
+- Use for messages with a consistent information hierarchy (for example, product or article previews, weather forecasts).
+- Use the correct aspect ratio for your image. Messenger scales or crops photos in the generic template that are not 1.91:1.
+- Do not use if your message does not have structured information or require hierarchy.
+- Do not use if you need people to be able to zoom your image to full screen.
+- Do not use GIFs in the template if you intend for them to be animated. GIFs are supported but are not animated.
+
+### Carousel best practices
+
+- Use a carousel when there is a priority order to your content — the first item is probably the most interesting.
+- Strive for consistency. If one bubble has a photo, include a photo in all of them.
+- Minimize the number of generic templates in your carousel. Too many makes it hard for people to remember all the options.
+- Do not mix types of content. If you include an article next to a list of products, your experience could cause confusion.
+- Do not use a carousel when it is important that people see everything in the list. They may not scroll to the end.
+
+
+---
+
+Full documentation index for this product: https://developers.facebook.com/documentation/business-messaging/messenger-platform/llms.txt

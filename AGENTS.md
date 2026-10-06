@@ -3,7 +3,7 @@
 ## Trước mỗi phiên
 
 1. Đọc [README](README.md), [build plan](docs/planning/build-plan.md), [task tracker](docs/tracking/tasks.md) và [checkpoint](docs/tracking/checkpoint.md).
-2. Đọc module design, data dictionary, contract và acceptance scenario của task được chọn. Kiểm tra thay đổi hiện có trong workspace; không ghi đè công việc của người khác.
+2. Đọc module design, service descriptor trong docs/services, data dictionary/ownership, contract và acceptance scenario của task được chọn. Kiểm tra thay đổi hiện có trong workspace; không ghi đè công việc của người khác.
 3. Chỉ bắt đầu task có dependency DONE và thiết kế đúng phạm vi Ready. Nếu có discrepancy, tạo change entry và sửa tài liệu liên quan trước khi code phần phụ thuộc.
 4. Claim task bằng owner + ngày + trạng thái IN_PROGRESS. Mặc định một task triển khai đang active; không tự khởi tạo agent song song hoặc lịch chạy nền.
 
@@ -13,7 +13,7 @@
 - Không biến mock thành production integration hoặc mở rộng module Draft một cách ngầm định.
 - Giữ Next.js/NestJS/TypeScript, MySQL, tenant isolation, Human/AI ownership và versioned durable workflows theo thiết kế.
 - Không dùng schema auto-sync; migration đã dùng không sửa lịch sử. Thay đổi schema/event/API cần compatibility và migration note.
-- Không truy cập bảng module khác trực tiếp; transaction xuyên module phải qua unit-of-work/application ports đã định nghĩa.
+- Kiến trúc đích là enterprise microservices theo ADR-017; source hiện tại vẫn monolith tới khi extraction task DONE. Trong baseline monolith, transaction xuyên module qua unit-of-work/application ports đã định nghĩa. Giữa services chỉ dùng versioned API/events/saga; không shared UoW, SQL/FK xuyên database hoặc import domain implementation của service khác.
 - Không ghi secret, token, transcript thật hoặc dữ liệu bệnh nhân vào code, log, tracker hoặc test evidence.
 - Docker local không được trỏ dữ liệu production. Không chạy reset database/xóa volume như thao tác khởi động thường ngày.
 

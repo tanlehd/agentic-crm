@@ -6268,6 +6268,33 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "messenger",
+                "mock_messenger"
+              ]
+            }
+          },
+          {
+            "name": "channel_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 255
+            }
           }
         ],
         "responses": {
@@ -6692,6 +6719,284 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/conversation-send-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/conversations/{id}/message-envelopes": {
+      "get": {
+        "operationId": "conversation-get-conversations-id-message-envelopes",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized Conversation result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/conversation-envelope-timeline"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/conversations/{id}/message-envelopes-v3": {
+      "get": {
+        "operationId": "conversation-get-conversations-id-message-envelopes-v3",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized Conversation result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/conversation-rich-timeline"
                 }
               }
             }
@@ -7780,6 +8085,344 @@
         }
       }
     },
+    "/api/v1/integrations/mock-messenger/binding": {
+      "get": {
+        "operationId": "intake-binding",
+        "security": [
+          {
+            "connectionBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Connection-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authenticated immutable tenant binding",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/intake-binding"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/connector/v1/deliveries": {
+      "post": {
+        "operationId": "connector-ack",
+        "security": [
+          {
+            "connectionBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Connection-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/intake-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Independent durable Connector ingress; sanitized errors follow connector-bridge contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connector-ack"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized Connector failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connector-error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized Connector failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connector-error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized Connector failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connector-error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized Connector failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connector-error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized Connector failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connector-error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized Connector failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connector-error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized Connector failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connector-error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/connector/v1/deliveries/{id}": {
+      "get": {
+        "operationId": "connector-response",
+        "security": [
+          {
+            "connectionBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Connection-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Independent durable Connector ingress; sanitized errors follow connector-bridge contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connector-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized Connector failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connector-error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized Connector failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connector-error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized Connector failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connector-error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized Connector failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connector-error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized Connector failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connector-error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized Connector failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connector-error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized Connector failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connector-error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/records/{id}/assignment": {
       "post": {
         "operationId": "routing-assignment",
@@ -8359,6 +9002,185 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/connector/v1/messenger/{appId}/webhook": {
+      "get": {
+        "operationId": "messenger-challenge",
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]{1,32}$"
+            }
+          },
+          {
+            "name": "hub.mode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "hub.verify_token",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "hub.challenge",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exact verification challenge",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized webhook error; parser failures may use the standard JSON error envelope",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized webhook error; parser failures may use the standard JSON error envelope",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized webhook error; parser failures may use the standard JSON error envelope",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized webhook error; parser failures may use the standard JSON error envelope",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "messenger-capture",
+        "description": "Optional signed capture only. HMAC SHA256 over exact raw uncompressed bytes <=64KiB; max100 total events. Every Page must be explicitly bound. No Chat delivery implied.",
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]{1,32}$"
+            }
+          },
+          {
+            "name": "X-Hub-Signature-256",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^sha256=[a-fA-F0-9]{64}$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/messenger-webhook"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Atomic durable capture committed",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "const": "EVENT_RECEIVED"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized webhook error; parser failures may use the standard JSON error envelope",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized webhook error; parser failures may use the standard JSON error envelope",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized webhook error; parser failures may use the standard JSON error envelope",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized webhook error; parser failures may use the standard JSON error envelope",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -11970,6 +12792,987 @@
           }
         }
       }
+    },
+    "/api/v1/integrations/contact-identities/lookup": {
+      "post": {
+        "operationId": "contact-lookup-request",
+        "security": [
+          {
+            "connectionBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Connection-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/contact-lookup-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized contact-bound result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/contact-lookup-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/integrations/contact-identities/resolve": {
+      "post": {
+        "operationId": "contact-resolve-request",
+        "security": [
+          {
+            "connectionBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Connection-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/contact-resolve-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized contact-bound result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/contact-resolve-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/integrations/mock-messenger/deliveries-v2": {
+      "post": {
+        "operationId": "contact-delivery-request",
+        "security": [
+          {
+            "connectionBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Connection-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/contact-delivery-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Authorized contact-bound result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/intake-ack"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/conversations/{id}/messages-v2": {
+      "post": {
+        "operationId": "contact-bound-send",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/contact-send-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Authorized Conversation result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/conversation-send-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/channels/facebook/pages": {
+      "get": {
+        "operationId": "admin-channels-facebook-pages",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized channel projection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/facebook-page-list"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/conversation-channels": {
+      "get": {
+        "operationId": "conversation-channels",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized channel projection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/conversation-channel-options"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/channels/facebook/connect": {
+      "post": {
+        "operationId": "facebook-connect",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/facebook-connect-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "One-use Facebook authorization URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/facebook-connect-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/channels/facebook/callback": {
+      "get": {
+        "operationId": "facebook-callback",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "state",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "error",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "error_reason",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "error_description",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "303": {
+            "description": "Fixed UI redirect with sanitized result; never tokens or provider error"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -15104,6 +16907,22 @@
                 "type": "null"
               }
             ]
+          },
+          "channel": {
+            "enum": [
+              "mock_messenger",
+              "messenger"
+            ]
+          },
+          "channel_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "page_id": {
+            "type": "string"
+          },
+          "channel_name": {
+            "type": "string"
           }
         },
         "required": [
@@ -15560,6 +17379,524 @@
           "meta"
         ]
       },
+      "conversation-message-envelope-v2": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "conversation_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "direction": {
+            "enum": [
+              "inbound",
+              "outbound"
+            ]
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000,
+            "pattern": "\\S"
+          },
+          "status": {
+            "enum": [
+              "received",
+              "queued",
+              "sending",
+              "sent",
+              "failed",
+              "unknown",
+              "cancelled"
+            ]
+          },
+          "outbound_intent_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "received_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "external_msg_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "schema_version": {
+            "const": 2,
+            "type": "integer"
+          },
+          "connection_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "platform": {
+            "const": "mock_messenger",
+            "type": "string"
+          },
+          "message_type": {
+            "const": "text",
+            "type": "string"
+          },
+          "reply_to": {
+            "type": "null"
+          },
+          "attachment": {
+            "type": "null"
+          }
+        },
+        "required": [
+          "id",
+          "conversation_id",
+          "direction",
+          "status",
+          "external_msg_id",
+          "outbound_intent_id",
+          "occurred_at",
+          "received_at",
+          "schema_version",
+          "connection_id",
+          "platform",
+          "message_type"
+        ]
+      },
+      "conversation-envelope-timeline": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/conversation-message-envelope-v2"
+            }
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "next_cursor",
+          "meta"
+        ]
+      },
+      "conversation-message-envelope-v3": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "conversation_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "direction": {
+            "enum": [
+              "inbound",
+              "outbound"
+            ]
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000,
+            "pattern": "\\S"
+          },
+          "status": {
+            "enum": [
+              "received",
+              "queued",
+              "sending",
+              "sent",
+              "failed",
+              "unknown",
+              "cancelled"
+            ]
+          },
+          "outbound_intent_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "received_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "external_msg_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "schema_version": {
+            "type": "integer",
+            "const": 3
+          },
+          "connection_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "platform": {
+            "const": "mock_messenger",
+            "type": "string"
+          },
+          "message_type": {
+            "enum": [
+              "text",
+              "media",
+              "template",
+              "unsupported"
+            ]
+          },
+          "reply_to": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "external_msg_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "pattern": "\\S"
+                  },
+                  "internal_message_id": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "external_msg_id",
+                  "internal_message_id"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "attachment": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "version": {
+                    "type": "integer",
+                    "const": 1
+                  },
+                  "kind": {
+                    "const": "media"
+                  },
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "media_type": {
+                          "enum": [
+                            "image",
+                            "audio",
+                            "video",
+                            "file"
+                          ]
+                        },
+                        "external_media_id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 255,
+                          "pattern": "\\S"
+                        },
+                        "name": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 255,
+                              "pattern": "\\S"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "media_type",
+                        "external_media_id",
+                        "name"
+                      ]
+                    },
+                    "minItems": 1,
+                    "maxItems": 10
+                  }
+                },
+                "required": [
+                  "version",
+                  "kind",
+                  "items"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "version": {
+                    "type": "integer",
+                    "const": 1
+                  },
+                  "kind": {
+                    "const": "gallery"
+                  },
+                  "cards": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "title": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 80,
+                          "pattern": "\\S"
+                        },
+                        "subtitle": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 80,
+                              "pattern": "\\S"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "buttons": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "label": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 20,
+                                "pattern": "\\S"
+                              }
+                            },
+                            "required": [
+                              "label"
+                            ]
+                          },
+                          "minItems": 0,
+                          "maxItems": 3
+                        }
+                      },
+                      "required": [
+                        "title",
+                        "subtitle",
+                        "buttons"
+                      ]
+                    },
+                    "minItems": 1,
+                    "maxItems": 10
+                  }
+                },
+                "required": [
+                  "version",
+                  "kind",
+                  "cards"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "version": {
+                    "type": "integer",
+                    "const": 1
+                  },
+                  "kind": {
+                    "const": "csat"
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80,
+                    "pattern": "\\S"
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 400,
+                    "pattern": "\\S"
+                  }
+                },
+                "required": [
+                  "version",
+                  "kind",
+                  "title",
+                  "prompt"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "version": {
+                    "type": "integer",
+                    "const": 1
+                  },
+                  "kind": {
+                    "const": "unsupported"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120,
+                    "pattern": "\\S"
+                  }
+                },
+                "required": [
+                  "version",
+                  "kind",
+                  "label"
+                ]
+              }
+            ]
+          },
+          "text_source": {
+            "enum": [
+              "original",
+              "extracted",
+              "preview"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "conversation_id",
+          "direction",
+          "status",
+          "external_msg_id",
+          "outbound_intent_id",
+          "occurred_at",
+          "received_at",
+          "schema_version",
+          "connection_id",
+          "platform",
+          "message_type",
+          "text_source"
+        ]
+      },
+      "conversation-rich-timeline": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/conversation-message-envelope-v3"
+            }
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "next_cursor",
+          "meta"
+        ]
+      },
       "intake-request": {
         "type": "object",
         "additionalProperties": false,
@@ -15594,22 +17931,512 @@
             "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
           },
           "message": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "type": {
-                "const": "text"
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "type": {
+                    "const": "text"
+                  },
+                  "text": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4000,
+                    "pattern": "\\S"
+                  }
+                },
+                "required": [
+                  "type",
+                  "text"
+                ]
               },
-              "text": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 4000,
-                "pattern": "\\S"
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "type": {
+                    "const": "rich"
+                  },
+                  "content": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "version": {
+                            "type": "integer",
+                            "const": 1
+                          },
+                          "message_type": {
+                            "const": "text"
+                          },
+                          "text": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4000,
+                            "pattern": "\\S"
+                          },
+                          "reply_to": {
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "external_msg_id": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 255,
+                                    "pattern": "\\S"
+                                  }
+                                },
+                                "required": [
+                                  "external_msg_id"
+                                ]
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "attachment": {
+                            "type": "null"
+                          }
+                        },
+                        "required": [
+                          "version",
+                          "message_type",
+                          "text",
+                          "reply_to",
+                          "attachment"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "version": {
+                            "type": "integer",
+                            "const": 1
+                          },
+                          "message_type": {
+                            "const": "media"
+                          },
+                          "text": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 4000,
+                                "pattern": "\\S"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "reply_to": {
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "external_msg_id": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 255,
+                                    "pattern": "\\S"
+                                  }
+                                },
+                                "required": [
+                                  "external_msg_id"
+                                ]
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "attachment": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "version": {
+                                "type": "integer",
+                                "const": 1
+                              },
+                              "kind": {
+                                "const": "media"
+                              },
+                              "items": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "media_type": {
+                                      "enum": [
+                                        "image",
+                                        "audio",
+                                        "video",
+                                        "file"
+                                      ]
+                                    },
+                                    "external_media_id": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 255,
+                                      "pattern": "\\S"
+                                    },
+                                    "name": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "minLength": 1,
+                                          "maxLength": 255,
+                                          "pattern": "\\S"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "media_type",
+                                    "external_media_id",
+                                    "name"
+                                  ]
+                                },
+                                "minItems": 1,
+                                "maxItems": 10
+                              }
+                            },
+                            "required": [
+                              "version",
+                              "kind",
+                              "items"
+                            ]
+                          },
+                          "text_source": {
+                            "enum": [
+                              "extracted",
+                              "preview"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "version",
+                          "message_type",
+                          "text",
+                          "reply_to",
+                          "attachment"
+                        ],
+                        "not": {
+                          "properties": {
+                            "text_source": {
+                              "const": "extracted"
+                            },
+                            "text": {
+                              "type": "null"
+                            }
+                          },
+                          "required": [
+                            "text_source",
+                            "text"
+                          ]
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "version": {
+                            "type": "integer",
+                            "const": 1
+                          },
+                          "message_type": {
+                            "const": "template"
+                          },
+                          "text": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 4000,
+                                "pattern": "\\S"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "reply_to": {
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "external_msg_id": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 255,
+                                    "pattern": "\\S"
+                                  }
+                                },
+                                "required": [
+                                  "external_msg_id"
+                                ]
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "attachment": {
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "version": {
+                                    "type": "integer",
+                                    "const": 1
+                                  },
+                                  "kind": {
+                                    "const": "gallery"
+                                  },
+                                  "cards": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "title": {
+                                          "type": "string",
+                                          "minLength": 1,
+                                          "maxLength": 80,
+                                          "pattern": "\\S"
+                                        },
+                                        "subtitle": {
+                                          "anyOf": [
+                                            {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "maxLength": 80,
+                                              "pattern": "\\S"
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        },
+                                        "buttons": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "object",
+                                            "additionalProperties": false,
+                                            "properties": {
+                                              "label": {
+                                                "type": "string",
+                                                "minLength": 1,
+                                                "maxLength": 20,
+                                                "pattern": "\\S"
+                                              }
+                                            },
+                                            "required": [
+                                              "label"
+                                            ]
+                                          },
+                                          "minItems": 0,
+                                          "maxItems": 3
+                                        }
+                                      },
+                                      "required": [
+                                        "title",
+                                        "subtitle",
+                                        "buttons"
+                                      ]
+                                    },
+                                    "minItems": 1,
+                                    "maxItems": 10
+                                  }
+                                },
+                                "required": [
+                                  "version",
+                                  "kind",
+                                  "cards"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "version": {
+                                    "type": "integer",
+                                    "const": 1
+                                  },
+                                  "kind": {
+                                    "const": "csat"
+                                  },
+                                  "title": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 80,
+                                    "pattern": "\\S"
+                                  },
+                                  "prompt": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 400,
+                                    "pattern": "\\S"
+                                  }
+                                },
+                                "required": [
+                                  "version",
+                                  "kind",
+                                  "title",
+                                  "prompt"
+                                ]
+                              }
+                            ]
+                          },
+                          "text_source": {
+                            "enum": [
+                              "extracted",
+                              "preview"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "version",
+                          "message_type",
+                          "text",
+                          "reply_to",
+                          "attachment"
+                        ],
+                        "not": {
+                          "properties": {
+                            "text_source": {
+                              "const": "extracted"
+                            },
+                            "text": {
+                              "type": "null"
+                            }
+                          },
+                          "required": [
+                            "text_source",
+                            "text"
+                          ]
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "version": {
+                            "type": "integer",
+                            "const": 1
+                          },
+                          "message_type": {
+                            "const": "unsupported"
+                          },
+                          "text": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 4000,
+                                "pattern": "\\S"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "reply_to": {
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "external_msg_id": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 255,
+                                    "pattern": "\\S"
+                                  }
+                                },
+                                "required": [
+                                  "external_msg_id"
+                                ]
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "attachment": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "version": {
+                                "type": "integer",
+                                "const": 1
+                              },
+                              "kind": {
+                                "const": "unsupported"
+                              },
+                              "label": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 120,
+                                "pattern": "\\S"
+                              }
+                            },
+                            "required": [
+                              "version",
+                              "kind",
+                              "label"
+                            ]
+                          },
+                          "text_source": {
+                            "enum": [
+                              "extracted",
+                              "preview"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "version",
+                          "message_type",
+                          "text",
+                          "reply_to",
+                          "attachment"
+                        ],
+                        "not": {
+                          "properties": {
+                            "text_source": {
+                              "const": "extracted"
+                            },
+                            "text": {
+                              "type": "null"
+                            }
+                          },
+                          "required": [
+                            "text_source",
+                            "text"
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "type",
+                  "content"
+                ]
               }
-            },
-            "required": [
-              "type",
-              "text"
             ]
           },
           "referral": {
@@ -15824,6 +18651,343 @@
         "additionalProperties": false,
         "properties": {},
         "required": []
+      },
+      "intake-binding": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "tenant_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "connection_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "platform": {
+                "const": "mock_messenger"
+              }
+            },
+            "required": [
+              "tenant_id",
+              "connection_id",
+              "platform"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "connector-ack": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "delivery_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "status": {
+                "enum": [
+                  "queued",
+                  "forwarded",
+                  "completed",
+                  "blocked",
+                  "attention"
+                ]
+              }
+            },
+            "required": [
+              "delivery_id",
+              "status"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "connector-response": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "status": {
+                "enum": [
+                  "queued",
+                  "forwarded",
+                  "completed",
+                  "blocked",
+                  "attention"
+                ]
+              },
+              "attempts": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "error_code": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "remote_delivery_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "status",
+              "attempts",
+              "error_code",
+              "remote_delivery_id"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "connector-error": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "retryable": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "code",
+              "retryable"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "error",
+          "meta"
+        ]
+      },
+      "messenger-webhook": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "object",
+          "entry"
+        ],
+        "properties": {
+          "object": {
+            "const": "page"
+          },
+          "entry": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id"
+              ],
+              "anyOf": [
+                {
+                  "required": [
+                    "messaging"
+                  ]
+                },
+                {
+                  "required": [
+                    "standby"
+                  ]
+                }
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[0-9]{1,32}$"
+                },
+                "time": {
+                  "type": "integer"
+                },
+                "messaging": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 100,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "sender",
+                      "recipient",
+                      "timestamp"
+                    ],
+                    "properties": {
+                      "sender": {
+                        "type": "object",
+                        "required": [
+                          "id"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 255
+                          }
+                        }
+                      },
+                      "recipient": {
+                        "type": "object",
+                        "required": [
+                          "id"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 255
+                          }
+                        }
+                      },
+                      "timestamp": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 253402300799999
+                      }
+                    }
+                  }
+                },
+                "standby": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 100,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "sender",
+                      "recipient",
+                      "timestamp"
+                    ],
+                    "properties": {
+                      "sender": {
+                        "type": "object",
+                        "required": [
+                          "id"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 255
+                          }
+                        }
+                      },
+                      "recipient": {
+                        "type": "object",
+                        "required": [
+                          "id"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 255
+                          }
+                        }
+                      },
+                      "timestamp": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 253402300799999
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       },
       "routing-assignment": {
         "type": "object",
@@ -19608,6 +22772,1143 @@
             }
           }
         }
+      },
+      "contact-mapping": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "tenant_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "connection_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "external_subject_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+          },
+          "crm_contact_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "crm_identity_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "mapping_revision": {
+            "const": "1"
+          }
+        },
+        "required": [
+          "tenant_id",
+          "connection_id",
+          "external_subject_id",
+          "crm_contact_id",
+          "crm_identity_id",
+          "mapping_revision"
+        ]
+      },
+      "contact-lookup-request": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "external_subject_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+          }
+        },
+        "required": [
+          "external_subject_id"
+        ]
+      },
+      "contact-resolve-request": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "external_subject_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+          },
+          "operation_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "display_label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+          }
+        },
+        "required": [
+          "external_subject_id",
+          "operation_id"
+        ]
+      },
+      "contact-lookup-response": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "mapping": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "tenant_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "connection_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "external_subject_id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 255,
+                        "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+                      },
+                      "crm_contact_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "crm_identity_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "mapping_revision": {
+                        "const": "1"
+                      }
+                    },
+                    "required": [
+                      "tenant_id",
+                      "connection_id",
+                      "external_subject_id",
+                      "crm_contact_id",
+                      "crm_identity_id",
+                      "mapping_revision"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "mapping"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "contact-resolve-response": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "mapping": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "tenant_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "connection_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "external_subject_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+                  },
+                  "crm_contact_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "crm_identity_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "mapping_revision": {
+                    "const": "1"
+                  }
+                },
+                "required": [
+                  "tenant_id",
+                  "connection_id",
+                  "external_subject_id",
+                  "crm_contact_id",
+                  "crm_identity_id",
+                  "mapping_revision"
+                ]
+              },
+              "created": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "mapping",
+              "created"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "contact-delivery-request": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "crm_contact_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "crm_identity_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "intake": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "provider_event_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 255,
+                "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+              },
+              "provider_message_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 255,
+                "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+              },
+              "external_subject_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 255,
+                "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+              },
+              "occurred_at": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?Z$"
+              },
+              "display_label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 255,
+                "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "type": {
+                        "const": "text"
+                      },
+                      "text": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 4000,
+                        "pattern": "\\S"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "text"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "type": {
+                        "const": "rich"
+                      },
+                      "content": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "version": {
+                                "type": "integer",
+                                "const": 1
+                              },
+                              "message_type": {
+                                "const": "text"
+                              },
+                              "text": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 4000,
+                                "pattern": "\\S"
+                              },
+                              "reply_to": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "external_msg_id": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 255,
+                                        "pattern": "\\S"
+                                      }
+                                    },
+                                    "required": [
+                                      "external_msg_id"
+                                    ]
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "attachment": {
+                                "type": "null"
+                              }
+                            },
+                            "required": [
+                              "version",
+                              "message_type",
+                              "text",
+                              "reply_to",
+                              "attachment"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "version": {
+                                "type": "integer",
+                                "const": 1
+                              },
+                              "message_type": {
+                                "const": "media"
+                              },
+                              "text": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 4000,
+                                    "pattern": "\\S"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "reply_to": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "external_msg_id": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 255,
+                                        "pattern": "\\S"
+                                      }
+                                    },
+                                    "required": [
+                                      "external_msg_id"
+                                    ]
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "attachment": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "version": {
+                                    "type": "integer",
+                                    "const": 1
+                                  },
+                                  "kind": {
+                                    "const": "media"
+                                  },
+                                  "items": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "media_type": {
+                                          "enum": [
+                                            "image",
+                                            "audio",
+                                            "video",
+                                            "file"
+                                          ]
+                                        },
+                                        "external_media_id": {
+                                          "type": "string",
+                                          "minLength": 1,
+                                          "maxLength": 255,
+                                          "pattern": "\\S"
+                                        },
+                                        "name": {
+                                          "anyOf": [
+                                            {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "maxLength": 255,
+                                              "pattern": "\\S"
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "media_type",
+                                        "external_media_id",
+                                        "name"
+                                      ]
+                                    },
+                                    "minItems": 1,
+                                    "maxItems": 10
+                                  }
+                                },
+                                "required": [
+                                  "version",
+                                  "kind",
+                                  "items"
+                                ]
+                              },
+                              "text_source": {
+                                "enum": [
+                                  "extracted",
+                                  "preview"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "version",
+                              "message_type",
+                              "text",
+                              "reply_to",
+                              "attachment"
+                            ],
+                            "not": {
+                              "properties": {
+                                "text_source": {
+                                  "const": "extracted"
+                                },
+                                "text": {
+                                  "type": "null"
+                                }
+                              },
+                              "required": [
+                                "text_source",
+                                "text"
+                              ]
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "version": {
+                                "type": "integer",
+                                "const": 1
+                              },
+                              "message_type": {
+                                "const": "template"
+                              },
+                              "text": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 4000,
+                                    "pattern": "\\S"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "reply_to": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "external_msg_id": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 255,
+                                        "pattern": "\\S"
+                                      }
+                                    },
+                                    "required": [
+                                      "external_msg_id"
+                                    ]
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "attachment": {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "version": {
+                                        "type": "integer",
+                                        "const": 1
+                                      },
+                                      "kind": {
+                                        "const": "gallery"
+                                      },
+                                      "cards": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "additionalProperties": false,
+                                          "properties": {
+                                            "title": {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "maxLength": 80,
+                                              "pattern": "\\S"
+                                            },
+                                            "subtitle": {
+                                              "anyOf": [
+                                                {
+                                                  "type": "string",
+                                                  "minLength": 1,
+                                                  "maxLength": 80,
+                                                  "pattern": "\\S"
+                                                },
+                                                {
+                                                  "type": "null"
+                                                }
+                                              ]
+                                            },
+                                            "buttons": {
+                                              "type": "array",
+                                              "items": {
+                                                "type": "object",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                  "label": {
+                                                    "type": "string",
+                                                    "minLength": 1,
+                                                    "maxLength": 20,
+                                                    "pattern": "\\S"
+                                                  }
+                                                },
+                                                "required": [
+                                                  "label"
+                                                ]
+                                              },
+                                              "minItems": 0,
+                                              "maxItems": 3
+                                            }
+                                          },
+                                          "required": [
+                                            "title",
+                                            "subtitle",
+                                            "buttons"
+                                          ]
+                                        },
+                                        "minItems": 1,
+                                        "maxItems": 10
+                                      }
+                                    },
+                                    "required": [
+                                      "version",
+                                      "kind",
+                                      "cards"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "version": {
+                                        "type": "integer",
+                                        "const": 1
+                                      },
+                                      "kind": {
+                                        "const": "csat"
+                                      },
+                                      "title": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 80,
+                                        "pattern": "\\S"
+                                      },
+                                      "prompt": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 400,
+                                        "pattern": "\\S"
+                                      }
+                                    },
+                                    "required": [
+                                      "version",
+                                      "kind",
+                                      "title",
+                                      "prompt"
+                                    ]
+                                  }
+                                ]
+                              },
+                              "text_source": {
+                                "enum": [
+                                  "extracted",
+                                  "preview"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "version",
+                              "message_type",
+                              "text",
+                              "reply_to",
+                              "attachment"
+                            ],
+                            "not": {
+                              "properties": {
+                                "text_source": {
+                                  "const": "extracted"
+                                },
+                                "text": {
+                                  "type": "null"
+                                }
+                              },
+                              "required": [
+                                "text_source",
+                                "text"
+                              ]
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "version": {
+                                "type": "integer",
+                                "const": 1
+                              },
+                              "message_type": {
+                                "const": "unsupported"
+                              },
+                              "text": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 4000,
+                                    "pattern": "\\S"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "reply_to": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "external_msg_id": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 255,
+                                        "pattern": "\\S"
+                                      }
+                                    },
+                                    "required": [
+                                      "external_msg_id"
+                                    ]
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "attachment": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "version": {
+                                    "type": "integer",
+                                    "const": 1
+                                  },
+                                  "kind": {
+                                    "const": "unsupported"
+                                  },
+                                  "label": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 120,
+                                    "pattern": "\\S"
+                                  }
+                                },
+                                "required": [
+                                  "version",
+                                  "kind",
+                                  "label"
+                                ]
+                              },
+                              "text_source": {
+                                "enum": [
+                                  "extracted",
+                                  "preview"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "version",
+                              "message_type",
+                              "text",
+                              "reply_to",
+                              "attachment"
+                            ],
+                            "not": {
+                              "properties": {
+                                "text_source": {
+                                  "const": "extracted"
+                                },
+                                "text": {
+                                  "type": "null"
+                                }
+                              },
+                              "required": [
+                                "text_source",
+                                "text"
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "content"
+                    ]
+                  }
+                ]
+              },
+              "referral": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "source": {
+                    "const": "ctm"
+                  },
+                  "ad_id": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 255,
+                        "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "campaign_id": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 255,
+                        "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?=.*\\S).*$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "source"
+                ]
+              }
+            },
+            "required": [
+              "provider_event_id",
+              "provider_message_id",
+              "external_subject_id",
+              "occurred_at",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "crm_contact_id",
+          "crm_identity_id",
+          "intake"
+        ]
+      },
+      "contact-send-request": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "crm_contact_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "owner_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000,
+            "pattern": "\\S"
+          }
+        },
+        "required": [
+          "crm_contact_id",
+          "owner_revision",
+          "text"
+        ]
+      },
+      "facebook-connect-request": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "team_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "team_id"
+        ]
+      },
+      "facebook-connect-response": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "authorization_url": {
+                "type": "string",
+                "format": "uri"
+              }
+            },
+            "required": [
+              "authorization_url"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "facebook-page": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "channel": {
+            "const": "messenger"
+          },
+          "channel_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "page_id": {
+            "type": "string",
+            "pattern": "^[0-9]{1,32}$"
+          },
+          "app_id": {
+            "type": "string",
+            "pattern": "^[0-9]{1,32}$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "team_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "credential_status": {
+            "enum": [
+              "stored",
+              "missing"
+            ]
+          },
+          "version": {
+            "type": "string"
+          },
+          "connected_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "channel",
+          "channel_id",
+          "page_id",
+          "app_id",
+          "name",
+          "team_id",
+          "credential_status",
+          "version",
+          "connected_at"
+        ]
+      },
+      "facebook-page-list": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "channel": {
+                  "const": "messenger"
+                },
+                "channel_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "page_id": {
+                  "type": "string",
+                  "pattern": "^[0-9]{1,32}$"
+                },
+                "app_id": {
+                  "type": "string",
+                  "pattern": "^[0-9]{1,32}$"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "team_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "credential_status": {
+                  "enum": [
+                    "stored",
+                    "missing"
+                  ]
+                },
+                "version": {
+                  "type": "string"
+                },
+                "connected_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "id",
+                "channel",
+                "channel_id",
+                "page_id",
+                "app_id",
+                "name",
+                "team_id",
+                "credential_status",
+                "version",
+                "connected_at"
+              ]
+            }
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "oauth_configured": {
+            "type": "boolean"
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "next_cursor",
+          "oauth_configured",
+          "meta"
+        ]
+      },
+      "conversation-channel-options": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "channel": {
+                  "enum": [
+                    "messenger",
+                    "mock_messenger"
+                  ]
+                },
+                "channel_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "page_id": {
+                  "type": "string"
+                },
+                "channel_name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "channel",
+                "channel_id",
+                "page_id",
+                "channel_name"
+              ]
+            }
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "next_cursor",
+          "meta"
+        ]
       }
     },
     "securitySchemes": {
