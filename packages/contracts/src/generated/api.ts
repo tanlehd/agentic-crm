@@ -2300,6 +2300,8 @@ export interface components {
             connection_id: string;
             /** @enum {unknown} */
             status: "open" | "pending" | "closed";
+            /** @description Response assessment: inbound is null until assessed; confirmed sent coverage is false; true requires a valid Assist assessment. */
+            need_response?: boolean | null;
             /** Format: date-time */
             opened_at: string;
             closed_at: string | null;

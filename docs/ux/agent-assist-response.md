@@ -82,3 +82,5 @@ Ví dụ logical payload (chưa là wire schema đã triển khai): next_action 
 Type/nhãn không phải bằng chứng module đã triển khai hay quyền tạo record. Ví dụ create_ticket có thể là gợi ý đọc được, nhưng nút thực hiện chỉ xuất hiện khi có công cụ và quyền tương ứng. Gán type không tạo Lead/Ticket, gửi reply hoặc đóng chat. Lifecycle closed và trạng thái đã phản hồi hiển thị riêng, không phải next-action type.
 
 Compatibility: runtime SRC-041 hiện vẫn dùng need_response; thiết kế đích bỏ field độc lập này. PLAN-008 phải chốt rollout/retire hoặc compatibility projection cho client cũ trước thay API. Không map mọi type khác response thành false/“Đã phản hồi”. Không migration lịch sử hoặc đổi runtime trong UX-006.
+
+PLAN-008 scheduling correction CHG-20261007-11: exact Chat integration follows completed Workflow, Chatflow and AI Agent frameworks (SRC-042/043/044 after PLAN-009). [Framework gates](../planning/automation-frameworks.md). Product rules here remain valid; no immediate integration before those gates.

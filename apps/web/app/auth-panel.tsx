@@ -28,8 +28,9 @@ export function AuthPanel() {
       setSession(null); setState('ready');
     } catch { setState('error'); } finally { setBusy(false); }
   }
-  return <><section className="auth-panel" aria-label="Tài khoản">
+  if(session&&state==='ready')return <TenantPanel key={session.account_id} userName={session.display_name} onLogout={()=>void logout()} logoutBusy={busy}/>;
+  return <div className="ui-entry"><a className="brand" href="/"><span className="mark">a</span>agentic crm</a><section className="auth-panel" aria-label="Tài khoản">
     <div><h2>Tài khoản</h2><p role="status">{state === 'loading' ? 'Đang kiểm tra phiên đăng nhập…' : state === 'error' ? 'Chưa thể kết nối dịch vụ đăng nhập. Vui lòng thử lại.' : session ? `Đã đăng nhập: ${session.display_name}` : 'Đăng nhập để bắt đầu.'}</p>{session && <small>Quyền truy cập workspace sẽ được cấp theo tổ chức.</small>}</div>
     <div>{state === 'error' ? <button onClick={() => void load()} disabled={busy}>Thử lại</button> : state === 'ready' && !session ? <a href="/auth/login">Đăng nhập</a> : null}{session && <button onClick={() => void logout()} disabled={busy}>{busy ? 'Đang đăng xuất…' : 'Đăng xuất'}</button>}</div>
-  </section>{session && state === 'ready' && <TenantPanel key={session.account_id} />}</>;
+  </section></div>;
 }

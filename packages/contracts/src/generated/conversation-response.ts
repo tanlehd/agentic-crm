@@ -12,6 +12,10 @@ export interface ConversationEntity {
   contact_identity_id: string;
   connection_id: string;
   status: "open" | "pending" | "closed";
+  /**
+   * Response assessment: inbound is null until assessed; confirmed sent coverage is false; true requires a valid Assist assessment.
+   */
+  need_response?: boolean | null;
   opened_at: string;
   closed_at: string | null;
   version: string;

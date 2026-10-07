@@ -79,3 +79,11 @@ function Associations({tenant,context,record}:{tenant:string;context:Context;rec
   const targets=useApi(tenant,`/api/v1/objects/${targetObject??'contact'}/records?limit=100`,!!targetObject);
   return <section className="crm-divider"><h3>Liên kết</h3><ErrorNotice error={list.error??command.error}/>{list.data?.data.length?<ul>{list.data.data.map((a:any)=><li key={a.id}>{a.source_record_id===record.id?'→':'←'} {a.source_record_id===record.id?a.target_record_id:a.source_record_id}</li>)}</ul>:<p>Chưa có liên kết hiển thị.</p>}{!record.archived&&can(context,'association','create')&&can(context,record.object_key,'update',record)&&<form className="crm-form" onSubmit={async e=>{e.preventDefault();if(await command.run('/api/v1/associations',{type_key:type,source_record_id:record.id,target_record_id:target},'POST',record.version))setTarget('');}}><label>Loại liên kết<select aria-label="Loại liên kết" required value={type} onChange={e=>{setType(e.target.value);setTarget('');}}><option value="">Chọn…</option>{options.map((t:any)=><option key={t.id} value={t.key}>{t.label}</option>)}</select></label><label>Record đích<select aria-label="Record đích" required value={target} onChange={e=>setTarget(e.target.value)}><option value="">Chọn…</option>{targets.data?.data.map((r:any)=><option key={r.id} value={r.id}>{String(label(r))}</option>)}</select></label><ErrorNotice error={targets.error}/><Button type="submit" disabled={command.busy||!type||!target}>Thêm liên kết</Button></form>}</section>;
 }
+
+export function CreateRecord({tenant,context,object,onSaved}:{tenant:string;context:Context;object:string;onSaved:()=>void}){
+ const descriptor=useApi(tenant,`/api/v1/objects/${object}/descriptor`);
+ if(!can(context,object,'create'))return <p>Bạn chưa có quyền tạo đối tượng này.</p>;
+ if(descriptor.isPending)return <p role="status">Đang tải biểu mẫu…</p>;
+ if(descriptor.error)return <ErrorNotice error={descriptor.error}/>;
+ return object==='lead'?<LeadCreate tenant={tenant} onCreated={onSaved}/>:<RecordForm tenant={tenant} context={context} object={object} descriptor={descriptor.data.data as Descriptor} onSaved={onSaved}/>;
+}

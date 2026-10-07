@@ -21078,6 +21078,13 @@
               "closed"
             ]
           },
+          "need_response": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Response assessment: inbound is null until assessed; confirmed sent coverage is false; true requires a valid Assist assessment."
+          },
           "opened_at": {
             "type": "string",
             "format": "date-time"

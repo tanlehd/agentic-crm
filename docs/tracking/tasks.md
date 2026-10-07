@@ -226,8 +226,19 @@ Source backlog dưới đây theo [workspace build plan](../planning/agent-chat-
 
 | SRC-041 | Reset response assessment to unknown on inbound; define Assist boundary | SRC-040 | DONE | Codex 2026-10-07 | [Evidence](details/SRC-041.md);10 browser groups/107 unit/31 prototype checks PASS; Assist adapter remains PLAN-008 |
 
-| PLAN-008 | Exact typed Conversation next-action and rule/Assist orchestration contracts | UX-006 | TODO | unassigned | [Product rules](../ux/agent-assist-response.md); two-part scope; Conversation action independent of AI, orchestration integration Draft |
+| PLAN-008 | Exact typed Conversation next-action and rule/Assist orchestration contracts | UX-006; SRC-042; SRC-043; SRC-044 | TODO | unassigned | [Product rules](../ux/agent-assist-response.md); two-part scope; Conversation action independent of AI, orchestration integration Draft |
 
 | UX-005 | Separate Conversation suggestions from Workflow/Chatflow orchestration and Assist permissions | SRC-041 | DONE | Codex 2026-10-07 | [Evidence](details/UX-005.md); product design only, exact action/orchestration contracts PLAN-008 TODO |
 
 | UX-006 | Generalize Conversation list classification to next_action.type | UX-005 | DONE | Codex 2026-10-07 | [Evidence](details/UX-006.md); four type mappings and legacy compatibility design, runtime unchanged |
+
+## Automation frameworks before Chat integration — 2026-10-07
+
+User-prioritized sequence; [framework plan](../planning/automation-frameworks.md). Existing M2 engines are baseline, not evidence these framework scopes are complete. PLAN-008 waits for all three framework source gates.
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-009 | Baseline gap review and exact Workflow/Chatflow/AI Agent framework scopes | UX-006; SRC-018; SRC-019; SRC-020 | TODO | unassigned | Definitions/config/UI/auth/runtime acceptance Ready before source |
+| SRC-042 | Workflow framework on existing engine | PLAN-009; SRC-019 | TODO | unassigned | Exact PLAN-009 scope; definition/action/trigger/binding/auth/run tests |
+| SRC-043 | Chatflow framework on Workflow foundation | SRC-042; SRC-020 | TODO | unassigned | Exact PLAN-009 scope; session/node/context/action lifecycle tests |
+| SRC-044 | AI Agent definition/skill/permission/execution framework | SRC-043; SRC-018 | TODO | unassigned | Exact PLAN-009 scope; structured results and suggestion-only Assist guard tests |

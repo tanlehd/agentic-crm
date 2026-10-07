@@ -5,6 +5,14 @@ import { UnitOfWork,type TransactionScope } from '../../kernel/tenancy/unit-of-w
 
 // Schema compatibility is transaction-local: never cache a negative across migration.
 const supported=new WeakMap<TransactionScope,boolean>();
+export async function needResponse(s:TransactionScope,id:string,status:string):Promise<boolean|null>{
+  if(status==='closed')return false;
+  if(!await workspaceSupported(s))return null;
+  const [row]=await s.query('SELECT waiting_since,waiting_metric_state FROM conversation_workspace WHERE tenant_id=? AND conversation_id=?',[s.context.tenantId,id]);
+  // Unanswered inbound requires assessment; it does not itself mean a reply is needed.
+  // Until an authorized Assist producer exists, only confirmed coverage can resolve it.
+  return row?.waiting_metric_state==='ready'&&row.waiting_since==null?false:null;
+}
 export async function workspaceSupported(s:TransactionScope){
   if(!supported.has(s))supported.set(s,!!(await s.query("SELECT version FROM schema_migration WHERE version=20 AND state='applied'"))[0]);
   return supported.get(s)!;
@@ -50,7 +58,8 @@ export async function workspaceSent(s:TransactionScope,id:string,message:string)
   await prepareWorkspace(s,id);
   const tenant=s.context.tenantId,[m]=await s.query('SELECT reply_through_inbound_seq FROM message_workspace WHERE tenant_id=? AND message_id=?',[tenant,message]);
   if(m?.reply_through_inbound_seq==null)return; // Historical/provider effect has no verified causal coverage.
-  await s.query("UPDATE conversation_workspace SET answered_inbound_seq=GREATEST(answered_inbound_seq,?),waiting_metric_state='ready' WHERE tenant_id=? AND conversation_id=?",[m.reply_through_inbound_seq,tenant,id]);
+  // BIGINT values travel as decimal strings; compare numerically across 9 -> 10, etc.
+  await s.query("UPDATE conversation_workspace SET answered_inbound_seq=GREATEST(answered_inbound_seq,CAST(? AS UNSIGNED)),waiting_metric_state='ready' WHERE tenant_id=? AND conversation_id=?",[m.reply_through_inbound_seq,tenant,id]);
   const [next]=await s.query('SELECT m.received_at FROM message_workspace mw JOIN message m ON m.tenant_id=mw.tenant_id AND m.id=mw.message_id JOIN conversation_workspace w ON w.tenant_id=mw.tenant_id AND w.conversation_id=mw.conversation_id WHERE mw.tenant_id=? AND mw.conversation_id=? AND mw.inbound_seq>w.answered_inbound_seq ORDER BY mw.inbound_seq LIMIT 1',[tenant,id]);
   await s.query('UPDATE conversation_workspace w JOIN conversation c ON c.tenant_id=w.tenant_id AND c.record_id=w.conversation_id SET w.waiting_since=IF(c.status=\'closed\',NULL,?) WHERE w.tenant_id=? AND w.conversation_id=?',[next?.received_at??null,tenant,id]);
 }

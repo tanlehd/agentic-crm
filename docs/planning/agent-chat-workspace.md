@@ -23,7 +23,7 @@ Mỗi task cần command/result/artifact + docs/checkpoint cùng phiên; draft i
 
 CHG-20261007-06: user requested implementation of approved no-tab layout. SRC-039 can deliver header/nav + existing CRM forms + API-backed Inbox queue/detail/composer/context independently after SRC-034/SRC-038/UX-004. No schema/API change. Missing Contact metadata/channel navigation remains SRC-035; full saved-inbox lifecycle/share/tag management/activity/read-marker integration and workspace release remain SRC-036/037 unless specifically evidenced. Hide capability-unavailable controls, do not fabricate metrics or backend behavior. This split does not mark SRC-036 DONE or remove its acceptance gates.
 
-## Conversation suggestions and orchestration — PLAN-008
+## Conversation suggestions and orchestration — PLAN-008 (after framework gates)
 
 [UX-005 product scope](../ux/agent-assist-response.md) splits the use case into two independently scoped parts:
 
@@ -33,3 +33,5 @@ CHG-20261007-06: user requested implementation of approved no-tab layout. SRC-03
 PLAN-008 remains TODO for exact contracts, including false-vs-no-reply distinction, provenance, revision fences, idempotency and action registration. Part1 must not depend on a provider adapter; Part2 must not activate unavailable triggers/actions or inherit owner-agent write tools. Source tasks are scoped after the exact design gate, no implicit expansion of M2 runtime.
 
 UX-006 refinement: Part1 stores one nullable typed next_action; no independent need_response target flag. Catalog starts response/create_lead/create_ticket/close_chat. PLAN-008 includes client mapping and legacy boolean compatibility, distinguishes sent evidence from suggestions, and preserves rule-only operation. [Catalog](../ux/agent-assist-response.md).
+
+CHG-20261007-11 supersedes earlier immediate PLAN-008 priority: complete Workflow → Chatflow → AI Agent frameworks first (PLAN-009/SRC-042/043/044). PLAN-008 only then defines integration into Chat. [Sequence and gates](automation-frameworks.md). Do not begin Next action Chat integration before these dependencies are DONE.
