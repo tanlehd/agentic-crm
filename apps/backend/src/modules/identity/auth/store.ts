@@ -12,7 +12,7 @@ export interface AuthStore {
 export class RedisAuthStore implements AuthStore {
   readonly redis: Redis;
   constructor() {
-    this.redis = new Redis({ host: process.env.REDIS_HOST ?? '127.0.0.1', connectTimeout: 2000, commandTimeout: 2000, maxRetriesPerRequest: 0, enableOfflineQueue: false });
+    this.redis = new Redis({ host: process.env.REDIS_HOST ?? '127.0.0.1', port: Number(process.env.REDIS_PORT ?? 6379), password: process.env.REDIS_PASSWORD || undefined, db: Number(process.env.REDIS_DB ?? 0), connectTimeout: 2000, commandTimeout: 2000, maxRetriesPerRequest: 0, enableOfflineQueue: false });
     this.redis.on('error', () => { /* Fail closed without logging credentials. */ });
   }
   private async call<T>(fn: () => Promise<T>): Promise<T> { try { return await fn(); } catch { throw new AuthError(503, 'AUTH_STORE_UNAVAILABLE'); } }

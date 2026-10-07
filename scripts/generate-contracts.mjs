@@ -7,7 +7,7 @@ const schema = JSON.parse(await readFile('packages/contracts/schemas/health.json
 const { $schema: dialect, ...health } = schema;
 const spec = {
   openapi: '3.1.0',
-  info: { title: 'Agentic CRM foundation API', version: '0.0.1', description: 'Health and OIDC session transport. Tenant/business APIs are not implemented.' },
+  info: { title: 'Agentic CRM foundation API', version: '0.0.1', description: 'CRM native session transport and tenant-scoped business APIs.' },
   paths: {
     '/api/v1/health/live': { get: { operationId: 'getLiveness', responses: { 200: { description: 'Process alive', content: { 'application/json': { schema: { type: 'object', required: ['status', 'service'], properties: { status: { const: 'ok' }, service: { enum: ['api', 'worker'] } } } } } } } } },
     '/api/v1/health/ready': { get: { operationId: 'getReadiness', responses: Object.fromEntries([200, 503].map(status => [status, { description: status === 200 ? 'Infrastructure connected; business schema not yet implemented' : 'Infrastructure unavailable or not configured', content: { 'application/json': { schema: { $ref: '#/components/schemas/HealthResponse' } } } }])) } },
@@ -186,6 +186,16 @@ for(const [name,definition] of Object.entries(activity.definitions))if(/^(activi
 for(const [method,path,input,output] of [['get','snooze',null,'snooze-response'],['put','snooze','snooze-put','snooze-response'],['post','wake','snooze-empty','snooze-response'],['get','activity',null,'activity-response']]){
  const url='/api/v1/chat-workspace/conversations/{id}/'+path;
  (spec.paths[url]??={})[method]={operationId:'workspace-'+method+'-'+path,security:[{sessionCookie:[]}],parameters:[tenantHeader,catalogId,...(input?[...mutationHeaders,{name:'If-Match',in:'header',required:true,schema:{type:'string'}}]:[]),...(path==='activity'?['before','after','limit'].map(name=>({name,in:'query',schema:{type:'string'}})):[])],...(input?{requestBody:catalogBody(input)}:{}),responses:{...adminErrors,200:response(output,'Authorized Conversation workspace')}};
+}
+
+
+const nativeAuth = JSON.parse(await readFile('packages/contracts/schemas/native-auth.json','utf8'));
+Object.assign(spec.components.schemas,nativeAuth.definitions);
+spec.paths['/auth/login'].get.responses[302].description='Redirect to native CRM login page';
+spec.paths['/auth/callback']={get:{operationId:'legacyAuthCallback',responses:{410:response('AuthErrorResponse','Legacy OIDC disabled')}}};
+spec.paths['/auth/login-challenge']={get:{operationId:'nativeLoginChallenge',responses:{200:response('AuthCsrfResponse','One-use challenge bound to crm_login cookie'),...errors,429:response('AuthErrorResponse','Rate limited')}}};
+for(const [path,name,operationId,authenticated] of [['/auth/login','NativeLoginRequest','nativeLogin',false],['/auth/password/change','NativePasswordChangeRequest','nativePasswordChange',true],['/auth/password/reset-request','NativeResetRequest','nativeResetRequest',false],['/auth/password/reset-complete','NativeResetCompleteRequest','nativeResetComplete',false]]){
+ (spec.paths[path]??={}).post={operationId,...(authenticated?{security:[{sessionCookie:[]}]}:{}),parameters:['Origin',...(authenticated?['X-CSRF-Token']:[])].map(name=>({name,in:'header',required:true,schema:{type:'string'}})),requestBody:{required:true,content:{'application/json':{schema:{$ref:'#/components/schemas/'+name}}}},responses:{...(path.endsWith('reset-request')?{}:{204:{description:'Completed; session cookie updated or revoked'}}),...errors,409:response('AuthErrorResponse','Credential revision changed'),429:response('AuthErrorResponse','Rate limited')}};
 }
 
 const outputs = {

@@ -2,9 +2,6 @@
 services:
   gateway:
     ports: !override [127.0.0.1:18080:8080]
-  keycloak:
-    environment:
-      KC_HOSTNAME: http://localhost:18080/identity
   test:
     build:
       context: .

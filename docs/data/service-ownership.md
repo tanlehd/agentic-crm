@@ -1,5 +1,7 @@
 # Data ownership — monolith to service databases
 
+ADR-021: [schema catalog](schema-catalog.md) gắn tên database cho từng owner; [guideline](database-guidelines.md) bắt buộc tenant_id NOT NULL cả control-plane/journal và [inventory](table-placement-inventory.md) mapping baseline. Identity sở hữu native credential/session MySQL; Keycloak không còn target. Những dòng dưới mô tả domain ownership, không cấp ngoại lệ thiếu tenant.
+
 ADR-017 / PLAN-005. Target logical ownership below; current dictionary/ERD/physical schema describe monolith through18. Existing composite FK/UoW invariant still enforced there. Extraction requires new schemas/migrations, not editing applied history. Shared MySQL engine is allowed locally, shared database credentials/tables across services are not target architecture.
 
 | Current entities / tables | Target writer / authority | What other services retain |

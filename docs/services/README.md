@@ -1,5 +1,7 @@
 # Enterprise service catalog
 
+Chuẩn placement bổ sung ADR-021: [schema catalog](../data/schema-catalog.md) / [DB guideline](../data/database-guidelines.md). Mỗi service descriptor phải dùng schema owner này khi thiết kế bảng mới. Identity đích tự quản auth/quyền trong MySQL; Keycloak chỉ là runtime legacy chờ native cutover.
+
 PLAN-005 / ADR-017. Target microservices accepted by user2026-10-06; business source baseline vẫn modular monolith API+worker, schema18 (preview schema17); SRC-028 đã thêm independent Connector HTTP ingress/private schema1, chưa cutover. Mỗi service có scope, kiến trúc nội bộ, model/authority, API/events, consistency, vận hành, extraction và acceptance. Business module không đồng nghĩa mỗi bảng hoặc mỗi worker là một service.
 
 | Service / tài liệu | Deploy boundary đích | Trách nhiệm chính |

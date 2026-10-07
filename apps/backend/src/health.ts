@@ -14,7 +14,7 @@ export class HealthService implements OnModuleDestroy {
   constructor() {
     if (process.env.MYSQL_HOST) {
       this.pool = createPool({
-        host: process.env.MYSQL_HOST,
+        host: process.env.MYSQL_HOST, port: Number(process.env.MYSQL_PORT ?? 3306),
         user: process.env.MYSQL_USER,
         password: process.env.MYSQL_PASSWORD,
         database: process.env.MYSQL_DATABASE,
@@ -24,7 +24,7 @@ export class HealthService implements OnModuleDestroy {
     }
     if (process.env.REDIS_HOST) {
       this.redis = new Redis({
-        host: process.env.REDIS_HOST,
+        host: process.env.REDIS_HOST, port: Number(process.env.REDIS_PORT ?? 6379), password: process.env.REDIS_PASSWORD || undefined, db: Number(process.env.REDIS_DB ?? 0),
         connectTimeout: 2000,
         commandTimeout: 2000,
         maxRetriesPerRequest: 0,

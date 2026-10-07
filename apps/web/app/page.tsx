@@ -19,7 +19,7 @@ export default async function Page() {
     { name: 'Web workspace', state: 'Đang chạy', ok: true, note: 'Next.js · server rendering' },
     { name: 'API foundation', state: health ? 'Đang chạy' : 'Chưa kết nối', ok: !!health, note: 'NestJS · HTTP service' },
     { name: 'MySQL', state: health?.checks.mysql === 'up' ? 'Đã kết nối' : 'Chưa sẵn sàng', ok: health?.checks.mysql === 'up', note: 'Dữ liệu nghiệp vụ' },
-    { name: 'Redis', state: health?.checks.redis === 'up' ? 'Đã kết nối' : 'Chưa sẵn sàng', ok: health?.checks.redis === 'up', note: 'Queue và session' },
+    { name: 'Redis', state: health?.checks.redis === 'up' ? 'Đã kết nối' : 'Chưa sẵn sàng', ok: health?.checks.redis === 'up', note: 'Queue và cache' },
   ];
   return <div className="shell">
     <aside>
@@ -40,7 +40,7 @@ export default async function Page() {
       <section className="build-panel" hidden><div><div className="eyebrow">TODAY’S BUILD</div><h2>Bộ khung trước.<br/>Nghiệp vụ theo từng bước.</h2><p>Đây là màn hình kiểm tra nền móng, chưa phải CRM hoàn chỉnh. Các workspace nghiệp vụ sẽ mở khi có API, phân quyền và kiểm thử tương ứng.</p><span className="outline-tag">Không có dữ liệu khách hàng thật</span></div><ol>{[
         ['01', 'Khung ứng dụng', 'Web, API, worker và contracts dùng chung.'],
         ['02', 'Môi trường Docker', 'Đóng gói dịch vụ, kiểm tra kết nối và giữ dữ liệu.'],
-        ['03', 'Tenant & Identity', 'Đăng nhập OIDC, chọn tổ chức và kiểm tra quyền truy cập.'],
+        ['03', 'Tenant & Identity', 'Đăng nhập CRM, chọn tổ chức và kiểm tra quyền truy cập.'],
       ].map(([number,title,note]) => <li key={number}><span>{number}</span><div><h3>{title}</h3><p>{note}</p></div></li>)}</ol></section>
       <footer>Agentic CRM <span>M2 · Chat, Sales & Operations</span></footer>
     </main>

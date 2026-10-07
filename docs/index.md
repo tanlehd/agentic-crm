@@ -1,5 +1,7 @@
 # Bản đồ tài liệu
 
+Chuẩn thiết kế mới ADR-021: [schema catalog](data/schema-catalog.md), [database guideline](data/database-guidelines.md), [table placement inventory](data/table-placement-inventory.md), [table design template](templates/database-table.md), [native auth](contracts/native-auth.md), [transition plan](planning/native-identity-data-plan.md), [research](references/crm-database-patterns.md). Các mục OIDC/Keycloak implemented bên dưới mô tả baseline, không phải target được tiếp tục mở rộng.
+
 
 Kiến trúc đích hiện tại theo ADR-017: [enterprise service catalog](services/README.md), [architecture](system/architecture.md), [data ownership](data/service-ownership.md), [contracts](contracts/service-boundaries.md), [migration plan](planning/microservices-migration.md). Mỗi service có scope/internal architecture/data model/interfaces/operations/extraction gates. [Monolith baseline](system/monolith-baseline.md) giữ để đối chiếu source hiện tại.
 

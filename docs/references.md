@@ -31,3 +31,7 @@ Salesforce chỉ là lựa chọn tham chiếu UX được đề xuất ban đ�
 ## Meta M3 source snapshots
 
 [Local provider documentation dossier](references/meta/README.md) lưu Markdown chính thức, chỉ mục, URL/date/checksum và discrepancy review cho Meta Business Agent, Messenger Conversation Routing và media/webhooks. Đây là evidence nghiên cứu; không thay sandbox acceptance hoặc contract nội bộ.
+
+## CRM schema và native Identity — PLAN-007
+
+[Research notes](references/crm-database-patterns.md): MySQL8.4, Frappe CRM DocType/Contact/Deal, EspoCRM entity metadata và OWASP password/session. Chọn guideline riêng theo tenant/service invariants, không import nguyên CRM schema template.

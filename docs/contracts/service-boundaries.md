@@ -42,3 +42,7 @@ Contract fixtures include malformed/unknown schema, foreign tenant, spoofed acto
 PLAN-006B / ADR-019 refines [Contact resolution and message context](contact-resolution.md): CRM owns canonical identity mapping, Connector owns rebuildable profile/resolution caches; new inbound/outbound Chat message interfaces require crm_contact_id. Auth/dispatch physical implementation gates remain PLAN-006.
 
 PLAN-006C separates identity lookup from privileged authorization: valid mapping cache need not trigger per-message CRM RPC. On miss, read persisted CRM mapping through owning-module read port or service API; only authoritative absence invokes ResolveContact. This does not relax Identity/owner/provider dispatch gates. [Contract](contact-resolution.md).
+
+## ADR-021 scope refinement
+
+Account/control-plane events vẫn là protocol riêng, nhưng target envelope có tenant_id của registered system tenant, không NULL/fake customer tenant. Business event phải có business tenant và bị từ chối nếu mang system tenant; không coi system ID là all-tenants permission. Identity sở hữu native account/session/authorization trong MySQL. [Scope standard](../data/database-guidelines.md) supersedes omission of tenant_id in account-global target entities; exact event/auth contracts vẫn cần PLAN-006/007A trước implementation.

@@ -1,5 +1,7 @@
 # Data model và ERD
 
+**ADR-021 target override:** mọi application table có tenant_id NOT NULL, kể cả account/tenant/journal; system scope có explicit registered tenant, không wildcard. [Guideline](database-guidelines.md) và [schema catalog](schema-catalog.md) là chuẩn bảng mới. ERD/physical references bên dưới giữ baseline migration để đối chiếu, không cho phép copy ngoại lệ cũ.
+
 > Baseline monolith hiện có, không phải physical schema của các microservice đích. Xem [data ownership ADR-017](service-ownership.md); FK/UoW cross-module dưới đây chỉ áp dụng trong DB hiện tại. Extraction không sửa applied migrations1–18.
 Status: Ready for implementation cho M1–M2. Deal/Ticket/report authoring là mô hình đích Draft M4–M5.
 

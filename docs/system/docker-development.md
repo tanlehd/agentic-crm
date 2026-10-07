@@ -1,5 +1,7 @@
 # Docker: đóng gói, môi trường và nghiệm thu
 
+SRC-038 đã bỏ Keycloak khỏi runtime. Native MySQL auth và host development theo [runbook](../development/native-auth.md). Các mốc scaffold phía dưới là lịch sử.
+
 Status: SRC-003 scaffold đã implement/test ngày 2026-10-03. Web/API/worker/gateway/MySQL/Redis/Keycloak và contract test runner đã chạy; SRC-004 bổ sung migrate/provision và MySQL kernel tests; SRC-005 thêm portable verify/CI adapter; SRC-009 thêm seed Identity Alpha/Beta; SRC-010 thêm migration v6 và registry fixture v2 qua migration one-shot. Xem [runbook thực tế](../development/local.md).
 
 ## Services
@@ -11,29 +13,24 @@ Status: SRC-003 scaffold đã implement/test ngày 2026-10-03. Web/API/worker/ga
 | api | NestJS HTTP, auth session, tenant commands | Private network; health/readiness riêng |
 | worker | NestJS job/outbox relay/recovery | Cùng image backend, command khác; không phụ thuộc frontend |
 | mysql | MySQL 8.4 LTS | Named volume; app và migration user tách quyền |
-| redis | BullMQ + cache/session | Named volume dev; phục hồi business từ MySQL, mất session yêu cầu login lại |
-| keycloak | OIDC realm/user fixtures local | start-dev chỉ local/CI; volume riêng; production dùng IdP cấu hình riêng |
+| redis | BullMQ + cache | Named volume dev; phục hồi business từ MySQL, session native giữ trong MySQL |
 | migrate | One-shot schema migration | Backend image; có schema lock; không seed hoặc drop data |
-| seed:dev (operator script) | Provision IdP + chạy seed CLI trong migrate one-shot | Không service thường trực; guard local, idempotent theo fixture IDs |
+| seed:dev (operator script) | Native fixture/enrollment qua host operator | Không service thường trực; guard local, idempotent theo fixture IDs |
 | test | Unit/integration/e2e runner | Compose project/volumes tách dev, artifact mount riêng |
 
-DB/Redis/Keycloak không public port mặc định; debug port chỉ bật override local và bind loopback. Seed không tự chạy trong production-like release. Dev secrets tạo cục bộ và gitignored; `.env.example` chỉ key/placeholder.
+DB/Redis không public port mặc định; debug port chỉ bật override local và bind loopback. Seed không tự chạy trong production-like release. Dev secrets tạo cục bộ và gitignored; `.env.example` chỉ key/placeholder.
 
 ## Startup và health
 
 Theo [Docker Compose startup order](https://docs.docker.com/compose/how-tos/startup-order), dùng `service_healthy` cho dependency cần sẵn sàng và `service_completed_successfully` cho migration. Container được tạo không đồng nghĩa ứng dụng đã healthy.
 
-MySQL healthy → db-provision success → migrate success → API/worker. Redis healthy trước worker/session service. Web/gateway phải chạy được trang unavailable khi backend chưa ready; không tạo vòng chờ gateway↔API readiness. Gateway liveness độc lập với upstream. OIDC kiểm tra discovery/login trong smoke test sau khi gateway đã lên, không đặt dependency cycle.
+MySQL healthy → db-provision success → migrate success → API/worker. Redis healthy trước worker readiness. Web/gateway phải chạy được trang unavailable khi backend chưa ready; không tạo vòng chờ gateway↔API readiness. Gateway liveness độc lập với upstream. Native auth kiểm tra login qua gateway sau khi đã lên, không đặt dependency cycle.
 
-API liveness kiểm tra process; readiness kiểm tra DB + schema compatibility. Redis outage: authenticated session request fail closed/re-login khi phục hồi, mock credential intake vẫn nhận nếu persist được; worker health phản ánh degraded và retry. Shutdown ngừng claim job, chờ in-flight bounded, lease/recovery xử lý phần còn lại.
+API liveness kiểm tra process; readiness kiểm tra DB + schema compatibility. Redis outage: native session vẫn đọc MySQL, không tự logout, mock credential intake vẫn nhận nếu persist được; worker health phản ánh degraded và retry. Shutdown ngừng claim job, chờ in-flight bounded, lease/recovery xử lý phần còn lại.
 
-## OIDC hostname và local cookie
+## Native auth và cookie
 
-Public dev origin `http://localhost:8080`; Keycloak public issuer `http://localhost:8080/identity/realms/agentic-crm-dev`. Nest callback `http://localhost:8080/auth/callback`; realm dùng PKCE, exact redirect URI. Backend dùng private backchannel của Keycloak cho token/JWKS và vẫn validate public issuer, không thay issuer thành container hostname.
-
-Thiết lập hostname/backchannel theo [Keycloak hostname documentation](https://www.keycloak.org/server/hostname); SRC-006 phải kiểm thử discovery public/private, token exchange và iss/aud. Không tắt issuer/TLS validation để vượt lỗi DNS. Với localhost HTTP dev, cookie Secure=false chỉ khi `APP_ENV=development|test` và origin loopback; production/staging HTTPS bắt buộc Secure=true. Ghi rõ ngoại lệ dev này vào security contract ở SRC-001.
-
-Keycloak `start-dev` chỉ là môi trường phát triển, theo [hướng dẫn container chính thức](https://www.keycloak.org/server/containers). Release app smoke có thể dùng dev IdP riêng để kiểm thử, nhưng không coi stack đó là deployment production.
+APP_ORIGIN phải cùng origin với web/gateway. Native login không phụ thuộc issuer/discovery/backchannel; callback cũ trả410. MySQL auth credential riêng chỉ cấp API và operator db-grants, worker không nhận. Cookie HttpOnly/SameSite=Lax, Secure cho HTTPS; HTTP chỉ cho local development/test. Xem [native runbook](../development/native-auth.md).
 
 ## Compose và image strategy
 
@@ -67,6 +64,6 @@ SRC-003/004: compose config hợp lệ, secrets không hard-code, containers hea
 
 Đã có env:init, dev:up/status/logs/down, preview:up, test:container, db:migrate/status test:integration và verify/verify:container. seed:dev và test:seed đã có SRC-009; release:smoke đã có SRC-025; test:e2e umbrella xuyên CRM chưa có (các script E2E riêng đã có). [Verification runbook](../development/verification.md). Migration gate/readiness và local privilege provisioning xem [runbook](../development/migrations.md).
 
-SRC-006: base Compose API nhận client secret/session encryption key từ .env private; worker không nhận các secret này. `pnpm auth:provision` cập nhật client/user trên Keycloak realm có sẵn, không thay volume. Auth-only fixture không có membership. Gateway ngừng access log /auth/ và /identity/ để không lưu tham số OIDC; sửa nginx.conf cần restart gateway. [Auth runbook](../development/local.md).
+SRC-038: Compose API nhận MYSQL_AUTH_USER/PASSWORD và SESSION_ENCRYPTION_KEY; worker không nhận. auth:provision/seed:dev dùng host native operator, không IdP. Historical SRC-006 evidence giữ trong tracker.
 
-SRC-025 release gate PASS: [release runbook](../development/m2-release.md) · [evidence](../tracking/details/SRC-025.md). `pnpm release:smoke` builds isolated app tags and tests historical M1→M2 plus cold/restart/browser flows. ARM64 native and AMD64 emulated app images tested; no native AMD64/production claim. Existing preview tags/volumes are not changed. Test containers/network cleanup retains named volumes with an explicit inventory. Current M2 worker polls MySQL durable backlog directly; Redis provides session/readiness, no BullMQ transport is claimed.
+SRC-025 release gate PASS: [release runbook](../development/m2-release.md) · [evidence](../tracking/details/SRC-025.md). `pnpm release:smoke` builds isolated app tags and tests historical M1→M2 plus cold/restart/browser flows. ARM64 native and AMD64 emulated app images tested; no native AMD64/production claim. Existing preview tags/volumes are not changed. Test containers/network cleanup retains named volumes with an explicit inventory. Current M2 worker polls MySQL durable backlog directly; Redis provides cache/readiness; native sessions now live in MySQL, no BullMQ transport is claimed.

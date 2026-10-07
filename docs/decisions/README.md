@@ -109,3 +109,16 @@ Accepted responsibility design2026-10-06, explicit user instruction / CHG-202610
 Supersedes PLAN-005 target ownership placing canonical contact_identity at Connector. Connector retains provider observations and reconstructible cache, never a second mapping master. [Contract](../contracts/contact-resolution.md) defines cache failure/invalidation, profile fallback and Human field preservation, tenant/identity validation, echo customer semantics and new-version compatibility. Existing source/strict schemas/monolith1–18/Connector1–2 unchanged. Exact machine auth/DDL/provider capability/dispatch remain implementation gates; no production Ready or runtime acceptance claim.
 
 ADR-019 refinement / PLAN-006C / CHG-20261006-11: user specifies DB-backed cache-aside for Chat and Connector. Read existing CRM mapping on cache miss; invoke CRM Core resolve/create only after confirmed absence; hydrate on confirmed DB/receipt. Supersedes per-message synchronous mapping validation in PLAN-006B. CRM remains SoT and only canonical writer, dispatch authorization remains separate. Baseline module read port and target CRM read API preserve ADR-017; direct cross-service SQL not introduced. Exact invalidation/fences remain gates.
+
+## ADR-020 — Portable host development and local service manager
+Accepted2026-10-07, CHG-20261007-01. Node24 applications run on Windows/macOS/Linux; Docker owns persistent local infrastructure. Per-unit env drives connection and health probes; loopback developer manager controls only allowlisted local units. No startup migration/reset. Production Linux supervision and distributed broker contracts remain separate gates. See [runbook](../development/service-manager.md).
+
+## ADR-021 — Native Identity, explicit tenant scope và schema ownership
+
+Accepted2026-10-07, CHG-20261007-02, yêu cầu trực tiếp của user. Keycloak/OIDC provider không còn trong thiết kế target; CRM Identity sở hữu authentication, credential/session và authorization trong MySQL. Quyền tenant/own-team-all/field deny và multi-membership giữ semantics, không biến account thành Contact.
+
+Mọi application table có tenant_id NOT NULL. Business data dùng tenant xác thực; account/session/journal system data dùng registered system tenant ở control-plane allowlist, không wildcard quyền. Tenant root tự tenant_id=id. Ngoại lệ bỏ cột account/tenant/journal trước đây bị supersede cho target; không sửa applied migration history.
+
+MySQL schema=database: catalog13 bounded-context schemas, không database-per-tenant; gateway stateless. Mỗi schema service writer/credentials/migrations riêng, không cross-service SQL/FK/UoW. Baseline monolith dùng transaction ports hiện có tới scoped extraction DONE. [Catalog](../data/schema-catalog.md), [guideline](../data/database-guidelines.md), [native auth](../contracts/native-auth.md), [research](../references/crm-database-patterns.md), [transition](../planning/native-identity-data-plan.md).
+
+Supersedes OIDC/no-password-store target in security/auth and provider choice of ADR-011/012/020; retains baseline evidence and ADR-017 service boundaries. PLAN-007 design-only; runtime vẫn Keycloak đến native source/cutover acceptance. Không xóa volume hoặc reset account credentials để thực hiện quyết định.

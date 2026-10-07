@@ -14,7 +14,7 @@ Deploy unit đề xuất `services/crm-connector` gồm NestJS API và worker en
 
 ## Data model nội bộ và nguồn chuẩn
 
-Tên entities dưới đây là logical target model, không phải danh sách bảng đã migrate. Physical schema/DDL mỗi service phải chốt tại extraction task. tenant_id, version, timestamps/retention theo loại entity; session/account exceptions nêu rõ ở rows. UUID opaque được giữ khi chuyển từ monolith.
+Tên entities dưới đây là logical target model, không phải danh sách bảng đã migrate. Physical schema/DDL mỗi service phải chốt tại extraction task. Mọi application table có tenant_id NOT NULL theo [DB guideline](../data/database-guidelines.md); version/timestamps/retention theo loại entity. UUID opaque được giữ khi chuyển từ monolith.
 
 | Entity / aggregate | Fields chính / quan hệ | Invariant / authority |
 |---|---|---|

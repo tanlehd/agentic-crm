@@ -86,6 +86,8 @@ services:
       MYSQL_HOST: mysql
       MYSQL_DATABASE: ${MYSQL_DATABASE:?Run pnpm env:init}
       MYSQL_USER: ${MYSQL_USER:?Run pnpm env:init}
+      MYSQL_AUTH_USER: ${MYSQL_AUTH_USER:?Run pnpm env:init}
+      MYSQL_AUTH_PASSWORD: ${MYSQL_AUTH_PASSWORD:?Run pnpm env:init}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Run pnpm env:init}
     depends_on:
       migrate: {condition: service_completed_successfully}
@@ -97,9 +99,9 @@ services:
       <<: *backend-env
       PORT: '3001'
       APP_ORIGIN: ${APP_ORIGIN:-http://localhost:8080}
-      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:?Run pnpm env:init}
+      MYSQL_AUTH_USER: ${MYSQL_AUTH_USER:?Run pnpm env:init}
+      MYSQL_AUTH_PASSWORD: ${MYSQL_AUTH_PASSWORD:?Run pnpm env:init}
       SESSION_ENCRYPTION_KEY: ${SESSION_ENCRYPTION_KEY:?Run pnpm env:init}
-      OIDC_BACKCHANNEL: http://keycloak:8080/identity/realms/agentic-crm-dev
     command: [node, dist/main.js]
   worker:
     <<: *backend
@@ -122,27 +124,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 6
-  keycloak:
-    image: quay.io/keycloak/keycloak@sha256:b0f60d489d51c5d113390bdf5461d4c06e6051be026c05549f2e1e10ec352bcc
-    command: [start-dev, --import-realm]
-    environment:
-      KC_BOOTSTRAP_ADMIN_USERNAME: local_admin
-      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?Run pnpm env:init}
-      KC_HTTP_RELATIVE_PATH: /identity
-      KC_HTTP_MANAGEMENT_RELATIVE_PATH: /
-      KC_HOSTNAME: ${APP_ORIGIN:-http://localhost:8080}/identity
-      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: 'true'
-      KC_PROXY_HEADERS: xforwarded
-      KC_HEALTH_ENABLED: 'true'
-    volumes:
-      - keycloak_data:/opt/keycloak/data
-      - ./infra/docker/realm.json:/opt/keycloak/data/import/realm.json:ro
-    healthcheck:
-      test: [CMD-SHELL, "bash -c 'exec 3<>/dev/tcp/127.0.0.1/9000; printf \"GET /health/ready HTTP/1.0\\r\\n\\r\\n\" >&3; head -1 <&3 | grep -q 200'"]
-      interval: 10s
-      timeout: 5s
-      retries: 18
-      start_period: 40s
   gateway:
     image: nginx@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236
     ports: ['127.0.0.1:${LOCAL_GATEWAY_PORT:-8080}:8080']
@@ -156,4 +137,3 @@ services:
 volumes:
   mysql_data:
   redis_data:
-  keycloak_data:

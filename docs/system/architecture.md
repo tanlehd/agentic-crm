@@ -1,5 +1,7 @@
 # Kiến trúc đích — enterprise microservices
 
+ADR-021 / PLAN-007 bổ sung: **CRM-native Identity, không Keycloak trong target**; MySQL là authority credential/session/quyền, Redis cache. [Schema catalog](../data/schema-catalog.md) đặt tên/phạm vi database mỗi service; [guideline](../data/database-guidelines.md) bắt buộc tenant_id mọi application table. SRC-038 native auth/tenant-column retrofit đã triển khai trong monolith; physical schema extraction chưa triển khai.
+
 Direction accepted2026-10-06 theo user, ADR-017/CHG-20261006-07. PLAN-005 là blueprint documentation, không phải đã tách source/deploy. [Baseline đang chạy](monolith-baseline.md) vẫn Next.js + NestJS API/worker + MySQL shared schema. SRC-028 implements scoped [independent HTTP ingress](../../services/crm-connector/README.md) under ADR-018, verified in disposable containers; no preview cutover. Remaining exact distributed wire/physical schema/security gates còn PLAN-006; không đánh Ready code extraction bằng tài liệu tổng thể này.
 
 ## Ranh giới triển khai

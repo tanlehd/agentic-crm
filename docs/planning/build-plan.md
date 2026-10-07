@@ -1,5 +1,7 @@
 # Kế hoạch sinh source code M1–M2
 
+ADR-021/PLAN-007 supersedes Keycloak as future auth design: [native auth + schema plan](native-identity-data-plan.md). Các W0–W6/gates OIDC dưới đây ghi baseline lịch sử; task mới dùng CRM-owned MySQL authentication và [DB guideline](../data/database-guidelines.md).
+
 Status: Ready for implementation theo từng task và design gate. Baseline kế hoạch: 2026-10-02; scaffold/Docker SRC-001…003 đã có ngày 2026-10-03, trạng thái thực thi theo tracker.
 
 ## Mục tiêu và chiến lược
@@ -16,7 +18,7 @@ Task tracker là [nguồn trạng thái duy nhất](../tracking/tasks.md); [chec
 | Frontend | Next.js App Router; Tailwind CSS + shadcn/ui; TanStack Query cho server state; React Hook Form cho form |
 | Backend | NestJS, TypeORM + mysql2; application services và tenant-scoped repositories |
 | Contracts | JSON Schema cho request/event/graph/runtime; Ajv validation; OpenAPI 3.1 cùng schema; generated TS/client kiểm tra diff trong CI |
-| Auth local | Keycloak OIDC dev realm; NestJS giữ session/token server-side, trình duyệt chỉ có session cookie |
+| Auth local | CRM native Identity: credential/session/quyền trong MySQL, trình duyệt chỉ có opaque cookie; SRC-038 |
 | Jobs | BullMQ; workflow/session/business state ở MySQL; Redis chỉ queue/cache/session ephemeral |
 | Tests | Vitest unit/integration, Supertest HTTP, Playwright browser E2E; MySQL thật cho constraint/transaction |
 | Container | Docker Compose v2; multi-stage images; API/worker cùng backend image khác command |
@@ -117,3 +119,7 @@ SRC-031 delivers Facebook OAuth/Page setup and channel-aware Inbox under [scoped
 ## UX-002 — Agent Chat product rebuild
 
 Theo CHG-20261006-19 và chỉ đạo mở rộng thiết kế từ sample, [workspace build plan](agent-chat-workspace.md) có SRC-032…037 tuần tự: unread/metrics/query → inbox/tags/snippets → snooze/activity → CRM context → UI → regression/release. Product/API/data design Ready, source TODO; exact machine schemas/migrations là deliverable từng task trước code phụ thuộc. Không phụ thuộc live Meta để hoàn thiện nội bộ Chat, không đóng M3 provider acceptance hoặc chạy song song mặc định.
+
+## ENV-003 — local infrastructure and host applications
+
+User-directed local tooling now separates persistent Docker infrastructure from Windows/macOS/Linux host application processes. [Runbook](../development/service-manager.md), [evidence](../tracking/details/ENV-003.md). Lifecycle does not migrate or reset data; normal synthetic QA can reuse tenant/user records. Source extraction and production Linux deployment gates remain unchanged.

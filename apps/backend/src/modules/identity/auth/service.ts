@@ -11,7 +11,7 @@ export interface Accounts { resolve(issuer: string, identity: Identity): Promise
 export class MysqlAccounts implements Accounts {
   private readonly pool: Pool;
   constructor() {
-    this.pool = createPool({ host: process.env.MYSQL_HOST, user: process.env.MYSQL_USER, password: process.env.MYSQL_PASSWORD, database: process.env.MYSQL_DATABASE, connectionLimit: 4, connectTimeout: 2000 });
+    this.pool = createPool({ host: process.env.MYSQL_HOST, port: Number(process.env.MYSQL_PORT ?? 3306), user: process.env.MYSQL_USER, password: process.env.MYSQL_PASSWORD, database: process.env.MYSQL_DATABASE, connectionLimit: 4, connectTimeout: 2000 });
   }
   async resolve(issuer: string, identity: Identity) {
     try {

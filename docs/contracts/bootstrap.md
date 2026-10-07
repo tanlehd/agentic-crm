@@ -1,5 +1,7 @@
 # Local Identity bootstrap — SRC-009
 
+**ADR-021:** OIDC/Keycloak seed bên dưới là lịch sử trước SRC-038. Bootstrap hiện tại theo [native runbook](../development/native-auth.md) và exact contract; không chạy các lệnh provider cũ. Native bootstrap phải tạo credential/session trong CRM Identity, dùng one-use enrollment, giữ IDs/membership/password hiện có và tenant_id cho mọi table theo [native auth](native-auth.md). Không auto reset fixture khi thay auth hoặc mỗi lần test; xem [transition](../planning/native-identity-data-plan.md).
+
 Status: Implemented/tested SRC-009, 2026-10-04. Internal operator CLI only; không public endpoint.
 
 `pnpm seed:dev` yêu cầu APP_ENV=development, HTTP loopback APP_ORIGIN, Docker MySQL host mysql/database agentic_crm và schema journal theo manifest hiện hành (v1–v6) đúng checksum. Guard chạy trước provider/DB writes. Test dùng isolated MySQL với APP_ENV=test. Không hỗ trợ production hoặc arbitrary target.

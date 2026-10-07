@@ -1,23 +1,21 @@
 # Checkpoint — điểm tiếp tục
 
-Updated 2026-10-07, S-20261007-01. User requests commit/push of current changes and explicitly stops further Docker validation; user will rebuild the local runtime later. SRC-034 remains VERIFYING, not DONE. SRC-032/033 and ENV-002 DONE. [Tracker](tasks.md) · [SRC-034 evidence](details/SRC-034.md).
+Updated2026-10-07, S-20261007-04. SRC-038 DONE: native MySQL authentication, tenant-column retrofit và local Keycloak cutover. PLAN-007/007A DONE; SRC-034 backend pending regression closed DONE. [Evidence](details/SRC-038.md), [native runbook](../development/native-auth.md), [schema catalog](../data/schema-catalog.md), [DB guideline](../data/database-guidelines.md).
 
-## Current delivery
+## Runtime và dữ liệu
 
-SRC-034 implements schema22 durable snooze, deadline CAS worker, effective queue reads, source-authorized activity projection, historical backfill, CRM/Workflow/Chatflow outbox notifications and strict additive contracts. Snooze preserves ownership/read markers/automation semantics. UI and full release remain SRC-036/037; SRC-035 has not been claimed.
+Monitor http://127.0.0.1:3020 PID50204; CRM http://localhost:18080. MySQL13306/Redis16379 Docker healthy, host API3001/worker3002/web18080 ready và monitor-owned. Connector API/worker chưa cấu hình, không chạy. Keycloak container stopped, volume giữ nguyên; không còn trong registry/Compose/proxy. Session và quyền do MySQL quản lý, không fallback provider. Private env đã có auth DB user riêng; không in credentials.
 
-Final source Windows checks run directly with Node24.21.0/pnpm10.33.0: lint, docs,23 schemas, generated contracts,7 tooling tests,104 unit tests, full build and typecheck PASS. API smoke initially timed out, then PASS after the hung Docker processes stopped (artifacts/SRC-034/host-smoke-recovered.txt). The canonical Windows wrapper failed to spawn pnpm.cmd; these are individual gate results, not a final canonical runner PASS.
+Dev DB migration23. Backup trước21→23,71 bảng cột gốc giữ nguyên,6 account IDs/memberships/roles và password fixtures được enroll một lần. Repeat upgrade/seed áp dụng0 và preserve6 credentials/81 tables. SQL backup và SHA256 trong ignored artifacts/SRC-038/local-upgrade.json + timestamped repeats; không commit hoặc gửi backup. MySQL/Redis không reset/flush. Test dùng native_identity_test/native_seed_test/native_connector_test persistent; legacy regression tmpfs project riêng đã cleanup.
 
-Earlier full MySQL run:217/222 PASS,5 FAIL; fixture cleanup, expired-deadline boolean and unbound Workflow notification fixes are in source. Final regression was interrupted by Docker500 errors and5s timeouts, including migration interruption causing downstream failures. Final MySQL acceptance remains pending. An earlier Linux canonical9/9 PASS predates the last runtime fixes. No test result is inferred from the user's decision to defer validation.
+## Checks
 
-## Workspace and environment
+222/222 full MySQL regression final PASS,16 native MySQL checks PASS,104 unit/10 tooling/24 strict schemas PASS, build/typecheck/lint/contracts/docs/API smoke PASS. Native Chrome login, Alpha/Beta selection/permission denial, domain write+idempotent replay, CSRF/logout/redirect, no provider traffic và actual API restart session retention PASS. DB grant negative checks và Compose host/dev/test config PASS. Argon2 Windows và Linux binary hash/verify PASS; macOS runtime và production Linux deployment NOT_RUN. Evidence files trong artifacts/SRC-038; exact commands/results ở task detail.
 
-Branch main, parent696dec1. User authorized commit/push of all current SRC-034 source/tests/contracts/docs. Delivery reference is the commit containing this checkpoint; no invented hash. Private .env, dependencies, backups and artifacts remain excluded. No source changes outside this task were present at claim.
+## Scope còn lại
 
-Development database was last migrated to schema21 in ENV-002; schema22 has not been applied to it. Docker recovery was explicitly approved, but failed after daemon500/hung commands. Desktop startup then reported inaccessible temporary sockets, first Docker/run/dockerInference and subsequently docker-secrets-engine/engine.sock. The old runtime-only directory was preserved at C:/Users/TanLe/AppData/Local/Docker/run-src034-recovery-20261007 and a fresh run directory created. No volume reset/deletion, secret-engine file modification or database migration occurred. Current service health and test-container cleanup are unverified after failed restart; earlier seven-service healthy status is historical. Do not claim the local app is currently available. No further Docker recovery/validation is requested in this session.
+Physical DB hiện vẫn agentic_crm;13 target schema ownership là design chuẩn, chưa extraction. PLAN-007B cần contracts/manifests loại cross-module UoW/FK trước tách schema; không move bảng bằng rename tùy tiện. Recovery email/general onboarding/MFA chưa triển khai; operator one-use reset có sẵn. Historical OIDC E2E/release scripts chưa port, không chạy như native acceptance. SRC-035…037 còn backlog; SRC-034 chỉ DONE backend UX-CHAT-18/20/22, không claim Chat UI/release.
 
-Artifacts and recovery scripts are local/ignored under artifacts/SRC-034. Full attempt integration-final.txt and host-summary.json preserve failures; host-smoke-recovered.txt records the successful later smoke. Source archive source-recovered.tar.gz and SHA-256 are prepared for a future test run, not evidence that it passed.
+## Workspace / tiếp tục
 
-## Next action
-
-After the user rebuilds local runtime, finish SRC-034 MySQL regression and required release evidence before marking DONE or starting dependent SRC-035. Use disposable test data; preserve development volumes and follow the schema22 upgrade runbook. UI/browser and full upgrade/rollback release gates remain SRC-036/037. No agents or scheduled work were started.
+S-20261007-05: user yêu cầu commit/push toàn bộ ENV-003/PLAN-007/SRC-038 trên main, parent134c9cb. Delivery reference là commit chứa entry này; remote origin/main, kết quả push kiểm riêng sau commit. Private env/.local/artifacts/backups không đưa vào Git. Không deploy hoặc đổi runtime trong phiên Git sync. Không agents hay lịch nền, không task active. Nếu tiếp tục kiến trúc DB: PLAN-007B scoped design; nếu tiếp tục Chat: SRC-035 sau khi đọc module/contracts. Không tự bắt đầu cả hai. Đọc native runbook trước lifecycle/seed; stop app writers trước migration, giữ volume và private env.

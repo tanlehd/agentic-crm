@@ -1,5 +1,7 @@
 # Physical schema baseline M1
 
+**ADR-021:** file này giữ lịch sử physical baseline, không sửa DDL/checksum đã áp dụng. Thiết kế mới theo [guideline](database-guidelines.md), [catalog](schema-catalog.md), [retrofit inventory](table-placement-inventory.md); SRC-038 forward migration23 và journal bootstrap đã thêm tenant_id, giữ DDL/checksum cũ. [Exact native DDL](../contracts/native-auth-implementation.md). Bảng baseline bên dưới là lịch sử trước retrofit.
+
 > Baseline monolith hiện có, không phải physical schema của các microservice đích. Xem [data ownership ADR-017](service-ownership.md); FK/UoW cross-module dưới đây chỉ áp dụng trong DB hiện tại. Extraction không sửa applied migrations1–18.
 Status: Ready for implementation; source migration tạo dần từ SRC-004. Quy tắc dưới bổ sung [dictionary](dictionary.md), không thay lifecycle.
 

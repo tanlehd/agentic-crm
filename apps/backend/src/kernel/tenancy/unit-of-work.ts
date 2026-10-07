@@ -1,3 +1,4 @@
+import { PLATFORM_TENANT_ID } from '../database/system-scope.js';
 import type { DataSource, QueryRunner } from 'typeorm';
 export interface TenantContext { readonly tenantId: string }
 export class TransactionScope {
@@ -5,6 +6,7 @@ export class TransactionScope {
   readonly context: TenantContext;
   constructor(context: TenantContext, private readonly runner: QueryRunner) {
     if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(context.tenantId)) throw new Error('Invalid tenant context');
+    if(context.tenantId===PLATFORM_TENANT_ID)throw new Error('System tenant is not a business context');
     this.context = Object.freeze({ tenantId: context.tenantId });
   }
   // Infrastructure/application ports only. Never expose raw SQL to transport input.

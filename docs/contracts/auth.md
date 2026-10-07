@@ -1,5 +1,7 @@
 # Auth transport contract
 
+**SUPERSEDED FOR TARGET by ADR-021 / PLAN-007:** [native auth](native-auth.md) thay Keycloak/OIDC login. Nội dung này chỉ là contract lịch sử SRC-006 và migration reference, không còn runtime authority. Không mở rộng OIDC provider dependency; runtime removal theo [cutover plan](../planning/native-identity-data-plan.md).
+
 Status: Implemented SRC-006 cho Keycloak local, session/CSRF và auth-only UI; [evidence](../tracking/details/SRC-006.md). Membership/tenant authorization ở SRC-007.
 
 ## Endpoints

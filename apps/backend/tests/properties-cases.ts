@@ -23,8 +23,8 @@ export function propertiesCases(isolated:(name:string)=>Promise<DataSource>){des
   it('v6 upgrade preserves records and journal; v7 typed constraints and custom metadata',async()=>{
     ds=await isolated('properties_test');await migrate(ds,migrations.slice(0,6));
     for(const id of [tenant,beta])await ds.query("INSERT INTO tenant(id,name,status,created_at,updated_at) VALUES (?,'Synthetic','active',UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[id]);
-    const before=await ds.query('SELECT * FROM tenant ORDER BY id'),journal=await ds.query('SELECT version,checksum FROM schema_migration ORDER BY version');
-    expect(await migrate(ds)).toBe(migrations.length-6);expect(await migrate(ds)).toBe(0);expect(await ds.query('SELECT * FROM tenant ORDER BY id')).toEqual(before);expect((await ds.query('SELECT version,checksum FROM schema_migration ORDER BY version')).slice(0,6)).toEqual(journal);
+    const before=await ds.query("SELECT id,name,status,timezone,locale,version,created_at,updated_at FROM tenant WHERE id<>'01900000-0000-7000-8000-000000000001' ORDER BY id"),journal=await ds.query('SELECT version,checksum FROM schema_migration ORDER BY version');
+    expect(await migrate(ds)).toBe(migrations.length-6);expect(await migrate(ds)).toBe(0);expect(await ds.query("SELECT id,name,status,timezone,locale,version,created_at,updated_at FROM tenant WHERE id<>'01900000-0000-7000-8000-000000000001' ORDER BY id")).toEqual(before);expect((await ds.query('SELECT version,checksum FROM schema_migration ORDER BY version')).slice(0,6)).toEqual(journal);
     await ds.query("INSERT INTO account(id,issuer,subject,display_name,created_at,updated_at) VALUES (?,'https://properties.invalid',?,'Synthetic',UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[account,account]);
     for(const [t,p] of [[tenant,principal],[beta,randomUUID()]]){
       const m=randomUUID();await ds.query("INSERT INTO membership(id,tenant_id,account_id,status,seat_code,created_at,updated_at) VALUES (?,?,?,'active','admin',UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[m,t,account]);

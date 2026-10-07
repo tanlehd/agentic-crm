@@ -68,8 +68,8 @@ export function registryCases(isolated:(name:string)=>Promise<DataSource>){descr
   it('upgrades seeded v5 without changing Identity data and repeats as a no-op',async()=>{
     const upgrade=await isolated('registry_upgrade_test');await migrate(upgrade,migrations.slice(0,5));
     const id=randomUUID();await upgrade.query("INSERT INTO tenant(id,name,status,created_at,updated_at) VALUES (?,'Preserved','active',UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[id]);
-    const before=await upgrade.query('SELECT * FROM tenant');const journal=await upgrade.query('SELECT version,checksum FROM schema_migration ORDER BY version');
-    expect(await migrate(upgrade)).toBe(migrations.length-5);expect(await migrate(upgrade)).toBe(0);expect(await upgrade.query('SELECT * FROM tenant')).toEqual(before);expect((await upgrade.query('SELECT version,checksum FROM schema_migration ORDER BY version')).slice(0,5)).toEqual(journal);
+    const before=await upgrade.query("SELECT id,name,status,timezone,locale,version,created_at,updated_at FROM tenant WHERE id<>'01900000-0000-7000-8000-000000000001'");const journal=await upgrade.query('SELECT version,checksum FROM schema_migration ORDER BY version');
+    expect(await migrate(upgrade)).toBe(migrations.length-5);expect(await migrate(upgrade)).toBe(0);expect(await upgrade.query("SELECT id,name,status,timezone,locale,version,created_at,updated_at FROM tenant WHERE id<>'01900000-0000-7000-8000-000000000001'")).toEqual(before);expect((await upgrade.query('SELECT version,checksum FROM schema_migration ORDER BY version')).slice(0,5)).toEqual(journal);
   });
   it('metadata receipt, signed pagination and unknown request fields',async()=>{
     const key=randomUUID(),body={key:'appointment',label:'Appointment'};

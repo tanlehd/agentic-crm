@@ -21,13 +21,13 @@ export function seedCases(isolated:(name:string)=>Promise<DataSource>){
       for(const change of [{APP_ENV:'production'},{APP_ORIGIN:'https://example.com'},{MYSQL_HOST:'remote'},{MYSQL_DATABASE:'production'}])await expect(seedIdentity(ds,input,{...env,...change})).rejects.toThrow();
       await expect(seedIdentity(ds,{...input,issuer:'http://other.invalid'},env)).rejects.toThrow('SEED_INVALID_MAPPING');
       await expect(seedIdentity(ds,{...input,subjects:{...input.subjects,beta_admin:input.subjects.alpha_admin}},env)).rejects.toThrow('SEED_INVALID_MAPPING');
-      expect(await ds.query('SELECT id FROM tenant')).toEqual([]);
+      expect(await ds.query("SELECT id FROM tenant WHERE kind='business'")).toEqual([]);
     });
     it('rolls back both tenants/accounts/audit/outbox on a late write failure',async()=>{
       await ds.query(`CREATE TRIGGER seed_fail BEFORE INSERT ON service_actor FOR EACH ROW BEGIN IF NEW.tenant_id='${fixtureId("clinic_beta")}' THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='synthetic failure'; END IF; END`);
       await expect(seedIdentity(ds,input,env)).rejects.toThrow();
-      for(const table of ['tenant','account','membership','role','audit_entry','outbox_event'])expect(await ds.query(`SELECT id FROM \`${table}\``)).toEqual([]);
-      await ds.query('DROP TRIGGER seed_fail');
+      try { for(const table of ['tenant','account','membership','role','audit_entry','outbox_event'])expect(await ds.query(`SELECT id FROM \`${table}\`${table==='tenant'?" WHERE kind='business'":''}`)).toEqual([]); }
+      finally { await ds.query('DROP TRIGGER seed_fail'); }
     });
     it('serializes concurrent seeds; preserves existing OIDC account and exact repeat snapshot',async()=>{
       const account='00900000-0000-5000-a000-000000000099';

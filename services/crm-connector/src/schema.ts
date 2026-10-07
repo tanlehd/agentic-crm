@@ -43,9 +43,11 @@ export async function migrate(pool:Pool){
   const [rows]=await c.query<any[]>("SELECT GET_LOCK(SHA2(CONCAT(DATABASE(),':connector:migrate'),256),10) acquired");
   if(Number(rows[0].acquired)!==1)throw new Error('MIGRATION_LOCK_UNAVAILABLE');locked=true;
   await c.query("CREATE TABLE IF NOT EXISTS connector_schema_migration (version INT PRIMARY KEY,name VARCHAR(128) NOT NULL,checksum CHAR(64) NOT NULL,state ENUM('applying','applied') NOT NULL) ENGINE=InnoDB");
+  const [columns]=await c.query<any[]>("SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='connector_schema_migration' AND COLUMN_NAME='tenant_id'");
+  if(!columns.length)await c.query("ALTER TABLE connector_schema_migration ADD tenant_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL DEFAULT '01900000-0000-7000-8000-000000000001', ADD CONSTRAINT ck_connector_journal_tenant CHECK(tenant_id='01900000-0000-7000-8000-000000000001')");
   const [journal]=await c.query<any[]>('SELECT * FROM connector_schema_migration ORDER BY version');validateJournal(journal,false);
   for(const migration of migrations.slice(journal.length)){
-   await c.query("INSERT INTO connector_schema_migration VALUES (?,?,?,'applying')",[migration.version,migration.name,migration.checksum]);
+   await c.query("INSERT INTO connector_schema_migration(tenant_id,version,name,checksum,state) VALUES ('01900000-0000-7000-8000-000000000001',?,?,?,'applying')",[migration.version,migration.name,migration.checksum]);
    for(const sql of migration.statements)await c.query(sql);
    await c.query("UPDATE connector_schema_migration SET state='applied' WHERE version=?",[migration.version]);
   }

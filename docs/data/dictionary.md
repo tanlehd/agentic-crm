@@ -1,11 +1,13 @@
 # Data dictionary
 
+**ADR-021 target dictionary:** [native Identity fields](../contracts/native-auth.md), [scope/key standard](database-guidelines.md), [schema placement](schema-catalog.md) và [inventory](table-placement-inventory.md) supersede ngoại lệ account/tenant/journal bên dưới cho thiết kế mới. Các bảng M1–M2 dưới đây là physical baseline còn chạy; SRC-038 migration23 đã triển khai tenant columns và native tables trong monolith; [physical detail](../contracts/native-auth-implementation.md).
+
 > Baseline monolith hiện có, không phải physical schema của các microservice đích. Xem [data ownership ADR-017](service-ownership.md); FK/UoW cross-module dưới đây chỉ áp dụng trong DB hiện tại. Extraction không sửa applied migrations1–18.
 Status: Ready for implementation cho bảng M1–M2; phần bổ sung M3 và mục M4–M5 là Draft.
 
 ## Quy ước vật lý
 
-Theo [model](model.md): mọi bảng bên dưới trừ `account` có `tenant_id`; mọi FK nội bộ tenant dùng cặp `(tenant_id,target_id)`. `tenant` có `id` là tenant root. Bảng nối dùng composite PK như ghi trong constraint; bảng còn lại có `id CHAR(36)`. Audit/event có `created_at`; mutable entity có `updated_at`. String key phân biệt hoa thường; email không dùng làm account key.
+Baseline legacy theo [model](model.md): bảng nghiệp vụ bên dưới có `tenant_id`; account và tenant root/journal đã được bổ sung tenant_id bởi SRC-038; mọi FK nội bộ tenant dùng cặp `(tenant_id,target_id)`. `tenant` có `id` là tenant root. Bảng nối dùng composite PK như ghi trong constraint; bảng còn lại có `id CHAR(36)`. Audit/event có `created_at`; mutable entity có `updated_at`. String key phân biệt hoa thường; email không dùng làm account key.
 
 Ký hiệu `?` là nullable; `JSON` là dữ liệu có schema ở service; `ref` là UUID FK. Mặc định trường không có `?` bắt buộc. ID fields được index cùng tenant; `version BIGINT` bắt đầu 1. Các config mutable (tenant, membership, principal, ai_agent, team, role, object_type, property_definition, connection, form/view, workflow/chatflow definition) đều có version dù bảng dưới chỉ liệt kê field đặc thù. Status dùng VARCHAR + application enum validation. Money/decimal lưu `DECIMAL(20,6)`, datetime UTC microsecond, bool `TINYINT(1)`.
 
@@ -13,7 +15,7 @@ Ký hiệu `?` là nullable; `JSON` là dữ liệu có schema ở service; `ref
 
 | Table | Fields chính | Constraint / hành vi |
 |---|---|---|
-| account | issuer VARCHAR(512), subject VARCHAR(255), display_name, email? | Unique issuer+subject; account toàn platform |
+| account | tenant_id(system), login_key?, native_status, security_revision, issuer/subject provenance, display_name, email? | Unique tenant+login_key; giữ IDs/provenance; không tự merge email |
 | tenant | name, status(active/suspended), timezone, locale | timezone default Asia/Ho_Chi_Minh; không cấp quyền CRM cho operator |
 | membership | account_id ref, status(invited/active/suspended), seat_code, auth_revision | Unique tenant+account; account FK global là ngoại lệ chủ đích |
 | principal | kind(human/ai), membership_id? ref, ai_agent_id? ref, status, availability(available/unavailable), auth_revision | Đúng một trong hai ref theo kind; mỗi membership/ai_agent một principal |
@@ -109,7 +111,7 @@ Quy tắc physical type/default/index/FK/migration bổ sung ở [physical schem
 
 ## Infrastructure control plane — SRC-004
 
-`schema_migration` không tenant-scoped; journal kỹ thuật version/name/checksum/state/started_at/applied_at/error_code theo [physical schema](physical-schema.md). Không exposed qua public API, không chứa dữ liệu người dùng. Account/Tenant migration hiện đã có; các bảng còn lại theo task gate.
+Baseline legacy `schema_migration` chưa có tenant_id; target bắt buộc system scope theo ADR-021; journal kỹ thuật version/name/checksum/state/started_at/applied_at/error_code theo [physical schema](physical-schema.md). Không exposed qua public API, không chứa dữ liệu người dùng. Account/Tenant migration hiện đã có; các bảng còn lại theo task gate.
 
 SRC-007 CHG-20261003-06 triển khai Identity v2 và storage reliability v3 (`audit_entry`, `idempotency_record`, `outbox_event`) phục vụ admin transaction. SRC-008 nối inbox/relay/leases. V1/v2 giữ immutable; không thêm schema field_policy tới SRC-010. API Identity version/revision truyền string decimal để không mất BIGINT.
 
@@ -174,3 +176,7 @@ Existing contact_identity remains canonical CRM-owned identity mapping in schema
 ## UX-002 — Agent workspace entities (scoped source status in tracker)
 
 [Dictionary extension](agent-chat-workspace.md) chốt conversation_workspace/message_workspace sequence và coverage, conversation_read_state, conversation_snooze, chat_inbox/share, conversation_tag/link, chat_snippet, conversation_activity/counter và rollout/cohort/cutoff tables. Chat là writer; metrics tính theo viewer ACL, không global count. CRM thêm optional Contact address/preferred_language qua property metadata hiện hữu; Contact identity authority giữ nguyên. Keys/types/indexes/backfill ở extension; migration numbers chỉ cấp khi implement, không sửa schema1–19.
+
+## Native Identity — migration23
+
+Physical fields/defaults/CHECK/index/FK theo [exact implementation contract](../contracts/native-auth-implementation.md). account_credential lưu Argon2 PHC/version/changed_at; auth_session lưu token_hash, account_id, security_revision và created/last_seen/absolute expiry/revoked epoch ms; auth_challenge lưu token_hash/browser_hash/expires_at; auth_token lưu one-use purpose/security_revision/expiry/consumed; auth_attempt lưu hashed bucket/window/count; system_audit_entry append-only action/account/time. Cả sáu bảng thuộc logical crm_identity, explicit system tenant; không chứa business tenant payload. tenant root tenant_id=id, kind business/system. Journal có explicit system tenant_id, không đổi checksum migration cũ.

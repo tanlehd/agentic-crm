@@ -18,8 +18,8 @@ export function fixtureId(alias: string): string {
 export function seedGuard(env: NodeJS.ProcessEnv): string {
   const url=new URL(env.APP_ORIGIN ?? '');
   if (!['development','test'].includes(env.APP_ENV ?? '') || url.protocol!=='http:' || !['localhost','127.0.0.1'].includes(url.hostname) || url.username || url.password || url.pathname!=='/' || url.search || url.hash) throw new Error('SEED_LOCAL_ONLY');
-  if (env.MYSQL_HOST!=='mysql' || (env.APP_ENV==='development' ? env.MYSQL_DATABASE!=='agentic_crm' : env.MYSQL_DATABASE!=='seed_test')) throw new Error('SEED_DATABASE_DENIED');
-  return `${url.origin}/identity/realms/agentic-crm-dev`;
+  if (!(env.IDENTITY_SEED_MODE==='native'?['mysql','127.0.0.1']:['mysql']).includes(env.MYSQL_HOST??'') || (env.APP_ENV==='development' ? env.MYSQL_DATABASE!=='agentic_crm' : !(env.IDENTITY_SEED_MODE==='native'?['native_seed_test']:['seed_test']).includes(env.MYSQL_DATABASE??''))) throw new Error('SEED_DATABASE_DENIED');
+  return env.IDENTITY_SEED_MODE==='native'?'urn:agentic-crm:native':`${url.origin}/identity/realms/agentic-crm-dev`;
 }
 const grants=(resource:string, actions:string[], scope='team')=>actions.map(action=>({resource,action,scope}));
 const roles={
@@ -45,6 +45,11 @@ export async function seedIdentity(source: DataSource, input: SeedInput, env=pro
     await runner.startTransaction('READ COMMITTED');
     const accounts={} as Record<SeedUser,string>;
     for (const user of seedUsers) {
+      if(env.IDENTITY_SEED_MODE==='native'){
+        const label=user==='beta_admin'?'beta':'alpha';
+        const [member]=await runner.query('SELECT account_id FROM membership WHERE tenant_id=? AND id=?',[fixtureId(`clinic_${label}`),fixtureId(`${label}:member:${user}`)]);
+        if(member){accounts[user]=member.account_id;continue;}
+      }
       const rows=await runner.query('SELECT id FROM account WHERE issuer=? AND subject=?',[issuer,input.subjects[user]]);
       accounts[user]=rows[0]?.id ?? fixtureId(`account:${user}`);
       if (!rows.length) await runner.query('INSERT INTO account(id,issuer,subject,display_name,email,created_at,updated_at) VALUES (?,?,?,?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))',[accounts[user],issuer,input.subjects[user],user,`${user}@example.invalid`]);

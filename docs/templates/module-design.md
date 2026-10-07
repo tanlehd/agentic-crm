@@ -37,3 +37,7 @@ Link AC, fixtures, kết quả mong đợi; module upstream/downstream.
 ## Mở rộng còn Draft
 
 Ghi cụ thể capability và quyết định phải hoàn thiện trước implement.
+
+## Database placement bắt buộc
+
+Liệt kê bảng mới/thay đổi với current physical DB, target schema trong [catalog](../data/schema-catalog.md), owning aggregate, business/system scope và tenant_id NOT NULL. Điền [table template](database-table.md) cho từng nhóm invariant; remote refs qua API/events, không cross-schema SQL/FK. Nêu compatibility/backfill và reusable synthetic fixture evidence.

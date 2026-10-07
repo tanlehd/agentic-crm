@@ -1,5 +1,7 @@
 # Agentic CRM
 
+**Thiết kế mới ADR-021 (2026-10-07):** bỏ Keycloak khỏi target; CRM Identity tự quản lý đăng nhập/session/quyền trong MySQL. Mọi bảng ứng dụng có tenant_id, schema theo service. [DB guideline](docs/data/database-guidelines.md) · [Schema catalog](docs/data/schema-catalog.md) · [Native auth/cutover plan](docs/planning/native-identity-data-plan.md). SRC-038 đã cutover native local; [runbook](docs/development/native-auth.md). Physical schema extraction còn PLAN-007B.
+
 Nền tảng conversational CRM dạng SaaS multi-tenant, nơi Human Agent và AI Agent cùng xử lý hội thoại, lead, cơ hội bán hàng và yêu cầu hỗ trợ.
 
 **Kiến trúc đích:** enterprise microservices, service-owned data/API/events theo [service catalog](docs/services/README.md) và [architecture](docs/system/architecture.md). Preview đang chạy vẫn monolith; SRC-028 đã triển khai và kiểm thử independent Connector ingress theo [kế hoạch chuyển đổi](docs/planning/microservices-migration.md), chưa chuyển traffic preview.
@@ -7,6 +9,8 @@ Nền tảng conversational CRM dạng SaaS multi-tenant, nơi Human Agent và A
 **Trạng thái:** 25/25 source tasks M1–M2 DONE; M1 và M2 local/mock release gates PASS. CRM/Identity, Conversation/Inbox, routing/Human takeover, deterministic Agent Runtime, durable Workflow/Chatflow và Sales/Operations UI đã có. Release đã qua cold start, nâng schema8→17 giữ dữ liệu, restart và demo OIDC→CTM→Lead→Sales trên ARM64 native và AMD64 emulated. [Tracker](docs/tracking/tasks.md) · [Release/runbook](docs/development/m2-release.md). Connector Meta/AI thật và M4–M5 chưa triển khai; M3 đã bắt đầu với message envelope, normalized rich mock storage/API/inbox đã có theo tracker.
 
 Mở [ứng dụng local](http://localhost:8080) sau khi khởi động theo [hướng dẫn chạy](docs/development/local.md).
+
+Host development Windows/macOS/Linux: [hướng dẫn hạ tầng và service monitor](docs/development/service-manager.md). `pnpm infra:start`, `pnpm local:init`, `pnpm local:monitor`; start/stop từng ứng dụng và giữ dữ liệu MySQL/Redis. DB local đã migration23, native login và readiness đạt.
 
 ## Bắt đầu đọc
 
@@ -19,14 +23,14 @@ Mở [ứng dụng local](http://localhost:8080) sau khi khởi động theo [h�
 
 ## Bắt đầu build
 
-Đợt đầu gồm 25 task M1–M2; trạng thái hiện tại ở tracker. [Docker Compose](compose.yaml) đã có web/API/worker, MySQL, Redis, Keycloak dev; test runner tách project. Migration/kernel ở SRC-004; portable verify/CI adapter ở SRC-005, seed Identity idempotent ở SRC-009; registry foundation ở SRC-010; properties/custom CRUD ở SRC-011, CRM core ở SRC-012 và Admin/CRM UI ở SRC-013.
+Đợt đầu gồm 25 task M1–M2; trạng thái hiện tại ở tracker. [Docker Compose](compose.yaml) đã có web/API/worker, MySQL, Redis và native MySQL auth; test runner tách project. Migration/kernel ở SRC-004; portable verify/CI adapter ở SRC-005, seed Identity idempotent ở SRC-009; registry foundation ở SRC-010; properties/custom CRUD ở SRC-011, CRM core ở SRC-012 và Admin/CRM UI ở SRC-013.
 
 Mỗi phiên cập nhật tracker, evidence và checkpoint; thay đổi thiết kế theo [change control](docs/governance/change-control.md). [AGENTS.md](AGENTS.md) hướng dẫn các phiên triển khai sau đọc đúng tài liệu và ghi lại tiến độ.
 
 ## Các quyết định nền tảng
 
 - Next.js + TypeScript; NestJS modular monolith và worker; MySQL 8.4 LTS; Redis/BullMQ. AI Runtime đi qua adapter.
-- Shared database, dữ liệu và cấu hình cô lập bằng tenant; quyền được kiểm tra ở backend.
+- Target database-per-service theo schema catalog; mọi application table có tenant_id và quyền do CRM kiểm tra ở backend. Shared database hiện tại là baseline chuyển đổi.
 - Contact là danh tính; Lead là nhu cầu; Deal là cơ hội; Customer là trạng thái của Contact sau một Deal thắng.
 - Conversation, Lead, Deal, Ticket có owner là Human hoặc AI; Team tổ chức hàng chờ và phạm vi quyền.
 - Standard object và custom object chia sẻ registry/metadata/association; không tạo bảng riêng cho từng tenant.
@@ -50,4 +54,4 @@ SRC-031 adds Admin→Channels→Facebook OAuth/Page configuration with encrypted
 
 Agent Chat rebuild: [workspace plan](docs/planning/agent-chat-workspace.md) và [UX](docs/ux/agent-chat-workspace.md). SRC-032 backend unread/query/metrics foundation DONE với203 MySQL tests và9 canonical gates; SRC-033 catalogs DONE với209 MySQL regression,13 final workspace cases và102 unit tests. UI rebuild và full workspace local release chưa hoàn tất; không đồng nghĩa đã nâng schema preview hoặc hoàn thành live provider integration.
 
-SRC-034 snooze/activity backend and schema22 source are implemented; final MySQL validation is deferred at user request while the local runtime is rebuilt. Status VERIFYING, no local schema22 upgrade or full UI/release claim. [Evidence](docs/tracking/details/SRC-034.md).
+SRC-034 snooze/activity backend and schema22 source are implemented; SRC-038 regression now passes222 MySQL cases and local DB is23. Full workspace UI/release remains pending; task disposition is recorded in the tracker. [Evidence](docs/tracking/details/SRC-034.md).

@@ -14,11 +14,11 @@ Deploy unit đề xuất `services/gateway` gồm NestJS API và worker entrypoi
 
 ## Data model nội bộ và nguồn chuẩn
 
-Tên entities dưới đây là logical target model, không phải danh sách bảng đã migrate. Physical schema/DDL mỗi service phải chốt tại extraction task. tenant_id, version, timestamps/retention theo loại entity; session/account exceptions nêu rõ ở rows. UUID opaque được giữ khi chuyển từ monolith.
+Tên entities dưới đây là logical target model, không phải danh sách bảng đã migrate. Physical schema/DDL mỗi service phải chốt tại extraction task. Mọi application table có tenant_id NOT NULL theo [DB guideline](../data/database-guidelines.md); version/timestamps/retention theo loại entity. UUID opaque được giữ khi chuyển từ monolith.
 
 | Entity / aggregate | Fields chính / quan hệ | Invariant / authority |
 |---|---|---|
-| session / csrf / request_context | session reference,selected tenant,issuer subject,expiry,trace | Identity authority; session cache Redis ephemeral, no provider token browser |
+| session / csrf / request_context | session reference,selected tenant,native account/session ref,expiry,trace | Identity authority; durable session authority MySQL tại Identity, optional Redis cache; no credential browser |
 | route_contract / compatibility_map | public API version,target service route,timeout/error mapping | Deployment config versioned; routing ownership cutover explicit |
 | read_cache | tenant+principal+auth revision+query key,TTL | Optional; no cross-user/tenant cache, no stale response after revoke without defined policy |
 

@@ -4,13 +4,13 @@ Status: Ready for implementation cho M1–M2.
 
 ## Tenant context
 
-Human đăng nhập qua OIDC Authorization Code + PKCE, frontend dùng session cookie HttpOnly/Secure/SameSite=Lax; backend giữ token phía server, request mutation kiểm tra CSRF token và Origin. Account ánh xạ bằng `(issuer, subject)`, không gộp tài khoản bằng email. Không xây password store riêng.
+Target ADR-021: Human đăng nhập native CRM; Identity sở hữu password hash Argon2id, durable session và quyền trong MySQL theo [native auth](../contracts/native-auth.md). Browser dùng opaque session cookie HttpOnly/Secure/SameSite=Lax; mutation kiểm CSRF/Origin, live session/revisions. Keycloak/OIDC chỉ còn baseline chờ cutover; không gộp account bằng email.
 
-Ngoại lệ chỉ cho local development/test qua HTTP loopback: cookie có thể Secure=false; staging/production bắt buộc HTTPS và Secure=true. Public issuer và private backchannel phải được kiểm thử, không tắt issuer validation để xử lý container hostname. Xem [Docker plan](docker-development.md); exact auth routes/session contract được bổ sung ở SRC-001 trước code.
+Ngoại lệ chỉ cho local development/test qua HTTP loopback: cookie có thể Secure=false; staging/production bắt buộc HTTPS và Secure=true. Trong baseline OIDC chưa cutover vẫn giữ issuer validation; target native không có issuer/private backchannel dependency. Xem [Docker plan](docker-development.md); exact auth routes/session contract được bổ sung ở SRC-001 trước code.
 
 Tenant được chọn qua `X-Tenant-Id`; backend xác thực membership active từ session, không tin header độc lập. Service actor/token bị khóa vào một tenant. Webhook thật về sau ánh xạ tenant từ connection đã xác minh; mock endpoint chỉ nhận credential integration mock đã provision.
 
-Mọi repository method cần TenantContext, ngoại trừ account/tenant control-plane API riêng. MySQL không được giả định có row-level security tự động; query wrapper + composite FK + integration test là các lớp kiểm soát. Cache key, job, event và cursor đều phải có tenant. Không tải record theo ID rồi mới lọc tenant ở frontend.
+Mọi repository method cần explicit TenantContext hoặc SystemContext ở control-plane allowlist; mọi table có tenant_id NOT NULL theo [guideline](../data/database-guidelines.md), account/tenant/journal không còn ngoại lệ bỏ cột trong target. MySQL không được giả định có row-level security tự động; query wrapper + composite FK + integration test là các lớp kiểm soát. Cache key, job, event và cursor đều phải có tenant. Không tải record theo ID rồi mới lọc tenant ở frontend.
 
 ## Thuật toán quyền
 

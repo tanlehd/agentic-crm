@@ -37,3 +37,7 @@ Current preview services continue unchanged. Before implementing pending media/M
 ADR-018 adds scoped PLAN-006A→SRC-028 before general broker foundation: independent durable HTTP ingress bridge to compatibility receiver. No transfer of Chat/CRM authority or preview cutover, no JetStream claim. Remaining PLAN-006 not completed by this slice.
 
 ADR-019 changes target ownership before extraction: canonical contact_identity belongs to CRM, Connector only caches resolution/profile. [Contract](../contracts/contact-resolution.md). Ingestion gate must include provider enrichment/cache behavior, CRM resolve/validation receipts, required crm_contact_id on both directions, legacy mapping backfill and new schema version. PLAN-006B is responsibility design only; not full PLAN-006 DONE.
+
+## ADR-021 schema naming và native Identity
+
+[Schema catalog](../data/schema-catalog.md) là chuẩn tên/phạm vi database cho extraction; [table inventory](../data/table-placement-inventory.md) chỉ rõ bảng cần partition. Mọi application table có tenant_id NOT NULL, system scope explicit. [Native Identity plan](native-identity-data-plan.md) bỏ Keycloak khỏi target, cho phép native auth additive trong monolith trước Identity extraction. Không rename/move physical tables khi cross-module transactions chưa được thay bằng scoped API/saga.

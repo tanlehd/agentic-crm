@@ -7,7 +7,17 @@ export async function applyRuntimeGrants(connection: Connection, database: strin
   await connection.query("REVOKE ALL PRIVILEGES, GRANT OPTION FROM ?@'%'",[user]);
   for (const {name} of tables as {name:string}[]) {
     if (!/^[a-z][a-z0-9_]*$/.test(name)) throw new Error('Invalid table');
-    const privileges = ['audit_entry','ownership_history'].includes(name) ? 'SELECT,INSERT' : name==='schema_migration' ? 'SELECT' : 'SELECT,INSERT,UPDATE,DELETE';
+    if (['account_credential','auth_session','auth_token','auth_challenge','auth_attempt','system_audit_entry'].includes(name)) continue;
+    const privileges = ['audit_entry','ownership_history'].includes(name) ? 'SELECT,INSERT' : ['account','schema_migration'].includes(name) ? 'SELECT' : 'SELECT,INSERT,UPDATE,DELETE';
     await connection.query(`GRANT ${privileges} ON \`${database}\`.\`${name}\` TO ?@'%'`,[user]);
   }
+}
+
+export async function applyAuthGrants(connection:Connection,database:string,user:string,password:string){
+  if(![database,user].every(value=>/^[a-z][a-z0-9_]{0,40}$/.test(value))||user==='root'||password.length<24)throw new Error('Invalid auth grant target');
+  await connection.query("CREATE USER IF NOT EXISTS ?@'%' IDENTIFIED BY ?",[user,password]);
+  await connection.query("REVOKE ALL PRIVILEGES, GRANT OPTION FROM ?@'%'",[user]);
+  await connection.query(`GRANT SELECT,UPDATE(security_revision) ON \`${database}\`.account TO ?@'%'`,[user]);
+  for(const table of ['account_credential','auth_session','auth_token','auth_challenge','auth_attempt'])await connection.query(`GRANT SELECT,INSERT,UPDATE,DELETE ON \`${database}\`.\`${table}\` TO ?@'%'`,[user]);
+  await connection.query(`GRANT INSERT ON \`${database}\`.system_audit_entry TO ?@'%'`,[user]);
 }

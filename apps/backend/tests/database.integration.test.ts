@@ -121,9 +121,9 @@ describe.skipIf(!enabled)('SRC-004 real MySQL', () => {
     await migrate(ds,migrations.slice(0,1));
     const tenant=randomUUID();
     await ds.query("INSERT INTO tenant(id,name,status,created_at,updated_at) VALUES (?,'Preserved','active',UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[tenant]);
-    const before=await ds.query('SELECT * FROM tenant');
+    const before=await ds.query("SELECT id,name,status,timezone,locale,version,created_at,updated_at FROM tenant WHERE id<>'01900000-0000-7000-8000-000000000001'");
     expect(await migrate(ds)).toBe(migrations.length-1);
-    expect(await ds.query('SELECT * FROM tenant')).toEqual(before);
+    expect(await ds.query("SELECT id,name,status,timezone,locale,version,created_at,updated_at FROM tenant WHERE id<>'01900000-0000-7000-8000-000000000001'")).toEqual(before);
     expect(await migrate(ds)).toBe(0);
   });
   it('serializes runners with a connection-held advisory lock', async () => {
@@ -150,7 +150,7 @@ describe.skipIf(!enabled)('SRC-004 real MySQL', () => {
   it('supports forward migration without losing existing tenant data', async () => {
     const manifest=[...migrations,{version:999,name:'synthetic_forward',statements:['CREATE TABLE upgrade_probe(id INT PRIMARY KEY)']}];
     expect(await migrate(source,manifest)).toBe(1);
-    expect((await source.query('SELECT COUNT(*) AS n FROM tenant'))[0].n).toBe('2');
+    expect((await source.query("SELECT COUNT(*) AS n FROM tenant WHERE kind='business'"))[0].n).toBe('2');
     expect(await migrate(source,manifest)).toBe(0);
     await expect(migrate(source)).rejects.toThrow('operator inspection');
   });
@@ -205,7 +205,7 @@ describe.skipIf(!enabled)('SRC-004 real MySQL', () => {
     await source.query("CREATE USER ?@'%' IDENTIFIED BY ?",[user,password]);
     await source.query("GRANT SELECT,INSERT,UPDATE,DELETE ON kernel_test.* TO ?@'%'",[user]);
     const app=databaseSource(); await app.initialize(); extra.push(app);
-    expect((await app.query('SELECT COUNT(*) AS n FROM tenant'))[0].n).toBe('2');
+    expect((await app.query("SELECT COUNT(*) AS n FROM tenant WHERE kind='business'"))[0].n).toBe('2');
     await expect(app.query('CREATE TABLE forbidden(id INT)')).rejects.toThrow();
     await expect(app.query('ALTER TABLE tenant ADD forbidden INT')).rejects.toThrow();
     await expect(app.query('DROP TABLE upgrade_probe')).rejects.toThrow();

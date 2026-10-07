@@ -1,3 +1,4 @@
+import { PLATFORM_TENANT_ID } from './system-scope.js';
 import type { DataSource } from 'typeorm';
 import { checksum, migrations, type Migration } from './migrations.js';
 type Journal = { version: number; name: string; checksum: string; state: string };
@@ -29,6 +30,8 @@ export async function migrate(source: DataSource, manifest: readonly Migration[]
       applied_at DATETIME(6) NULL, error_code VARCHAR(64) NULL,
       CONSTRAINT ck_schema_migration_state CHECK (state IN ('started','applied','failed'))
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_as_cs`);
+    const columns = await runner.query("SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='schema_migration' AND COLUMN_NAME='tenant_id'");
+    if (!columns.length) await runner.query(`ALTER TABLE schema_migration ADD tenant_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL DEFAULT '${PLATFORM_TENANT_ID}', ADD CONSTRAINT ck_journal_tenant CHECK(tenant_id='${PLATFORM_TENANT_ID}')`);
     const rows: Journal[] = await runner.query('SELECT version,name,checksum,state FROM schema_migration ORDER BY version');
     validateJournal(rows, manifest);
     if (rows.length === 0) {
@@ -37,7 +40,7 @@ export async function migrate(source: DataSource, manifest: readonly Migration[]
     }
     let applied = 0;
     for (const m of manifest.slice(rows.length)) {
-      await runner.query("INSERT INTO schema_migration(version,name,checksum,state,started_at) VALUES (?,?,?,'started',UTC_TIMESTAMP(6))", [m.version,m.name,checksum(m)]);
+      await runner.query("INSERT INTO schema_migration(tenant_id,version,name,checksum,state,started_at) VALUES (?,?,?,?,'started',UTC_TIMESTAMP(6))", [PLATFORM_TENANT_ID,m.version,m.name,checksum(m)]);
       try {
         for (const sql of m.statements) await runner.query(sql);
         await runner.query("UPDATE schema_migration SET state='applied',applied_at=UTC_TIMESTAMP(6) WHERE version=?", [m.version]);

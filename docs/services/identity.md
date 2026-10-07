@@ -4,7 +4,7 @@ Status: Target architecture accepted direction — PLAN-005 / ADR-017. Service e
 
 ## Phạm vi và trách nhiệm
 
-Tenant/account, membership, Human/AI principal, team/seat/roles, field policy và authorization revisions. OIDC/session là adapter của service.
+Tenant/account, membership, Human/AI principal, team/seat/roles, field policy và authorization revisions. Authentication native/password/session do CRM sở hữu trong MySQL theo [native auth](../contracts/native-auth.md) và ADR-021; bỏ Keycloak khỏi target.
 
 Ngoài phạm vi: Không sở hữu conversation owner, business record hoặc lifecycle agent provider.
 
@@ -14,11 +14,11 @@ Deploy unit đề xuất `services/identity` gồm NestJS API và worker entrypo
 
 ## Data model nội bộ và nguồn chuẩn
 
-Tên entities dưới đây là logical target model, không phải danh sách bảng đã migrate. Physical schema/DDL mỗi service phải chốt tại extraction task. tenant_id, version, timestamps/retention theo loại entity; session/account exceptions nêu rõ ở rows. UUID opaque được giữ khi chuyển từ monolith.
+Tên entities dưới đây là logical target model, không phải danh sách bảng đã migrate. Physical schema/DDL mỗi service phải chốt tại extraction task. Mọi application table có tenant_id NOT NULL, version/timestamps/retention theo loại entity; account/session thuộc system scope explicit theo [guideline](../data/database-guidelines.md). UUID opaque được giữ khi chuyển từ monolith.
 
 | Entity / aggregate | Fields chính / quan hệ | Invariant / authority |
 |---|---|---|
-| account / tenant | account: issuer+subject unique global; tenant: status, locale, timezone, version | account global là ngoại lệ; không cross-tenant account credential |
+| account / tenant | account: login_key, credential/security revision trong system tenant; tenant: tenant_id=id,kind,status,locale,timezone,version | Account multi-membership được giữ; mọi table có tenant_id, không wildcard system access |
 | membership / principal | tenant_id,id,account_id hoặc agent_ref,kind,status,seat,auth_revision | Human membership và principal atomic local; agent_ref là logical external reference |
 | role / team / service_actor / field_policy | permissions,team members,service scopes,resource/field keys,revision | Policy là authority ở Identity; object metadata từ CRM qua versioned API, không FK xuyên DB |
 
@@ -38,9 +38,11 @@ Transaction chỉ local state+audit+outbox/inbox. Network call không giữ SQL 
 
 ## Vận hành và scale
 
-API stateless; Redis session mất thì fail closed. Identity outage chặn privileged writes; public reads chỉ theo policy cache gate đã được thiết kế, không tự cho phép stale token.
+API stateless; session/credential và rate-limit authority ở MySQL; MySQL auth outage fail closed. Identity outage chặn privileged writes; public reads chỉ theo policy cache gate đã được thiết kế, không tự cho phép stale token.
 
 Owner vận hành là team sở hữu service (chưa gán người cụ thể). Bắt buộc readiness dependency-aware, liveness process-only, metrics latency/error/saturation/backlog, redacted tracing, restore drill và graceful shutdown leases. SLO/RPO/RTO và alert thresholds phải được chốt/test theo deployment gate; chưa có số liệu production để claim đạt.
+
+SRC-038 native auth hiện chạy trong apps/backend; database agentic_crm, target crm_identity. Credentials/session/quyền kiểm trong MySQL; xem [runbook](../development/native-auth.md).
 
 ## Source mapping và lộ trình tách
 

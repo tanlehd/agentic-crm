@@ -1,5 +1,7 @@
 # Operations & Audit
 
+ENV-003 developer tooling: [local service manager](../development/service-manager.md) observes/controls local processes and Compose infrastructure. It is independent of this target production service and does not implement tenant Operations APIs, central audit or remote Linux supervision.
+
 Status: Target architecture accepted direction — PLAN-005 / ADR-017. Service extraction/API/physical schema chưa Ready; không đồng nghĩa deployed. [Module hiện tại](../modules/operations.md) · [Catalog](README.md) · [Cross-service rules](../contracts/service-boundaries.md).
 
 ## Phạm vi và trách nhiệm
@@ -14,7 +16,7 @@ Deploy unit đề xuất `services/operations` gồm NestJS API và worker entry
 
 ## Data model nội bộ và nguồn chuẩn
 
-Tên entities dưới đây là logical target model, không phải danh sách bảng đã migrate. Physical schema/DDL mỗi service phải chốt tại extraction task. tenant_id, version, timestamps/retention theo loại entity; session/account exceptions nêu rõ ở rows. UUID opaque được giữ khi chuyển từ monolith.
+Tên entities dưới đây là logical target model, không phải danh sách bảng đã migrate. Physical schema/DDL mỗi service phải chốt tại extraction task. Mọi application table có tenant_id NOT NULL theo [DB guideline](../data/database-guidelines.md); version/timestamps/retention theo loại entity. UUID opaque được giữ khi chuyển từ monolith.
 
 | Entity / aggregate | Fields chính / quan hệ | Invariant / authority |
 |---|---|---|

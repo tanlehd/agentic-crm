@@ -181,3 +181,22 @@ SRC-030 sub-scope: real local HTTP/MySQL tests verify lookup/resolve replay/conc
 SRC-032 backend sub-scope of UX-CHAT-13/14/15/19/22:203 MySQL regression and canonical9/9 PASS;99 unit tests. [Evidence](../tracking/details/SRC-032.md). Covers marker/sequence/ACL query/waiting coverage and schema19 upgrade/backfill. Does not close browser layout, full feature rollout/rollback or SRC-033…037 scenarios.
 
 SRC-033 backend sub-scope UX-CHAT-16/17/21 PASS: full209 MySQL tests, final13 workspace cases (196 intentionally skipped),102 unit tests and canonical9/9. [Evidence](../tracking/details/SRC-033.md). Shared-view ACL/revoke/team/transfer/quota, Conversation tag concurrency/archive/field policies and snippet catalog/HTTP schemas verified; keyboard/composer and full UI remain SRC-036, deployment/rollback remains SRC-037.
+
+## PLAN-007 / ADR-021 — Native auth và schema guideline
+
+Design acceptance đã xác định; runtime cases NOT_RUN. Historical OIDC PASS giữ nguyên, không chứng minh native auth. REQ-01/02/12/14 áp thêm các gate:
+
+| ID | Given / When | Then |
+|---|---|---|
+| DB-01 | Inventory mọi application table kể cả journal/account/tenant/link | tenant_id NOT NULL, đúng business/system scope; không hidden framework table ngoài chuẩn |
+| DB-02 | Hai tenant có natural key giống nhau; thử reference/write tenant khác | Key trong tenant hợp lệ; foreign-tenant FK/repository/API/job/cache bị deny, không lộ count |
+| DB-03 | Customer gửi system tenant hoặc thiếu tenant context | Fail closed; account login/system journal không grant quyền CRM |
+| DB-04 | Runtime credential của service A đọc/write database B | DB permission denied; không cross-schema FK/view/trigger/shared transaction |
+| DB-05 | Chuyển source data sang schema mới qua warm upgrade | IDs/quyền/counts/checksums/ledger preserved, một writer, resumable backfill, rollback/forward fix được kiểm thử |
+| DB-06 | Rerun test/seed trên synthetic tenant có dữ liệu cũ | Không reset DB/Redis, không rotate password/regrant quyền; assertions dùng run IDs/delta |
+| DB-07 | Propose table mới | Có schema owner, table template, tenant keys, query/index/retention/grants/migration evidence trước Ready |
+| AUTH-NATIVE | Native login/session/recovery/cutover | Đạt NATIVE-01…08 trong [contract](../contracts/native-auth.md); không request Keycloak, permissions lấy từ MySQL |
+
+PLAN-007 chỉ kiểm mapping/docs; enforcement và negative/runtime tests thuộc source tasks sau exact design gates.
+
+SRC-038 local acceptance: AUTH-NATIVE scoped first slice, DB-01/02/03/06 retrofit/grants/reuse checks PASS; evidence details/SRC-038.md. DB-04 cross-service database isolation và DB-05 physical extraction vẫn NOT_RUN/PLAN-007B. DB-07 schema catalog/template design đã có. SRC-034 backend UX-CHAT-18/20/22 regression closed222/222, UI/full release còn pending.

@@ -13,6 +13,10 @@ Status: Ready for implementation.
 
 Không đánh dấu toàn module Implemented nếu chỉ một capability hoàn tất. Không sinh source từ phần Draft, TODO hoặc ví dụ payload không normative.
 
+## Database gate cho mọi tính năng mới
+
+Trước code bảng/cột mới, dùng [schema catalog](../data/schema-catalog.md), [database guideline](../data/database-guidelines.md) và điền [table design template](../templates/database-table.md). Chỉ rõ current physical/target schema, owner, business/system scope, tenant_id NOT NULL, keys/ACL và migration/tests. Không tái sử dụng ngoại lệ account/journal legacy hoặc Keycloak target.
+
 ## Definition of Ready
 
 - Actor, hành vi, trạng thái, quyền và phạm vi tenant được định nghĩa.

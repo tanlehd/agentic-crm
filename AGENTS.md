@@ -7,6 +7,13 @@
 3. Chỉ bắt đầu task có dependency DONE và thiết kế đúng phạm vi Ready. Nếu có discrepancy, tạo change entry và sửa tài liệu liên quan trước khi code phần phụ thuộc.
 4. Claim task bằng owner + ngày + trạng thái IN_PROGRESS. Mặc định một task triển khai đang active; không tự khởi tạo agent song song hoặc lịch chạy nền.
 
+## Chuẩn database và Identity
+
+- Thiết kế mới bỏ Keycloak; CRM Identity quản lý authentication/session/authorization trong MySQL theo docs/contracts/native-auth.md. Source legacy chỉ giữ tới native cutover có evidence.
+- Trước thêm/sửa bảng, đọc docs/data/schema-catalog.md, docs/data/database-guidelines.md và điền docs/templates/database-table.md. Chọn schema theo owning service; không cross-service SQL/FK/UoW.
+- Mọi application table phải có tenant_id NOT NULL, kể cả link/audit/journal/account. System data dùng explicit registered system tenant theo guideline, không wildcard hoặc default tenant. Không sửa migration lịch sử; retrofit bằng forward migration.
+- Test tenant/user synthetic được giữ và tái sử dụng dữ liệu; không mặc định reset DB/Redis.
+
 ## Trong khi build
 
 - Tuân [change control](docs/governance/change-control.md); technical detail không đổi nghiệp vụ có thể tự chốt bằng ADR, không hỏi lại các quyết định đã được chấp thuận.

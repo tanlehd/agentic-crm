@@ -183,3 +183,7 @@ Additive contact lookup/resolve, contact-bound deliveries-v2 and messages-v2 end
 ## UX-002 — Additive Agent Chat workspace APIs
 
 [Exact workspace contract](agent-chat-workspace.md) định nghĩa routes mới dưới `/api/v1/chat-workspace`, CRM `/contacts/{id}/channel-identities`, DTO/filter/count/permission/cursor/error và compatibility. Generic API conventions vẫn áp dụng, exceptions monotonic read marker/tag set operations được ghi rõ. Thiết kế chưa là OpenAPI/generated client đã triển khai; schema/migration đi trước source task phụ thuộc.
+
+## ADR-021 native auth target
+
+Auth transport OIDC hiện có là legacy baseline. Target theo [native auth](native-auth.md): CRM-owned MySQL password/session/permission, giữ session+CSRF và tenant authorization semantics; không Keycloak. Exact machine schemas/versioned cutover thuộc PLAN-007A. Không đổi generated OpenAPI trong design-only task.
