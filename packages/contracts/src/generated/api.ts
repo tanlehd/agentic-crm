@@ -1488,6 +1488,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/chat-workspace/conversations/{id}/snooze": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["workspace-get-snooze"];
+        put: operations["workspace-put-snooze"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/chat-workspace/conversations/{id}/wake": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["workspace-post-wake"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/chat-workspace/conversations/{id}/activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["workspace-get-activity"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -4094,6 +4142,284 @@ export interface components {
             /** @enum {unknown} */
             operation: "attached" | "detached";
             tag_set_revision: string;
+        };
+        "snooze-put": {
+            /** Format: date-time */
+            until: string;
+            reason?: string;
+        };
+        "snooze-empty": Record<string, never>;
+        "snooze-state": {
+            /** Format: uuid */
+            conversation_id: string;
+            until: string | null;
+            snooze_revision: string;
+            version: string;
+            reason?: string;
+        };
+        "snooze-response": {
+            data: components["schemas"]["snooze-state"];
+            meta: {
+                /** Format: date-time */
+                as_of?: string;
+                correlation_id?: string;
+            };
+        };
+        "activity-item": {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            kind: "message";
+            /** Format: date-time */
+            occurred_at: string;
+            /** Format: date-time */
+            recorded_at: string;
+            actor: {
+                /** @enum {unknown} */
+                kind: "human" | "ai" | "service" | "system";
+                /** Format: uuid */
+                id: string;
+            } | null;
+            source_ref: {
+                /** @enum {unknown} */
+                service: "chat" | "crm" | "workflow" | "chatflow";
+                kind: string;
+                /** Format: uuid */
+                id: string;
+                revision: string;
+            };
+            payload: {
+                /** Format: uuid */
+                message_id: string;
+                envelope: components["schemas"]["conversation-message-envelope-v3"];
+                inbound_seq: string | null;
+            };
+        } | {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            kind: "note";
+            /** Format: date-time */
+            occurred_at: string;
+            /** Format: date-time */
+            recorded_at: string;
+            actor: {
+                /** @enum {unknown} */
+                kind: "human" | "ai" | "service" | "system";
+                /** Format: uuid */
+                id: string;
+            } | null;
+            source_ref: {
+                /** @enum {unknown} */
+                service: "chat" | "crm" | "workflow" | "chatflow";
+                kind: string;
+                /** Format: uuid */
+                id: string;
+                revision: string;
+            };
+            payload: {
+                /** Format: uuid */
+                activity_id: string;
+                body?: string;
+            };
+        } | {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            kind: "assignment";
+            /** Format: date-time */
+            occurred_at: string;
+            /** Format: date-time */
+            recorded_at: string;
+            actor: {
+                /** @enum {unknown} */
+                kind: "human" | "ai" | "service" | "system";
+                /** Format: uuid */
+                id: string;
+            } | null;
+            source_ref: {
+                /** @enum {unknown} */
+                service: "chat" | "crm" | "workflow" | "chatflow";
+                kind: string;
+                /** Format: uuid */
+                id: string;
+                revision: string;
+            };
+            payload: {
+                from_principal_id: string | null;
+                to_principal_id: string | null;
+                owner_revision: string;
+                reason: string;
+            };
+        } | {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            kind: "lifecycle";
+            /** Format: date-time */
+            occurred_at: string;
+            /** Format: date-time */
+            recorded_at: string;
+            actor: {
+                /** @enum {unknown} */
+                kind: "human" | "ai" | "service" | "system";
+                /** Format: uuid */
+                id: string;
+            } | null;
+            source_ref: {
+                /** @enum {unknown} */
+                service: "chat" | "crm" | "workflow" | "chatflow";
+                kind: string;
+                /** Format: uuid */
+                id: string;
+                revision: string;
+            };
+            payload: {
+                /** @enum {unknown} */
+                from_status: "open" | "pending" | "closed";
+                /** @enum {unknown} */
+                to_status: "open" | "pending" | "closed";
+            };
+        } | {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            kind: "snooze";
+            /** Format: date-time */
+            occurred_at: string;
+            /** Format: date-time */
+            recorded_at: string;
+            actor: {
+                /** @enum {unknown} */
+                kind: "human" | "ai" | "service" | "system";
+                /** Format: uuid */
+                id: string;
+            } | null;
+            source_ref: {
+                /** @enum {unknown} */
+                service: "chat" | "crm" | "workflow" | "chatflow";
+                kind: string;
+                /** Format: uuid */
+                id: string;
+                revision: string;
+            };
+            payload: {
+                until: string | null;
+                /** @enum {unknown} */
+                cause: "scheduled" | "rescheduled" | "deadline" | "inbound" | "manual" | "assignment" | "closed";
+            };
+        } | {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            kind: "tags";
+            /** Format: date-time */
+            occurred_at: string;
+            /** Format: date-time */
+            recorded_at: string;
+            actor: {
+                /** @enum {unknown} */
+                kind: "human" | "ai" | "service" | "system";
+                /** Format: uuid */
+                id: string;
+            } | null;
+            source_ref: {
+                /** @enum {unknown} */
+                service: "chat" | "crm" | "workflow" | "chatflow";
+                kind: string;
+                /** Format: uuid */
+                id: string;
+                revision: string;
+            };
+            payload: {
+                /** Format: uuid */
+                tag_id: string;
+                /** @enum {unknown} */
+                operation: "attached" | "detached";
+            };
+        } | {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            kind: "automation";
+            /** Format: date-time */
+            occurred_at: string;
+            /** Format: date-time */
+            recorded_at: string;
+            actor: {
+                /** @enum {unknown} */
+                kind: "human" | "ai" | "service" | "system";
+                /** Format: uuid */
+                id: string;
+            } | null;
+            source_ref: {
+                /** @enum {unknown} */
+                service: "chat" | "crm" | "workflow" | "chatflow";
+                kind: string;
+                /** Format: uuid */
+                id: string;
+                revision: string;
+            };
+            payload: {
+                /** @enum {unknown} */
+                source_service: "workflow" | "chatflow";
+                /** Format: uuid */
+                run_id: string;
+                /** Format: uuid */
+                definition_version_id: string;
+                /** @enum {unknown} */
+                state: "started" | "paused" | "resumed" | "completed" | "failed" | "cancelled";
+            };
+        };
+        "activity-response": {
+            data: components["schemas"]["activity-item"][];
+            older_cursor: string | null;
+            newer_cursor: string;
+            has_more: boolean;
+            meta: {
+                /** @enum {unknown} */
+                state: "ready" | "backfilling" | "partial";
+                /** Format: date-time */
+                as_of: string;
+                sources: {
+                    /** @enum {unknown} */
+                    service: "chat" | "crm" | "workflow" | "chatflow";
+                    /** @enum {unknown} */
+                    state: "ready" | "delayed" | "unavailable";
+                    last_observed_at: string | null;
+                }[];
+                correlation_id?: string;
+            };
+        };
+        "snooze-event": {
+            /** Format: uuid */
+            conversation_id: string;
+            until: string | null;
+            snooze_revision: string;
+            /** @enum {unknown} */
+            cause: "scheduled" | "rescheduled" | "deadline" | "inbound" | "manual" | "assignment" | "closed";
+        };
+        "activity-note-event": {
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: uuid */
+            activity_id: string;
+            /** @enum {unknown} */
+            operation: "created" | "updated" | "archived";
+            source_revision: string;
+        };
+        "activity-automation-event": {
+            /** Format: uuid */
+            conversation_id: string;
+            /** @enum {unknown} */
+            source_service: "workflow" | "chatflow";
+            /** Format: uuid */
+            run_id: string;
+            /** Format: uuid */
+            definition_version_id: string;
+            /** @enum {unknown} */
+            state: "started" | "paused" | "resumed" | "completed" | "failed" | "cancelled";
+            source_revision: string;
         };
     };
     responses: never;
@@ -15960,6 +16286,410 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["catalog-tag-links"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "workspace-get-snooze": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized Conversation workspace */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["snooze-response"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "workspace-put-snooze": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["snooze-put"];
+            };
+        };
+        responses: {
+            /** @description Authorized Conversation workspace */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["snooze-response"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "workspace-post-wake": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["snooze-empty"];
+            };
+        };
+        responses: {
+            /** @description Authorized Conversation workspace */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["snooze-response"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "workspace-get-activity": {
+        parameters: {
+            query?: {
+                before?: string;
+                after?: string;
+                limit?: string;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized Conversation workspace */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["activity-response"];
                 };
             };
             /** @description Sanitized identity failure */

@@ -1,5 +1,8 @@
 import { WorkspaceCatalogController } from './workspace-catalog-http.js';
 import { WorkspaceCatalogs } from './workspace-catalogs.js';
+import { ConversationSnooze } from './snooze.js';
+import { ConversationActivity } from './activity.js';
+import { WorkspaceActivityController } from './workspace-activity-http.js';
 import { Controller,Get,Post,Req,Res,Inject,Module,type OnModuleDestroy } from '@nestjs/common';
 import type { IncomingMessage,ServerResponse } from 'node:http';
 import { createHmac,randomUUID } from 'node:crypto';
@@ -12,8 +15,8 @@ import { CommandError } from '../../kernel/reliability/commands.js';
 import { ChatWorkspace } from './workspace.js';
 interface Request extends IncomingMessage {query:Record<string,unknown>;params:Record<string,string>;body:unknown}
 export class WorkspaceRuntime implements OnModuleDestroy {
-  private readonly source=databaseSource();private initialized?:Promise<unknown>;readonly workspace:ChatWorkspace;readonly catalogs:WorkspaceCatalogs;
-  constructor(@Inject(AuthRuntime) auth:AuthRuntime){this.catalogs=new WorkspaceCatalogs(this.source,createHmac('sha256',auth.service.config.encryptionKey).update('catalog-pagination-v1').digest());this.workspace=new ChatWorkspace(this.source,createHmac('sha256',auth.service.config.encryptionKey).update('workspace-pagination-v1').digest());}
+  private readonly source=databaseSource();private initialized?:Promise<unknown>;readonly workspace:ChatWorkspace;readonly catalogs:WorkspaceCatalogs;readonly snooze=new ConversationSnooze(this.source);readonly activity:ConversationActivity;
+  constructor(@Inject(AuthRuntime) auth:AuthRuntime){this.catalogs=new WorkspaceCatalogs(this.source,createHmac('sha256',auth.service.config.encryptionKey).update('catalog-pagination-v1').digest());this.workspace=new ChatWorkspace(this.source,createHmac('sha256',auth.service.config.encryptionKey).update('workspace-pagination-v1').digest());this.activity=new ConversationActivity(this.source,createHmac('sha256',auth.service.config.encryptionKey).update('activity-pagination-v1').digest());}
   async ready(){if(!this.initialized)this.initialized=this.source.initialize().catch(e=>{this.initialized=undefined;throw e;});await this.initialized;}
   async onModuleDestroy(){await this.initialized?.catch(()=>{});if(this.source.isInitialized)await this.source.destroy();}
 }
@@ -37,5 +40,5 @@ export class WorkspaceController {
   @Get('conversations/:id/read-state') state(@Req() r:Request,@Res() s:ServerResponse){return this.respond(r,s,'state');}
   @Post('conversations/:id/read-state') mark(@Req() r:Request,@Res() s:ServerResponse){return this.respond(r,s,'mark');}
 }
-@Module({imports:[AuthModule],controllers:[WorkspaceController,WorkspaceCatalogController],providers:[WorkspaceRuntime,{provide:'WorkspaceRuntime',useExisting:WorkspaceRuntime}]})
+@Module({imports:[AuthModule],controllers:[WorkspaceController,WorkspaceCatalogController,WorkspaceActivityController],providers:[WorkspaceRuntime,{provide:'WorkspaceRuntime',useExisting:WorkspaceRuntime}]})
 export class WorkspaceModule {}

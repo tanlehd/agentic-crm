@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { notifyConversationNote } from './activity-port.js';
 import type { TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
 import { CommandError,DurableCommands,type SystemActor } from '../../kernel/reliability/commands.js';
 import { validateOwnershipTarget } from '../identity/authorization.js';
@@ -45,6 +46,6 @@ export class ConversationCrmPort {
     await s.query('INSERT INTO crm_record(id,tenant_id,object_type_id,owner_principal_id,team_id,created_at,updated_at) VALUES (?,?,?,?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))',[id,s.context.tenantId,type.id,a.principalId,record.teamId]);
     await s.query("INSERT INTO activity(tenant_id,record_id,kind,subject,body,related_record_id) VALUES (?,?,'note','Internal note',?,?)",[s.context.tenantId,id,text,conversation]);
     await s.query("INSERT INTO ownership_history(id,tenant_id,record_id,to_owner_id,to_team_id,owner_revision,reason,actor_kind,actor_id,created_at) VALUES (?,?,?,?,?,1,'note','human',?,UTC_TIMESTAMP(6))",[randomUUID(),s.context.tenantId,id,a.principalId,record.teamId,a.principalId]);
-    await new DurableCommands().audit(s,a.principalId,correlation,'activity',id,'note',['body','related_record_id']);return id;
+    await new DurableCommands().audit(s,a.principalId,correlation,'activity',id,'note',['body','related_record_id']);await notifyConversationNote(s,id,'created',{kind:'human',id:a.principalId});return id;
   }
 }

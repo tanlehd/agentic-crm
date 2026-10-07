@@ -10,6 +10,7 @@ import { allows,withFieldPolicies } from './access.js';
 import { standardFields,type ArchiveGuard } from './core.js';
 import { registryId } from './ids.js';
 import { object,validKey,properties,propertyInput,mergeValues,project,json,checkField,queryPlan,column,sqlValue,type Property } from './properties.js';
+import { notifyConversationNote } from './activity-port.js';
 export interface RecordDomain {
   genericCreate?:boolean;
   allowCustomValues?:boolean;
@@ -146,6 +147,7 @@ export class CrmRecords {
           }
           record=await registry.get(scope,record.id);
         }
+        if(route.object==='activity')await notifyConversationNote(scope,record.id,route.kind==='archive'?'archived':route.id?'updated':'created',{kind:'human',id:access.principalId});
         data=await this.output(scope,access,record);
       }
       await this.commands.audit(scope,access.principalId,correlation,route.object,String(data.id),`${route.kind}.${method.toLowerCase()}`,Object.keys(body));

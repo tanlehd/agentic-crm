@@ -55,3 +55,8 @@ Own DB credentials không đọc được DB khác; API/consumer schemas và ten
 ## UX-002 — Conversation activity projection
 
 Chatflow run/session binding đã verify phát automation.conversation_activity.v1 theo [workspace contract](../contracts/agent-chat-workspace.md); source_service=chatflow, run_id là session ID, source_revision là session version, definition_version_id là pinned Chatflow version. Chat chỉ hiển thị event có source read permission; không lộ variables/consent/private proposal. Snooze không pause session; Human takeover vẫn theo contract cũ. Producer implementation thuộc SRC-034, chưa triển khai.
+
+
+## SRC-034 implementation
+
+SRC-034 implements versioned session activity notifications and current source ACL port. Verification status and limitations: [task evidence](../tracking/details/SRC-034.md).

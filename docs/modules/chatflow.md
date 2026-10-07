@@ -66,3 +66,8 @@ Multimodal, knowledge retrieval, intent branching mở, localization authoring, 
 ## SRC-020 source implementation
 
 Definition/version/publish/read API and inbox Human panel use exact [contract](../contracts/chatflow.md). V14–v16 add session/node/turn, nullable-FK guard and private runtime proposal. Worker polls MySQL with60s fenced claims; each node commits effects and progress atomically. Actual Workflow child and Runtime session ports are composed in API/worker; Sales handoff remains unavailable until SRC-021. Takeover/close hooks pause/cancel atomically, preserving draft/validated provenance. Qualification is single Lead/session with bound evidence and current Human owner/CAS guards. Acceptance and browser/preview verification status follow [SRC-020 evidence](../tracking/details/SRC-020.md).
+
+
+## SRC-034 implementation
+
+SRC-034 emits Conversation-bound sanitized activity using session version for actual start/pause/terminal transitions; repeated pause and waiting_message do not invent new transitions. Verification status and limitations: [task evidence](../tracking/details/SRC-034.md).

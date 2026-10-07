@@ -64,3 +64,8 @@ CRM application port owns immutable contact_identity lookup and atomic resolve/c
 ## UX-002 — Contact context và note notifications
 
 [Workspace contract](../contracts/agent-chat-workspace.md) bổ sung authorized Contact channel-identities read, optional address/preferred_language standard properties qua metadata, và crm.conversation_note.changed notification từ CRM outbox. CRM vẫn giữ note body và Contact identity authority; Chat chỉ index refs, đọc qua authorized ports/API. Conversation tags thuộc Chat, không tự trở thành Contact tags. Thiết kế Ready, SRC-034/035 chưa triển khai.
+
+
+## SRC-034 implementation
+
+SRC-034 implements note notifications/read ports; Contact metadata/navigation remains SRC-035. Verification status and limitations: [task evidence](../tracking/details/SRC-034.md).

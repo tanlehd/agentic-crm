@@ -1,6 +1,6 @@
 # Agent Chat workspace — kế hoạch build theo UX-002
 
-Status: Ready scoped design; SRC-032/033 DONE; SRC-034 tiếp theo; trạng thái source theo tracker. [UX](../ux/agent-chat-workspace.md), [contract](../contracts/agent-chat-workspace.md), [data model](../data/agent-chat-workspace.md). CHG-20261006-19 bổ sung product flow phù hợp ảnh theo chỉ đạo người dùng, không đợi toàn bộ provider M3 hoàn tất để xây nội bộ Chat.
+Status: Ready scoped design; SRC-032/033 DONE; SRC-034 VERIFYING (final MySQL validation deferred by user); trạng thái source theo tracker. [UX](../ux/agent-chat-workspace.md), [contract](../contracts/agent-chat-workspace.md), [data model](../data/agent-chat-workspace.md). CHG-20261006-19 bổ sung product flow phù hợp ảnh theo chỉ đạo người dùng, không đợi toàn bộ provider M3 hoàn tất để xây nội bộ Chat.
 
 | Task | Deliverable | Dependency | Gate |
 |---|---|---|---|

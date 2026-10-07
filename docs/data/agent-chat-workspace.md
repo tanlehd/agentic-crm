@@ -1,6 +1,6 @@
 # Agent Chat workspace — data design UX-002
 
-Status: Ready design specification; chưa tạo tables/migrations. [Contract](../contracts/agent-chat-workspace.md) là nguồn DTO/semantics. Thiết kế bảng thuộc Chat trừ Contact properties và CRM note; target service không dùng FK sang CRM/Identity/Workflow DB.
+Status: Ready design specification; schema20/21 implemented SRC-032/033, schema22 source under SRC-034 verification. [Contract](../contracts/agent-chat-workspace.md) là nguồn DTO/semantics. Thiết kế bảng thuộc Chat trừ Contact properties và CRM note; target service không dùng FK sang CRM/Identity/Workflow DB.
 
 ## Types và invariants
 
@@ -49,6 +49,10 @@ Inbound: existing message dedup và Conversation lock → allocate inbound_seq, 
 Read marker không bump Conversation/owner version: row revision riêng, monotonic update cùng check latest. Activity status không copy vào history item; response hydrate live. Cross-service note/automation delivery: source outbox → Chat inbox dedup/projection → read via source-authorized port, không distributed transaction. Chat-owned lifecycle/tag/snooze activity ghi cùng transaction để UI thấy sau commit.
 
 ## Migration/retention
+
+Schema22 also implements `chat_workspace_rollout` for tenant-level snooze/activity disable/backfilling/ready overrides. An absent override uses installed implementation readiness; a disabled flag blocks new routes/commands but never stops writer hooks or due-deadline draining. Activity capabilities additionally require completed Conversation backfill. Disable is a read/command rollout fence, not an instruction to discard projection or timers.
+
+SRC-034 physical refinement (CHG-20261006-22): append schema22 for snooze/activity tables. Activity counter includes `backfilled` boolean; per-Conversation backfill holds the same record fence as live writers, reads source batches of200, deduplicates provenance and commits counter/rows atomically. Workflow adds source-owned `activity_revision` default0; source transitions increment it in the outbox transaction. Existing runs do not receive invented started events. Chatflow uses its existing session version. Snooze stores `until_at` physically, wire `until`; global deadline index `(until_at,tenant_id,conversation_id)` supports bounded worker scans. Activity payload never stores source message/note bodies. Local source ports verify binding, hydrate content/ACL and expose pending-notification freshness; extraction must replace them with versioned APIs.
 
 Forward migrations mới, không rewrite applied history. Add sidecars/indexes/counters trước; backfill batch có checkpoint + reconciliation count/hash; lúc cutover fence Conversation writers để catch-up delta rồi dual-write **cùng Chat local transaction**, không hai service cùng sở hữu. Marker initial rollout watermark cho existing Humans được materialize/lazy initialized từ immutable per-Conversation watermark và principal rollout cohort; không dùng latest tại first open vì sẽ nuốt tin mới sau rollout. Cohort/cutoff lưu ở hai bảng rollout riêng, giữ tới khi tất cả marker liên quan materialize; không TTL tự hết hạn làm lịch sử thành unread. Principal không thuộc cohort hoặc Conversation tạo sau cutoff dùng marker0. Implementation migration phải có test crash/restart và kích thước bounded batch.
 

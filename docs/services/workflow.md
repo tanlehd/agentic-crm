@@ -55,3 +55,8 @@ Own DB credentials không đọc được DB khác; API/consumer schemas và ten
 ## UX-002 — Conversation activity projection
 
 Run có Conversation binding verified phát automation.conversation_activity.v1 qua source outbox theo [workspace contract](../contracts/agent-chat-workspace.md), dùng pinned definition version/run revision và sanitized state. Chat không ghi run state, không dừng Workflow khi snooze. Source read permission vẫn bắt buộc trước khi hiển thị activity. Contract Ready, producer/consumer implementation thuộc SRC-034.
+
+
+## SRC-034 implementation
+
+SRC-034 implements verified Conversation-bound notifications and current run read authority via source port. Verification status and limitations: [task evidence](../tracking/details/SRC-034.md).

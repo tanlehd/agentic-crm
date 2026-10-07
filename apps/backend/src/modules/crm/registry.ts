@@ -11,7 +11,7 @@ export interface SubtypeAdapter {
   insert(scope:TransactionScope,id:string,input:unknown,access:Access,correlation:string):Promise<void>;
   exists(scope:TransactionScope,id:string):Promise<boolean>;
   eligible(scope:TransactionScope,record:RegistryRecord,owner:string|null,team:string|null):Promise<void>;
-  assigned(scope:TransactionScope,record:RegistryRecord):Promise<void>;
+  assigned(scope:TransactionScope,record:RegistryRecord,change?:{from:string|null;reason:string;actor:{kind:string;id:string}}):Promise<void>;
 }
 export class RecordRegistry {
   constructor(private readonly adapters:ReadonlyMap<string,SubtypeAdapter>=new Map(),private readonly commands=new DurableCommands()){}
@@ -63,7 +63,7 @@ export class RecordRegistry {
     await this.bump(scope,record,version);
     await scope.query('UPDATE crm_record SET owner_principal_id=?,team_id=?,owner_revision=owner_revision+1 WHERE tenant_id=? AND id=?',[owner,team,scope.context.tenantId,id]);
     const current=await this.get(scope,id);
-    await adapter.assigned(scope,current);
+    await adapter.assigned(scope,current,{from:record.ownerPrincipalId,reason:options.reason??'assigned',actor:{kind:options.actorKind??'human',id:access.principalId}});
     await this.history(scope,access,current,record.ownerPrincipalId,record.teamId,options.reason??'assigned',options.actorKind);
     if(options.actorKind==='service')await this.commands.systemAudit(scope,correlation,record.objectKey,id,'assign',['owner_principal_id','team_id','owner_revision'],{kind:'service',id:access.principalId});
     else await this.commands.audit(scope,access.principalId,correlation,record.objectKey,id,'assign',['owner_principal_id','team_id','owner_revision']);

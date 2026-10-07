@@ -29,7 +29,7 @@ Inbound handler phải lock identity để tránh hai Conversation active. Send 
 
 ## UI
 
-[Đặc tả UX rebuild](../ux/agent-chat-workspace.md) thay bố cục wireframe M2: app rail, Inbox sidebar, danh sách + search/filter, header actions, timeline/composer và context drawer/rail. UX-002 bổ sung [product contract](../contracts/agent-chat-workspace.md): unread theo Human principal, metrics có ACL, custom/shared saved query, conversation tags, durable snooze overlay, activity feed và snippets. Snooze không phải lifecycle state hoặc pause automation; wake do deadline/inbound mới/assignment, close cancel. Read marker không phải customer receipt. Contact/qualification/history theo quyền; owner change vẫn chặn stale composer. Thiết kế Ready, source mới chưa triển khai; [baseline/evidence](../ux/workspaces.md) giữ nguyên.
+[Đặc tả UX rebuild](../ux/agent-chat-workspace.md) thay bố cục wireframe M2: app rail, Inbox sidebar, danh sách + search/filter, header actions, timeline/composer và context drawer/rail. UX-002 bổ sung [product contract](../contracts/agent-chat-workspace.md): unread theo Human principal, metrics có ACL, custom/shared saved query, conversation tags, durable snooze overlay, activity feed và snippets. Snooze không phải lifecycle state hoặc pause automation; wake do deadline/inbound mới/assignment, close cancel. Read marker không phải customer receipt. Contact/qualification/history theo quyền; owner change vẫn chặn stale composer. Thiết kế Ready; backend triển khai theo SRC-032…034, UI rebuild còn SRC-036; [tracker](../tracking/tasks.md) ghi kết quả thực thi.
 
 ## Failure handling
 
@@ -74,3 +74,8 @@ Chat bounded cache is a hint, hydrated only after successful ingress commit. Con
 ## SRC-031 Facebook configuration and channel dimensions
 
 [Exact OAuth/Page/schema19 contract](../contracts/facebook-configuration.md) and [operator runbook](../development/facebook-configuration.md) define Admin→Channels→Facebook, session/state-bound OAuth, encrypted DB Page credentials and manual verified token replacement. Baseline Channels remains sole writer of catalog/credentials; independent Connector capture is unchanged until API-based extraction/provisioning. Conversation channel and generated channel_id retain existing connection IDs, with Page metadata and tenant/field-authorized filters/options. Messaging activation and real sandbox acceptance remain separate.
+
+
+## SRC-034 implementation
+
+SRC-034 adds schema22 snooze commands/deadline scanning, transactional wake/activity hooks and source-authorized activity reads. Legacy DTOs and owner semantics remain unchanged. Verification status and limitations: [task evidence](../tracking/details/SRC-034.md).

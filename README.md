@@ -49,3 +49,5 @@ SRC-029 implements optional signed Messenger webhook capture with own schema2 an
 SRC-031 adds Admin→Channels→Facebook OAuth/Page configuration with encrypted credentials, manual verified token replacement and channel/Page filters in Inbox. [Setup/runbook](docs/development/facebook-configuration.md). Local synthetic tests pass; live OAuth needs Meta App configuration, and real message ingestion/send remains pending. Preview is not automatically upgraded.
 
 Agent Chat rebuild: [workspace plan](docs/planning/agent-chat-workspace.md) và [UX](docs/ux/agent-chat-workspace.md). SRC-032 backend unread/query/metrics foundation DONE với203 MySQL tests và9 canonical gates; SRC-033 catalogs DONE với209 MySQL regression,13 final workspace cases và102 unit tests. UI rebuild và full workspace local release chưa hoàn tất; không đồng nghĩa đã nâng schema preview hoặc hoàn thành live provider integration.
+
+SRC-034 snooze/activity backend and schema22 source are implemented; final MySQL validation is deferred at user request while the local runtime is rebuilt. Status VERIFYING, no local schema22 upgrade or full UI/release claim. [Evidence](docs/tracking/details/SRC-034.md).

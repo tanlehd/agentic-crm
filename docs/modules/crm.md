@@ -62,3 +62,8 @@ ContactIdentities application port owns canonical mapping reads and atomic Conta
 ## UX-002 — Agent Contact drawer extension
 
 Contact drawer dùng optional address/preferred_language properties và channel-identities theo [workspace contract](../contracts/agent-chat-workspace.md); cùng field read/write ACL, If-Match và Human-edit precedence. Contact channel click chỉ tìm/navigate Conversation có quyền; không tạo/send/merge identity ngầm. CRM note commits phát notification để Chat activity projection hydrate body có quyền; không đổi Note thành outbound. Thiết kế Ready, chưa có API/seed mới.
+
+
+## SRC-034 implementation
+
+SRC-034 adds CRM-owned note create/update/archive notifications in the note transaction and authorized reference/history/read ports. Note content is never copied into Chat activity. Verification status and limitations: [task evidence](../tracking/details/SRC-034.md).

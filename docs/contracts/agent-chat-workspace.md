@@ -153,13 +153,15 @@ Tag attach/detach thực sự đổi link tăng tag_set_revision và Conversatio
 
 ## 12. Compatibility, migration và rollout
 
+SRC-034 implementation refinement: strict additive schemas live in `packages/contracts/schemas/chat-activity.json`; source references use `{service,kind,id,revision}`. Activity cursors are authenticated encrypted positions, not readable sequence tokens. Schema22 introduces tenant rollout overrides and Workflow source activity revision. Baseline source ports provide binding validation and current source ACL; no external producer can submit arbitrary activity payload through a public endpoint. Physical details and operations: [data](../data/agent-chat-workspace.md), [runbook](../development/chat-activity.md). Runtime evidence follows [SRC-034](../tracking/details/SRC-034.md).
+
 Không thay strict legacy DTO/status/envelope; routes mới opt-in. GET `/capabilities` trả `{contract_version:1,features:{queue_v1,read_state_v1,inbox_v1,tags_v1,snooze_v1,activity_v1,snippets_v1,contact_channels_v1}}` mỗi key boolean theo tenant rollout + implementation, không thay authorization. Chưa active thì UI không dựng số liệu giả. Backend/data migrations trước, feature flags sau verification, rồi frontend. UI layout có thể build độc lập nhưng nghiệm thu scope đầy đủ đòi các feature mới hoạt động.
 
 Append migrations mới sau schema hiện hành tại lúc implement, không sửa1–19 hoặc gán trước số migration đang có công việc khác. Backfill sequence theo received_at/id dưới watermark và lock/catch-up; legacy Human marker khởi tạo qua rollout watermark để không biến toàn lịch sử thành unread. Principal mới sau rollout mặc định0 cho Conversation đang được phép đọc; không tự kế thừa marker của owner cũ. Counts ghi backfilling đến khi reconcile; waiting metric chỉ ready khi coverage được xác minh, legacy unknown không được đoán. Backfill activity từ Messages/notes/ownership có provenance, không tạo lịch sử automation không lưu trước đây.
 
 Rollback UI/read-only có thể tắt flags, giữ tables và data mới. **Không rollback backend writer về bản không biết snooze/read counters trong khi feature còn active**: disable new commands, quiesce writers, wake active snoozes có audit, drain timers, giữ sequence writer forward-compatible hoặc tái backfill trước enable. Không drop dữ liệu để rollback; no schema auto-sync. Cơ chế worker timer phải vẫn hoạt động khi Redis down. Schema/generated API validators và MySQL/browser tests là deliverable implementation, không tuyên bố đã tồn tại vì contract prose Ready.
 
-## 13. Acceptance bổ sung — runtime NOT_RUN
+## 13. Acceptance bổ sung — kết quả theo từng sub-scope
 
 | ID | Scenario và kết quả |
 |---|---|
@@ -174,7 +176,7 @@ Rollback UI/read-only có thể tắt flags, giữ tables và data mới. **Khô
 | UX-CHAT-21 | Snippet keyboard/4000/archived/permissions và Contact channel navigation: không auto-send, giữ draft riêng, field ACL không bị vượt |
 | UX-CHAT-22 | Migrate từ schema19 có dữ liệu, watermark/catch-up, old clients, feature flags/rollback: giữ lịch sử/owner, không unread explosion, không mất snooze |
 
-Design hoàn tất không đóng AC runtime. Implementation chia tuần tự theo [build plan](../planning/agent-chat-workspace.md), không tự claim source từ phiên viết đặc tả.
+Design hoàn tất không đóng AC runtime. Implementation chia tuần tự theo [build plan](../planning/agent-chat-workspace.md); kết quả backend và phần UI/release chưa chạy được ghi riêng trong [acceptance](../quality/acceptance.md).
 
 ## SRC-032 exact implementation slice — schema20
 

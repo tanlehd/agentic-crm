@@ -1,4 +1,6 @@
 import type { DataSource } from 'typeorm';
+import { prepareActivity,messageActivity } from './activity-storage.js';
+import { wakeSnooze } from './snooze.js';
 import { UnitOfWork,type TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
 
 // Schema compatibility is transaction-local: never cache a negative across migration.
@@ -11,6 +13,7 @@ export async function workspaceSupported(s:TransactionScope){
 // Caller holds the Conversation registry lock. Backfill and live writes share that fence.
 export async function prepareWorkspace(s:TransactionScope,id:string){
   if(!await workspaceSupported(s))return false;
+  await prepareActivity(s,id);
   const tenant=s.context.tenantId;
   if((await s.query('SELECT conversation_id FROM conversation_workspace WHERE tenant_id=? AND conversation_id=?',[tenant,id]))[0])return true;
   const [c]=await s.query('SELECT opened_at,status FROM conversation WHERE tenant_id=? AND record_id=?',[tenant,id]);
@@ -28,6 +31,7 @@ export async function prepareWorkspace(s:TransactionScope,id:string){
 
 export async function workspaceInbound(s:TransactionScope,id:string,message:string){
   if(!await workspaceSupported(s))return;
+  await wakeSnooze(s,id,'inbound');await messageActivity(s,id,message);
   const tenant=s.context.tenantId;
   await s.query('UPDATE conversation_workspace SET latest_inbound_seq=latest_inbound_seq+1 WHERE tenant_id=? AND conversation_id=?',[tenant,id]);
   await s.query('INSERT INTO message_workspace(tenant_id,message_id,conversation_id,inbound_seq) SELECT tenant_id,?,conversation_id,latest_inbound_seq FROM conversation_workspace WHERE tenant_id=? AND conversation_id=?',[message,tenant,id]);
@@ -36,6 +40,7 @@ export async function workspaceInbound(s:TransactionScope,id:string,message:stri
 
 export async function workspaceOutbound(s:TransactionScope,id:string,message:string){
   if(!await workspaceSupported(s))return;
+  await messageActivity(s,id,message);
   await s.query('INSERT INTO message_workspace(tenant_id,message_id,conversation_id,reply_through_inbound_seq) SELECT tenant_id,?,conversation_id,latest_inbound_seq FROM conversation_workspace WHERE tenant_id=? AND conversation_id=?',[message,s.context.tenantId,id]);
   await s.query('UPDATE conversation_workspace w JOIN message m ON m.tenant_id=w.tenant_id AND m.id=? SET w.last_message_at=m.received_at WHERE w.tenant_id=? AND w.conversation_id=?',[message,s.context.tenantId,id]);
 }
@@ -51,6 +56,7 @@ export async function workspaceSent(s:TransactionScope,id:string,message:string)
 }
 
 export async function workspaceClosed(s:TransactionScope,id:string){
+  await wakeSnooze(s,id,'closed');
   if(await workspaceSupported(s))await s.query("UPDATE conversation_workspace SET waiting_since=NULL,waiting_metric_state='ready' WHERE tenant_id=? AND conversation_id=?",[s.context.tenantId,id]);
 }
 

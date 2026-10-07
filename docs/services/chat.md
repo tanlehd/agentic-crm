@@ -66,4 +66,9 @@ Chat ingress caches confirmed CRM mappings after commit, checks active Contact s
 
 ## UX-002 — Agent workspace product design
 
-[Workspace contract](../contracts/agent-chat-workspace.md) và [data model](../data/agent-chat-workspace.md) bổ sung Chat-owned unread/count/query, inbox/share, conversation tags, durable snooze, snippets và activity index. Snooze deadline worker dùng MySQL CAS, không Redis-only; read marker per Human không gọi provider seen. Metrics/read/tag writes không đổi owner_revision. Activity hydrates CRM notes và checks source-run ACL qua ports/API, không copy transcript hay run state authority. Source TODO theo [build plan](../planning/agent-chat-workspace.md); không thay trạng thái extraction/deployment.
+[Workspace contract](../contracts/agent-chat-workspace.md) và [data model](../data/agent-chat-workspace.md) bổ sung Chat-owned unread/count/query, inbox/share, conversation tags, durable snooze, snippets và activity index. Snooze deadline worker dùng MySQL CAS, không Redis-only; read marker per Human không gọi provider seen. Metrics/read/tag writes không đổi owner_revision. Activity hydrates CRM notes và checks source-run ACL qua ports/API, không copy transcript hay run state authority. Backend triển khai theo SRC-032…034 trong [build plan](../planning/agent-chat-workspace.md); không thay trạng thái extraction/deployment.
+
+
+## SRC-034 implementation
+
+SRC-034 source adds durable snooze/activity inside the current monolith, using source application ports and outbox/inbox notifications. No service extraction or live-provider deployment is implied. Verification status and limitations: [task evidence](../tracking/details/SRC-034.md).

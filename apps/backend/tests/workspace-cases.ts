@@ -1,4 +1,5 @@
 import { workspaceCatalogCases } from './workspace-catalog-cases.js';
+import { workspaceActivityCases } from './workspace-activity-cases.js';
 import { describe,it,expect } from 'vitest';
 import { randomUUID } from 'node:crypto';
 import type { DataSource } from 'typeorm';
@@ -107,4 +108,5 @@ export function workspaceCases(isolated:(name:string)=>Promise<DataSource>){desc
     }finally{await app.close();}
   });
   workspaceCatalogCases(()=>({ds,tenant,beta,account,otherAccount,principal,other,role,team,id,grants}));
+  workspaceActivityCases(()=>({ds,tenant,beta,account,otherAccount,principal,other,role,team,identity,grants}));
 });}

@@ -17,6 +17,7 @@ import type { ChatflowSessionPort,SessionSnapshot } from '../agents/session-port
 import type { WorkflowChildren,ChildContext } from '../workflow/ports.js';
 import { chatflowParent } from '../workflow/parent-port.js';
 import { validateGraph,parseAnswer,renderPrompt,type Graph,type Node } from './graph.js';
+import { notifyChatflowActivity } from './activity-port.js';
 export const json=(v:any):any=>typeof v==='string'?JSON.parse(v):v;
 export const active=(status:string)=>['running','waiting_message','paused_human'].includes(status);
 export interface Claim {tenantId:string;sessionId:string;node:string;token:string}
@@ -35,7 +36,7 @@ export class ChatflowEngine implements ChatflowSessionPort {
     const p=record.record.ownerPrincipalId?await this.identity.principal(s,record.record.ownerPrincipalId):null;
     const eligible=p?.kind==='ai'&&p.available&&!await this.routing.eligibility(s,record.record,p.id,record.record.teamId,false);
     const id=randomUUID();await s.query('INSERT INTO chatflow_session(id,tenant_id,version_id,parent_run_id,start_action_key,conversation_id,service_actor_id,execution_role_id,node_key,status,owner_revision) VALUES (?,?,?,?,?,?,?,?,?,?,?)',[id,s.context.tenantId,version,c.runId,c.actionKey,conversation,c.actorId,role,v.graph.entry_node,eligible?'running':'paused_human',record.record.ownerRevision]);
-    await this.commands.systemAudit(s,id,'chatflow_session',id,'chatflow.start',['version_id','status']);return id;
+    await this.commands.systemAudit(s,id,'chatflow_session',id,'chatflow.start',['version_id','status']);await notifyChatflowActivity(s,id);return id;
   }
   children():WorkflowChildren{return {
     validate:async(s,g,a)=>{for(const n of g.nodes){if(n.type==='request_lead_handoff'||n.type==='wait_event'&&n.config.event_type!=='chatflow.completed')throw new CommandError(422,'WORKFLOW_CHILD_UNAVAILABLE');if(n.type==='start_chatflow'){await this.version(s,n.config.chatflow_version_id);if(!permits(a,'conversation','read'))throw new CommandError(403,'FORBIDDEN');}}},
@@ -52,14 +53,14 @@ export class ChatflowEngine implements ChatflowSessionPort {
     const a=await withFieldPolicies(s,p.access);if(!fieldAllowed(a,'conversation','text','read')||!permits(service,'conversation','assign',c.record))throw new CommandError(403,'FORBIDDEN');return {service,c,a,p};
   }
   async stop(s:TransactionScope,r:any,status:'paused_human'|'cancelled',reason:string){
-    if(!active(r.status))return;await s.query('UPDATE chatflow_session SET status=?,error_code=?,version=version+1 WHERE tenant_id=? AND id=?',[status,reason,s.context.tenantId,r.id]);
+    if(!active(r.status))return;await s.query('UPDATE chatflow_session SET status=?,error_code=?,version=version+1 WHERE tenant_id=? AND id=?',[status,reason,s.context.tenantId,r.id]);await notifyChatflowActivity(s,r.id,r.status);
     await s.query("UPDATE chatflow_node_run SET status='cancelled',lease_until=NULL,fencing_token=fencing_token+1 WHERE tenant_id=? AND session_id=? AND status<>'succeeded'",[s.context.tenantId,r.id]);
     await this.conversations.cancel(s,r.conversation_id);await cancelAgentExecutions(s,r.conversation_id);await this.commands.systemAudit(s,r.id,'chatflow_session',r.id,'chatflow.stop',['status','error_code']);
   }
   async handoff(s:TransactionScope,id:string,reason:string){const r=await this.lock(s,id);await this.stop(s,r,'paused_human',['REQUEST_HUMAN','RUNTIME_DEADLINE','CAPACITY_TIMEOUT'].includes(reason)?reason:'RUNTIME_REQUIRES_HUMAN');}
   private async routeHuman(s:TransactionScope,r:any,reason:string,team?:string){await this.stop(s,r,'paused_human',reason);const c=await this.conversations.read(s,r.conversation_id);if(c.record.ownerRevision!==r.owner_revision)return;const target=team??c.record.teamId;if(target){await this.identity.chatTeam(s,target);await this.routing.routeService(s,r.service_actor_id,r.conversation_id,c.record.version,target,'chat','human',r.id);}}
   async terminal(s:TransactionScope,r:any,outcome:string,actor:{kind:'human'|'service';id:string}){
-    await s.query("UPDATE chatflow_session SET status='completed',outcome=?,error_code=NULL,version=version+1 WHERE tenant_id=? AND id=?",[outcome,s.context.tenantId,r.id]);
+    await s.query("UPDATE chatflow_session SET status='completed',outcome=?,error_code=NULL,version=version+1 WHERE tenant_id=? AND id=?",[outcome,s.context.tenantId,r.id]);await notifyChatflowActivity(s,r.id,r.status);
     await s.query("UPDATE chatflow_node_run SET status='succeeded',lease_until=NULL,fencing_token=fencing_token+1 WHERE tenant_id=? AND session_id=? AND status IN('pending','running','waiting')",[s.context.tenantId,r.id]);
     if(outcome!=='qualified'){await this.conversations.cancel(s,r.conversation_id);await cancelAgentExecutions(s,r.conversation_id);}
     const [saved]=await s.query('SELECT version FROM chatflow_session WHERE tenant_id=? AND id=?',[s.context.tenantId,r.id]);

@@ -1,4 +1,5 @@
 import { faultProcess } from './fixtures/fault-process.js';
+import { ConversationActivity,activityConsumers } from '../src/modules/conversation/activity.js';
 import { describe,it,expect } from 'vitest';
 import { randomUUID } from 'node:crypto';
 import type { DataSource } from 'typeorm';
@@ -124,4 +125,11 @@ export function workflowCases(isolated:(name:string)=>Promise<DataSource>){descr
   const f=await start(childGraph()),c=await claim(f.id);await expect(ds.query('UPDATE workflow_run SET tenant_id=? WHERE id=?',[beta,f.id])).rejects.toThrow();const next=randomUUID();await ds.query("INSERT INTO `role`(id,tenant_id,`key`,name,permissions,created_at,updated_at) VALUES (?,?,'changed','Synthetic',?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[next,tenant,JSON.stringify(grants)]);await ds.query('UPDATE service_actor SET role_id=? WHERE id=?',[next,service]);await expect(engine.effect(c)).rejects.toThrow('WORKFLOW_ROLE_REVOKED');await ds.query('UPDATE service_actor SET role_id=? WHERE id=?',[role,service]);await engine.uow.run({tenantId:tenant},s=>engine.cancel(s,f.id));
  });
 
+ it('SRC-034 source revision, delayed/out-of-order notification dedup and current Workflow run ACL',async()=>{
+  const f=await start();await step(f.id);const events=await ds.query("SELECT * FROM outbox_event WHERE event_type='automation.conversation_activity.v1' AND aggregate_id=? ORDER BY aggregate_version DESC",[f.id]);expect(events).toHaveLength(2);expect(events.map((e:any)=>String(e.aggregate_version))).toEqual(['2','1']);
+  const consumer=activityConsumers.find(c=>c.type==='automation.conversation_activity.v1')!;
+  for(const r of [...events,events[0]])await engine.uow.run({tenantId:tenant},s=>consumer.handle(s,{event_id:r.id,tenant_id:tenant,event_type:r.event_type,schema_version:1,aggregate_type:r.aggregate_type,aggregate_id:r.aggregate_id,aggregate_version:String(r.aggregate_version),occurred_at:new Date(r.occurred_at).toISOString(),actor:{kind:r.actor_kind,id:r.actor_id},data:typeof r.payload==='string'?JSON.parse(r.payload):r.payload,correlation_id:r.correlation_id,causation_id:null}));
+  const activity=new ConversationActivity(ds,'src034'),page=await activity.read(account,tenant,f.e.aggregate_id);expect(page.data.filter(x=>x.kind==='automation').map(x=>x.payload.state)).toEqual(['completed','started']);expect((await row(f.id)).status).toBe('completed');
+  await ds.query('UPDATE `role` SET permissions=? WHERE id=?',[JSON.stringify(grants.filter(g=>g.resource!=='automation'||g.action!=='read')),role]);try{expect((await activity.read(account,tenant,f.e.aggregate_id)).data.some(x=>x.kind==='automation')).toBe(false);await expect(activity.read(account,tenant,f.e.aggregate_id,{after:page.newer_cursor})).rejects.toThrow('QUERY_CHANGED');}finally{await ds.query('UPDATE `role` SET permissions=? WHERE id=?',[JSON.stringify(grants),role]);}
+ });
 });}

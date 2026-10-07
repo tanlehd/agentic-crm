@@ -77,6 +77,6 @@ SRC-021 emits lead.handoff_requested and lead.accepted atomically with ownership
 
 For new versioned chat.message.received/sent/updated and chat.send.requested payloads, MessageContext requires non-null crm_contact_id on inbound and outbound, including observed echoes. Customer identity differs from actor principal; correlate message-linked receipts first. Generic bus payload uses minimized refs, not profile/avatar/transcript. [Semantic contract and compatibility](contact-resolution.md). This does not modify implemented M2 event schemas or assert these new events are deployed.
 
-## UX-002 — New workspace event families (design Ready, not emitted yet)
+## UX-002 — Workspace event families (scoped source status in tracker)
 
 [Workspace event catalog](agent-chat-workspace.md) thêm chat.read_marker.updated, chat.snooze.changed, chat.conversation_tag.changed, chat.inbox.changed, chat.snippet.changed, chat.tag_definition.changed, automation.conversation_activity.v1 và crm.conversation_note.changed. Producer sở hữu aggregate, state+outbox cùng local transaction, consumer dedup source revision/tenant; payload chỉ refs/enums/revisions, không body/reason tự do. Legacy events không bị sửa; Chat activity là projection, không authority run/CRM note. Machine schemas/emission/consumption và runtime tests thuộc SRC-032…034.

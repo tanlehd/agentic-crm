@@ -4,7 +4,8 @@ import { WorkflowEngine } from '../../dist/modules/workflow/engine.js';
 import { DurableDelivery } from '../../dist/kernel/reliability/delivery.js';
 import { OutboundDispatcher } from '../../dist/modules/conversation/outbound.js';
 import { MockSender } from '../../dist/modules/channels/mock-sender.js';
-if (process.env.APP_ENV !== 'test' || !['workflow_test','routing_test'].includes(process.env.MYSQL_DATABASE) || !process.send) throw new Error('FAULT_TEST_ONLY');
+import { ConversationSnooze } from '../../dist/modules/conversation/snooze.js';
+if (process.env.APP_ENV !== 'test' || !['workflow_test','routing_test','workspace_test'].includes(process.env.MYSQL_DATABASE) || !process.send) throw new Error('FAULT_TEST_ONLY');
 const source = databaseSource(true);
 const pause = async () => {
   process.send({ boundary: 'committed' });
@@ -14,7 +15,10 @@ process.once('message', async ({ mode, claim, tenant, conversation, intent }) =>
   try {
     await source.initialize();
     const engine = new WorkflowEngine(source);
-    if (mode === 'effect-crash' || mode === 'effect-recover') {
+    if (mode === 'snooze-crash' || mode === 'snooze-recover') {
+      await new ConversationSnooze(source).tick();
+      if(mode==='snooze-crash')await pause();
+    } else if (mode === 'effect-crash' || mode === 'effect-recover') {
       await engine.effect(claim);
       if (mode === 'effect-crash') await pause();
       await engine.finish(claim);

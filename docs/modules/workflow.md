@@ -77,3 +77,8 @@ Retry policy chung 5 lần; permission/validation → failed và attention. Redi
 Graph loop/parallel, nested workflow, compensation, version migration run, visual builder và lựa chọn engine khác cần ADR trước thêm capability.
 
 SRC-019 triển khai graph/definition/version APIs, durable starter selection, action ledger, leased/fenced steps và predicate polling. [Exact contract](../contracts/workflow.md). Chatflow/Sales ports mặc định fail closed tới SRC-020/021; test harness riêng không vào production. Run scanning bỏ lease/retry chưa due; wait polling xoay theo last_checked_at để tránh starvation.
+
+
+## SRC-034 implementation
+
+SRC-034 adds source-owned activity_revision and outbox notifications for verified Conversation-bound started/terminal transitions. Wait states are not pause events. Verification status and limitations: [task evidence](../tracking/details/SRC-034.md).

@@ -17165,6 +17165,597 @@
           }
         }
       }
+    },
+    "/api/v1/chat-workspace/conversations/{id}/snooze": {
+      "get": {
+        "operationId": "workspace-get-snooze",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized Conversation workspace",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/snooze-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "workspace-put-snooze",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/snooze-put"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized Conversation workspace",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/snooze-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/chat-workspace/conversations/{id}/wake": {
+      "post": {
+        "operationId": "workspace-post-wake",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/snooze-empty"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized Conversation workspace",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/snooze-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/chat-workspace/conversations/{id}/activity": {
+      "get": {
+        "operationId": "workspace-get-activity",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized Conversation workspace",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/activity-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -28809,6 +29400,1146 @@
           "tag_id",
           "operation",
           "tag_set_revision"
+        ]
+      },
+      "snooze-put": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "until": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 250
+          }
+        },
+        "required": [
+          "until"
+        ]
+      },
+      "snooze-empty": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {},
+        "required": []
+      },
+      "snooze-state": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "conversation_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "until": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "snooze_revision": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,19})$"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 250
+          }
+        },
+        "required": [
+          "conversation_id",
+          "until",
+          "snooze_revision",
+          "version"
+        ]
+      },
+      "snooze-response": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/snooze-state"
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "as_of": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "activity-item": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "kind": {
+                "const": "message"
+              },
+              "occurred_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "recorded_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "actor": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "enum": [
+                          "human",
+                          "ai",
+                          "service",
+                          "system"
+                        ]
+                      },
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "id"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "source_ref": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "service": {
+                    "enum": [
+                      "chat",
+                      "crm",
+                      "workflow",
+                      "chatflow"
+                    ]
+                  },
+                  "kind": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "revision": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  }
+                },
+                "required": [
+                  "service",
+                  "kind",
+                  "id",
+                  "revision"
+                ]
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "message_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "envelope": {
+                    "$ref": "#/components/schemas/conversation-message-envelope-v3"
+                  },
+                  "inbound_seq": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^(0|[1-9][0-9]{0,19})$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "message_id",
+                  "envelope",
+                  "inbound_seq"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "occurred_at",
+              "recorded_at",
+              "actor",
+              "source_ref",
+              "payload"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "kind": {
+                "const": "note"
+              },
+              "occurred_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "recorded_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "actor": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "enum": [
+                          "human",
+                          "ai",
+                          "service",
+                          "system"
+                        ]
+                      },
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "id"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "source_ref": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "service": {
+                    "enum": [
+                      "chat",
+                      "crm",
+                      "workflow",
+                      "chatflow"
+                    ]
+                  },
+                  "kind": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "revision": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  }
+                },
+                "required": [
+                  "service",
+                  "kind",
+                  "id",
+                  "revision"
+                ]
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "activity_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "body": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "activity_id"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "occurred_at",
+              "recorded_at",
+              "actor",
+              "source_ref",
+              "payload"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "kind": {
+                "const": "assignment"
+              },
+              "occurred_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "recorded_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "actor": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "enum": [
+                          "human",
+                          "ai",
+                          "service",
+                          "system"
+                        ]
+                      },
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "id"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "source_ref": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "service": {
+                    "enum": [
+                      "chat",
+                      "crm",
+                      "workflow",
+                      "chatflow"
+                    ]
+                  },
+                  "kind": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "revision": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  }
+                },
+                "required": [
+                  "service",
+                  "kind",
+                  "id",
+                  "revision"
+                ]
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "from_principal_id": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "to_principal_id": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "owner_revision": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "from_principal_id",
+                  "to_principal_id",
+                  "owner_revision",
+                  "reason"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "occurred_at",
+              "recorded_at",
+              "actor",
+              "source_ref",
+              "payload"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "kind": {
+                "const": "lifecycle"
+              },
+              "occurred_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "recorded_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "actor": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "enum": [
+                          "human",
+                          "ai",
+                          "service",
+                          "system"
+                        ]
+                      },
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "id"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "source_ref": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "service": {
+                    "enum": [
+                      "chat",
+                      "crm",
+                      "workflow",
+                      "chatflow"
+                    ]
+                  },
+                  "kind": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "revision": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  }
+                },
+                "required": [
+                  "service",
+                  "kind",
+                  "id",
+                  "revision"
+                ]
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "from_status": {
+                    "enum": [
+                      "open",
+                      "pending",
+                      "closed"
+                    ]
+                  },
+                  "to_status": {
+                    "enum": [
+                      "open",
+                      "pending",
+                      "closed"
+                    ]
+                  }
+                },
+                "required": [
+                  "from_status",
+                  "to_status"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "occurred_at",
+              "recorded_at",
+              "actor",
+              "source_ref",
+              "payload"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "kind": {
+                "const": "snooze"
+              },
+              "occurred_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "recorded_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "actor": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "enum": [
+                          "human",
+                          "ai",
+                          "service",
+                          "system"
+                        ]
+                      },
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "id"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "source_ref": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "service": {
+                    "enum": [
+                      "chat",
+                      "crm",
+                      "workflow",
+                      "chatflow"
+                    ]
+                  },
+                  "kind": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "revision": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  }
+                },
+                "required": [
+                  "service",
+                  "kind",
+                  "id",
+                  "revision"
+                ]
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "until": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "cause": {
+                    "enum": [
+                      "scheduled",
+                      "rescheduled",
+                      "deadline",
+                      "inbound",
+                      "manual",
+                      "assignment",
+                      "closed"
+                    ]
+                  }
+                },
+                "required": [
+                  "until",
+                  "cause"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "occurred_at",
+              "recorded_at",
+              "actor",
+              "source_ref",
+              "payload"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "kind": {
+                "const": "tags"
+              },
+              "occurred_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "recorded_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "actor": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "enum": [
+                          "human",
+                          "ai",
+                          "service",
+                          "system"
+                        ]
+                      },
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "id"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "source_ref": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "service": {
+                    "enum": [
+                      "chat",
+                      "crm",
+                      "workflow",
+                      "chatflow"
+                    ]
+                  },
+                  "kind": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "revision": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  }
+                },
+                "required": [
+                  "service",
+                  "kind",
+                  "id",
+                  "revision"
+                ]
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "tag_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "operation": {
+                    "enum": [
+                      "attached",
+                      "detached"
+                    ]
+                  }
+                },
+                "required": [
+                  "tag_id",
+                  "operation"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "occurred_at",
+              "recorded_at",
+              "actor",
+              "source_ref",
+              "payload"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "kind": {
+                "const": "automation"
+              },
+              "occurred_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "recorded_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "actor": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "enum": [
+                          "human",
+                          "ai",
+                          "service",
+                          "system"
+                        ]
+                      },
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "id"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "source_ref": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "service": {
+                    "enum": [
+                      "chat",
+                      "crm",
+                      "workflow",
+                      "chatflow"
+                    ]
+                  },
+                  "kind": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "revision": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  }
+                },
+                "required": [
+                  "service",
+                  "kind",
+                  "id",
+                  "revision"
+                ]
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "source_service": {
+                    "enum": [
+                      "workflow",
+                      "chatflow"
+                    ]
+                  },
+                  "run_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "definition_version_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "state": {
+                    "enum": [
+                      "started",
+                      "paused",
+                      "resumed",
+                      "completed",
+                      "failed",
+                      "cancelled"
+                    ]
+                  }
+                },
+                "required": [
+                  "source_service",
+                  "run_id",
+                  "definition_version_id",
+                  "state"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "occurred_at",
+              "recorded_at",
+              "actor",
+              "source_ref",
+              "payload"
+            ]
+          }
+        ]
+      },
+      "activity-response": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/activity-item"
+            }
+          },
+          "older_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "newer_cursor": {
+            "type": "string"
+          },
+          "has_more": {
+            "type": "boolean"
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "state": {
+                "enum": [
+                  "ready",
+                  "backfilling",
+                  "partial"
+                ]
+              },
+              "as_of": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "service": {
+                      "enum": [
+                        "chat",
+                        "crm",
+                        "workflow",
+                        "chatflow"
+                      ]
+                    },
+                    "state": {
+                      "enum": [
+                        "ready",
+                        "delayed",
+                        "unavailable"
+                      ]
+                    },
+                    "last_observed_at": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "service",
+                    "state",
+                    "last_observed_at"
+                  ]
+                }
+              },
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "state",
+              "as_of",
+              "sources"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "older_cursor",
+          "newer_cursor",
+          "has_more",
+          "meta"
+        ]
+      },
+      "snooze-event": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "conversation_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "until": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "snooze_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$"
+          },
+          "cause": {
+            "enum": [
+              "scheduled",
+              "rescheduled",
+              "deadline",
+              "inbound",
+              "manual",
+              "assignment",
+              "closed"
+            ]
+          }
+        },
+        "required": [
+          "conversation_id",
+          "until",
+          "snooze_revision",
+          "cause"
+        ]
+      },
+      "activity-note-event": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "conversation_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "activity_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "operation": {
+            "enum": [
+              "created",
+              "updated",
+              "archived"
+            ]
+          },
+          "source_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$"
+          }
+        },
+        "required": [
+          "conversation_id",
+          "activity_id",
+          "operation",
+          "source_revision"
+        ]
+      },
+      "activity-automation-event": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "conversation_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "source_service": {
+            "enum": [
+              "workflow",
+              "chatflow"
+            ]
+          },
+          "run_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "definition_version_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "state": {
+            "enum": [
+              "started",
+              "paused",
+              "resumed",
+              "completed",
+              "failed",
+              "cancelled"
+            ]
+          },
+          "source_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$"
+          }
+        },
+        "required": [
+          "conversation_id",
+          "source_service",
+          "run_id",
+          "definition_version_id",
+          "state",
+          "source_revision"
         ]
       }
     },

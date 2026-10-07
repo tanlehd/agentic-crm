@@ -10,6 +10,7 @@ import { RecordRegistry } from '../crm/registry.js';
 import { uuid } from '../identity/admin.js';
 import { validateGraph,resolveConfig,sanitizeOutput,type Graph,type Node } from './graph.js';
 import { unavailableChildren,type WorkflowChildren } from './ports.js';
+import { notifyWorkflowActivity } from './activity-port.js';
 export const json=(v:any):any=>typeof v==='string'?JSON.parse(v):v;
 export interface Claim {tenantId:string;runId:string;nodeKey:string;token:string}
 const delays=[1,5,30,120,600];
@@ -25,7 +26,7 @@ export class WorkflowEngine {
       const [v]=await s.query("SELECT * FROM workflow_version WHERE tenant_id=? AND id=? AND state='published'",[s.context.tenantId,d.active_version_id]);if(!v)continue;const g=validateGraph(json(v.graph));if(g.trigger.connection_id!==e.data.connection_id)continue;
       const id=randomUUID(),context={trigger:{aggregate_id:e.aggregate_id,contact_id:e.data.contact_id,connection_id:e.data.connection_id},outputs:{}};
       await s.query("INSERT INTO workflow_run(id,tenant_id,definition_id,version_id,trigger_event_id,service_actor_id,current_node,context,status,correlation_id) VALUES (?,?,?,?,?,?,?,?,'queued',?)",[id,s.context.tenantId,d.id,v.id,e.event_id,d.service_actor_id,g.entry_node,JSON.stringify(context),e.correlation_id]);
-      await this.commands.systemAudit(s,e.correlation_id,'workflow_run',id,'workflow.started',['version_id']);
+      await this.commands.systemAudit(s,e.correlation_id,'workflow_run',id,'workflow.started',['version_id']);await notifyWorkflowActivity(s,id,'started');
     }
   }
   private async run(s:TransactionScope,id:string){await lockWorkflowTenant(s);const [r]=await s.query('SELECT * FROM workflow_run WHERE tenant_id=? AND id=? FOR UPDATE',[s.context.tenantId,id]);if(!r)throw new CommandError(404,'NOT_FOUND');const [v]=await s.query('SELECT graph,execution_role_id FROM workflow_version WHERE tenant_id=? AND id=?',[s.context.tenantId,r.version_id]);return {...r,graph:json(v.graph) as Graph,role:v.execution_role_id,context:json(r.context)};}
@@ -49,7 +50,7 @@ export class WorkflowEngine {
   private async terminal(s:TransactionScope,r:any,status:'completed'|'failed'|'cancelled',code?:string){
     await s.query('UPDATE workflow_run SET status=?,finished_at=UTC_TIMESTAMP(6),error_code=?,attention=? WHERE tenant_id=? AND id=?',[status,code??null,status==='failed'?1:0,s.context.tenantId,r.id]);
     if(status==='failed'){await s.query("UPDATE workflow_step_run SET status='failed',lease_until=NULL,error_code=? WHERE tenant_id=? AND run_id=? AND status IN('pending','running')",[code??'WORKFLOW_ACTION_REJECTED',s.context.tenantId,r.id]);await s.query("UPDATE workflow_wait SET status='cancelled' WHERE tenant_id=? AND run_id=? AND status='waiting'",[s.context.tenantId,r.id]);}
-    await this.commands.systemAudit(s,r.correlation_id,'workflow_run',r.id,`workflow.${status}`,['status']);
+    await this.commands.systemAudit(s,r.correlation_id,'workflow_run',r.id,`workflow.${status}`,['status']);await notifyWorkflowActivity(s,r.id,status);
     if(status!=='cancelled')await s.query("INSERT INTO outbox_event(id,tenant_id,event_type,schema_version,aggregate_type,aggregate_id,aggregate_version,payload,correlation_id,actor_kind,actor_id,occurred_at,created_at,status) VALUES (?,?,?,1,'workflow_run',?,1,?,?,'service',?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6),'pending')",[randomUUID(),s.context.tenantId,status==='completed'?'workflow.completed':'execution.failed',r.id,JSON.stringify(status==='completed'?{run_id:r.id,version_id:r.version_id}:{execution_type:'workflow',execution_id:r.id,error_code:code}),r.correlation_id,r.service_actor_id]);
   }
   private async advance(s:TransactionScope,r:any,n:Node,output:Record<string,unknown>,next?:string){

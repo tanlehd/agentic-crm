@@ -7,7 +7,9 @@ import { Routing } from '../../modules/agents/routing.js';
 import { routingAccessConsumer } from '../../modules/agents/access-consumer.js';
 import { MessengerIntake } from '../../modules/channels/intake.js';
 import { OutboundDispatcher } from '../../modules/conversation/outbound.js';
-import { workspaceReadConsumer,workspaceCatalogConsumers } from '../../modules/conversation/workspace-consumer.js';
+import { workspaceReadConsumer,workspaceCatalogConsumers,snoozeConsumer } from '../../modules/conversation/workspace-consumer.js';
+import { ConversationSnooze } from '../../modules/conversation/snooze.js';
+import { activityConsumers } from '../../modules/conversation/activity.js';
 import { MockSender } from '../../modules/channels/mock-sender.js';
 import { Injectable, Module } from '@nestjs/common';
 import type { OnModuleInit, OnModuleDestroy } from '@nestjs/common';
@@ -17,6 +19,7 @@ import { identityAccessConsumer } from '../../modules/identity/access-consumer.j
 @Injectable()
 class DeliveryWorker implements OnModuleInit, OnModuleDestroy {
   private readonly source = databaseSource();
+  private readonly snooze = new ConversationSnooze(this.source);
   private readonly chatflow = new ChatflowEngine(this.source);
   private readonly workflow = new WorkflowEngine(this.source,workflowChildren(this.source));
   private readonly sales = new SalesHandoffs(this.source);
@@ -41,10 +44,11 @@ class DeliveryWorker implements OnModuleInit, OnModuleDestroy {
   }
   private async tick() {
     try {
+      await this.snooze.tick();
       const claims = await this.delivery.claim();
       // Bounded concurrency below DB pool size; no overlapping ticks.
       for (let offset=0; offset<claims.length; offset+=4) {
-        await Promise.all(claims.slice(offset,offset+4).map(claim=>this.delivery.dispatch(claim,[identityAccessConsumer,workspaceReadConsumer,...workspaceCatalogConsumers,this.routingConsumer,this.runtimeConsumer,...this.workflow.consumers()])));
+        await Promise.all(claims.slice(offset,offset+4).map(claim=>this.delivery.dispatch(claim,[identityAccessConsumer,workspaceReadConsumer,snoozeConsumer,...workspaceCatalogConsumers,...activityConsumers,this.routingConsumer,this.runtimeConsumer,...this.workflow.consumers()])));
       }
       await this.delivery.expireReceipts();
       await this.outbound.tick();

@@ -1,3 +1,4 @@
+import { activitySupported,activityFeature,appendActivity,prepareActivity } from './activity-storage.js';
 import { createHmac,randomUUID,timingSafeEqual } from 'node:crypto';
 import type { DataSource } from 'typeorm';
 import { UnitOfWork,type TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
@@ -66,7 +67,7 @@ export class WorkspaceCatalogs {
   list(account:string,tenant:string,kind:CatalogKind,input:Record<string,unknown>){return this.run(account,tenant,false,(s,a)=>this.listInScope(s,a,kind,input));}
   get(account:string,tenant:string,kind:CatalogKind,id:string){return this.run(account,tenant,false,async(s,a)=>({data:await this.project(s,a,kind,await this.row(s,a,kind,id)),meta:{as_of:new Date().toISOString()}}));}
   private async validatePredicate(s:TransactionScope,a:Access,p:any){
-    if(p.snooze==='only')throw new CommandError(409,'CAPABILITY_UNAVAILABLE');
+    if(p.snooze==='only'&&!await activityFeature(s,'snooze_v1'))throw new CommandError(409,'CAPABILITY_UNAVAILABLE');
     if(p.team_id)await this.identity.target(s,'team',p.team_id);if(p.channel_id)await new ChannelReferences().metadata(s,p.channel_id);
     if(p.tag_ids){if(!fieldAllowed(a,'conversation','tags','filter'))throw new CommandError(403,'FIELD_FORBIDDEN');for(const id of p.tag_ids)await this.row(s,a,'tags',id,true);}
     for(const field of ['status',...(p.scope==='mine'||p.scope==='unassigned'?['owner_principal_id']:[]),...(p.team_id?['team_id']:[]),...(p.channel?['channel']:[]),...(p.channel_id?['channel_id']:[])])if(!fieldAllowed(a,'conversation',field,'filter'))throw new CommandError(403,'FIELD_FORBIDDEN');
@@ -115,12 +116,12 @@ export class WorkspaceCatalogs {
   tagLink(account:string,tenant:string,id:string,tagId:string,attach:boolean,key:string,correlation:string){return this.run(account,tenant,true,async(s,a)=>{
     if(!uuid(tagId)||typeof key!=='string'||!/^[\x21-\x7e]{1,128}$/.test(key))throw bad();const {record}=await conversation(s,id,true);requirePermission(a,record,'read');requirePermission(a,record,'update');if(!fieldAllowed(a,'conversation','tags','read')||!fieldAllowed(a,'conversation','tags','write'))throw new CommandError(403,'FIELD_FORBIDDEN');
     const command={actorId:a.principalId,route:`${attach?'PUT':'DELETE'} /api/v1/chat-workspace/conversations/${id}/tags/${tagId}`,body:{},key,correlationId:correlation};const replay=await this.commands.replay(s,command,async()=>{});if(replay)return replay;
-    const tag=await this.row(s,a,'tags',tagId,true),links=await s.query('SELECT tag_id FROM conversation_tag_link WHERE tenant_id=? AND conversation_id=? ORDER BY tag_id',[tenant,id]),exists=links.some((l:any)=>l.tag_id===tagId);let changed=false;
+    await prepareActivity(s,id);const tag=await this.row(s,a,'tags',tagId,true),links=await s.query('SELECT tag_id FROM conversation_tag_link WHERE tenant_id=? AND conversation_id=? ORDER BY tag_id',[tenant,id]),exists=links.some((l:any)=>l.tag_id===tagId);let changed=false;
     if(attach&&!exists){if(tag.archived_at)throw new CommandError(409,'ARCHIVED');if(links.length>=20)throw new CommandError(409,'TAG_QUOTA');await s.query('INSERT INTO conversation_tag_link VALUES (?,?,?,?,UTC_TIMESTAMP(6))',[tenant,id,tagId,a.principalId]);changed=true;}
     if(!attach&&exists){await s.query('DELETE FROM conversation_tag_link WHERE tenant_id=? AND conversation_id=? AND tag_id=?',[tenant,id,tagId]);changed=true;}
     if(changed){await s.query('UPDATE conversation_workspace SET tag_set_revision=tag_set_revision+1 WHERE tenant_id=? AND conversation_id=?',[tenant,id]);await s.query('UPDATE crm_record SET version=version+1,updated_at=UTC_TIMESTAMP(6) WHERE tenant_id=? AND id=?',[tenant,id]);}
     const [state]=await s.query('SELECT w.tag_set_revision,r.version FROM conversation_workspace w JOIN crm_record r ON r.tenant_id=w.tenant_id AND r.id=w.conversation_id WHERE w.tenant_id=? AND w.conversation_id=?',[tenant,id]);
-    if(!state)throw new CommandError(503,'WORKSPACE_BACKFILLING');if(changed){await this.commands.audit(s,a.principalId,correlation,'conversation',id,attach?'tag_attached':'tag_detached',['tags']);await this.event(s,a,'chat.conversation_tag.changed','conversation',id,String(state.version),{conversation_id:id,tag_id:tagId,operation:attach?'attached':'detached',tag_set_revision:String(state.tag_set_revision)},correlation);}
+    if(!state)throw new CommandError(503,'WORKSPACE_BACKFILLING');if(changed){await appendActivity(s,id,{service:'chat',sourceKind:'tags',sourceId:id,revision:String(state.tag_set_revision),kind:'tags',payload:{tag_id:tagId,operation:attach?'attached':'detached'},actor:{kind:'human',id:a.principalId}});await this.commands.audit(s,a.principalId,correlation,'conversation',id,attach?'tag_attached':'tag_detached',['tags']);await this.event(s,a,'chat.conversation_tag.changed','conversation',id,String(state.version),{conversation_id:id,tag_id:tagId,operation:attach?'attached':'detached',tag_set_revision:String(state.tag_set_revision)},correlation);}
     const result={status:200,body:{data:{conversation_id:id,tag_ids:(await s.query('SELECT tag_id FROM conversation_tag_link WHERE tenant_id=? AND conversation_id=? ORDER BY tag_id',[tenant,id])).map((l:any)=>l.tag_id),tag_set_revision:String(state.tag_set_revision),version:String(state.version)},meta:{correlation_id:correlation}}};await this.commands.complete(s,command,result);return result;
   });}
 }

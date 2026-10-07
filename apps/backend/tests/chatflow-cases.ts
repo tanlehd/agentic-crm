@@ -1,4 +1,5 @@
 import { AgentOperations } from '../src/modules/agents/operations-port.js';
+import { ConversationActivity,activityConsumers } from '../src/modules/conversation/activity.js';
 import { SalesHandoffs } from '../src/modules/sales/handoff.js';
 import { workflowChildren } from '../src/modules/workflow/children.js';
 import { describe,it,expect } from 'vitest';
@@ -137,5 +138,11 @@ export function chatflowCases(isolated:(name:string)=>Promise<DataSource>){descr
  });
  it('SRC-022 Agent Operations only exposes authorized sanitized metadata',async()=>{
   const ops=new AgentOperations(ds),result=await ops.list(account,tenant,{limit:'50'});expect(result.data.length).toBeGreaterThan(0);for(const r of result.data){expect(Object.keys(r).sort()).toEqual(['attention','conversation_id','created_at','error_code','id','status']);}await ds.query('UPDATE `role` SET permissions=? WHERE id=?',[JSON.stringify(grants.filter(g=>g.resource!=='conversation')),role]);try{expect((await ops.list(account,tenant,{})).data).toHaveLength(0);}finally{await ds.query('UPDATE `role` SET permissions=? WHERE id=?',[JSON.stringify(grants),role]);}
+ });
+ it('SRC-034 Chatflow emits real start/pause/cancel once per transition with pinned source binding',async()=>{
+  const f=await start();await engine.uow.run({tenantId:tenant},s=>engine.handoff(s,f.id,'REQUEST_HUMAN'));await engine.uow.run({tenantId:tenant},s=>engine.handoff(s,f.id,'REQUEST_HUMAN'));await engine.uow.run({tenantId:tenant},async s=>engine.stop(s,await engine.lock(s,f.id),'cancelled','SYNTHETIC_CANCEL'));
+  const events=await ds.query("SELECT * FROM outbox_event WHERE event_type='automation.conversation_activity.v1' AND aggregate_id=? ORDER BY aggregate_version",[f.id]);expect(events.map((e:any)=>(typeof e.payload==='string'?JSON.parse(e.payload):e.payload).state)).toEqual(['started','paused','cancelled']);
+  const consumer=activityConsumers.find(c=>c.type==='automation.conversation_activity.v1')!;for(const r of events)await engine.uow.run({tenantId:tenant},s=>consumer.handle(s,{event_id:r.id,tenant_id:tenant,event_type:r.event_type,schema_version:1,aggregate_type:r.aggregate_type,aggregate_id:r.aggregate_id,aggregate_version:String(r.aggregate_version),occurred_at:new Date(r.occurred_at).toISOString(),actor:{kind:r.actor_kind,id:r.actor_id},data:typeof r.payload==='string'?JSON.parse(r.payload):r.payload,correlation_id:r.correlation_id,causation_id:null}));
+  const page=await new ConversationActivity(ds,'src034').read(account,tenant,f.c);expect(page.data.filter(x=>x.kind==='automation').map(x=>x.payload.state)).toEqual(['started','paused','cancelled']);expect(page.data.filter(x=>x.kind==='automation').every(x=>x.payload.definition_version_id===f.v)).toBe(true);
  });
 });}
