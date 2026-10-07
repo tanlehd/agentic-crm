@@ -200,3 +200,22 @@ Design acceptance đã xác định; runtime cases NOT_RUN. Historical OIDC PASS
 PLAN-007 chỉ kiểm mapping/docs; enforcement và negative/runtime tests thuộc source tasks sau exact design gates.
 
 SRC-038 local acceptance: AUTH-NATIVE scoped first slice, DB-01/02/03/06 retrofit/grants/reuse checks PASS; evidence details/SRC-038.md. DB-04 cross-service database isolation và DB-05 physical extraction vẫn NOT_RUN/PLAN-007B. DB-07 schema catalog/template design đã có. SRC-034 backend UX-CHAT-18/20/22 regression closed222/222, UI/full release còn pending.
+
+## UX-003 — App shell và Inbox design acceptance
+
+AC-14 design sub-scope: research/IA, [guidelines](../ux/guidelines.md), [app shell](../ux/app-shell.md), [Inbox screen](../ux/inbox-screen.md), [screen template](../templates/ux-screen.md) và [mock](../ux/mockups/inbox.html). UX-CHAT-01/02 dùng layout/breakpoint UX-003; semantics UX-CHAT-03…22 giữ nguyên. Bổ sung UX-APP-01…08 shell/search/nav/tabs/create/tenant/keyboard và UX-G01…09 usability/accessibility/documentation.
+
+Mock interaction/layout review chỉ chứng minh prototype synthetic, không đóng browser/API acceptance ứng dụng. Runtime SRC-035/036/037 và user usability/full AA audit NOT_RUN; backend evidence cũ giữ nguyên. Evidence thiết kế và screenshot: [UX-003](../tracking/details/UX-003.md).
+
+
+UX-004 / CHG-20261007-05 supersedes work-tab requirements UX-003: không tab bar dưới header, main y56, Contact/create drawer và giữ draft. UX-APP-02/03/07 cập nhật tại app-shell.md;31 prototype assertions PASS, runtime vẫn NOT_RUN. [Evidence](../tracking/details/UX-004.md).
+
+SRC-039 runtime sub-scope: shell không tab, authorized header/nav/tool search/create; API queue/search/filter/context/timeline, reply/note/takeover và draft/tenant guards. Browser9 groups/six viewports,104 unit tests và web build PASS; [evidence](../tracking/details/SRC-039.md). Không đóng toàn UX-CHAT hoặc SRC-036/037: read-marker writes, snooze/status actions, tag/saved-inbox management, full activity/Contact identities và release gates còn pending.
+
+SRC-040 acceptance: API need_response true -> false after sent -> true on new inbound; internal note preserves waiting; list labels match. Browser10 groups/6 viewports and106 unit tests PASS. [Evidence](../tracking/details/SRC-040.md). Unknown coverage does not render as responded; closed keeps lifecycle label.
+
+SRC-041 supersedes SRC-040 need-response transition: inbound -> unknown/null; note unchanged; sent covering current inbound -> replied/false; follow-up inbound -> unknown/null.10 browser groups/107 unit/31 prototype checks PASS. True “Cần trả lời” + optional Next action requires future valid Assist assessment; not current integration acceptance. [Evidence](../tracking/details/SRC-041.md).
+
+UX-005 product acceptance (design-only): Conversation suggestion attributes/update action independent of AI; Workflow/Chatflow can apply fixed-rule output or validated configured Assist proposal. Assist cannot directly write CRM/Conversation or publicly reply; orchestrator actor writes only suggestion fields. Same tenant/revision/dedup guards for both branches. [Scope](../ux/agent-assist-response.md); runtime acceptance awaits PLAN-008/source, existing tests do not claim this integration.
+
+UX-006 design acceptance: each registered next_action.type maps to correct list label; null/unknown fallback distinct from responded; no independent need_response target; rule and Assist use same update path; type assignment has no business side effects. Reply completion cannot complete a create_lead/create_ticket/close_chat suggestion. Source rollout/legacy compatibility and runtime verification remain PLAN-008/source work. [Spec](../ux/agent-assist-response.md).

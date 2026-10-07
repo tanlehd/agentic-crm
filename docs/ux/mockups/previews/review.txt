@@ -1,0 +1,34 @@
+UX-004 prototype review, 2026-10-07
+Node v24.21.0; Chromium 154.0.8037.98; headless Windows Chrome
+PASS no page overflow at 1440x900
+PASS no page overflow at 1280x800
+PASS no page overflow at 1024x768
+PASS no page overflow at 768x1024
+PASS no page overflow at 390x844
+PASS composer visible at 390px
+PASS no page overflow at 320x844
+PASS composer visible at 320px
+PASS reply and note drafts separate
+PASS reply draft restored
+PASS AI owned reply disabled
+PASS note independent from reply ownership
+PASS conversation draft isolated
+PASS send simulation remains queued
+PASS synthetic name prefix filter
+PASS no matches state
+PASS no work tab bar
+PASS main starts directly below 56px header
+PASS contact opens dialog over Inbox
+PASS closing contact returns to Inbox
+PASS loading blocks send
+PASS empty blocks send
+PASS error blocks send
+PASS forbidden blocks send
+PASS forbidden clears contact field
+PASS owner blocks send
+PASS unknown blocks send
+PASS closed blocks send
+PASS dialog returns focus
+PASS no browser JavaScript errors
+PASS no external network requests
+NOT_RUN: real CRM APIs, user usability sessions, full screen reader/AA audit, physical mobile keyboard, browser UI zoom. 320px CSS reflow checked separately.

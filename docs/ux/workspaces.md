@@ -2,6 +2,10 @@
 
 Status: Ready for implementation wireframe M2; Sale nâng cao/Admin builder/Report builder Draft.
 
+## UX-003 — Nguồn chuẩn redesign
+
+[UX hub](README.md), [guidelines](guidelines.md), [app shell](app-shell.md) và [Inbox screen/mock](inbox-screen.md) thay shell/app rail cũ cho lần rebuild tiếp theo. Header và grouped app nav cố định; nội dung feature ở giữa. Inbox thiết kế trước; mỗi màn sau phải dùng [screen template](../templates/ux-screen.md). SRC-032…034 backend DONE; SRC-035…037 chưa hoàn tất. Các wireframe/mô tả bên dưới là baseline lịch sử khi mâu thuẫn layout UX-003.
+
 ## Nguyên tắc chung
 
 Ứng dụng desktop-first, desktop chính từ 1280px; màn hình nhỏ chuyển detail panel thành drawer. Shell gồm tenant switcher, workspace navigation, search theo module và user menu. Tenant switch phải xóa selection/cache tenant cũ trước fetch mới; không giữ dữ liệu tenant trước trong màn hình mới.
@@ -12,7 +16,7 @@ Record cards dùng cùng pattern cho standard/custom object: header identity + o
 
 ## Chat Workspace — UX rebuild
 
-Đặc tả chuẩn cho lần build lại: [Agent Chat Workspace](agent-chat-workspace.md), UX-002 / CHG-20261006-19, kế thừa layout UX-001. [Contract mở rộng](../contracts/agent-chat-workspace.md) chốt per-agent unread/counts/waiting metrics, custom/shared inbox, server search/sort, tags hội thoại, durable snooze, activity feed, snippets và Contact channels. Bố cục theo ảnh gồm app rail, Inbox sidebar, list/search/filter, actions, console và context drawer/rail. Ready về thiết kế; source/API/migration mới chưa triển khai. Media/provider receipts/call/control vẫn có gate riêng; không giới hạn product design chỉ vì API cũ còn thiếu.
+Đặc tả chuẩn cho lần build lại: [Agent Chat Workspace](agent-chat-workspace.md), UX-002 / CHG-20261006-19, kế thừa layout UX-001. [Contract mở rộng](../contracts/agent-chat-workspace.md) chốt per-agent unread/counts/waiting metrics, custom/shared inbox, server search/sort, tags hội thoại, durable snooze, activity feed, snippets và Contact channels. Bố cục Inbox kế thừa ảnh, shell/app nav theo UX-003. Ready về thiết kế; backend SRC-032…034 DONE, UI/source còn theo tracker. Media/provider receipts/call/control vẫn có gate riêng; không giới hạn product design chỉ vì API cũ còn thiếu.
 
 Wireframe ba cột dưới đây là **baseline M2 lịch sử**, được thay thế về bố cục bởi đặc tả trên; business rules và evidence implementation bên dưới vẫn giữ hiệu lực.
 

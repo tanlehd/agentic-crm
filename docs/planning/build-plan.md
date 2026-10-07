@@ -123,3 +123,5 @@ Theo CHG-20261006-19 và chỉ đạo mở rộng thiết kế từ sample, [wor
 ## ENV-003 — local infrastructure and host applications
 
 User-directed local tooling now separates persistent Docker infrastructure from Windows/macOS/Linux host application processes. [Runbook](../development/service-manager.md), [evidence](../tracking/details/ENV-003.md). Lifecycle does not migrate or reset data; normal synthetic QA can reuse tenant/user records. Source extraction and production Linux deployment gates remain unchanged.
+
+UX-003 bổ sung [app shell và Inbox redesign](../ux/README.md), UX guidelines và template mỗi màn. SRC-036 kế thừa layout mới cùng UX-002 contracts sau SRC-035; mock không phải source release. Deal/Marketing/Reporting và global CRM record search giữ design gate riêng.

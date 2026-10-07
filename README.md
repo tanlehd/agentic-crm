@@ -55,3 +55,7 @@ SRC-031 adds Admin→Channels→Facebook OAuth/Page configuration with encrypted
 Agent Chat rebuild: [workspace plan](docs/planning/agent-chat-workspace.md) và [UX](docs/ux/agent-chat-workspace.md). SRC-032 backend unread/query/metrics foundation DONE với203 MySQL tests và9 canonical gates; SRC-033 catalogs DONE với209 MySQL regression,13 final workspace cases và102 unit tests. UI rebuild và full workspace local release chưa hoàn tất; không đồng nghĩa đã nâng schema preview hoặc hoàn thành live provider integration.
 
 SRC-034 snooze/activity backend and schema22 source are implemented; SRC-038 regression now passes222 MySQL cases and local DB is23. Full workspace UI/release remains pending; task disposition is recorded in the tracker. [Evidence](docs/tracking/details/SRC-034.md).
+
+UI/UX redesign UX-003: [bộ thiết kế](docs/ux/README.md), [app shell](docs/ux/app-shell.md), [Inbox spec](docs/ux/inbox-screen.md) và [mock tương tác](docs/ux/mockups/inbox.html). Header + business navigation, UX guidelines và template đặc tả từng màn; thiết kế/mock độc lập, chưa thay UI ứng dụng đang chạy.
+
+SRC-039 triển khai shell không tab và Inbox trên API hiện có: [evidence](docs/tracking/details/SRC-039.md). Local hiện tại [localhost:18080](http://localhost:18080). Queue/search/filter, takeover, reply/note và Contact dialog đã kiểm thử; SRC-035/036/037 full workspace vẫn chưa hoàn tất.

@@ -10,50 +10,15 @@ Tổ chức lại Inbox để agent chọn hàng chờ, đọc hội thoại, tr
 
 Nguồn hành vi: [Conversation](../modules/conversation.md), [Conversation API](../contracts/conversation.md), [routing](../contracts/routing.md), [rich messages](../contracts/rich-messages.md), [contact-bound compatibility](../contracts/contact-resolution-local.md), [channel configuration](../contracts/facebook-configuration.md), [Chatflow](../contracts/chatflow.md). Dữ liệu theo [dictionary](../data/dictionary.md), [ownership](../data/service-ownership.md) và [Chat service](../services/chat.md). UX không thay state machine, quyền, ownership hay service boundary.
 
-## 2. Cấu trúc màn hình
+## 2. Cấu trúc màn hình — UX-003 supersedes app rail
 
-```text
-┌──────┬──────────────┬────────────────┬───────────────────────────────────────┐
-│ App  │ Inbox        │ Search/filter  │ Conversation actions                  │
-│ rail │ sidebar      │                ├────────────────────┬────────────┬─────┤
-│      │              ├────────────────┤ Messaging console  │ Context    │Tool │
-│      │ All/Mine/    │ Conversation   │                    │ drawer     │rail │
-│      │ Unassigned   │ list           │ Timeline           │ Contact /  │     │
-│      │ Team         │                │                    │ Qualify /  │     │
-│      │              │                │                    │ History    │     │
-│      │              │                ├────────────────────┤            │     │
-│      │              │                │ Reply / Note       │            │     │
-│      │              │                │ Composer           │            │     │
-└──────┴──────────────┴────────────────┴────────────────────┴────────────┴─────┘
-```
+Ngày 2026-10-07, CHG-20261007-04: [App shell](app-shell.md) là nguồn chuẩn cho header/search/create/user/settings và grouped nav. [Inbox screen](inbox-screen.md) là nguồn chuẩn anatomy/kích thước/responsive; [guidelines](guidelines.md) là chuẩn visual/accessibility. Thay app rail56 bằng app nav184 desktop và header56; không có tab bar (UX-004). Không giữ app rail cũ đồng thời với nav mới.
 
-Header hội thoại chạy ngang toàn vùng bên phải danh sách, gồm cả drawer/rail như ảnh. Search/filter nằm trên danh sách, không đặt ngang toàn ứng dụng. Không bọc toàn bộ workspace trong các card có margin lớn; chia cột bằng border 1px.
+Ở1440px: nav184 + Inbox sidebar176 + list280 + chat496 + context264 + tool rail40. Header hội thoại phủ chat/context/rail. Drawer overlay dưới1440; queue ẩn dưới1280; nav drawer dưới1024; dưới768 chỉ một pane list/detail. Xem bảng breakpoint tại Inbox screen, không áp lại sizing UX-001 cũ. Header/nav cố định, mỗi pane cuộn độc lập. Shell chỉ có một bộ tenant/user controls.
 
-### Kích thước và responsive
+## 3. Inbox sidebar
 
-Các kích thước dưới đây là quyết định triển khai, không phải đo pixel tuyệt đối từ ảnh. Dùng CSS Grid/Flex với `min-width:0`, `min-height:0`; chiều cao workspace bằng phần viewport còn lại dưới shell, dựa trên `100dvh`. Chỉ có một bộ tenant/user controls trong shell.
-
-| Vùng | Desktop >=1440px | Quy tắc |
-|---|---|---|
-| App rail | 56px | Cố định; icon 20px, vùng bấm tối thiểu 40px |
-| Inbox sidebar | 220px | Thu gọn hoàn toàn bằng nút trong header danh sách; không sinh rail icon thứ ba |
-| Conversation list | 300px | Filter cố định phía trên, list cuộn riêng |
-| Conversation body | Phần còn lại, tối thiểu 480px | Header 64px; timeline co giãn; composer neo dưới |
-| Context drawer | 280px | Mặc định mở Contact trên desktop; đóng trả diện tích cho chat |
-| Tool rail | 44px | Luôn sát phải vùng detail; chỉ có công cụ khả dụng |
-
-Ở 1440px, tổng các cột cố định là 900px, chat còn 540px. Không dùng tỷ lệ khiến composer bị ép hẹp khi drawer mở.
-
-- 1280–1439px: sidebar 200px, list 280px; drawer mặc định đóng và mở dạng overlay rộng 320px, không ép chat.
-- 1024–1279px: sidebar mặc định thu gọn; list 280px và chat song song; sidebar mở dạng overlay 240px, context overlay 320px.
-- 768–1023px: sidebar ẩn; list 260px và chat phần còn lại; context overlay tối đa 360px. Header actions ít dùng vào menu, không tràn ngang.
-- <768px: một pane tại một thời điểm: list → chọn hội thoại → detail; nút Quay lại giữ filter và vị trí list. Context mở sheet toàn chiều rộng. App navigation thu gọn, không chiếm thêm cột. Composer nằm trên bàn phím ảo, không che tin cuối.
-- Overlay có backdrop, focus trap, Escape/Đóng và trả focus về nút mở. Desktop drawer docked không trap focus. Không kéo resize trong lần rebuild này.
-- Kiểm layout tại 1440×900, 1280×800, 1024×768, 768×1024, 390×844; zoom 200% phải reflow, không có thanh cuộn ngang toàn trang.
-
-## 3. App rail và Inbox sidebar
-
-App rail: logo/tenant ở trên, Chat/Sales/CRM/Admin/Operations theo quyền ở giữa, tài khoản ở dưới. Dùng route hiện có; icon Chat có nền xanh nhạt và chỉ dấu active. Icon luôn có accessible name và tooltip. Không đưa campaign, report builder, notification count hoặc online presence vào chỉ để giống ảnh.
+App nav thuộc shell, nhóm CRM (Inbox/Contacts/Leads/Deals), Marketing (Ads/Campaigns), Workflow, Reporting và More theo quyền/readiness. Module Draft chỉ là IA đích; production không có control giả. Account/workspace controls ở header, không ở rail dưới. Mock synthetic và state review ở [Inbox prototype](mockups/inbox.html).
 
 Sidebar có tiêu đề **Hộp thư**, nút thu gọn và các lựa chọn **Tất cả / Của tôi / Chưa phân công**. “Tất cả” nghĩa là mọi hội thoại trong quyền đọc hiện tại và filter trạng thái đang chọn. “Của tôi” map principal hiện tại, không map account ID. Nhóm **Theo nhóm** dùng team mà người dùng được phép đọc; khi chưa lấy được nhãn team, giữ bộ lọc team ID hiện có trong Bộ lọc, không suy đoán tên/quyền.
 
@@ -147,7 +112,9 @@ Backend vẫn kiểm quyền mỗi mutation dù UI đã bật nút. Poll 5 giây
 
 Compatibility/migration: contract mới additive, forward migrations cho sidecars/read/inbox/tag/snooze/activity/snippet; không sửa strict API/state enum cũ. Có event family và quyền mới, backfill/watermark/feature flags/rollback trong contract. Source schema/client phải sinh và kiểm khi implementation; thiết kế Ready không có nghĩa migration đã chạy. Không coi Facebook configuration là real send/capture→Chat đã hoàn tất.
 
-## 10. Visual system và accessibility
+## 10. Visual system và accessibility — baseline UX-002
+
+UX-003: dùng [guidelines](guidelines.md) làm nguồn token và acceptance chuẩn, supersede palette/kích thước mâu thuẫn dưới đây; các quy tắc keyboard/draft/ACL giữ nguyên.
 
 Font system sans; body 14/20px, metadata 12/16px, tiêu đề vùng 16/24px semibold. Spacing 4/8/12/16/24; nền chính trắng, rail/sidebar trung tính nhẹ; border `#D8DEE8`, text chính `#1F2937`, text phụ `#64748B`; selected/bubble outbound `#EFF6FF`, action/focus `#2563EB`. Màu cần được đo contrast khi build; không tự ghi đạt AA chỉ từ palette.
 
@@ -159,7 +126,7 @@ Các case dưới đây là yêu cầu kiểm thử, **NOT_RUN cho giao diện r
 
 | ID | Scenario | Kết quả bắt buộc |
 |---|---|---|
-| UX-CHAT-01 | Mở desktop 1440×900 | Đúng các vùng ảnh, header trên chat+context; timeline/list/context cuộn độc lập; composer luôn thấy |
+| UX-CHAT-01 | Mở desktop 1440×900 | Đúng shell UX-003 và anatomy Inbox, header trên chat+context; timeline/list/context cuộn độc lập; composer luôn thấy |
 | UX-CHAT-02 | 1280,1024,768,390 và zoom 200% | Collapse/overlay theo breakpoint, không tràn ngang; back giữ list; keyboard không che composer |
 | UX-CHAT-03 | Đổi scope/channel/Page/search, tải nhiều trang | Server prefix/sort đúng, metrics/read badge có dữ liệu và ACL, cursor/reset đúng |
 | UX-CHAT-04 | Human owner gửi, ghi note, dùng quick reply | Message/note tách biệt, template chỉ chèn text; status thực, không duplicate sau poll |

@@ -1,0 +1,11 @@
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/index.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/modules/conversation.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/planning/agent-chat-workspace.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/planning/build-plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/quality/acceptance.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/tracking/checkpoint.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/tracking/log.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/tracking/tasks.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/ux/agent-chat-workspace.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/ux/workspaces.md', LF will be replaced by CRLF the next time Git touches it

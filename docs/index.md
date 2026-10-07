@@ -11,6 +11,10 @@ Ngày baseline: 2026-10-02. Trạng thái phản ánh độ sâu thiết kế, k
 - `Ready for implementation`: phần được ghi rõ đã có hành vi, dữ liệu, contract và acceptance scenario để triển khai.
 - `Implemented`: chỉ được gắn sau khi có source, kiểm thử và bằng chứng nghiệm thu.
 
+## UI/UX redesign UX-003
+
+[UX hub](ux/README.md) · [Research](ux/research-app-shell.md) · [Guidelines](ux/guidelines.md) · [App shell](ux/app-shell.md) · [Inbox spec](ux/inbox-screen.md) · [Interactive mock](ux/mockups/inbox.html) · [Screen template](templates/ux-screen.md). Thiết kế trước Inbox; module Draft giữ gate riêng, không claim runtime từ mock.
+
 ## Điều hướng
 
 | Nhóm | Tài liệu | Trạng thái / phạm vi |
@@ -24,7 +28,7 @@ Ngày baseline: 2026-10-02. Trạng thái phản ánh độ sâu thiết kế, k
 | System | [Architecture](system/architecture.md), [Security & operations](system/security-operations.md) | Ready for implementation: M1–M2; scaling nâng cao là Draft |
 | Data | [Model & ERD](data/model.md), [Dictionary](data/dictionary.md) | Ready for implementation: bảng M1–M2; bảng M4–M5 là Draft |
 | Contract | [REST API](contracts/api.md), [Events](contracts/events.md), [Conversation DTO](contracts/conversation.md), [Mock intake](contracts/mock-intake.md), [Agent Runtime](contracts/agent-runtime.md) | Ready for implementation: mock slice M1–M2 |
-| UX | [Workspaces](ux/workspaces.md), [Agent Chat rebuild](ux/agent-chat-workspace.md), [Workspace contract](contracts/agent-chat-workspace.md), [Data](data/agent-chat-workspace.md), [Build](planning/agent-chat-workspace.md) | UX-002 Ready design: metrics/unread/inbox/tags/snooze/activity/snippets/channels; source TODO; provider capability gates riêng |
+| UX | [Workspaces](ux/workspaces.md), [Agent Chat rebuild](ux/agent-chat-workspace.md), [Workspace contract](contracts/agent-chat-workspace.md), [Data](data/agent-chat-workspace.md), [Build](planning/agent-chat-workspace.md) | UX-002/003 Ready design; backend SRC-032…034 DONE, UI/release còn SRC-035…037; provider capability gates riêng |
 | Business | [Healthcare](business/healthcare.md), [First slice](business/first-slice.md) | Ready for implementation: fixtures và mock scenario; production integration là Draft |
 | Quality | [Acceptance & traceability](quality/acceptance.md), [baseline validation](quality/validation.md) | M1–M2 local/mock gates PASS; release SRC-025, real provider M3 chưa chạy |
 | Decisions | [ADRs](decisions/README.md) | Accepted: baseline thiết kế |

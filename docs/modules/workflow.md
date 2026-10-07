@@ -82,3 +82,5 @@ SRC-019 triển khai graph/definition/version APIs, durable starter selection, a
 ## SRC-034 implementation
 
 SRC-034 adds source-owned activity_revision and outbox notifications for verified Conversation-bound started/terminal transitions. Wait states are not pause events. Verification status and limitations: [task evidence](../tracking/details/SRC-034.md).
+
+UX-005 target action: update only Conversation classification/Next action fields via owning Chat port/API. Workflow/Chatflow may bind a fixed rule output or validated read-only Agent Assist proposal; the service actor, not Assist, performs the write. This is a PLAN-008 design item, not a primitive currently registered in the engine. [Scope](../ux/agent-assist-response.md).
