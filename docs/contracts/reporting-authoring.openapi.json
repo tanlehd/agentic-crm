@@ -1,0 +1,303 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Reporting mock authoring discovery",
+    "version": "1.1.0"
+  },
+  "paths": {
+    "/api/v1/reporting/authoring": {
+      "get": {
+        "operationId": "discoverReportingAuthoring",
+        "description": "Native session and current report_definition/run/all plus report_mock_source/read/all. Complete synthetic source access only. No-store. Catalog descriptor fields follow the versioned semantic model contract.",
+        "security": [
+          {
+            "nativeSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Up to 50 authorized ready mock sources; no raw records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Discovery"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unknown query key or invalid cursor/tenant"
+          },
+          "401": {
+            "description": "Missing, expired or revoked native session"
+          },
+          "403": {
+            "description": "Missing source/run grant or revoked current authority"
+          },
+          "503": {
+            "description": "Reporting not configured, unavailable or response over limit"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "nativeSession": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "crm_session"
+      }
+    },
+    "schemas": {
+      "Discovery": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "meta": {
+            "type": "object",
+            "required": [
+              "correlation_id"
+            ],
+            "properties": {
+              "correlation_id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "environment",
+              "sources",
+              "next_after",
+              "capabilities"
+            ],
+            "properties": {
+              "environment": {
+                "const": "mock"
+              },
+              "next_after": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
+              },
+              "capabilities": {
+                "type": "object",
+                "required": [
+                  "visualizations",
+                  "filterOperators",
+                  "maxDimensions",
+                  "maxMetrics",
+                  "maxRelations"
+                ],
+                "properties": {
+                  "visualizations": {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "table",
+                        "kpi",
+                        "bar",
+                        "horizontal_bar",
+                        "stacked_bar",
+                        "line",
+                        "area",
+                        "pie",
+                        "donut",
+                        "pivot"
+                      ]
+                    }
+                  },
+                  "filterOperators": {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "eq",
+                        "in",
+                        "gte",
+                        "lte",
+                        "is_null"
+                      ]
+                    }
+                  },
+                  "maxDimensions": {
+                    "const": 4
+                  },
+                  "maxMetrics": {
+                    "const": 8
+                  },
+                  "maxRelations": {
+                    "const": 5
+                  }
+                }
+              },
+              "sources": {
+                "type": "array",
+                "maxItems": 50,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "generation",
+                    "historyFrom",
+                    "observedThrough",
+                    "catalog",
+                    "availableFields"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "generation": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "historyFrom": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "observedThrough": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "availableFields": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "catalog": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "objects",
+                        "fields",
+                        "relations",
+                        "models",
+                        "metrics"
+                      ],
+                      "properties": {
+                        "objects": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "fields": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "relations": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "models": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "metrics": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    },
+                    "measureOptions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "id",
+                          "version",
+                          "model",
+                          "operation",
+                          "population",
+                          "nullPolicy"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "version": {
+                            "type": "integer",
+                            "minimum": 1
+                          },
+                          "model": {
+                            "type": "string"
+                          },
+                          "field": {
+                            "type": "string"
+                          },
+                          "operation": {
+                            "type": "string"
+                          },
+                          "population": {
+                            "type": "string"
+                          },
+                          "nullPolicy": {
+                            "enum": [
+                              "skip",
+                              "propagate",
+                              "ratio"
+                            ]
+                          },
+                          "numerator": {
+                            "type": "string"
+                          },
+                          "denominator": {
+                            "type": "string"
+                          },
+                          "multiplier": {
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

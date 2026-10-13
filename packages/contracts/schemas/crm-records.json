@@ -714,10 +714,31 @@
           "required": []
         },
         "conversation_id": {
-          "type": "null"
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
         },
         "qualification_session_id": {
           "type": "null"
+        },
+        "declared_source": {
+          "enum": [
+            null,
+            "referral",
+            "website",
+            "facebook",
+            "phone",
+            "other"
+          ]
+        },
+        "conversation_session_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
         }
       },
       "required": [
@@ -1164,6 +1185,71 @@
         "meta"
       ],
       "additionalProperties": false
+    },
+    "crm-deal-create": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contact_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "lead_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "amount": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,13})(\\.[0-9]{1,6})?$"
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        }
+      },
+      "required": [
+        "contact_id",
+        "title",
+        "amount",
+        "currency"
+      ]
+    },
+    "crm-deal-patch": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "amount": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,13})(\\.[0-9]{1,6})?$"
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "stage": {
+          "enum": [
+            "open",
+            "qualified",
+            "proposal",
+            "won",
+            "lost"
+          ]
+        }
+      }
     }
   }
 }

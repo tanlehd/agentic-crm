@@ -1,6 +1,6 @@
 # Khung Workflow, Chatflow và AI Agent trước tích hợp Chat
 
-Status: Planned, theo chỉ đạo người dùng2026-10-07, CHG-20261007-11. Không task triển khai active. Baseline M2 đã có primitive engine/mock runtime, nhưng chưa được coi là hoàn tất khung cấu hình dùng cho luồng Next action.
+Status: Planned, theo chỉ đạo người dùng2026-10-07, CHG-20261007-11. CHG-20261007-12 đặt [CRM base](crm-base-outcomes.md) trước: PLAN-009 chờ SRC-050 DONE. Thứ tự ba framework trước Next action vẫn giữ sau CRM base. Không task triển khai active. Baseline M2 đã có primitive engine/mock runtime, nhưng chưa được coi là hoàn tất khung cấu hình dùng cho luồng Next action.
 
 ## Thứ tự thực hiện
 

@@ -1,0 +1,242 @@
+<html><head><title>Asset Feed Spec</title><meta charset="UTF-8" /><style nonce="fxKBkmaB">body { font-family: monospace; margin: 20px; }pre { white-space: pre-wrap; word-wrap: break-word; }</style></head><body><pre data-testid="developer-docs-markdown-page"># Asset Feed Spec
+
+
+
+The `asset_feed_spec` field allows you to deliver different combinations of an ad&#039;s creative to different users. There are two ways to set up your combinations:
+
+- **Automatically**: You provide the creative assets, and Meta automatically delivers different combinations to different users. To use this option, see [Dynamic Creative API](https://developers.facebook.com/documentation/ads-commerce/marketing-api/ad-creative/asset-feed-spec/dynamic-creative).
+- **Manually**: You provide the creative assets and you create rules on how to display those assets. To use this option, see [Asset Customization Rules](https://developers.facebook.com/documentation/ads-commerce/marketing-api/ad-creative/asset-feed-spec/asset-customization-rules).
+
+The asset feed spec contains a collection of different creative elements, such as images, titles, bodies, and so on. You can specify multiple creative assets for each asset type. The spec&#039;s format is different for each use case. See also [Reference, Asset Feed Spec](https://developers.facebook.com/docs/marketing-api/reference/ad-asset-feed-spec).
+
+## Create asset feed &#123;#create_asset_feed&#125;
+
+You can use [`asset_feed_spec`](https://developers.facebook.com/docs/marketing-api/reference/ad-asset-feed-spec) to provide multiple creative assets, with the following limitations:
+
+- For all [Asset Customization Rules](https://developers.facebook.com/documentation/ads-commerce/marketing-api/ad-creative/asset-feed-spec/asset-customization-rules), include at least two target customization rules in `asset_feed_spec`.
+- For [Dynamic Creative](https://developers.facebook.com/documentation/ads-commerce/marketing-api/ad-creative/asset-feed-spec/dynamic-creative), `asset_feed_spec` should **not** have customization rules. In this case, you can mix both images and videos across different placements by specifying `[&quot;AUTOMATIC_FORMAT&quot;]` under `ad_formats`.
+
+For example, to create an `asset_feed_spec` for Dynamic Creative:
+
+```
+curl -X POST \
+  -F &#039;name=&quot;Dynamic Ad Creative with Asset Feed Spec Sample&quot;&#039; \
+  -F &#039;object_story_spec=&#123;
+       &quot;page_id&quot;: &quot;&lt;PAGE_ID&gt;&quot;
+     &#125;&#039; \
+  -F &#039;asset_feed_spec=&#123;
+       &quot;images&quot;: [
+         &#123;
+           &quot;hash&quot;: &quot;&lt;IMAGE_HASH&gt;&quot;
+         &#125;
+       ],
+       &quot;bodies&quot;: [
+         &#123;
+           &quot;text&quot;: &quot;Begin Your Adventure&quot;
+         &#125;,
+         &#123;
+           &quot;text&quot;: &quot;Once a Trainer, always a Trainer.&quot;
+         &#125;
+       ],
+       &quot;titles&quot;: [
+         &#123;
+           &quot;text&quot;: &quot;Level Up&quot;
+         &#125;,
+         &#123;
+           &quot;text&quot;: &quot;Swipe to evolve&quot;
+         &#125;
+       ],
+       &quot;descriptions&quot;: [
+         &#123;
+           &quot;text&quot;: &quot;First Dynamic Ad Creative Sample&quot;
+         &#125;
+       ],
+       &quot;ad_formats&quot;: [
+         &quot;SINGLE_IMAGE&quot;
+       ],
+       &quot;call_to_action_types&quot;: [
+         &quot;SHOP_NOW&quot;
+       ],
+       &quot;link_urls&quot;: [
+         &#123;
+           &quot;website_url&quot;: &quot;https://www.example.com/&quot;
+         &#125;
+       ],
+       &quot;videos&quot;: []
+     &#125;&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adcreatives
+```
+
+You can also create an `asset_feed_spec` with two alternate videos, bodies, and titles:
+
+```
+curl \
+-F &#039;object_story_spec=&#123;
+       &quot;page_id&quot;: &quot;YOUR_PAGE_ID&quot;,
+       &quot;instagram_user_id&quot; : &quot;&lt;IG_USER_ID&gt;&quot;,
+    &#125;&#039; \
+-F &quot;asset_feed_spec=&#123;&#039;videos&#039;: [&#123;&#039;video_id&#039;:&#039;2053108854721025&#039;, &#039;thumbnail_url&#039;:&#039;&lt;thumbnail_url&gt;&#039;, &#039;url_tags&#039;:&#039;video=video1&#039;&#125;,&#123;&#039;video_id&#039;:&#039;2104406249780616&#039;, &#039;thumbnail_url&#039;:&#039;&lt;thumbnail_url&gt;&#039;,&#039;url_tags&#039;:&#039;video=video2&#039;&#125;], &#039;bodies&#039;: [&#123;&#039;text&#039;:&#039;Begin Your Adventure&#039;&#125;, &#123;&#039;text&#039;:&#039;Once a Trainer, always a Trainer.&#039;&#125;], &#039;titles&#039;: [&#123;&#039;text&#039;:&#039;Level Up&#039;&#125;, &#123;&#039;text&#039;:&#039;Swipe to evolve&#039;&#125;], &#039;descriptions&#039;: [&#123;&#039;text&#039;:&#039;Begin Your Adventure&#039;&#125;], &#039;ad_formats&#039;: [&#039;SINGLE_IMAGE&#039;], &#039;link_urls&#039;: [&#123;&#039;website_url&#039;:&#039;&lt;WEBSITE_URL&gt;&#039;&#125;]&#125;&quot; \
+-F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039;  \
+https://graph.facebook.com/&lt;API_VERSION&gt;/act_&lt;AD_ACCOUNT_ID&gt;/adcreatives
+```
+
+See [all available options for Asset Feed Spec](https://developers.facebook.com/documentation/ads-commerce/marketing-api/ad-creative/asset-feed-spec/options).
+
+## Read asset feed &#123;#read_asset_feed&#125;
+
+To check your creative, read `asset_feed_spec`:
+
+```bash
+curl -X GET \
+  -d &#039;fields=&quot;asset_feed_spec&quot;&#039; \
+  -d &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/&lt;CREATIVE_ID&gt;/
+```
+
+If you have a Dynamic Creative feed with multiple images and bodies, the response looks like this:
+
+```
+&#123;
+   &quot;asset_feed_spec&quot;:&#123;
+      &quot;images&quot;:[
+         &#123;
+            &quot;url_tags&quot;:&quot;image=image1&quot;,
+            &quot;hash&quot;:&quot;785095162a2034666e0d0cc4ea1faf89&quot;
+         &#125;,
+         &#123;
+            &quot;url_tags&quot;:&quot;image=image2&quot;,
+            &quot;hash&quot;:&quot;3a24122c13923569599be35567ce4e9e&quot;
+         &#125;
+      ],
+      &quot;bodies&quot;:[
+         &#123;
+            &quot;text&quot;:&quot;Begin Your Adventure&quot;
+         &#125;,
+         &#123;
+            &quot;text&quot;:&quot;Once a Trainer, always a Trainer.&quot;
+         &#125;
+      ],
+      &quot;call_to_action_types&quot;:[
+         &quot;LEARN_MORE&quot;
+      ],
+      &quot;call_to_actions&quot;:[
+         &#123;
+            &quot;type&quot;:&quot;LEARN_MORE&quot;
+         &#125;
+      ],
+      &quot;descriptions&quot;:[
+         &#123;
+            &quot;text&quot;:&quot;Begin Your Adventure&quot;
+         &#125;
+      ],
+      &quot;link_urls&quot;:[
+         &#123;
+            &quot;website_url&quot;:&quot;&lt;WEBSITE_URL&gt;&quot;
+         &#125;
+      ],
+      &quot;titles&quot;:[
+         &#123;
+            &quot;text&quot;:&quot;Swipe to evolve&quot;
+         &#125;,
+         &#123;
+            &quot;text&quot;:&quot;Level Up&quot;
+         &#125;
+      ],
+      &quot;ad_formats&quot;:[
+         &quot;SINGLE_IMAGE&quot;
+      ],
+      &quot;optimization_type&quot;:&quot;REGULAR&quot;
+   &#125;,
+   &quot;id&quot;:&quot;&lt;AD_CREATIVE_ID&gt;&quot;,
+&#125;
+```
+
+If you have a Dynamic Creative feed with multiple videos, bodies, and titles, the response looks like this:
+
+```
+&#123;
+   &quot;asset_feed_spec&quot;:&#123;
+      &quot;videos&quot;:[
+         &#123;
+            &quot;url_tags&quot;:&quot;video=video1&quot;,
+            &quot;video_id&quot;:&quot;2053108854721025&quot;,
+            &quot;thumbnail_url&quot;:&quot;&lt;thumbnail_url&gt;&quot;,
+            &quot;thumbnail_hash&quot;:&quot;&lt;thumbnail_hash&gt;&quot;
+         &#125;,
+         &#123;
+            &quot;url_tags&quot;:&quot;video=video2&quot;,
+            &quot;video_id&quot;:&quot;2104406249780616&quot;,
+            &quot;thumbnail_url&quot;:&quot;&lt;thumbnail_url&gt;&quot;,
+            &quot;thumbnail_hash&quot;:&quot;&lt;thumbnail_hash&gt;&quot;
+         &#125;
+      ],
+      &quot;bodies&quot;:[
+         &#123;
+            &quot;text&quot;:&quot;Begin Your Adventure&quot;
+         &#125;,
+         &#123;
+            &quot;text&quot;:&quot;Once a Trainer, always a Trainer.&quot;
+         &#125;
+      ],
+      &quot;call_to_action_types&quot;:[
+         &quot;LEARN_MORE&quot;
+      ],
+      &quot;call_to_actions&quot;:[
+         &#123;
+            &quot;type&quot;:&quot;LEARN_MORE&quot;
+         &#125;
+      ],
+      &quot;descriptions&quot;:[
+         &#123;
+            &quot;text&quot;:&quot;Begin Your Adventure&quot;
+         &#125;
+      ],
+      &quot;link_urls&quot;:[
+         &#123;
+            &quot;website_url&quot;:&quot;&lt;WEBSITE_URL&gt;&quot;
+         &#125;
+      ],
+      &quot;titles&quot;:[
+         &#123;
+            &quot;text&quot;:&quot;Swipe to evolve&quot;
+         &#125;,
+         &#123;
+            &quot;text&quot;:&quot;Level Up&quot;
+         &#125;
+      ],
+      &quot;ad_formats&quot;:[
+         &quot;SINGLE_VIDEO&quot;
+      ],
+      &quot;optimization_type&quot;:&quot;REGULAR&quot;
+   &#125;,
+   &quot;id&quot;:&quot;&lt;AD_CREATIVE_ID&gt;&quot;,
+&#125;
+```
+
+## Edit asset feed &#123;#edit_asset_feed&#125;
+
+You can add, replace, or remove any of the creative&#039;s assets. To do so, provide another creative with the new `asset_feed_spec`.
+
+You can:
+
+* Add assets.
+* Remove existing assets.
+* Replace assets with completely new ones.
+
+You **cannot**:
+
+* Change ad formats, such as from `SINGLE IMAGE` to `VIDEO`.
+* Update an Asset Feed based creative ad to be a non-Dynamic Creative ad, which has no `asset_feed_spec`.
+
+```
+curl \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  -F &#039;creative=&#123;
+      &quot;creative_id&quot;: &lt;CREATIVE_ID&gt;,
+   &#125;&#039; \
+https://graph.facebook.com/v25.0/&lt;AD_ID&gt;
+```
+
+When you create a new ad creative to replace an old one, you must still fulfill all [restrictions](https://developers.facebook.com/documentation/ads-commerce/marketing-api/ad-creative/asset-feed-spec/options) that apply.
+</pre></body></html>

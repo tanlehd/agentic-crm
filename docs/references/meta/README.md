@@ -106,3 +106,6 @@ Chưa gọi provider sandbox, chưa xác minh credentials/account, chưa thực 
 | [whatsapp-subscribed-apps-api.md.txt](2026-10-06-plan003/whatsapp-subscribed-apps-api.md.txt) | [Meta](https://developers.facebook.com/documentation/business-messaging/whatsapp/reference/whatsapp-business-account/subscribed-apps-api.md) |
 
 Exports không dùng được: `whatsapp-business-phone-numbers--ai-enabled-numbers.md.txt`, `whatsapp-webhooks--message_echoes.md.txt`, `whatsapp-overview.md.txt`, `whatsapp-messaging-handovers.md.txt`. Xem G-05/G-10; không kết luận capability không tồn tại.
+## Marketing objects — PLAN-014 / 2026-10-07
+
+[Marketing dossier](marketing-dossier.md):24 official Markdown documents and raw responses with hashes for conversion reporting. [Manifest](2026-10-07-marketing/manifest.json), [field merge](../../data/marketing-field-mapping.md). Marketing docs observe v25.0, separately from historical Messenger v26.0. New extracts decode HTML pre once; raw responses preserved byte-for-byte.

@@ -1,0 +1,160 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Reporting mock preview API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/reporting/query": {
+      "post": {
+        "operationId": "previewReportingQuery",
+        "summary": "Execute an authorized mock snapshot definition",
+        "security": [
+          {
+            "nativeSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reauthorized aggregate query or CSV; no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "object"
+                    },
+                    "meta": {
+                      "type": "object"
+                    }
+                  }
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized query error"
+          },
+          "401": {
+            "description": "Sanitized query error"
+          },
+          "403": {
+            "description": "Sanitized query error"
+          },
+          "404": {
+            "description": "Sanitized query error"
+          },
+          "409": {
+            "description": "Sanitized query error"
+          },
+          "422": {
+            "description": "Sanitized query error"
+          },
+          "429": {
+            "description": "Sanitized query error"
+          },
+          "503": {
+            "description": "Sanitized query error"
+          },
+          "504": {
+            "description": "Sanitized query error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "nativeSession": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "crm_session"
+      }
+    },
+    "schemas": {
+      "uuid": {
+        "type": "string",
+        "pattern": "^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+      },
+      "hash": {
+        "type": "string",
+        "pattern": "^[a-f0-9]{64}$"
+      },
+      "request": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "definition"
+        ],
+        "properties": {
+          "definition": {
+            "type": "object",
+            "required": [
+              "bindingId"
+            ],
+            "properties": {
+              "bindingId": {
+                "$ref": "#/components/schemas/uuid"
+              }
+            }
+          },
+          "generation": {
+            "$ref": "#/components/schemas/hash"
+          },
+          "format": {
+            "enum": [
+              "json",
+              "csv"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

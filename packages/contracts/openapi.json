@@ -3622,6 +3622,595 @@
         }
       }
     },
+    "/api/v1/deals": {
+      "get": {
+        "operationId": "crm-get-deals",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON encoded typed query"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON encoded typed query"
+          },
+          {
+            "name": "owner",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON encoded typed query"
+          },
+          {
+            "name": "team",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON encoded typed query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized CRM result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/crm-record-list"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "crm-post-deals",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/crm-deal-create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Authorized CRM result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/crm-record-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/deals/{id}": {
+      "get": {
+        "operationId": "crm-get-deals-id",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized CRM result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/crm-record-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "crm-patch-deals-id",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/crm-deal-patch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized CRM result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/crm-record-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/leads": {
       "get": {
         "operationId": "crm-get-leads",
@@ -6245,6 +6834,139 @@
         }
       }
     },
+    "/api/v1/sales/reports/organic-pages": {
+      "get": {
+        "operationId": "sales-organic-page-report",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "UTC closed-date range [from,to), maximum366 days"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "UTC closed-date range [from,to), maximum366 days"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized won Deal value by organic Page and currency",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/organic-page-report"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/conversations": {
       "get": {
         "operationId": "conversation-get-conversations",
@@ -7160,6 +7882,146 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/conversation-intent-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/conversations/{id}/acquisition-sessions": {
+      "get": {
+        "operationId": "conversation-get-conversations-id-acquisition-sessions",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "before_sequence",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized Conversation result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/conversation-acquisition-sessions"
                 }
               }
             }
@@ -20542,10 +21404,31 @@
             "required": []
           },
           "conversation_id": {
-            "type": "null"
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
           },
           "qualification_session_id": {
             "type": "null"
+          },
+          "declared_source": {
+            "enum": [
+              null,
+              "referral",
+              "website",
+              "facebook",
+              "phone",
+              "other"
+            ]
+          },
+          "conversation_session_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
           }
         },
         "required": [
@@ -20992,6 +21875,174 @@
           "meta"
         ],
         "additionalProperties": false
+      },
+      "crm-deal-create": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "contact_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "lead_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "amount": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,13})(\\.[0-9]{1,6})?$"
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        "required": [
+          "contact_id",
+          "title",
+          "amount",
+          "currency"
+        ]
+      },
+      "crm-deal-patch": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "amount": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,13})(\\.[0-9]{1,6})?$"
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$"
+          },
+          "stage": {
+            "enum": [
+              "open",
+              "qualified",
+              "proposal",
+              "won",
+              "lost"
+            ]
+          }
+        }
+      },
+      "organic-page-report": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "period",
+          "metric",
+          "scope",
+          "excluded_sources",
+          "organic_basis",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "channel",
+                "page_id",
+                "currency",
+                "won_deal_count",
+                "deal_ids",
+                "won_value"
+              ],
+              "properties": {
+                "channel": {
+                  "type": "string"
+                },
+                "page_id": {
+                  "type": "string"
+                },
+                "currency": {
+                  "type": "string"
+                },
+                "won_deal_count": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "deal_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                "won_value": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]{6}$"
+                }
+              }
+            }
+          },
+          "period": {
+            "type": "object",
+            "required": [
+              "from",
+              "to"
+            ],
+            "properties": {
+              "from": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "to": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "metric": {
+            "const": "won_value"
+          },
+          "scope": {
+            "const": "authorized_deals"
+          },
+          "excluded_sources": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "manual",
+                "paid",
+                "unknown"
+              ]
+            }
+          },
+          "organic_basis": {
+            "const": "no_ad_referral_observed"
+          },
+          "meta": {
+            "type": "object",
+            "required": [
+              "correlation_id"
+            ],
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            }
+          }
+        }
       },
       "conversation-send": {
         "type": "object",
@@ -22265,6 +23316,161 @@
           "next_cursor",
           "meta"
         ]
+      },
+      "conversation-acquisition-sessions": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "next_before_sequence",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "conversation_id",
+                "sequence",
+                "version",
+                "status",
+                "opening_reason",
+                "close_reason",
+                "opened_at",
+                "opening_occurred_at",
+                "closed_at",
+                "source_classification",
+                "source_channel",
+                "source_page_id",
+                "source_ad_id",
+                "source_campaign_id",
+                "source_connection_id",
+                "source_touchpoint_id",
+                "policy_version"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "conversation_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "sequence": {
+                  "type": "string",
+                  "pattern": "^[1-9][0-9]{0,19}$"
+                },
+                "version": {
+                  "type": "string",
+                  "pattern": "^[1-9][0-9]{0,19}$"
+                },
+                "status": {
+                  "enum": [
+                    "active",
+                    "closed"
+                  ]
+                },
+                "opening_reason": {
+                  "enum": [
+                    "first_inbound",
+                    "new_referral",
+                    "after_close"
+                  ]
+                },
+                "close_reason": {
+                  "enum": [
+                    "agent_closed",
+                    "new_referral",
+                    null
+                  ]
+                },
+                "opened_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "opening_occurred_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "closed_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "format": "date-time"
+                },
+                "source_classification": {
+                  "enum": [
+                    "organic",
+                    "paid",
+                    "unknown"
+                  ]
+                },
+                "source_channel": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "source_page_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "source_ad_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "source_campaign_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "source_connection_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "source_touchpoint_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "policy_version": {
+                  "const": "acquisition_v1"
+                }
+              }
+            }
+          },
+          "next_before_sequence": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[1-9][0-9]{0,19}$"
+          },
+          "meta": {
+            "type": "object",
+            "required": [
+              "correlation_id"
+            ],
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            }
+          }
+        }
       },
       "intake-request": {
         "type": "object",

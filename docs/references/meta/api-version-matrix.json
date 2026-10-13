@@ -207,5 +207,16 @@
       ],
       "verification": "documentation only; sandbox NOT_RUN"
     }
-  ]
+  ],
+  "marketing_surface_observation": {
+    "reviewed_date": "2026-10-07",
+    "documentation_candidate": "v25.0",
+    "evidence": [
+      "2026-10-07-marketing/versioning.md.txt",
+      "2026-10-07-marketing/changelog.md.txt"
+    ],
+    "status": "documentation observation, not runtime pin; revalidate version and field support in PLAN-011",
+    "independent_of_legacy_graph_api_baseline": true,
+    "live_status": "NOT_RUN"
+  }
 }

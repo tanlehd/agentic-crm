@@ -29,3 +29,5 @@ Host web origin giữ APP_ORIGIN từ `.env` (máy này http://localhost:18080),
 Reusable QA: dùng Alpha/Beta synthetic users từ `seed:dev` và seed idempotent hiện có; giữ record cũ, tạo run-specific IDs khi test cần data mới. Không sử dụng tenant khách hàng. `test:integration` là legacy isolated regression trên tmpfs, vẫn cần DB trống và không phải lệnh khởi động/dev test thường ngày. Chuyển toàn bộ regression sang fixture tenant-scoped persistent là công việc riêng, chưa claim đã hoàn tất.
 
 Windows Stop dùng taskkill cho cây process do manager tạo; Linux/macOS gửi SIGTERM process group và cưỡng chế sau5s nếu không dừng. Đây là công cụ dev; production cần supervisor/graceful shutdown đã kiểm chứng riêng. Monitor không giữ quyền quản lý PID qua lần restart/crash; process ngoài manager được quan sát, không bị stop.
+
+SRC-064 adds Reporting to the registry on port3004 when explicitly configured with [local Reporting runtime wiring](reporting-builder.md). Existing monitor instances do not hot-reload registry additions. This activation never grants native report/source permissions.

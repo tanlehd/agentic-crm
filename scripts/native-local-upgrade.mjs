@@ -51,7 +51,7 @@ try{
   const names=(await source.query("SELECT TABLE_NAME name FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_TYPE='BASE TABLE'")).map(x=>x.name);
   const authTables=['account_credential','auth_session','auth_token','auth_challenge','auth_attempt','system_audit_entry'];
   const sql=[`CREATE USER IF NOT EXISTS '${env.MYSQL_AUTH_USER}'@'%' IDENTIFIED BY '${env.MYSQL_AUTH_PASSWORD}';`,`REVOKE ALL PRIVILEGES, GRANT OPTION FROM '${env.MYSQL_USER}'@'%';`,`REVOKE ALL PRIVILEGES, GRANT OPTION FROM '${env.MYSQL_AUTH_USER}'@'%';`];
-  for(const name of names){if(authTables.includes(name))continue;const permissions=['audit_entry','ownership_history'].includes(name)?'SELECT,INSERT':['account','schema_migration'].includes(name)?'SELECT':'SELECT,INSERT,UPDATE,DELETE';sql.push(`GRANT ${permissions} ON agentic_crm.\`${name}\` TO '${env.MYSQL_USER}'@'%';`);}
+  for(const name of names){if(authTables.includes(name)||['channel_marketing_credential','channel_marketing_admission_receipt'].includes(name))continue;const permissions=['audit_entry','ownership_history'].includes(name)?'SELECT,INSERT':['account','schema_migration'].includes(name)?'SELECT':'SELECT,INSERT,UPDATE,DELETE';sql.push(`GRANT ${permissions} ON agentic_crm.\`${name}\` TO '${env.MYSQL_USER}'@'%';`);}
   sql.push(`GRANT SELECT,UPDATE(security_revision) ON agentic_crm.account TO '${env.MYSQL_AUTH_USER}'@'%';`);
   for(const name of authTables)sql.push(`GRANT ${name==='system_audit_entry'?'INSERT':'SELECT,INSERT,UPDATE,DELETE'} ON agentic_crm.\`${name}\` TO '${env.MYSQL_AUTH_USER}'@'%';`);
   docker(['exec','-i','agentic-crm-mysql-1','sh','-c','MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -uroot'],sql.join('\n'));

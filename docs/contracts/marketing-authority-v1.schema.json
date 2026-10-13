@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:agentic-crm:marketing-authority:v1",
+  "description": "PLAN-011E request contracts. Design only; no deployed endpoints implied. Private requests derive tenant from authenticated integration registration.",
+  "definitions": {
+    "uuid": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" },
+    "opaque": { "type": "string", "minLength": 1, "maxLength": 255, "pattern": "^[A-Za-z0-9_-]+$" },
+    "revision": { "type": "string", "pattern": "^[1-9][0-9]{0,19}$" },
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "graphRead": {
+      "type": "object", "additionalProperties": false,
+      "required": ["credential_ref", "operation"],
+      "properties": {
+        "credential_ref": { "$ref": "#/definitions/uuid" },
+        "operation": { "enum": ["account", "ads_page", "campaign", "ad_set", "ad", "creative", "audience"] },
+        "external_id": { "$ref": "#/definitions/opaque" },
+        "after": { "type": "string", "minLength": 1, "maxLength": 2048, "pattern": "^[\\x21-\\x7e]+$" }
+      },
+      "allOf": [
+        { "if": { "properties": { "operation": { "enum": ["account", "ads_page"] } } }, "then": { "not": { "required": ["external_id"] } }, "else": { "required": ["external_id"] } },
+        { "if": { "not": { "properties": { "operation": { "const": "ads_page" } } } }, "then": { "not": { "required": ["after"] } } }
+      ]
+    },
+    "pageCheck": {
+      "type": "object", "additionalProperties": false, "required": ["credential_ref", "page_id"],
+      "properties": { "credential_ref": { "$ref": "#/definitions/uuid" }, "page_id": { "$ref": "#/definitions/opaque" } }
+    },
+    "admit": {
+      "type": "object", "additionalProperties": false,
+      "required": ["operation_id", "credential_ref", "expected_credential_revision", "page_id", "expected_page_revision", "external_ad_id", "payload_sha256", "run_id", "fence", "fetched_at"],
+      "properties": {
+        "operation_id": { "$ref": "#/definitions/uuid" }, "credential_ref": { "$ref": "#/definitions/uuid" },
+        "expected_credential_revision": { "$ref": "#/definitions/revision" }, "page_id": { "$ref": "#/definitions/opaque" },
+        "expected_page_revision": { "$ref": "#/definitions/revision" }, "external_ad_id": { "$ref": "#/definitions/opaque" },
+        "payload_sha256": { "$ref": "#/definitions/hash" }, "run_id": { "$ref": "#/definitions/uuid" },
+        "fence": { "$ref": "#/definitions/revision" }, "fetched_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "credentialCreate": {
+      "type": "object", "additionalProperties": false, "required": ["operation_id", "app_id", "external_account_id", "token"],
+      "properties": { "operation_id": { "$ref": "#/definitions/uuid" }, "app_id": { "$ref": "#/definitions/opaque" }, "external_account_id": { "$ref": "#/definitions/opaque" }, "token": { "type": "string", "minLength": 1, "maxLength": 8192, "writeOnly": true } }
+    },
+    "credentialReplace": {
+      "type": "object", "additionalProperties": false, "required": ["operation_id", "expected_version", "token"],
+      "properties": { "operation_id": { "$ref": "#/definitions/uuid" }, "expected_version": { "$ref": "#/definitions/revision" }, "token": { "type": "string", "minLength": 1, "maxLength": 8192, "writeOnly": true } }
+    },
+    "revoke": {
+      "type": "object", "additionalProperties": false, "required": ["operation_id", "expected_version"],
+      "properties": { "operation_id": { "$ref": "#/definitions/uuid" }, "expected_version": { "$ref": "#/definitions/revision" } }
+    },
+    "setEnabled": {
+      "type": "object", "additionalProperties": false, "required": ["operation_id", "expected_version", "enabled"],
+      "properties": { "operation_id": { "$ref": "#/definitions/uuid" }, "expected_version": { "$ref": "#/definitions/revision" }, "enabled": { "type": "boolean" } }
+    },
+    "bindingCreate": {
+      "type": "object", "additionalProperties": false, "required": ["operation_id", "credential_ref", "external_account_id", "app_id"],
+      "properties": { "operation_id": { "$ref": "#/definitions/uuid" }, "credential_ref": { "$ref": "#/definitions/uuid" }, "external_account_id": { "$ref": "#/definitions/opaque" }, "app_id": { "$ref": "#/definitions/opaque" } }
+    },
+    "syncNow": {
+      "type": "object", "additionalProperties": false, "required": ["operation_id"],
+      "properties": { "operation_id": { "$ref": "#/definitions/uuid" } }
+    }
+  }
+}

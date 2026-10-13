@@ -367,6 +367,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/deals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["crm-get-deals"];
+        put?: never;
+        post: operations["crm-post-deals"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/deals/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["crm-get-deals-id"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["crm-patch-deals-id"];
+        trace?: never;
+    };
     "/api/v1/leads": {
         parameters: {
             query?: never;
@@ -543,6 +575,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/sales/reports/organic-pages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["sales-organic-page-report"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/conversations": {
         parameters: {
             query?: never;
@@ -631,6 +679,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["conversation-get-conversations-id-outbound-intents-intentId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversations/{id}/acquisition-sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["conversation-get-conversations-id-acquisition-sessions"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2174,8 +2238,13 @@ export interface components {
                     note: string;
                 };
             };
-            conversation_id?: null;
+            /** Format: uuid */
+            conversation_id?: string | null;
             qualification_session_id?: null;
+            /** @enum {unknown} */
+            declared_source?: null | "referral" | "website" | "facebook" | "phone" | "other";
+            /** Format: uuid */
+            conversation_session_id?: string | null;
         };
         "crm-lead-qualify": {
             qualification: {
@@ -2273,6 +2342,48 @@ export interface components {
                 }[];
                 order: string[];
             };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "crm-deal-create": {
+            /** Format: uuid */
+            contact_id: string;
+            /** Format: uuid */
+            lead_id?: string | null;
+            title: string;
+            amount: string;
+            currency: string;
+        };
+        "crm-deal-patch": {
+            title?: string;
+            amount?: string;
+            currency?: string;
+            /** @enum {unknown} */
+            stage?: "open" | "qualified" | "proposal" | "won" | "lost";
+        };
+        "organic-page-report": {
+            data: {
+                channel: string;
+                page_id: string;
+                currency: string;
+                won_deal_count: number;
+                deal_ids: string[];
+                won_value: string;
+            }[];
+            period: {
+                /** Format: date-time */
+                from: string;
+                /** Format: date-time */
+                to: string;
+            };
+            /** @constant */
+            metric: "won_value";
+            /** @constant */
+            scope: "authorized_deals";
+            excluded_sources: ("manual" | "paid" | "unknown")[];
+            /** @constant */
+            organic_basis: "no_ad_referral_observed";
             meta: {
                 correlation_id: string;
             };
@@ -2546,6 +2657,42 @@ export interface components {
         "conversation-rich-timeline": {
             data: components["schemas"]["conversation-message-envelope-v3"][];
             next_cursor: string | null;
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "conversation-acquisition-sessions": {
+            data: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                conversation_id: string;
+                sequence: string;
+                version: string;
+                /** @enum {unknown} */
+                status: "active" | "closed";
+                /** @enum {unknown} */
+                opening_reason: "first_inbound" | "new_referral" | "after_close";
+                /** @enum {unknown} */
+                close_reason: "agent_closed" | "new_referral" | null;
+                /** Format: date-time */
+                opened_at: string;
+                /** Format: date-time */
+                opening_occurred_at: string;
+                /** Format: date-time */
+                closed_at: string | null;
+                /** @enum {unknown} */
+                source_classification: "organic" | "paid" | "unknown";
+                source_channel: string | null;
+                source_page_id: string | null;
+                source_ad_id: string | null;
+                source_campaign_id: string | null;
+                source_connection_id: string | null;
+                source_touchpoint_id: string | null;
+                /** @constant */
+                policy_version: "acquisition_v1";
+            }[];
+            next_before_sequence: string | null;
             meta: {
                 correlation_id: string;
             };
@@ -7095,6 +7242,412 @@ export interface operations {
             };
         };
     };
+    "crm-get-deals": {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+                /** @description JSON encoded typed query */
+                filter?: string;
+                /** @description JSON encoded typed query */
+                sort?: string;
+                /** @description JSON encoded typed query */
+                owner?: string;
+                /** @description JSON encoded typed query */
+                team?: string;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized CRM result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["crm-record-list"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "crm-post-deals": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["crm-deal-create"];
+            };
+        };
+        responses: {
+            /** @description Authorized CRM result */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["crm-record-response"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "crm-get-deals-id": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized CRM result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["crm-record-response"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "crm-patch-deals-id": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["crm-deal-patch"];
+            };
+        };
+        responses: {
+            /** @description Authorized CRM result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["crm-record-response"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
     "crm-get-leads": {
         parameters: {
             query?: {
@@ -8851,6 +9404,105 @@ export interface operations {
             };
         };
     };
+    "sales-organic-page-report": {
+        parameters: {
+            query: {
+                /** @description UTC closed-date range [from,to), maximum366 days */
+                from: string;
+                /** @description UTC closed-date range [from,to), maximum366 days */
+                to: string;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized won Deal value by organic Page and currency */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["organic-page-report"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
     "conversation-get-conversations": {
         parameters: {
             query?: {
@@ -9471,6 +10123,105 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["conversation-intent-response"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "conversation-get-conversations-id-acquisition-sessions": {
+        parameters: {
+            query?: {
+                limit?: number;
+                before_sequence?: string;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized Conversation result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["conversation-acquisition-sessions"];
                 };
             };
             /** @description Sanitized identity failure */

@@ -1,0 +1,526 @@
+<html><head><title>Advanced targeting</title><meta charset="UTF-8" /><style nonce="j1nuRKaT">body { font-family: monospace; margin: 20px; }pre { white-space: pre-wrap; word-wrap: break-word; }</style></head><body><pre data-testid="developer-docs-markdown-page"># Advanced targeting
+
+
+
+Advanced targeting includes:
+
+* [Mobile](#mobile) and [Placement](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/placement-targeting)
+* [Advanced Demographic Targeting](#demographic)
+    * [Education and workplace](#education-and-workplace)
+* [Custom Audiences](#custom_audiences)
+* [Locales](#locales)
+* [Reach People Interested in Selected Cities and Regions](#reach-people-interested-in-selected-cities-and-regions)
+* [Broad Category Targeting](#broadcategories)
+* [Targeting Expansion](https://developers.facebook.com/docs/marketing-api/audiences/reference/targeting-expansion)
+* [Flexible Targeting](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/flexible-targeting)
+
+You can use any combination of these advanced targeting options in your own [custom audiences](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/custom-audience) and lookalikes. By default, Facebook `ORs` combinations together. Learn more about [core or basic targeting](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/basic-targeting).
+
+**Warning:** If you use `flexible_spec`, you must also provide one of the following under `targeting`:
+
+* `geo_locations` (geographical targeting field from country, region, city, zip)
+* `custom_audiences`
+* `product_audience_specs`
+* `dynamic_audience_ids`
+
+### Limitations
+
+* Advertisers running housing, employment, and credit ads, who are based in the United States or running ads targeted to the United States have different sets of restrictions. See [**Special Ad Category**](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/special-ad-category).
+* See our [Targeting Restrictions guide](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-restrictions) for more limitations.
+
+## Mobile
+
+Mobile targeting is useful for [Mobile App Install ads](https://developers.facebook.com/documentation/ads-commerce/marketing-api/mobile-app-ads).
+
+```
+curl -X POST \
+  -F &#039;name=My AdSet&#039; \
+  -F &#039;optimization_goal=REACH&#039; \
+  -F &#039;billing_event=IMPRESSIONS&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=&lt;CAMPAIGN_ID&gt;&#039; \
+  -F &#039;targeting=&#123;
+    &quot;geo_locations&quot;: &#123;&quot;countries&quot;:[&quot;US&quot;]&#125;,
+    &quot;user_device&quot;: [&quot;Galaxy S6&quot;,&quot;One m9&quot;],
+    &quot;user_os&quot;: [&quot;android&quot;]
+  &#125;&#039; \
+  -F &#039;status=ACTIVE&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+You can combine categories, such as iPod OR iPad OR iPhone.
+
+**These categories are not mutually exclusive**. If you select iOS you target all devices running iOS, including iPhone and iPod, without specifying `user_device`.
+
+**For Brand Awareness Objective ads**, you can&#039;t target based on mobile device type, such as feature phones or Samsung, or based on iOS version number. You can only choose Android or iOS, or all mobile phones.
+
+### Available fields
+
+| Field | Description |
+| --- | --- |
+| `user_os`&lt;br&gt;&lt;br&gt;type: array | **Required.**&lt;br&gt;&lt;br&gt;One or more values from OS option table below. Possible values are at [Targeting Search API](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-search) with `type=adTargetingCategory` and `class=user_os`. You cannot target the minimum version of one platform with the other platform. However you can target both platforms without specifying minimal versions of either.  &lt;br&gt;&lt;br&gt;**Valid:**  &lt;br&gt;- `[&#039;iOS&#039;, &#039;Android&#039;]`  &lt;br&gt;- `[&#039;iOS&#039;]`  &lt;br&gt;- `[&#039;Android_ver_4.2_and_above&#039;]`  &lt;br&gt;- `[&#039;iOS_ver_8.0_to_9.0&#039;]`&lt;br&gt;&lt;br&gt;**Invalid:**  &lt;br&gt;- `[&#039;Android&#039;, &#039;iOS_ver_8.0_and_above&#039;]`  &lt;br&gt;- `[&#039;iOS&#039;, &#039;Android_ver_4.0_and_above&#039;]` |
+| `user_device`&lt;br&gt;&lt;br&gt;type: array | **Optional.**&lt;br&gt;&lt;br&gt;Devices must match the value in `user_os`. Get possible values at [Targeting Search API](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-search) with `type=adTargetingCategory` and `class=user_device`. |
+| `excluded_user_device`&lt;br&gt;&lt;br&gt;type: array | **Optional.**&lt;br&gt;&lt;br&gt;Devices to exclude. Devices must match the value in `user_os`. Get possible values at [Targeting Search API](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-search) with `type=adTargetingCategory` and `class=user_device`. |
+| `wireless_carrier`&lt;br&gt;&lt;br&gt;type: array | **Optional.**&lt;br&gt;&lt;br&gt;Allowed value is `Wifi`. Target mobile users currently on Wi-Fi networks. |
+
+### Operating system options
+
+| Field | Description |
+| --- | --- |
+| `iOS`&lt;br&gt;&lt;br&gt;type: string | iOS devices, including iPhone, iPad, and iPod |
+| `iOS_ver_x.x_and_above`&lt;br&gt;&lt;br&gt;type: string | iOS devices running OS version x.x and above.&lt;br&gt;&lt;br&gt;**Options:** 2.0, 3.0, 4.0, 4.3, 5.0, 6.0, 7.0, 8.0, 9.0.&lt;br&gt;**Example:** `iOS_ver_4.0_and_above`&lt;br&gt;&lt;br&gt;For Meta App Ads:&lt;br&gt;&lt;br&gt;* SKAdNetwork and Meta&#039;s Aggregated Event Measurement ad sets only support version range from `iOS_ver_14.0_and_above`.&lt;br&gt;* Non-SKAdNetwork or Meta&#039;s Aggregated Event Measurement ad set only support iOS version range from `iOS_ver_2.0_to_14.4`. |
+| `iOS_ver_x.x_to y.y`&lt;br&gt;&lt;br&gt;type: string | iOS devices running OS versions x.x to y.y.&lt;br&gt;&lt;br&gt;**Options:** 2.0, 3.0, 4.0, 4.3, 5.0, 6.0, 7.0, 8.0, 9.0.&lt;br&gt;&lt;br&gt;**Example:** `iOS_ver_8.0_to_9.0`, where x.x must be less than y.y |
+| `Android`&lt;br&gt;&lt;br&gt;type: string | Android devices |
+| `Android_ver_x.x_and_above`&lt;br&gt;&lt;br&gt;type: string | Android devices running version x.x and above.&lt;br&gt;&lt;br&gt;**Options:** 2.0, 2.1, 2.2, 2.3, 3.0, 3.1, 3.2, 4.0, 4.1, 4.2., 4.3, 4.4, 5.0, 5.1, 6.0, 7.0, 7.1, and 8.0.&lt;br&gt;&lt;br&gt;**Example:** `Android_ver_4.0_and_above` |
+| `Android_ver_x.x_to y.y`&lt;br&gt;&lt;br&gt;type: string | Android devices running versions x.x to y.y.&lt;br&gt;&lt;br&gt;**Options:** 2.0, 2.1, 2.2, 2.3, 3.0, 3.1, 3.2, 4.0, 4.1, 4.2., 4.3, 4.4, 5.0, 5.1, 6.0, 7.0, 7.1, and 8.0.&lt;br&gt;&lt;br&gt;**Example:** `Android_ver_4.2_to_8.0`, where x.x must be less than y.y |
+
+## Advanced demographic targeting &#123;#demographic&#125;
+
+Target based on relationships, education, finances, and life events.
+
+### Examples
+
+First query `life_events`:
+
+```
+curl -G \
+  -d &#039;type=adTargetingCategory&#039; \
+  -d &#039;class=life_events&#039; \
+  -d &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/search
+```
+
+Add these to `targeting_spec`:
+
+```
+curl -X POST \
+  -F &#039;name=&quot;My First AdSet&quot;&#039; \
+  -F &#039;daily_budget=10000&#039; \
+  -F &#039;bid_amount=300&#039; \
+  -F &#039;billing_event=&quot;IMPRESSIONS&quot;&#039; \
+  -F &#039;optimization_goal=&quot;REACH&quot;&#039; \
+  -F &#039;campaign_id=&quot;&lt;AD_CAMPAIGN_ID&gt;&quot;&#039; \
+  -F &#039;promoted_object=&#123;
+       &quot;page_id&quot;: &quot;&lt;PAGE_ID&gt;&quot;
+     &#125;&#039; \
+  -F &#039;targeting=&#123;
+       &quot;facebook_positions&quot;: [
+         &quot;feed&quot;
+       ],
+       &quot;age_max&quot;: 24,
+       &quot;age_min&quot;: 20,
+       &quot;behaviors&quot;: [
+         &#123;
+           &quot;id&quot;: 6002714895372,
+           &quot;name&quot;: &quot;All travelers&quot;
+         &#125;
+       ],
+       &quot;device_platforms&quot;: [
+         &quot;mobile&quot;
+       ],
+       &quot;genders&quot;: [
+         1
+       ],
+       &quot;geo_locations&quot;: &#123;
+         &quot;countries&quot;: [
+           &quot;US&quot;
+         ],
+         &quot;regions&quot;: [
+           &#123;
+             &quot;key&quot;: &quot;4081&quot;
+           &#125;
+         ],
+         &quot;cities&quot;: [
+           &#123;
+             &quot;key&quot;: 777934,
+             &quot;radius&quot;: 10,
+             &quot;distance_unit&quot;: &quot;mile&quot;
+           &#125;
+         ]
+       &#125;,
+       &quot;interests&quot;: [
+         &#123;
+           &quot;id&quot;: &quot;&lt;INTEREST_ID&gt;&quot;,
+           &quot;name&quot;: &quot;&lt;INTEREST_NAME&gt;&quot;
+         &#125;
+       ],
+       &quot;life_events&quot;: [
+         &#123;
+           &quot;id&quot;: 6002714398172,
+           &quot;name&quot;: &quot;Newlywed (1 year)&quot;
+         &#125;
+       ],
+       &quot;publisher_platforms&quot;: [
+         &quot;facebook&quot;,
+         &quot;audience_network&quot;
+       ]
+     &#125;&#039; \
+  -F &#039;status=&quot;PAUSED&quot;&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+This example targets:
+
+* Location: Japan or United States: Menlo Park (+10 mi) California or United States: Texas
+* Age: 20 - 24
+* Gender: male
+* Interests: Association football (Soccer)
+* Behaviors: All frequent travelers
+* Life Event: Newlywed (1 year)
+* Home Ownership: Renters
+
+Here&#039;s another example targeting by location, demographic, relationship status and interests:
+
+```
+curl \
+  -F &#039;name=My AdSet&#039; \
+  -F &#039;optimization_goal=REACH&#039; \
+  -F &#039;billing_event=IMPRESSIONS&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=&lt;CAMPAIGN_ID&gt;&#039; \
+  -F &#039;targeting=&#123;
+    &quot;age_max&quot;: 43,
+    &quot;age_min&quot;: 18,
+    &quot;genders&quot;: [1],
+    &quot;geo_locations&quot;: &#123;
+      &quot;regions&quot;: [&#123;&quot;key&quot;:&quot;3847&quot;&#125;],
+      &quot;cities&quot;: [
+        &#123;
+          &quot;key&quot;: &quot;2430536&quot;,
+          &quot;radius&quot;: 12,
+          &quot;distance_unit&quot;: &quot;mile&quot;
+        &#125;
+      ]
+    &#125;,
+    &quot;interests&quot;: [&#123;&quot;id&quot;:6003139266461,&quot;name&quot;:&quot;Movies&quot;&#125;],
+    &quot;relationship_statuses&quot;: [
+      2,
+      3,
+      4
+    ]
+  &#125;&#039; \
+  -F &#039;status=ACTIVE&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+### Possible options
+
+| Name | Description |
+| --- | --- |
+| `relationship_statuses`&lt;br&gt;&lt;br&gt;type: array | Array of integers representing relationship status.&lt;br&gt;&lt;br&gt;`1`: single&lt;br&gt;&lt;br&gt;`2`: in_relationship&lt;br&gt;&lt;br&gt;`3`: married&lt;br&gt;&lt;br&gt;`4`: engaged&lt;br&gt;&lt;br&gt;`6`: not specified&lt;br&gt;&lt;br&gt;**Default:** `ALL`, if you specify Null or do not provide a value.&lt;br&gt;&lt;br&gt;**Restrictions:** Do not use `0`. |
+| `life_events`&lt;br&gt;&lt;br&gt;type: array | Array of objects with &#039;id&#039; and optional &#039;name&#039; fields: `[&#123;&#039;id&#039;: 123, &#039;name&#039;: &#039;foo&#039;&#125;, &#123;&#039;id&#039;: 456&#125;, 789]` |
+| `industries`&lt;br&gt;&lt;br&gt;type: array | Array of objects with &#039;id&#039; and optional &#039;name&#039; fields |
+| `income`&lt;br&gt;&lt;br&gt;type: array | Array of objects with &#039;id&#039; and optional &#039;name&#039; fields |
+| `family_statuses`&lt;br&gt;&lt;br&gt;type: array | Array of objects with &#039;id&#039; and (optional) &#039;name&#039; fields |
+
+### Education and work &#123;#education-and-workplace&#125;
+Use [Targeting Search API](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-search#demo) for all options.
+
+| Name | Description |
+| --- | --- |
+| `education_schools`&lt;br&gt;&lt;br&gt;type: array | Schools, colleges, and institutions.&lt;br&gt;&lt;br&gt;**Limit:** 200 education schools.&lt;br&gt;&lt;br&gt;**Example:** `[&#123;id: 105930651606, &#039;name&#039;: &#039;Harvard University&#039;&#125;, &#123;id: 105930651607&#125;, 105930651608]` |
+| `education_statuses`&lt;br&gt;&lt;br&gt;type: array | Array of integers to target based on education level.&lt;br&gt;&lt;br&gt;`1`: HIGH_SCHOOL&lt;br&gt;&lt;br&gt;`2`: UNDERGRAD&lt;br&gt;&lt;br&gt;`3`: ALUM&lt;br&gt;&lt;br&gt;`4`: HIGH_SCHOOL_GRAD&lt;br&gt;&lt;br&gt;`5`: SOME_COLLEGE&lt;br&gt;&lt;br&gt;`6`: ASSOCIATE_DEGREE&lt;br&gt;&lt;br&gt;`7`: IN_GRAD_SCHOOL&lt;br&gt;&lt;br&gt;`8`: SOME_GRAD_SCHOOL&lt;br&gt;&lt;br&gt;`9`: MASTER_DEGREE&lt;br&gt;&lt;br&gt;`10`: PROFESSIONAL_DEGREE&lt;br&gt;&lt;br&gt;`11`: DOCTORATE_DEGREE&lt;br&gt;&lt;br&gt;`12`: UNSPECIFIED&lt;br&gt;&lt;br&gt;`13`: SOME_HIGH_SCHOOL |
+| `college_years`&lt;br&gt;&lt;br&gt;type: array | Array of integers. College graduation&lt;br&gt;&lt;br&gt;**Limit:** Earliest year allowed is 1980 |
+| `education_majors`&lt;br&gt;&lt;br&gt;type: array | Majors.&lt;br&gt;&lt;br&gt;**Example:** `[&#123;&#039;id&#039;: 123, &#039;name&#039;: &#039;Computer Science&#039;&#125;, &#123;&#039;id&#039;: 456&#125;, 789]`&lt;br&gt;&lt;br&gt;**Limit:** 200 |
+| `work_employers`&lt;br&gt;&lt;br&gt;type: array | Company, organization, or workplace&lt;br&gt;&lt;br&gt;**Example:** `[&#123;&#039;id&#039;:&#039;50431654&#039;,&#039;name&#039;:&#039;Microsoft&#039;&#125;, &#123;&#039;id&#039;:50431655&#125;, 50431656]`&lt;br&gt;&lt;br&gt;**Limit:**  200 |
+| `work_positions`&lt;br&gt;&lt;br&gt;type: array | Self-declared work. &lt;br&gt;&lt;br&gt;**Example:** `[&#123;&#039;id&#039;:105763692790962, &#039;name&#039;:&#039;Contractor&#039;&#125;, &#123;&#039;id&#039;:105763692790963&#125;, 105763692790964]`&lt;br&gt;&lt;br&gt;**Limit:** 200 |
+
+## Custom audiences &#123;#custom_audiences&#125;
+
+Create a [custom audience](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/custom-audience) and add users. You can use the audience in targeting, either for inclusion or exclusion. Include up to 500 custom audiences in `custom_audiences` and 500 custom audiences in `excluded_custom_audiences`.
+
+**Note:** `excluded_custom_audiences` in `targeting_specs` is different than `excluded_custom_audiences` in `APP_COMBINATION` Custom Audience.
+
+| Field | Description |
+| --- | --- |
+| `custom_audiences`&lt;br&gt;&lt;br&gt;type: array | Array of audience IDs or audience objects. `&#039;id&#039;` field only: `[123, 456]`, or `[&#123;&#039;id&#039;: 123&#125;, &#123;&#039;id&#039;: 456&#125;]` |
+| `excluded_custom_audiences`&lt;br&gt;&lt;br&gt;type: array | Array of audience IDs or audience objects. `&#039;id&#039;` field only: `[123, 456]`, or `[&#123;&#039;id&#039;: 123&#125;, &#123;&#039;id&#039;: 456&#125;]` |
+
+```
+targeting:&#123;
+     &quot;geo_locations&quot;:&#123;
+       &quot;countries&quot;:[&quot;US&quot;],
+     &#125;,
+     &quot;age_min&quot;:25,
+     &quot;age_max&quot;:40,
+     &quot;custom_audiences&quot;:[&#123;&quot;id&quot;:6004192254512&#125;]&#125;
+     &quot;excluded_custom_audiences&quot;:
+       [&#123;&quot;id&quot;:6004192252847&#125;],
+ &#125;
+```
+
+## Locales
+
+Provide granular targeting on locale:
+
+| Field | Description |
+| --- | --- |
+| `locales`&lt;br&gt;&lt;br&gt;type: array | Locales, see [Targeting Search, Locales](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-search#locale). Indices in a sub-array &#039;locales&#039;. Target Accounts Center accounts with language other than common language for a location. Provide an ID for the language, such as 5 for German. Limit: 50. See mapping of virtual &#039;locales&#039; to language sets at [Targeting Search, Locale](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-search#locale) with `type=adlocale`. |
+
+## Reach people interested in selected cities and regions
+
+This feature expands upon our existing location targeting feature, by enabling advertisers to reach people who have shown intent to travel to, make purchases in, or general interest in the cities and regions you&#039;ve selected, within the same country.  
+
+* To opt in, set the `geo` parameter under `individual_setting` in `targeting_automation` to `1`.
+* To opt out, set the `geo` parameter under `individual_setting` in  `targeting_automation` to `0`.
+
+```json
+&quot;targeting&quot;: &#123;
+  &quot;age_range&quot;: [25, 35],
+  &quot;geo_locations&quot;: &#123;
+    &quot;countries&quot;: [&quot;GB&quot;],
+    &quot;cities&quot;: [&#123;&quot;key&quot;:&quot;2430536&quot;, &quot;radius&quot;:12, &quot;distance_unit&quot;:&quot;mile&quot;&#125;]
+  &#125;,
+  &quot;targeting_automation&quot;: &#123;
+    &quot;individual_setting&quot;: &#123;
+      &quot;geo&quot;: 1
+    &#125;
+  &#125;
+&#125;
+```
+
+#### Limitations
+
+This feature works when you have selected cities or regions in your location targeting (i.e., `geo_locations` field).
+
+#### Example request
+
+```bash
+curl -X POST \
+  -F &#039;name=&quot;advantage audience test&quot;&#039; \
+  -F &#039;is_autobid=&quot;true&quot;&#039; \
+  -F &#039;daily_budget=&quot;100&quot;&#039; \
+  -F &#039;billing_event=&quot;IMPRESSIONS&quot;&#039; \
+  -F &#039;campaign_id=&quot;&lt;CAMPAIGN_ID&gt;&quot;&#039; \
+  -F &#039;targeting=&#123;
+    &quot;age_range&quot;: [25,35],
+    &quot;geo_locations&quot;:
+      &#123;
+        &quot;cities&quot;: [&#123;&quot;key&quot;:&quot;2430536&quot;,&quot;radius&quot;:12,&quot;distance_unit&quot;:&quot;mile&quot;&#125;]
+      &#125;,
+    &quot;targeting_automation&quot;: &#123;&quot;individual_setting&quot;: &#123;&quot;geo&quot;: 1 &#125; &#125;&#125;&#039; \
+  -F &#039;access_token=&quot;&lt;ACCESS_TOKEN&gt;&quot;&#039; \
+https://facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+For more information about the feature, see [How to reach people interested in your selected cities and regions](https://www.facebook.com/business/help/726389026372510).
+
+## Enable age and gender suggestions
+
+**Warning:** Currently, this feature is available to select advertisers but will gradually roll out to all advertisers in the coming months.
+
+To use age or gender as suggestions, simply configure the `individual_setting` parameter in the `targeting_automation` field. The API also returns this setting when you retrieve the ad set, if it exists for the ad set.
+
+#### Limitations
+
+* This feature is only available for the `OUTCOME_SALES` and `APP_INSTALLS` objectives.
+* When using age and gender suggestions, Meta shows ads beyond these settings when doing so is likely to improve ad performance.
+
+### Age as a suggestion
+
+Set the `age` parameter under `individual_setting` in `targeting_automation` to `1`. Then, include the `age_range` field in your audience specification.
+
+#### Example request
+
+```json
+&#123;
+  &quot;geo_locations&quot;: &#123;
+    &quot;countries&quot;: [
+      &quot;US&quot;
+    ]
+  &#125;,
+  &quot;age_min&quot;: 18,
+  &quot;age_range&quot;: [25, 35],
+  &quot;targeting_automation&quot;: &#123;
+    &quot;individual_setting&quot;: &#123;
+      &quot;age&quot;: 1
+    &#125;
+  &#125;
+&#125;
+```
+
+### Gender as a suggestion
+
+Set the `gender` parameter under `individual_setting` in `targeting_automation` to `1`.
+
+#### Example request
+
+```html
+&#123;
+  &quot;geo_locations&quot;: &#123;
+    &quot;countries&quot;: [
+      &quot;US&quot;
+    ]
+  &#125;,
+  &quot;age_min&quot;: 21,
+  &quot;genders&quot;:[1],
+  &quot;targeting_automation&quot;: &#123;
+    &quot;individual_setting&quot;: &#123;
+      &quot;gender&quot;: 1
+    &#125;
+  &#125;
+&#125;
+```
+
+### Create an ad set with suggestions
+
+#### Example request
+
+```html
+ curl -X POST \
+  -F &#039;name=&quot;advantage audience test&quot;&#039; \
+  -F &#039;is_autobid=&quot;true&quot;&#039; \
+  -F &#039;daily_budget=&quot;100&quot;&#039; \
+  -F &#039;billing_event=&quot;IMPRESSIONS&quot;&#039; \
+  -F &#039;campaign_id=&quot;&lt;CAMPAIGN_ID&gt;&quot;&#039; \
+  -F &#039;promoted_object=&#123;&quot;pixel_id&quot;: &quot;&lt;PIXEL_ID&gt;&quot;,&quot;custom_event_type&quot;: &quot;PURCHASE&quot;&#125;&#039; \
+  -F &#039;targeting=&#123;
+    &quot;age_min&quot;: 18,
+    &quot;age_range&quot;: [25,35],
+    &quot;genders&quot;:[1],
+    &quot;geo_locations&quot;: &#123;
+      &quot;countries&quot;: [&quot;US&quot;]
+    &#125;,
+    &quot;targeting_automation&quot;: &#123;&quot;individual_setting&quot;: &#123;&quot;age&quot;: 1, &quot;gender&quot;: 1 &#125; &#125;&#125;&#039; \
+  -F &#039;access_token=&quot;&lt;ACCESS_TOKEN&gt;&quot;&#039; \
+https://facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+#### Example response
+
+```html
+&#123;
+  &quot;id&quot;: &quot;&lt;AD_SET_ID&gt;&quot;,
+&#125;
+```
+
+### Retrieve an ad set with suggestions
+
+#### Example request
+
+```html
+curl -X GET \
+  -d &#039;fields=&quot;targeting&quot;&#039; \
+  -d &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/&lt;AD_SET_ID&gt;/
+```
+
+#### Example response
+
+```html
+&#123;
+  &quot;targeting&quot;: &#123;
+    &quot;age_max&quot;: 65,
+    &quot;age_min&quot;: 19,
+    &quot;age_range&quot;: [
+      25,
+      35
+    ],
+    &quot;genders&quot;: [
+      1
+    ],
+    &quot;geo_locations&quot;: &#123;
+      &quot;countries&quot;: [
+        &quot;US&quot;
+      ],
+      &quot;location_types&quot;: [
+        &quot;home&quot;,
+        &quot;recent&quot;
+      ]
+    &#125;,
+    &quot;targeting_relaxation_types&quot;: &#123;
+      &quot;lookalike&quot;: 0,
+      &quot;custom_audience&quot;: 0
+    &#125;,
+    &quot;targeting_automation&quot;: &#123;
+      &quot;advantage_audience&quot;: 0,
+      &quot;individual_setting&quot;: &#123;
+        &quot;age&quot;: 1,
+        &quot;gender&quot;: 1
+      &#125;
+    &#125;
+  &#125;,
+  &quot;id&quot;: &quot;&lt;AD_SET_ID&gt;&quot;,
+&#125;
+```
+
+## Custom broad category targeting &#123;#broadcategories&#125;
+
+Use Broad Categories for custom targeting created or permissioned specifically for your account. To include the cooking category and small business owner category:
+
+```
+curl \
+  -F &#039;name=My AdSet&#039; \
+  -F &#039;optimization_goal=REACH&#039; \
+  -F &#039;billing_event=IMPRESSIONS&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=&lt;CAMPAIGN_ID&gt;&#039; \
+  -F &#039;targeting=&#123;
+    &quot;geo_locations&quot;: &#123;&quot;countries&quot;:[&quot;US&quot;]&#125;,
+    &quot;user_adclusters&quot;: [
+      &#123;&quot;id&quot;:6002714885172,&quot;name&quot;:&quot;Cooking&quot;&#125;,
+      &#123;&quot;id&quot;:6002714898572,&quot;name&quot;:&quot;Small Business Owners&quot;&#125;
+    ]
+  &#125;&#039; \
+  -F &#039;status=ACTIVE&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+To target based on BCT plus location and demographics:
+
+```
+curl \
+  -F &#039;name=My AdSet&#039; \
+  -F &#039;optimization_goal=REACH&#039; \
+  -F &#039;billing_event=IMPRESSIONS&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=&lt;CAMPAIGN_ID&gt;&#039; \
+  -F &#039;targeting=&#123;
+    &quot;geo_locations&quot;: &#123;&quot;countries&quot;:[&quot;US&quot;]&#125;,
+    &quot;relationship_statuses&quot;: [2],
+    &quot;user_adclusters&quot;: [&#123;&quot;id&quot;:6002714886772,&quot;name&quot;:&quot;Food &amp; Dining&quot;&#125;]
+  &#125;&#039; \
+  -F &#039;status=ACTIVE&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+You have options:
+
+| Name | Description |
+| --- | --- |
+| `user_adclusters`&lt;br&gt;&lt;br&gt;type: array | Array of ID-name pairs for __BCT clusters__. See below for information on retrieving BCT&#039;s. Limit: 50 ID-name pairs. |
+
+To query this targeting for Ad account, make an `HTTP GET`:
+
+```
+https://graph.facebook.com/&lt;API_VERSION&gt;/act_&lt;AD_ACCOUNT_ID&gt;/broadtargetingcategories
+```
+
+The response is an array of JSON key-value pairs:
+
+| Name | Description |
+| --- | --- |
+| `id`&lt;br&gt;&lt;br&gt;type: long | Use the broad category ID in the ad targeting spec |
+| `name`&lt;br&gt;&lt;br&gt;type: string | Name of broad category |
+| `parent_category`&lt;br&gt;&lt;br&gt;type: string | Parent category of broad category |
+| `size_lower_bound`&lt;br&gt;&lt;br&gt;type: int | Lower bound audience size of broad category |
+| `size_upper_bound`&lt;br&gt;&lt;br&gt;type: int | Upper bound audience size of broad category |
+| `type`&lt;br&gt;&lt;br&gt;type: int | 6=BCT |
+| `type_name`&lt;br&gt;&lt;br&gt;type: string | BCT |
+
+## Resources
+
+- [Targeting Search](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-search)
+- [Reach Estimate](https://developers.facebook.com/docs/marketing-api/reference/reach-estimate)
+- [Targeting Descriptions](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-description)
+- [Custom Audiences](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/custom-audience)
+</pre></body></html>

@@ -1,0 +1,10 @@
+{
+ "$schema":"http://json-schema.org/draft-07/schema#",
+ "$id":"https://agentic-crm.local/contracts/reporting-query-v1",
+ "definitions":{
+  "uuid":{"type":"string","pattern":"^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$"},
+  "hash":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+  "request":{"type":"object","additionalProperties":false,"required":["definition"],"properties":{"definition":{"type":"object","required":["bindingId"],"properties":{"bindingId":{"$ref":"#/definitions/uuid"}}},"generation":{"$ref":"#/definitions/hash"},"format":{"enum":["json","csv"]}}},
+  "admission":{"type":"object","additionalProperties":false,"required":["audience","tenantId","principalId","authRevision","mockSource","canExport","bodyHash","issuedAt","expiresAt"],"properties":{"audience":{"const":"reporting-query-v1"},"tenantId":{"$ref":"#/definitions/uuid"},"principalId":{"$ref":"#/definitions/uuid"},"authRevision":{"type":"string","pattern":"^[1-9][0-9]{0,19}$"},"mockSource":{"const":"all"},"canExport":{"type":"boolean"},"bodyHash":{"$ref":"#/definitions/hash"},"issuedAt":{"type":"integer","minimum":0},"expiresAt":{"type":"integer","minimum":0}}}
+ }
+}

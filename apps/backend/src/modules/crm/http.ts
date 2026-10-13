@@ -1,3 +1,5 @@
+import { OrganicSalesReport } from '../sales/organic-report.js';
+import { DealService,dealDomain,dealArchiveGuard } from '../sales/deals.js';
 import { SalesHandoffs } from '../sales/handoff.js';
 import { conversationArchiveGuard } from '../conversation/domain.js';
 import { Controller,Get,Post,Patch,Put,Req,Res,Inject,Module,type OnModuleDestroy } from '@nestjs/common';
@@ -17,8 +19,8 @@ import { FieldError } from './properties.js';
 import { CrmPlatform,type MetadataRoute } from './platform.js';
 interface Request extends IncomingMessage {query:Record<string,unknown>;params:Record<string,string>;body:unknown}
 export class CrmRuntime implements OnModuleDestroy {
-  private readonly source=databaseSource();private initialized:Promise<unknown>|undefined;readonly platform:CrmPlatform;readonly records:CrmRecords;readonly leads:LeadService;readonly handoffs=new SalesHandoffs(this.source);readonly ui:CrmUi;
-  constructor(@Inject(AuthRuntime) auth:AuthRuntime){this.platform=new CrmPlatform(this.source,createHmac('sha256',auth.service.config.encryptionKey).update('registry-pagination-v1').digest());const domains=coreDomains();domains.set('lead',leadDomain(contactReferences));this.records=new CrmRecords(this.source,createHmac('sha256',auth.service.config.encryptionKey).update('records-pagination-v1').digest(),domains,undefined,[leadArchiveGuard,conversationArchiveGuard]);this.leads=new LeadService(this.records,contactReferences);this.ui=new CrmUi(this.records);}
+  private readonly source=databaseSource();private initialized:Promise<unknown>|undefined;readonly platform:CrmPlatform;readonly records:CrmRecords;readonly leads:LeadService;readonly deals:DealService;readonly handoffs=new SalesHandoffs(this.source);readonly ui:CrmUi;
+  constructor(@Inject(AuthRuntime) auth:AuthRuntime){this.platform=new CrmPlatform(this.source,createHmac('sha256',auth.service.config.encryptionKey).update('registry-pagination-v1').digest());const domains=coreDomains();domains.set('lead',leadDomain(contactReferences));domains.set('deal',dealDomain());this.records=new CrmRecords(this.source,createHmac('sha256',auth.service.config.encryptionKey).update('records-pagination-v1').digest(),domains,undefined,[leadArchiveGuard,dealArchiveGuard,conversationArchiveGuard]);this.leads=new LeadService(this.records,contactReferences);this.deals=new DealService(this.records);this.ui=new CrmUi(this.records);}
   async ready(){if(!this.initialized)this.initialized=this.source.initialize().catch(e=>{this.initialized=undefined;throw e;});await this.initialized;}
   async onModuleDestroy(){await this.initialized?.catch(()=>{});if(this.source.isInitialized)await this.source.destroy();}
 }
@@ -76,11 +78,33 @@ export class CrmController {
       res.statusCode=result.status;res.setHeader('ETag',`"${result.body.data.version}"`);res.end(JSON.stringify(result.body));
     }catch(error){const failure=error instanceof CommandError||error instanceof AuthError?error:error instanceof AccessError?new CommandError(403,error.code):new CommandError(503,'TEMPORARILY_UNAVAILABLE');res.statusCode=failure.status;res.end(JSON.stringify({error:{code:failure.code,message:'Không thể hoàn tất yêu cầu.',fields:error instanceof FieldError?[{path:error.field,code:error.code}]:[],retryable:failure.status===503},meta:{correlation_id:correlation}}));}
   }
+  private async dealResponse(req:Request,res:ServerResponse,action:'read'|'create'|'update'){
+    const correlation=randomUUID();res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json');
+    try{
+      const mutation=action!=='read',session=mutation?await this.auth.service.requireMutation(cookie(req,'crm_session'),req.headers.origin,req.headers['x-csrf-token']):await this.auth.service.session(cookie(req,'crm_session'),true);
+      const tenant=req.headers['x-tenant-id'];if(!uuid(tenant)||req.params.id!==undefined&&!uuid(req.params.id))throw new CommandError(400,'INVALID_REQUEST');
+      if(Object.keys(req.query).length&&(mutation||req.params.id))throw new CommandError(400,'INVALID_REQUEST');await this.runtime.ready();
+      if(!mutation){const result=await this.runtime.deals.read(session.account_id,tenant,req.params.id,req.query);if(!Array.isArray(result.data)&&result.data.version)res.setHeader('ETag',`"${result.data.version}"`);res.end(JSON.stringify({...result,meta:{correlation_id:correlation}}));return;}
+      const key=req.headers['idempotency-key'],match=req.headers['if-match'];
+      if(typeof key!=='string'||!/^application\/json(?:;|$)/i.test(req.headers['content-type']??'')||match!==undefined&&(typeof match!=='string'||!/^"[1-9][0-9]{0,19}"$/.test(match)))throw new CommandError(400,'INVALID_REQUEST');
+      const result=await this.runtime.deals.mutate(session.account_id,tenant,req.params.id,req.body,key,typeof match==='string'?match.slice(1,-1):undefined,correlation);
+      res.statusCode=result.status;res.setHeader('ETag',`"${result.body.data.version}"`);res.end(JSON.stringify(result.body));
+    }catch(error){const failure=error instanceof CommandError||error instanceof AuthError?error:error instanceof AccessError?new CommandError(403,error.code):new CommandError(503,'TEMPORARILY_UNAVAILABLE');res.statusCode=failure.status;res.end(JSON.stringify({error:{code:failure.code,message:'Không thể hoàn tất yêu cầu.',fields:error instanceof FieldError?[{path:error.field,code:error.code}]:[],retryable:failure.status===503},meta:{correlation_id:correlation}}));}
+  }
   private async uiResponse(req:Request,res:ServerResponse,descriptor=false){
     const correlation=randomUUID();res.setHeader('Content-Type','application/json');res.setHeader('Cache-Control','no-store');
     try{const session=await this.auth.service.session(cookie(req,'crm_session'),true),tenant=req.headers['x-tenant-id'];if(!uuid(tenant)||Object.keys(req.query).length)throw new CommandError(400,'INVALID_REQUEST');await this.runtime.ready();const data=descriptor?await this.runtime.ui.descriptor(session.account_id,tenant,req.params.key!):await this.runtime.ui.context(session.account_id,tenant);res.end(JSON.stringify({data,meta:{correlation_id:correlation}}));}
     catch(error){const failure=error instanceof CommandError||error instanceof AuthError?error:new CommandError(error instanceof AccessError?403:503,error instanceof AccessError?'FORBIDDEN':'TEMPORARILY_UNAVAILABLE');res.statusCode=failure.status;res.end(JSON.stringify({error:{code:failure.code,message:'Không thể tải workspace.',fields:[],retryable:failure.status===503},meta:{correlation_id:correlation}}));}
   }
+  @Get('sales/reports/organic-pages') async organicReport(@Req() req:Request,@Res() res:ServerResponse){
+    const correlation=randomUUID();res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json');
+    try{const session=await this.auth.service.session(cookie(req,'crm_session'),true),tenant=req.headers['x-tenant-id'];if(!uuid(tenant))throw new CommandError(400,'INVALID_REQUEST');await this.runtime.ready();const result=await new OrganicSalesReport(this.runtime.records).read(session.account_id,tenant,req.query);res.end(JSON.stringify({...result,meta:{correlation_id:correlation}}));}
+    catch(error){const failure=error instanceof CommandError||error instanceof AuthError?error:new CommandError(error instanceof AccessError?403:503,error instanceof AccessError?'FORBIDDEN':'TEMPORARILY_UNAVAILABLE');res.statusCode=failure.status;res.end(JSON.stringify({error:{code:failure.code,message:'Không thể tải báo cáo.',fields:[],retryable:failure.status===503},meta:{correlation_id:correlation}}));}
+  }
+  @Get('deals') dealList(@Req() q:Request,@Res() s:ServerResponse){return this.dealResponse(q,s,'read');}
+  @Get('deals/:id') dealGet(@Req() q:Request,@Res() s:ServerResponse){return this.dealResponse(q,s,'read');}
+  @Post('deals') dealCreate(@Req() q:Request,@Res() s:ServerResponse){return this.dealResponse(q,s,'create');}
+  @Patch('deals/:id') dealUpdate(@Req() q:Request,@Res() s:ServerResponse){return this.dealResponse(q,s,'update');}
   @Get('crm/context') context(@Req() q:Request,@Res() s:ServerResponse){return this.uiResponse(q,s);}
   @Get('objects/:key/descriptor') descriptor(@Req() q:Request,@Res() s:ServerResponse){return this.uiResponse(q,s,true);}
   @Get('leads/:id/handoffs') handoffs(@Req() q:Request,@Res() s:ServerResponse){return this.leadResponse(q,s,'handoffs');}

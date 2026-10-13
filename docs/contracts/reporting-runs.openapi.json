@@ -1,0 +1,412 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Durable mock report runs",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/reporting/runs": {
+      "post": {
+        "operationId": "createReportingRun",
+        "security": [
+          {
+            "nativeSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Owner-scoped mock run metadata or authorized aggregate result"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Permission denied"
+          },
+          "404": {
+            "description": "Run unavailable"
+          },
+          "409": {
+            "description": "Conflict, busy, incomplete or lost fence"
+          },
+          "410": {
+            "description": "Run expired"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reporting/runs/{id}": {
+      "get": {
+        "operationId": "getReportingRun",
+        "security": [
+          {
+            "nativeSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Owner-scoped mock run metadata or authorized aggregate result"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Permission denied"
+          },
+          "404": {
+            "description": "Run unavailable"
+          },
+          "409": {
+            "description": "Conflict, busy, incomplete or lost fence"
+          },
+          "410": {
+            "description": "Run expired"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    },
+    "/api/v1/reporting/runs/{id}/execute": {
+      "post": {
+        "operationId": "executeReportingRun",
+        "security": [
+          {
+            "nativeSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Owner-scoped mock run metadata or authorized aggregate result"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Permission denied"
+          },
+          "404": {
+            "description": "Run unavailable"
+          },
+          "409": {
+            "description": "Conflict, busy, incomplete or lost fence"
+          },
+          "410": {
+            "description": "Run expired"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reporting/runs/{id}/cancel": {
+      "post": {
+        "operationId": "cancelReportingRun",
+        "security": [
+          {
+            "nativeSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Owner-scoped mock run metadata or authorized aggregate result"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Permission denied"
+          },
+          "404": {
+            "description": "Run unavailable"
+          },
+          "409": {
+            "description": "Conflict, busy, incomplete or lost fence"
+          },
+          "410": {
+            "description": "Run expired"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reporting/runs/{id}/result": {
+      "get": {
+        "operationId": "getReportingRunResult",
+        "security": [
+          {
+            "nativeSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "json",
+                "csv"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Owner-scoped mock run metadata or authorized aggregate result"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Permission denied"
+          },
+          "404": {
+            "description": "Run unavailable"
+          },
+          "409": {
+            "description": "Conflict, busy, incomplete or lost fence"
+          },
+          "410": {
+            "description": "Run expired"
+          },
+          "503": {
+            "description": "Dependency unavailable"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "nativeSession": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "crm_session"
+      }
+    },
+    "schemas": {
+      "uuid": {
+        "type": "string",
+        "pattern": "^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+      },
+      "hash": {
+        "type": "string",
+        "pattern": "^[a-f0-9]{64}$"
+      },
+      "request": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "definition"
+        ],
+        "properties": {
+          "definition": {
+            "type": "object",
+            "required": [
+              "bindingId"
+            ],
+            "properties": {
+              "bindingId": {
+                "$ref": "#/components/schemas/uuid"
+              }
+            }
+          },
+          "generation": {
+            "$ref": "#/components/schemas/hash"
+          }
+        }
+      }
+    }
+  }
+}

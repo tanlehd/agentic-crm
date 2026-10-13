@@ -1,5 +1,7 @@
 # Enterprise service catalog
 
+SRC-057/058 scoped additions: [Reporting](reporting.md) has independent private draft HTTP/MySQL/native BFF and typed internal mock snapshot projections, verified locally. Query/connected producers/worker/production deployment remain pending; [draft runbook](../development/reporting-storage.md), [mock runbook](../development/reporting-projections.md).
+
 Chuẩn placement bổ sung ADR-021: [schema catalog](../data/schema-catalog.md) / [DB guideline](../data/database-guidelines.md). Mỗi service descriptor phải dùng schema owner này khi thiết kế bảng mới. Identity đích tự quản auth/quyền trong MySQL; Keycloak chỉ là runtime legacy chờ native cutover.
 
 PLAN-005 / ADR-017. Target microservices accepted by user2026-10-06; business source baseline vẫn modular monolith API+worker, schema18 (preview schema17); SRC-028 đã thêm independent Connector HTTP ingress/private schema1, chưa cutover. Mỗi service có scope, kiến trúc nội bộ, model/authority, API/events, consistency, vận hành, extraction và acceptance. Business module không đồng nghĩa mỗi bảng hoặc mỗi worker là một service.
@@ -24,3 +26,7 @@ PLAN-005 / ADR-017. Target microservices accepted by user2026-10-06; business so
 [Kiến trúc tổng thể](../system/architecture.md) · [Contract liên service](../contracts/service-boundaries.md) · [Data ownership](../data/service-ownership.md) · [Migration roadmap](../planning/microservices-migration.md).
 
 Connector nhận Facebook webhook; Chat là chatserver. Media xử lý binary/extraction; AI Runtime quản lý provider Agent. Routing đề xuất phân công, owning service thực hiện owner CAS. Workflow và Chatflow giữ durable orchestration riêng. Gateway không làm authority nghiệp vụ. Ticket/Reporting vẫn domain Draft, không tự tạo production module chỉ vì có catalog.
+
+## Marketing addition — CHG-20261007-13
+
+[Marketing](marketing.md) owns Facebook Ad Account/Campaign/Ad Set/Ad synchronization and hierarchy in crm_marketing. Product ownership accepted; exact contracts PLAN-011 and source SRC-051 pending. Reporting consumes API/events/projections, never cross-service SQL.

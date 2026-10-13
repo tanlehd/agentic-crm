@@ -72,3 +72,7 @@ Independent Connector worker now uses bounded cache→authenticated CRM lookup�
 ## SRC-031 Facebook configuration and channel dimensions
 
 [Exact OAuth/Page/schema19 contract](../contracts/facebook-configuration.md) and [operator runbook](../development/facebook-configuration.md) define Admin→Channels→Facebook, session/state-bound OAuth, encrypted DB Page credentials and manual verified token replacement. Baseline Channels remains sole writer of catalog/credentials; independent Connector capture is unchanged until API-based extraction/provisioning. Conversation channel and generated channel_id retain existing connection IDs, with Page metadata and tenant/field-authorized filters/options. Messaging activation and real sandbox acceptance remain separate.
+
+PLAN-011E / CHG-20261008-11: [Ready metadata backend contract](../contracts/marketing-metadata-sync.md), [control-table templates](../contracts/marketing-sync-tables.md), [implementation sequence](../planning/marketing-backend.md). Channels retains current credential/Page authority; SRC-056 implements its versioned ports before SRC-051 periodic metadata worker. Database v1 remains the only applied Marketing implementation; Insights/live Meta remain separate.
+
+SRC-056 local authority implemented/schema27: [runbook](../development/marketing-authority.md), [evidence](../tracking/details/SRC-056.md). Native credential setup and private Graph/Page/admission ports exist; separate credential DB role. Live Meta remains unconfigured; periodic worker is SRC-051.

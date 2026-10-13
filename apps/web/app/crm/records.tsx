@@ -1,4 +1,5 @@
 'use client';
+import { LeadDeal } from './deals';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '../../components/ui/button';
@@ -36,6 +37,8 @@ function RecordDetail({tenant,context,object,id,descriptor}:{tenant:string;conte
   if(record.isPending)return <p role="status">Đang tải chi tiết…</p>;if(record.error)return <ErrorNotice error={record.error} reload={()=>void record.refetch()}/>;
   const r=record.data.data;
   return <><div className="crm-detail-heading"><h3>{String(label(r))}</h3><span className="crm-badge">{r.archived?'Đã lưu trữ':r.fields.status??'Đang hoạt động'}</span><small className="crm-record-id">{r.id}</small><p>Owner: {r.owner_principal_id===context.principal_id?'Bạn':r.owner_principal_id??'Chưa phân công'} · Phiên bản {r.version}</p></div>
+    {object==='lead'&&<LeadDeal tenant={tenant} context={context} record={r}/>}
+    {object==='lead'&&<LeadSource tenant={tenant} context={context} record={r}/>}
     {object==='lead'?<LeadQualification key={r.version} tenant={tenant} context={context} record={r} editable={descriptor.standard.some(f=>f.key==='qualification'&&f.writable)} reload={()=>void record.refetch()}/>:<RecordForm key={r.version} tenant={tenant} context={context} object={object} descriptor={descriptor} record={r} onSaved={()=>void record.refetch()} reload={()=>void record.refetch()}/>}
     {!r.archived&&object!=='lead'&&can(context,object,'archive',r)&&<Archive tenant={tenant} object={object} record={r}/>}
     {can(context,'association','read')&&<Associations tenant={tenant} context={context} record={r}/>}
@@ -60,9 +63,9 @@ function Archive({tenant,object,record}:{tenant:string;object:string;record:any}
   const [reason,setReason]=useState(''),[open,setOpen]=useState(false),command=useCommand(tenant);
   return <div className="crm-divider">{!open?<Button variant="outline" onClick={()=>setOpen(true)}>Lưu trữ record</Button>:<form onSubmit={async e=>{e.preventDefault();if(await command.run(`/api/v1/objects/${object}/records/${record.id}/archive`,{reason},'POST',record.version))setOpen(false);}}><label>Lý do lưu trữ<input required maxLength={1000} value={reason} onChange={e=>setReason(e.target.value)}/></label><p>Record sẽ được ẩn khỏi danh sách hoạt động.</p><Button type="submit" variant="destructive" disabled={command.busy}>Xác nhận lưu trữ</Button> <Button variant="outline" onClick={()=>setOpen(false)}>Hủy</Button><ErrorNotice error={command.error}/></form>}</div>;
 }
-function LeadCreate({tenant,onCreated}:{tenant:string;onCreated:(r:any)=>void}){
-  const contacts=useApi(tenant,'/api/v1/objects/contact/records?limit=100'),command=useCommand(tenant),[contact,setContact]=useState('');
-  return <form className="crm-form" onSubmit={async e=>{e.preventDefault();const r=await command.run('/api/v1/leads',{contact_id:contact});if(r)onCreated(r.data);}}><h3>Lead mới</h3><label>Liên hệ<select aria-label="Liên hệ" required value={contact} onChange={e=>setContact(e.target.value)}><option value="">Chọn liên hệ…</option>{contacts.data?.data.map((r:any)=><option key={r.id} value={r.id}>{String(label(r))}</option>)}</select></label><p>Mỗi nhu cầu là một Lead riêng. Qualification được lưu ở bước tiếp theo.</p><ErrorNotice error={contacts.error??command.error}/><Button type="submit" disabled={command.busy||!contact}>Tạo Lead</Button></form>;
+export function LeadCreate({tenant,onCreated,conversation,contactId,acquisitionSession}:{tenant:string;onCreated:(r:any)=>void;conversation?:string;contactId?:string;acquisitionSession?:string}){
+  const contacts=useApi(tenant,'/api/v1/objects/contact/records?limit=100'),command=useCommand(tenant),[contact,setContact]=useState(contactId??''),[source,setSource]=useState('');
+  return <form className="crm-form" onSubmit={async e=>{e.preventDefault();const r=await command.run('/api/v1/leads',{contact_id:contact,...(conversation?{conversation_id:conversation,...(acquisitionSession?{conversation_session_id:acquisitionSession}:{})}:{}),declared_source:source||null});if(r)onCreated(r.data);}}><h3>Lead mới</h3><label>Liên hệ<select aria-label="Liên hệ" disabled={!!contactId} required value={contact} onChange={e=>setContact(e.target.value)}><option value="">Chọn liên hệ…</option>{contacts.data?.data.map((r:any)=><option key={r.id} value={r.id}>{String(label(r))}</option>)}</select></label><label>Nguồn khai báo<select aria-label="Nguồn khai báo" value={source} onChange={e=>setSource(e.target.value)}><option value="">Chưa khai báo</option>{['referral','website','facebook','phone','other'].map(s=><option key={s} value={s}>{s}</option>)}</select></label>{conversation&&<p>Nguồn hệ thống được lưu từ hội thoại và không thể sửa.</p>}<p>Mỗi nhu cầu là một Lead riêng. Qualification được lưu ở bước tiếp theo.</p><ErrorNotice error={contacts.error??command.error}/><Button type="submit" disabled={command.busy||!contact}>Tạo Lead</Button></form>;
 }
 function LeadQualification({tenant,context,record,editable,reload}:{tenant:string;context:Context;record:any;editable:boolean;reload:()=>void}){
   const q=record.fields.qualification,[values,setValues]=useState<any>({...q,consent_evidence:q?.consent_evidence?{kind:'manual',note:q.consent_evidence.note}:undefined}),[reason,setReason]=useState(''),command=useCommand(tenant);
@@ -87,3 +90,5 @@ export function CreateRecord({tenant,context,object,onSaved}:{tenant:string;cont
  if(descriptor.error)return <ErrorNotice error={descriptor.error}/>;
  return object==='lead'?<LeadCreate tenant={tenant} onCreated={onSaved}/>:<RecordForm tenant={tenant} context={context} object={object} descriptor={descriptor.data.data as Descriptor} onSaved={onSaved}/>;
 }
+
+function LeadSource({tenant,context,record:r}:{tenant:string;context:Context;record:any}){const command=useCommand(tenant),[source,setSource]=useState(r.fields.declared_source??'');return <section><h4>Nguồn hệ thống (không chỉnh sửa)</h4><p>{r.fields.source_channel??'—'} · Page: {r.fields.source_page_id??'—'} · Ad: {r.fields.source_ad_id??'—'} · {r.fields.source_classification??'unknown'}</p>{Object.hasOwn(r.fields,'declared_source')&&<form onSubmit={async e=>{e.preventDefault();await command.run('/api/v1/objects/lead/records/'+r.id,{fields:{declared_source:source||null}},'PATCH',r.version);}}><label>Nguồn khai báo<select aria-label="Nguồn khai báo" value={source} onChange={e=>setSource(e.target.value)}><option value="">Chưa khai báo</option>{['referral','website','facebook','phone','other'].map(s=><option key={s} value={s}>{s}</option>)}</select></label>{can(context,'lead','qualify',r)&&<Button type="submit" disabled={command.busy}>Lưu nguồn khai báo</Button>}<ErrorNotice error={command.error}/></form>}</section>;}

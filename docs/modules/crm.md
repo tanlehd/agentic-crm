@@ -67,3 +67,7 @@ Contact drawer dùng optional address/preferred_language properties và channel-
 ## SRC-034 implementation
 
 SRC-034 adds CRM-owned note create/update/archive notifications in the note transaction and authorized reference/history/read ports. Note content is never copied into Chat activity. Verification status and limitations: [task evidence](../tracking/details/SRC-034.md).
+
+## CRM base outcome scope — PLAN-010
+
+CRM base trong [kế hoạch mới](../planning/crm-base-outcomes.md) là scope sản phẩm xuyên CRM/Sales/Ticket/Reporting; không chuyển ownership Lead/Deal/Ticket về generic CRM. System attribution fields là reserved/read-only và không được custom property shadow; generic PATCH/import không được bypass business command. Declared source là thuộc tính chọn/sửa có quyền tách khỏi system channel/Page/ad. Exact catalog/ACL/DTO thuộc PLAN-011; runtime baseline chưa thay đổi.

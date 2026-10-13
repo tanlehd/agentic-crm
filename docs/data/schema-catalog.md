@@ -1,5 +1,9 @@
 # Schema catalog — nơi đặt bảng mới
 
+SRC-059 lifecycle update2026-10-12: local/test Reporting now v3 with13 business tables+system journal. Forward003 adds run head and immutable run event; old11 tables preserved. [Filled table dictionary](../contracts/reporting-runs.md), [evidence](../tracking/details/SRC-059.md). CRM remains27;001/002/003 applied history immutable. Previous v2 description below is historical.
+
+**Current Reporting physical slice SRC-057/058:** crm_reporting and retained test_crm_reporting are now v2,11 business tables plus system journal:6 draft tables plus5 synthetic projection/control tables. [Draft templates](../contracts/reporting-persistence.md), [projection templates](../contracts/reporting-projections.md), [mock runbook](../development/reporting-projections.md). Connected projections/query/export remain later gates.
+
 PLAN-007 / ADR-021, 2026-10-07. **Normative cho thiết kế mới**; không phải danh sách database đã tạo. Source hiện tại vẫn `agentic_crm` monolith và Connector private database. [Guideline](database-guidelines.md) · [Ownership hiện tại→đích](service-ownership.md) · [Lộ trình](../planning/native-identity-data-plan.md).
 
 ## Nguyên tắc phân vùng
@@ -27,7 +31,8 @@ Mỗi schema có đúng một service writer, migration lineage và runtime cred
 | `crm_chatflow` | Chatflow | definition/version/session/node_run/turn; qualification provenance và logical Lead refs | Canonical Lead, Contact, message hoặc tool execution |
 | `crm_media` | Media | asset/rendition/scan/extraction metadata và storage refs sau gate Ready | File binary trong bảng message; public unprotected media URL |
 | `crm_ticket` | Ticket | ticket/SLA/service lifecycle và local ownership sau M4 Ready | Sales opportunity; generic miscellaneous tables |
-| `crm_reporting` | Reporting | tenant-authorized event projections, metric definition/export metadata sau gate Ready | Primary business writers; query trực tiếp mọi service DB |
+| `crm_reporting` | Reporting | tenant-authorized projections, source/link semantic catalog, metric/report/template definitions và export metadata sau gate Ready | Primary business writers; query trực tiếp mọi service DB |
+| `crm_marketing` | Marketing | Meta hierarchy/Creative/targeting replicas, base/breakdown Insights observations, history và sync checkpoints sau PLAN-011 Ready | Lead origin snapshot; doanh thu Sales; Messenger transport; report SQL xuyên schema |
 | `crm_operations` | Operations | sanitized audit/status projections, incident/replay request receipts sau gate Ready | Bản authoritative audit của service khác; quyền SQL toàn hệ thống |
 
 Không thêm `crm_common`, `crm_misc`, `crm_utils` để né ownership. Module mới không tự động có schema mới: xem invariant/transaction và service owner trước. Một màn hình dùng nhiều service không phải lý do gom bảng vào cùng schema.
@@ -63,3 +68,16 @@ Mỗi schema có journal riêng `schema_migration` và, khi cần, `audit_entry`
 | Đặt lại mật khẩu CRM | Credential/reset token trong `crm_identity`; không ở Core Contact |
 
 Khi còn monolith, task ghi cả `physical_current=agentic_crm` và `target_schema=...`; chỉ áp dụng UoW nội bộ baseline được duyệt. Không đổi `MYSQL_DATABASE` rồi gọi đó là extraction. Phải có migration/backfill/grants/single-writer/cutover evidence trước khi chuyển schema vật lý.
+## Marketing metadata — PLAN-014
+
+[Field mapping](marketing-field-mapping.md) selects Account/Campaign/Ad Set/Ad/Creative, targeting snapshots, metadata-only audience references and provider observation history in crm_marketing. Future provider Insights observations belong to Marketing; Reporting owns its projections. Every entity/link/history/fact needs tenant_id NOT NULL and table template in PLAN-011. Logical design only; no physical schema created.
+
+SRC-053 forward26: conversation_acquisition_session/message_acquisition_membership belong to crm_chat; Lead/Deal session reference columns belong to crm_sales. Physical baseline remains monolith agentic_crm. [Table templates and rollout](../contracts/acquisition-session-implementation.md).
+
+PLAN-023 / CHG-20261008-09: [Shared account and Page tenant admission](../contracts/marketing-tenant-admission.md). All tables retain tenant_id NOT NULL. The same external Ad Account may have independent tenant-local replicas/bindings. Ads/related metadata/Insights are admitted only when Creative Page resolves to the sync tenant; foreign Ads skip, unresolved defer. Parent configuration can be shared; children and ad-level Insights remain tenant-filtered. No cross-tenant payload/history persistence or campaign/account aggregate metric substitution.
+
+SRC-054 / PLAN-011D now provisions independent `crm_marketing` database v1,22 business tables plus its system-scoped journal. This is new storage, not extraction of existing CRM rows; `agentic_crm` remains26. [Physical tables](marketing-physical-dictionary.md), [operator runbook](../development/marketing-database.md). Runtime sync is still deferred.
+
+PLAN-011E proposed [control tables](../contracts/marketing-sync-tables.md): Marketing scheduler/receipts/change clock/event tables in crm_marketing v2; Channels account credentials/admission receipts in baseline agentic_crm,target crm_connector, consistent with existing Page authority. Not yet migrated; no cross-service SQL/FK.
+
+SRC-051 foundation: local/test Marketing schema3 now has26 business tables plus journal/400 columns. Versions2/3 add the four reviewed control tables and admission/run metadata; v1 checksums preserved. Channels remains CRM schema27. Scheduler and durable change/snapshot repositories are implemented and tested; provider ingestion and HTTP API/worker still incomplete. [Progress](../tracking/details/SRC-051.md).

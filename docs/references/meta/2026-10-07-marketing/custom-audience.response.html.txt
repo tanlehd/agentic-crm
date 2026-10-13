@@ -1,0 +1,491 @@
+<html><head><title>Custom Audience</title><meta charset="UTF-8" /><style nonce="mRxB92xH">body { font-family: monospace; margin: 20px; }pre { white-space: pre-wrap; word-wrap: break-word; }</style></head><body><pre data-testid="developer-docs-markdown-page"># Custom Audience
+
+
+
+**Warning:** Beginning September 2, 2025, we will start to roll out more proactive restrictions on custom audiences that may suggest information not permitted under our terms. For example, any custom audience or lookalike audience suggesting specific health conditions (e.g., &quot;arthritis&quot;, &quot;diabetes&quot;) or financial status (e.g., &quot;credit score&quot;, &quot;high income&quot;) will be flagged and prevented from being used to run ad campaigns.
+
+**What these restrictions mean for your campaigns:**
+
+* You won&#039;t be able to use flagged custom audiences when creating new campaigns.
+* If you have an active campaign using flagged custom audiences, you should edit or pause it and choose a different audience to avoid performance and delivery issues.
+
+**For API developers:**
+
+* Beginning September 2, 2025, `operation_statu`s will return `471` to signal if your custom audiences have been flagged.
+
+More information on this update and how to resolve flagged custom audiences can be found [here](https://www.facebook.com/business/help/1055828013359808).
+
+Build an audience of your customers, website visitors, mobile app visitors or people similar to them. To add or remove users from a custom audience, see the [Custom Audience User reference](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/custom-audience/users).
+
+To use custom audiences, business users must first sign our [Terms Of Service](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/custom-audience-terms-of-service).
+
+To improve how audiences are created and managed, custom audiences that have not been used in any active ad sets in over two years will be deleted on a rolling basis automatically. See the [Custom Audiences: Overview: Deletion](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/overview#custom-audiences-deletion) for more information.
+
+### Flagged custom and lookalike audiences &#123;#flagged&#125;
+
+If one or more custom or lookalike audience is flagged with an `operation_status` of `471`, the `effective_status` field of the ad set will change to `WITH_ISSUES` and the `issues_info` list will be populated with one issue per flagged audience. The `fields_violating_integrity_policy` field will be populated with the list of flagged fields.
+
+Attempting to edit a flagged custom audience without changing the custom audience fields listed in the `fields_violating_integrity_policy` field will result in an error.
+
+```json
+&#123;
+  &quot;error&quot;: &#123;
+    &quot;message&quot;: &quot;Invalid parameter&quot;,
+    &quot;code&quot;: 100,
+    &quot;error_subcode&quot;: 1713231,
+    &quot;error_user_title&quot;: &quot;Update Restricted Fields and Rule&quot;,
+    &quot;error_user_msg&quot;: &quot;This custom audience has integrity restrictions. To continue, you must update the restricted fields and the rule in your current edit&quot;,
+  &#125;,
+&#125;
+```
+
+Attempting to edit a flagged lookalike audience or customer file custom audience (DFCA) will result in an error.
+
+```json
+&#123;
+  &quot;error&quot;: &#123;
+    &quot;message&quot;: &quot;Invalid parameter&quot;,
+    &quot;code&quot;: 100,
+    &quot;error_subcode&quot;: 1713228,
+    &quot;error_user_title&quot;: &quot;Custom Audience Cannot Be Edited&quot;,
+    &quot;error_user_msg&quot;: &quot;This audience cannot be edited due to integrity restrictions. Please appeal the restrictions or create a new audience&quot;,
+  &#125;,
+&#125;
+```
+
+**Example**
+
+```html
+&#123;
+&quot;account_id&quot;: &quot;&lt;OWNER_ACCOUNT_ID&gt;&quot;,
+&quot;approximate_count&quot;: 5000,
+&quot;approximate_count_lower_bound&quot;: 4900,
+&quot;approximate_count_upper_bound&quot;: 5100,
+&quot;customer_file_source&quot;: &quot;USER_PROVIDED_ONLY&quot;,
+&quot;description&quot;: &quot;Audience Description&quot;,
+&quot;fields_violating_integrity_policy&quot;: [&quot;&lt;FIELD&gt;&quot;, ...],
+&quot;id&quot;: &quot;&lt;CUSTOM_AUDIENCE_ID&gt;&quot;,
+&quot;name&quot;: &quot;Audience Name&quot;,
+&quot;operation_status&quot;: &#123;
+&quot;code&quot;: 471,
+&quot;description&quot;: &quot;The custom audience or lookalike is blocked because it suggests the use of information (e.g., health, financial) not allowed under Meta&#039;s terms, and is restricted from running ads. Review the audience and remove prohibited information, or choose a different one.&quot;
+&#125;,
+&quot;retention_days&quot;: 0,
+&quot;subtype&quot;: &quot;CUSTOM&quot;,
+&quot;time_created&quot;: 1755083743,
+&quot;time_updated&quot;: 1755083943,
+&quot;time_content_updated&quot;: 1755083943,
+&quot;owner_account_info&quot;: &#123;
+&quot;account_id&quot;: &quot;&lt;OWNER_ACCOUNT_ID&gt;&quot;,
+&quot;account_name&quot;: &quot;Account Name&quot;,
+&quot;business_id&quot;: &quot;&lt;OWNER_BUSINESS_ID&gt;&quot;,
+&quot;business_name&quot;: &quot;Business Name&quot;
+&#125;,
+...
+&#125;
+```
+
+#### To resolve flagged audiences
+
+If your custom or lookalike audiences are flagged, consider these options.
+
+To resolve flagged custom audiences:
+
+* **Review flagged audiences**: Use Audience Manager to review your custom audience along with other information included in an audience, and remove any information that is not allowed under [Meta&#039;s terms](https://www.facebook.com/legal/terms/businesstools/).
+* **Create new or choose different audiences**: Alternatively, you can create a new custom audience or choose a different existing custom audience and make sure that it does not include information not allowed under our terms and use that to run campaigns.
+
+To resolve flagged lookalike audiences:
+
+* **Resolve issues with the underlying custom audience**: If the underlying custom audience (also known as the seed audience) of your lookalike audience is flagged, you will need to resolve the issue with the underlying custom audience on which the lookalike audience is built. Please refer to the preceding section on how to resolve flagged custom audiences.
+* **Create new audiences**: Consider developing new lookalike audiences and make sure that they don&#039;t include information that is not allowed under our terms.
+
+##### Request a review
+
+If you believe your custom audience or lookalike audience has been flagged in error and doesn&#039;t include non-permitted information, you can request a review via Ads Manager under the campaigns table or, or in Audience Manager by clicking on individual audiences and under the summary tab of the impacted audience.
+
+## Reading
+
+Custom audiences are designed to provide advertisers the ability to target their ads to a specific set of people with whom they have already established a relationship on and off Facebook. Advertisers may choose to define audiences by email address, Facebook User IDs, phone numbers, names, date of birth, gender, locations, [app user IDs](https://developers.facebook.com/docs/app-ads/targeting/mobile-advertiser-ids), Apple&#039;s Advertising Identifier (IDFA), [Android&#039;s advertising ID](https://developers.google.com/ads/#apps) or by a combination of rules used to identify users who took specific actions on their website.  
+
+When utilizing Facebook User IDs please ensure you comply with [Facebook Platform Terms](https://developers.facebook.com/terms) and [Developer Policies](https://developers.facebook.com/devpolicy). You must accept the [Custom Audience Terms of Service](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/custom-audience-terms-of-service) in order to use custom audiences. You can query which terms have been accepted by checking the `tos_accepted` field of a given ad account. See [Ad Account](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account) for more information.
+
+### Example
+
+```html
+curl -G \
+-d &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/&lt;CUSTOM_AUDIENCE_ID&gt;
+```
+
+#### Parameters
+
+| Parameter | Description |
+| --- | --- |
+| `ad_account_id`&lt;br&gt;&lt;br&gt;*numeric string* | ID of the recipient ad account in which custom audience is used.&lt;br&gt; |
+| `special_ad_categories`&lt;br&gt;&lt;br&gt;*list&lt;string&gt;* | special_ad_categories&lt;br&gt; |
+| `special_ad_category_countries`&lt;br&gt;&lt;br&gt;*list&lt;string&gt;* | special_ad_category_countries&lt;br&gt; |
+
+#### Fields
+
+| Field | Description |
+| --- | --- |
+| `id`&lt;br&gt;&lt;br&gt;*numeric string* | Custom audience ID&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `account_id`&lt;br&gt;&lt;br&gt;*numeric string* | Ad Account ID&lt;br&gt; |
+| `approximate_count_lower_bound`&lt;br&gt;&lt;br&gt;*integer* | Lower bound of the approximate number of people in this audience. A call for this field returns `-1` for [inactive lookalikes](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/guides/lookalike-audiences#inactive).&lt;br&gt; |
+| `approximate_count_upper_bound`&lt;br&gt;&lt;br&gt;*integer* | Upper bound of the approximate number of people in this audience. A call for this field returns `-1` for [inactive lookalikes](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/guides/lookalike-audiences#inactive).&lt;br&gt; |
+| `customer_file_source`&lt;br&gt;&lt;br&gt;*string* | Source of customer information in the uploaded file&lt;br&gt; |
+| `data_source`&lt;br&gt;&lt;br&gt;*[CustomAudienceDataSource](https://developers.facebook.com/docs/marketing-api/reference/custom-audience-data-source)* | JSON dictionary of `type`, `sub_type` to indicate by which method the                    custom audience was created.&lt;br&gt; Note: Subtypes `IG_BUSINESS_EVENTS`,                    `FB_EVENT_SIGNALS` and `MULTI_DATA_EVENTS` can only be created through Ads Manager, Audience Manager, and not through the API.&lt;br&gt; |
+| `delivery_status`&lt;br&gt;&lt;br&gt;*CustomAudienceStatus* | JSON dictionary of `code` and `description`. It indicates whether or not an audience can be used in ads. Possible values include:&lt;br&gt;&lt;br&gt;&lt;br&gt;• `200`: Returned if the audience is active and ready to be used.&lt;br&gt;• `300`: Returned if the audience is smaller than it should be. This audience is currently inactive and cannot be used.&lt;br&gt;• `400` and above: Returned if the audience is not usable for a variety of reasons, including policy violation.&lt;br&gt; |
+| `description`&lt;br&gt;&lt;br&gt;*string* | Custom audience description&lt;br&gt; |
+| `external_event_source`&lt;br&gt;&lt;br&gt;*[AdsPixel](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ads-pixel)* | Read-only JSON dictionary with `id` keys containing the Pixel ID whose traffic generated this custom audience. Will throw an error if the app making the call lacks the required permissions.&lt;br&gt; |
+| `fields_violating_integrity_policy`&lt;br&gt;&lt;br&gt;*list&lt;string&gt;* | A list of custom audience fields (either name, description or rule) that are flagged for a custom audience that may suggest information not permitted under our terms.&lt;br&gt; |
+| `is_value_based`&lt;br&gt;&lt;br&gt;*bool* | Whether the audience is used to seed value based lookalike&lt;br&gt; |
+| `lookalike_audience_ids`&lt;br&gt;&lt;br&gt;*list&lt;numeric string&gt;* | The IDs of the lookalike audiences generated from this audience&lt;br&gt; |
+| `lookalike_spec`&lt;br&gt;&lt;br&gt;*LookalikeSpec* | Generated only when the subtype is `LOOKALIKE`. More info at [Lookalike Audience](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/guides/lookalike-audiences)&lt;br&gt; |
+| `name`&lt;br&gt;&lt;br&gt;*string* | Custom audience name&lt;br&gt; |
+| `operation_status`&lt;br&gt;&lt;br&gt;*CustomAudienceStatus* | JSON dictionary of `code` to int value and `description` to a description string. The operation status represents the status of the last operation performed on an audience. In general, it will have following states:&lt;br&gt;&lt;br&gt;&lt;br&gt;• `0`: Status not available&lt;br&gt;• `100`: If an audience hasn&#039;t been used in an active ad set for over 2 years, it will begin to expire. Expiring audiences that remain unused for 90 days will be deleted.&lt;br&gt;• `200`: Normal. There is no updating or issues found&lt;br&gt;• `400`: Warning. There is some message we would like advertisers to know&lt;br&gt;• `410`: No upload. No file has been uploaded&lt;br&gt;• `411`: Low match rate. Low rate of matched people&lt;br&gt;• `412`: High rate of invalid entries in the last upload session. Customer file has unusable data&lt;br&gt;• `414`: Replace in progress&lt;br&gt;• `415`: Replace failed&lt;br&gt;• `421`: No pixel. Your Facebook pixel hasn&#039;t been installed on your website yet&lt;br&gt;• `422`: Pixel not firing. Your Facebook pixel isn&#039;t firing&lt;br&gt;• `423`: Invalid pixel. Your Facebook pixel is invalid&lt;br&gt;• `431`: Lookalike Audience refresh failed&lt;br&gt;• `432`: Lookalike Audience build failed&lt;br&gt;• `433`: Lookalike Audience build failed&lt;br&gt;• `434`: Lookalike Audience build retrying&lt;br&gt;• `441`: We&#039;re finding people who fit your audience criteria. You can start running ads with this audience right away, but be aware that your audience size will increase as the audience is populated&lt;br&gt;• `442`: Your Custom Audience could not be prefilled&lt;br&gt;• `450`: This audience either hasn&#039;t been used in an ad for at least 30 days or was created over 90 days ago and has never been used. For this reason, your audience is out of date.&lt;br&gt;• `470`: The account that created this audience is no longer active&lt;br&gt;• `471`: The audience has been flagged for integrity reasons.&lt;br&gt;• `500`: Error: there is some error and advertisers need to take action items to fix the error&lt;br&gt; |
+| `opt_out_link`&lt;br&gt;&lt;br&gt;*string* | Your opt-out URL so people can choose not to be targeted&lt;br&gt; |
+| `permission_for_actions`&lt;br&gt;&lt;br&gt;*AudiencePermissionForActions* | JSON dictionary of permissions (string) to boolean value if the&lt;br&gt;custom audience has that permission&lt;br&gt; |
+| `pixel_id`&lt;br&gt;&lt;br&gt;*numeric string* | ID of the pixel which is collecting events for this Website Custom audience&lt;br&gt; |
+| `retention_days`&lt;br&gt;&lt;br&gt;*int32* | Number of days to keep the user in this cluster. You can use any value between 1 and 180 days. Defaults to forever, if not specified. Only available for Customer File Custom Audience, including Custom Audiences created from CRM data.&lt;br&gt; |
+| `rule`&lt;br&gt;&lt;br&gt;*string* | Audience rules to be applied on the referrer URL&lt;br&gt; |
+| `rule_aggregation`&lt;br&gt;&lt;br&gt;*string* | Aggregation on top of the rule, examples of aggregations include: count, sum etc&lt;br&gt; |
+| `sharing_status`&lt;br&gt;&lt;br&gt;*CustomAudienceSharingStatus* | Sharing status of this custom audience for the ad account&lt;br&gt; |
+| `subtype`&lt;br&gt;&lt;br&gt;*string* | Type of custom audience, derived from original data source. &lt;br&gt;Note: Subtypes `IG_BUSINESS`, `FB_EVENT`, `EXPERIMENTAL` and `MULTI_DATA` can only be created through Ads Manager, Audience Manager, and not through the API.&lt;br&gt; |
+| `time_content_updated`&lt;br&gt;&lt;br&gt;*unsigned int32* | Last update of people in this custom audience,&lt;br&gt;this field is only supported for Customer List Custom Audiences.&lt;br&gt; |
+| `time_created`&lt;br&gt;&lt;br&gt;*unsigned int32* | Creation time&lt;br&gt; |
+| `time_updated`&lt;br&gt;&lt;br&gt;*unsigned int32* | Last time this audience metadata was updated&lt;br&gt; |
+
+#### Edges
+
+| Edge | Description |
+| --- | --- |
+| [`adaccounts`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/custom-audience/adaccounts)&lt;br&gt;&lt;br&gt;*Edge&lt;CustomAudienceAdAccount&gt;* | The ad account ids associated with this custom audience&lt;br&gt; |
+| [`ads`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/custom-audience/ads)&lt;br&gt;&lt;br&gt;*Edge&lt;Adgroup&gt;* | Ads that are using this custom audience&lt;br&gt; |
+| [`health`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/custom-audience/health)&lt;br&gt;&lt;br&gt;*Edge&lt;CustomAudienceHealth&gt;* | health&lt;br&gt; |
+| [`sessions`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/custom-audience/sessions)&lt;br&gt;&lt;br&gt;*Edge&lt;CustomAudienceSession&gt;* | Data upload sessions of this custom audience&lt;br&gt; |
+| [`shared_account_info`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/custom-audience/shared_account_info)&lt;br&gt;&lt;br&gt;*Edge&lt;CustomAudiencesharedAccountInfo&gt;* | List of Ad Accounts and Businesses this Audience is shared to&lt;br&gt; |
+
+#### Error Codes
+
+| Error Code | Description |
+| --- | --- |
+| 100 | Invalid parameter |
+| 80003 | There have been too many calls to this ad-account. Wait a bit and try again. For more info, please refer to /docs/graph-api/overview/rate-limiting#custom-audience. |
+| 200 | Permissions error |
+| 190 | Invalid OAuth 2.0 Access Token |
+| 270 | This Ads API request is not allowed for apps with development access level (Development access is by default for all apps, please request for upgrade). Make sure that the access token belongs to a user that is both admin of the app and admin of the ad account |
+| 2500 | Error parsing graph query |
+
+## Creating
+
+### Limitations
+
+* The `subtype` field for engagement custom audiences is only supported for video.
+* Mobile app custom audiences for inclusion targeting is no longer supported for the `POST /&#123;ad-account-id&#125;/adsets` endpoint for iOS 14+ SKAdNetwork campaigns.
+* New iOS 14+ app install campaigns will no longer be able to use app connections targeting.
+
+### Examples
+
+Create a blank audience:
+
+```html
+curl \
+-F &#039;name=&quot;My new CA&quot;&#039; \
+-F &#039;subtype=CUSTOM&#039; \
+-F &#039;description=&quot;People who bought from my website&quot;&#039; \
+-F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/customaudiences
+```
+
+You can&#039;t perform this operation on this endpoint.
+
+## Updating
+
+If a person opted out of being targeted, you must remove them from all custom audiences in which they appear. To opt-out a person from an audience after they have clicked through to your opt-out URL, make an `HTTP DELETE` call to:
+
+```html
+https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/usersofanyaudience
+```
+
+Provide the same fields as you do in a [user update](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/custom-audience/users). This will remove the people you specify from **ALL** custom file custom audiences belonging to the specified ad account.
+
+### Examples
+
+To update the audience name:
+
+```html
+curl \
+-F &#039;name=Updated Name for CA&#039; \
+-F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/&lt;CUSTOM_AUDIENCE_ID&gt;
+```
+
+To edit an opt-out link:
+
+```html
+curl \
+-F &#039;opt_out_link=http://www.yourdomain.com/optout&#039; \
+-F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/&lt;CUSTOM_AUDIENCE_ID&gt;
+```
+
+### /&#123;custom_audience_id&#125;
+You can update a [CustomAudience](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/custom-audience) by making a POST request to [/&#123;custom_audience_id&#125;](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/custom-audience).
+
+#### Example
+
+### HTTP
+```
+POST /v25.0/&lt;CUSTOM_AUDIENCE_ID&gt;/ HTTP/1.1
+Host: graph.facebook.com
+
+name=Updated+Name+for+CA
+```
+
+### PHP SDK
+```
+/* PHP SDK v5.0.0 */
+/* make the API call */
+try &#123;
+  // Returns a `Facebook\FacebookResponse` object
+  $response = $fb-&gt;post(
+    &#039;/&lt;CUSTOM_AUDIENCE_ID&gt;/&#039;,
+    array (
+      &#039;name&#039; =&gt; &#039;Updated Name for CA&#039;,
+    ),
+    &#039;&#123;access-token&#125;&#039;
+  );
+&#125; catch(Facebook\Exceptions\FacebookResponseException $e) &#123;
+  echo &#039;Graph returned an error: &#039; . $e-&gt;getMessage();
+  exit;
+&#125; catch(Facebook\Exceptions\FacebookSDKException $e) &#123;
+  echo &#039;Facebook SDK returned an error: &#039; . $e-&gt;getMessage();
+  exit;
+&#125;
+$graphNode = $response-&gt;getGraphNode();
+/* handle the result */
+```
+
+### JavaScript SDK
+```
+/* make the API call */
+FB.api(
+    &quot;/&lt;CUSTOM_AUDIENCE_ID&gt;/&quot;,
+    &quot;POST&quot;,
+    &#123;
+        &quot;name&quot;: &quot;Updated Name for CA&quot;
+    &#125;,
+    function (response) &#123;
+      if (response &amp;&amp; !response.error) &#123;
+        /* handle the result */
+      &#125;
+    &#125;
+);
+```
+
+### Android SDK
+```
+Bundle params = new Bundle();
+params.putString(&quot;name&quot;, &quot;Updated Name for CA&quot;);
+/* make the API call */
+new GraphRequest(
+    AccessToken.getCurrentAccessToken(),
+    &quot;/&lt;CUSTOM_AUDIENCE_ID&gt;/&quot;,
+    params,
+    HttpMethod.POST,
+    new GraphRequest.Callback() &#123;
+        public void onCompleted(GraphResponse response) &#123;
+            /* handle the result */
+        &#125;
+    &#125;
+).executeAsync();
+```
+
+### iOS SDK
+```
+NSDictionary *params = &#064;&#123;
+  &#064;&quot;name&quot;: &#064;&quot;Updated Name for CA&quot;,
+&#125;;
+/* make the API call */
+FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]
+                               initWithGraphPath:&#064;&quot;/&lt;CUSTOM_AUDIENCE_ID&gt;/&quot;
+                                      parameters:params
+                                      HTTPMethod:&#064;&quot;POST&quot;];
+[request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
+                                      id result,
+                                      NSError *error) &#123;
+    // Handle the result
+&#125;];
+```
+
+### cURL
+```
+curl -X POST \
+  -F &#039;name=&quot;Updated Name for CA&quot;&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/&lt;CUSTOM_AUDIENCE_ID&gt;/
+```
+
+Try it in [Graph API Explorer](https://developers.facebook.com/tools/explorer/?method=POST&amp;path=%3CCUSTOM_AUDIENCE_ID%3E%2F%3Fname%3DUpdated%2BName%2Bfor%2BCA&amp;version=v25.0)
+
+If you want to learn how to use the Graph API, read our [Using Graph API guide](https://developers.facebook.com/docs/graph-api/using-graph-api)
+
+#### Parameters
+
+| Parameter | Description |
+| --- | --- |
+| `allowed_domains`&lt;br&gt;&lt;br&gt;*list&lt;string&gt;* | A list of domains that the audience is restricted to&lt;br&gt; |
+| `claim_objective`&lt;br&gt;&lt;br&gt;*enum &#123;AUTOMOTIVE_MODEL, COLLABORATIVE_ADS, HOME_LISTING, MEDIA_TITLE, PRODUCT, TRAVEL, VEHICLE, VEHICLE_OFFER&#125;* | Specifies the objective of audiences with `subtype=CLAIM`&lt;br&gt; |
+| `content_type`&lt;br&gt;&lt;br&gt;*enum &#123;AUTOMOTIVE_MODEL, DESTINATION, FLIGHT, GENERIC, HOME_LISTING, HOTEL, LOCAL_SERVICE_BUSINESS, MEDIA_TITLE, OFFLINE_PRODUCT, PRODUCT, VEHICLE, VEHICLE_OFFER&#125;* | Specifies a mandatory content type for `claim_objective`: `TRAVEL`, `AUTO_OFFER`, `HOME_LISTING`, `VEHICLE`.&lt;br&gt; |
+| `customer_file_source`&lt;br&gt;&lt;br&gt;*enum &#123;USER_PROVIDED_ONLY, PARTNER_PROVIDED_ONLY, BOTH_USER_AND_PARTNER_PROVIDED&#125;* | Source of customer information in the uploaded file&lt;br&gt; |
+| `description`&lt;br&gt;&lt;br&gt;*string* | The description for this custom audience&lt;br&gt; |
+| `enable_fetch_or_create`&lt;br&gt;&lt;br&gt;*boolean* | Fetch custom audience instead of create new&lt;br&gt;one when there exists custom audience with identical name, claim_objective,&lt;br&gt;content_type, event_source_group/event_sources/sliced_event_source_group,&lt;br&gt;inclusions, exclusions and rule&lt;br&gt; |
+| `event_source_group`&lt;br&gt;&lt;br&gt;*numeric string or integer* | Specifies a mandatory content type for `claim_objective`: `TRAVEL`, `AUTO_OFFER`, `HOME_LISTING`, `VEHICLE`.&lt;br&gt; |
+| `event_sources`&lt;br&gt;&lt;br&gt;*array&lt;JSON object&gt;* | Specifies a mandatory content type for `claim_objective`: `TRAVEL`, `AUTO_OFFER`, `HOME_LISTING`, `VEHICLE`.&lt;br&gt;&lt;br&gt;&lt;br&gt;`id` *int64*&lt;br&gt;id&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;&lt;br&gt;`type` *enum &#123;APP, OFFLINE_EVENTS, PAGE, PIXEL&#125;*&lt;br&gt;type&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt; |
+| `lookalike_spec`&lt;br&gt;&lt;br&gt;*JSON-encoded string* | The specification for creating a&lt;br&gt;[lookalike audience](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/guides/lookalike-audiences)&lt;br&gt; |
+| `name`&lt;br&gt;&lt;br&gt;*string* | The name of this custom audience&lt;br&gt; |
+| `opt_out_link`&lt;br&gt;&lt;br&gt;*string* | Your opt-out URL so people can choose not to be targeted&lt;br&gt; |
+| `product_set_id`&lt;br&gt;&lt;br&gt;*numeric string or integer* | The Product Set to target with this audience&lt;br&gt; |
+| `rule`&lt;br&gt;&lt;br&gt;*string* | Audience rule to be applied on the referrer URL. Used for [website custom audiences](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/guides/website-custom-audiences#audiencerules), [product audiences](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/guides/dynamic-product-audiences#productaudience), and [video remarketing audiences](https://developers.facebook.com/documentation/ads-commerce/marketing-api/guides/videoads#remarketing).&lt;br&gt; |
+| `rule_aggregation`&lt;br&gt;&lt;br&gt;*string* | Aggregation rule&lt;br&gt; |
+| `use_for_products`&lt;br&gt;&lt;br&gt;*list&lt;enum &#123;ADS, MARKETING_MESSAGES&#125;&gt;* | use_for_products&lt;br&gt; |
+| `use_in_campaigns`&lt;br&gt;&lt;br&gt;*boolean* | use_in_campaigns&lt;br&gt; |
+
+#### Return Type
+
+This endpoint supports [read-after-write](https://developers.facebook.com/docs/graph-api/overview#read-after-write) and will read the node to which you POSTed.
+
+```
+Struct  &#123;
+success: bool,
+message: string,
+&#125;
+```
+
+#### Error Codes
+
+| Error Code | Description |
+| --- | --- |
+| 100 | Invalid parameter |
+| 200 | Permissions error |
+| 2650 | Failed to update the custom audience |
+| 80003 | There have been too many calls to this ad-account. Wait a bit and try again. For more info, please refer to /docs/graph-api/overview/rate-limiting#custom-audience. |
+| 190 | Invalid OAuth 2.0 Access Token |
+| 368 | The action attempted has been deemed abusive or is otherwise disallowed |
+
+## Deleting
+
+**Warning:** When you delete a custom audience, it will be permanently removed from your account and your ads using it will stop running. You won&#039;t be able to restart any ads that used this audience in the past.
+
+### /&#123;custom_audience_id&#125;
+You can delete a [CustomAudience](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/custom-audience) by making a DELETE request to [/&#123;custom_audience_id&#125;](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/custom-audience).
+
+#### Example
+
+### HTTP
+```
+DELETE /v25.0/&lt;CUSTOM_AUDIENCE_ID&gt;/ HTTP/1.1
+Host: graph.facebook.com
+```
+
+### PHP SDK
+```
+/* PHP SDK v5.0.0 */
+/* make the API call */
+try &#123;
+  // Returns a `Facebook\FacebookResponse` object
+  $response = $fb-&gt;delete(
+    &#039;/&lt;CUSTOM_AUDIENCE_ID&gt;/&#039;,
+    array (),
+    &#039;&#123;access-token&#125;&#039;
+  );
+&#125; catch(Facebook\Exceptions\FacebookResponseException $e) &#123;
+  echo &#039;Graph returned an error: &#039; . $e-&gt;getMessage();
+  exit;
+&#125; catch(Facebook\Exceptions\FacebookSDKException $e) &#123;
+  echo &#039;Facebook SDK returned an error: &#039; . $e-&gt;getMessage();
+  exit;
+&#125;
+$graphNode = $response-&gt;getGraphNode();
+/* handle the result */
+```
+
+### JavaScript SDK
+```
+/* make the API call */
+FB.api(
+    &quot;/&lt;CUSTOM_AUDIENCE_ID&gt;/&quot;,
+    &quot;DELETE&quot;,
+    function (response) &#123;
+      if (response &amp;&amp; !response.error) &#123;
+        /* handle the result */
+      &#125;
+    &#125;
+);
+```
+
+### Android SDK
+```
+/* make the API call */
+new GraphRequest(
+    AccessToken.getCurrentAccessToken(),
+    &quot;/&lt;CUSTOM_AUDIENCE_ID&gt;/&quot;,
+    null,
+    HttpMethod.DELETE,
+    new GraphRequest.Callback() &#123;
+        public void onCompleted(GraphResponse response) &#123;
+            /* handle the result */
+        &#125;
+    &#125;
+).executeAsync();
+```
+
+### iOS SDK
+```
+/* make the API call */
+FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]
+                               initWithGraphPath:&#064;&quot;/&lt;CUSTOM_AUDIENCE_ID&gt;/&quot;
+                                      parameters:params
+                                      HTTPMethod:&#064;&quot;DELETE&quot;];
+[request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
+                                      id result,
+                                      NSError *error) &#123;
+    // Handle the result
+&#125;];
+```
+
+### cURL
+```
+curl -X DELETE -G \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/&lt;CUSTOM_AUDIENCE_ID&gt;/
+```
+
+Try it in [Graph API Explorer](https://developers.facebook.com/tools/explorer/?method=DELETE&amp;path=%3CCUSTOM_AUDIENCE_ID%3E%2F&amp;version=v25.0)
+
+If you want to learn how to use the Graph API, read our [Using Graph API guide](https://developers.facebook.com/docs/graph-api/using-graph-api)
+
+#### Parameters
+
+This endpoint doesn&#039;t have any parameters.
+
+#### Return Type
+
+```
+Struct  &#123;
+success: bool,
+&#125;
+```
+
+#### Error Codes
+
+| Error Code | Description |
+| --- | --- |
+| 200 | Permissions error |
+| 2656 | Failed to delete custom audience because associated lookalikes exist |
+| 368 | The action attempted has been deemed abusive or is otherwise disallowed |
+| 100 | Invalid parameter |
+| 613 | Calls to this api have exceeded the rate limit. |
+
+</pre></body></html>

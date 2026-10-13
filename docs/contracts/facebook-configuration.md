@@ -25,3 +25,5 @@ Conversation gains persisted channel(default mock_messenger), channel_id generat
 ## Acceptance
 
 Real MySQL upgrade18→19 preserving rows, constraints, OAuth state/account/session/expiry/replay/denial, remote timeout/malformed pagination and atomic rollback, cross-tenant Page conflict, token encryption and no response/audit leak, reconnect same IDs, permission revocation during network, manual token identity validation, list/filter/cursor ACL. Local browser verifies Admin/Channel/Facebook list/Connect redirect, cancel/error/config missing, Messenger icons and Page filter. Canonical verify plus release/config checks; live Meta NOT_RUN.
+
+PLAN-011E adds a separately scoped [Marketing authority design](marketing-metadata-sync.md) under SRC-056. Existing Page OAuth/token and messaging readiness stay unchanged; separate Ad Account credential and Page Marketing admission state use forward migration. No implicit ads_read authority from a Page token.

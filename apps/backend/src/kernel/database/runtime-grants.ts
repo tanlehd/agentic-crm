@@ -7,7 +7,7 @@ export async function applyRuntimeGrants(connection: Connection, database: strin
   await connection.query("REVOKE ALL PRIVILEGES, GRANT OPTION FROM ?@'%'",[user]);
   for (const {name} of tables as {name:string}[]) {
     if (!/^[a-z][a-z0-9_]*$/.test(name)) throw new Error('Invalid table');
-    if (['account_credential','auth_session','auth_token','auth_challenge','auth_attempt','system_audit_entry'].includes(name)) continue;
+    if (['account_credential','auth_session','auth_token','auth_challenge','auth_attempt','system_audit_entry','channel_marketing_credential','channel_marketing_admission_receipt'].includes(name)) continue;
     const privileges = ['audit_entry','ownership_history'].includes(name) ? 'SELECT,INSERT' : ['account','schema_migration'].includes(name) ? 'SELECT' : 'SELECT,INSERT,UPDATE,DELETE';
     await connection.query(`GRANT ${privileges} ON \`${database}\`.\`${name}\` TO ?@'%'`,[user]);
   }

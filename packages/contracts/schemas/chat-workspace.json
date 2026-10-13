@@ -295,6 +295,13 @@
         },
         "channel_name": {
           "type": "string"
+        },
+        "need_response": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "readOnly": true
         }
       },
       "required": [

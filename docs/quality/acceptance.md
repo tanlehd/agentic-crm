@@ -20,7 +20,7 @@ SRC-006 kiểm auth prerequisite của AC-01/02: OIDC/state/nonce/PKCE/CSRF, ses
 | REQ-08 | [Workflow](../modules/workflow.md), [Chatflow](../modules/chatflow.md) | [Events](../contracts/events.md) | AC-08, AC-16, AC-17 |
 | REQ-09 | [First slice](../business/first-slice.md) | [Conversation/Lead API](../contracts/api.md) | AC-09 |
 | REQ-10 | [Ticket](../modules/ticket.md) | Draft M4: transition/SLA contract | AC-10 |
-| REQ-11 | [Reporting](../modules/reporting.md) | Metric definitions; report API Draft M5 | AC-11 |
+| REQ-11 | [Reporting](../modules/reporting.md) | M2 metric definitions; [RB-MOCK/CONNECTED plan](../planning/report-builder.md), exact API gate PLAN-022 | AC-11; [RB-01…17](report-builder-acceptance.md) |
 | REQ-12 | [Operations](../modules/operations.md) | [Events](../contracts/events.md) | AC-12, AC-17 |
 | REQ-13 | [Healthcare](../business/healthcare.md) | [Custom object API](../contracts/api.md) | AC-13 |
 | REQ-14 | [Development](../governance/development.md) | Module template + readiness gate | AC-14 |
@@ -219,3 +219,42 @@ SRC-041 supersedes SRC-040 need-response transition: inbound -> unknown/null; no
 UX-005 product acceptance (design-only): Conversation suggestion attributes/update action independent of AI; Workflow/Chatflow can apply fixed-rule output or validated configured Assist proposal. Assist cannot directly write CRM/Conversation or publicly reply; orchestrator actor writes only suggestion fields. Same tenant/revision/dedup guards for both branches. [Scope](../ux/agent-assist-response.md); runtime acceptance awaits PLAN-008/source, existing tests do not claim this integration.
 
 UX-006 design acceptance: each registered next_action.type maps to correct list label; null/unknown fallback distinct from responded; no independent need_response target; rule and Assist use same update path; type assignment has no business side effects. Reply completion cannot complete a create_lead/create_ticket/close_chat suggestion. Source rollout/legacy compatibility and runtime verification remain PLAN-008/source work. [Spec](../ux/agent-assist-response.md).
+
+## CRM base — planned acceptance, runtime NOT_RUN
+
+[PLAN-010 scope](../planning/crm-base-outcomes.md); exact fixtures/contracts finalized in PLAN-011. No historical AC or M4/M5 gate is closed by this plan.
+
+| ID | Scenario | Required result / source task |
+|---|---|---|
+| CRM-BASE-01 | Sales manual Lead, Conversation Lead, retry/new need, qualification/handoff | Authorized commands/UI; one result per command retry, multiple intentional needs allowed; consent not inferred; SRC-045 |
+| CRM-BASE-02 | Client spoofs/edits channel/Page/ad via create/PATCH/import/custom fields; inbound changes later | Backend rejects user-controlled system source; original trusted snapshot unchanged; field/tenant ACL on reads/filter/export; SRC-045 |
+| CRM-BASE-03 | Agent selects/edits declared source; organic/manual/legacy missing referral or campaign | Declared source audit/CAS independent; known Page/channel retained; absent ad/campaign unknown, no fabricated attribution; SRC-045/049 |
+| CRM-BASE-04 | Manual Deal from Contact or Lead, stage/won/lost/reopen and multiple Deals | Lifecycle/ACL/version and Customer semantics enforced; immutable primary lineage, direct manual Deal allowed without invented ad; SRC-046 |
+| CRM-BASE-05 | Ticket from Chat/manual, assignment, resolve/reopen and linked Deal | UI/API permissions and transition audit; no implicit Chat closure or duplicated revenue; basic only, advanced SLA excluded; SRC-047 |
+| CRM-BASE-06 | Partial collection, duplicate receipt, correction/refund/reversal and restart | Evidence retained, idempotency, authorized append/correction policy; won amount distinct from net collected; SRC-048 |
+| CRM-BASE-07 | Multiple campaigns/ad sets/ads and creative/message/targeting dimensions; many Leads/Conversation and Deals/Lead; mature/pending cohorts | Conversion rates use distinct cohort numerator/denominator and as_of; won value counts each Deal once per currency; no fan-out, source separation, unknown coverage and drilldown ACL; receipts independent; SRC-049 |
+| CRM-BASE-08 | Upgrade existing local data then CTM→Lead→Deal→receipt→report, manual and Ticket paths | Data preserved, tenant negatives, retry/races/restart/browser and rollback compatibility evidence; local synthetic gate only; SRC-050 |
+
+CRM-BASE-09 / SRC-051+049 (planned, NOT_RUN): sync two tenant-scoped Ad Accounts with multiple campaigns/ad sets/ads; test paginated duplicate/retry/restart, partial failure and permission revoke without destructive deletion, rename/archive/history retention, unresolved then late resolution and ambiguous mapping. Report counts cohort conversions and groups each won Deal exactly once by Ad→Ad Set→Campaign→Account, preserves immutable Lead source and rejects cross-tenant access; stale/watermark states visible. Local synthetic and live Facebook account evidence recorded separately.
+
+## ORGANIC-01/02 scoped release
+
+PLAN-011A/SRC-045/046/052: Human manual Lead/Deal and organic Inbox→Lead→Deal won with positive decimal value; immutable Page source and separate declared source. Page report groups by channel/Page/currency in UTC closed-date range; exact totals and per-record/field ACL, no paid/manual/unknown inclusion. Native browser and8 persistent MySQL groups PASS in task evidence; full release SRC-050 pending. Ticket/SLA, actual receipts, live Meta and campaign integration remain outside this gate.
+
+
+CHG-20261007-15 / SRC-049 planned NOT_RUN: [marketing conversion acceptance](../planning/marketing-conversion-performance.md) includes content/message/targeting provenance, zero denominator, late wins, equal observation windows, unknown dimensions and metadata history. Receipt reliability is not this report objective.
+PLAN-014 extends planned CRM-BASE-09 with [field acceptance](../data/marketing-field-mapping.md): opaque IDs, USD/VND units, budget versus spend, configured/effective status, Advantage+ suggestions, creative reuse/change, unchanged updated_time on budget changes, nullable/unsupported fields, unknown enums, Insights breakdown grain and history gaps. Meta breakdowns must not multiply CRM won value. Document checks prove research only; runtime/live tests NOT_RUN.
+
+CRM-BASE-10 / SRC-053 scoped PASS2026-10-08 ([evidence](../tracking/details/SRC-053.md)): [Session model](../contracts/conversation-acquisition-session.md): same Conversation, Ad A→Session1 and Ad B→Session2 produce independent Lead/Deal attribution; retry/late/out-of-order events, same-ad returns, organic session, sessions without Leads, multiple Leads/Deals, manual origin, legacy unknown, tenant/ACL and restart membership preservation. Membership and source lineage implemented; session→Lead cohort denominator/report remains SRC-049 and must include nonconverted sessions. No Chatflow-session aliasing.
+
+PLAN-020 / CHG-20261008-06: [Three report families](../contracts/marketing-operating-flow.md) separate Meta delivery/engagement by age and region, CRM conversions via Session ad_id, and joined ad-total performance. Sync age/region breakdowns for impressions/clicks/spend; no person-level demographic join, no allocation of CRM won to breakdown rows. Preserve separate datasets and recompute distinct Contact totals. Exact Insights ingestion and query/period contracts remain PLAN-011.
+
+PLAN-021 / CHG-20261008-07 supersedes fixed-report interpretation: Marketing provides [source datasets/storage/field descriptions](../data/marketing-source-catalog.md); Reporting owns the [builder and reusable templates](../planning/report-builder-data-model.md). The three PLAN-020 families are examples, not a limit or separate Marketing report engines. Source ingestion acceptance and Reporting template/query acceptance are separate. PLAN-011 is the Marketing data gate; PLAN-022 is the Reporting implementation gate.
+
+PLAN-011C data-design acceptance:105 unique field paths with source-row trace, proposed owning table/column/type, meaning/unit/role/coverage; deterministic regeneration must match.24 official snapshots remain checksum-valid. Runtime ingestion, migrations and live account coverage are separate NOT_RUN gates in [storage design](../data/marketing-storage-design.md).
+
+PLAN-023 / CHG-20261008-09: [Shared account and Page tenant admission](../contracts/marketing-tenant-admission.md). All tables retain tenant_id NOT NULL. The same external Ad Account may have independent tenant-local replicas/bindings. Ads/related metadata/Insights are admitted only when Creative Page resolves to the sync tenant; foreign Ads skip, unresolved defer. Parent configuration can be shared; children and ad-level Insights remain tenant-filtered. No cross-tenant payload/history persistence or campaign/account aggregate metric substitution.
+
+MKT-DATA-01 / SRC-054: own database v1, all23 tables tenant_id NOT NULL,105 selected provider fields, shared tenant-local accounts/parents, same-tenant/account FK isolation, required Ad/Page evidence, separate query/breakdown grains and metric revisions, exact decimals, history grants, idempotent migration and persistent fixture preservation. [Evidence](../tracking/details/SRC-054.md). This is storage acceptance only: actual Page authority skip/defer, schedule/reconciliation/Meta API and report builder remain NOT_RUN.
+
+MKT-SYNC-01/02/03 design now Ready under [PLAN-011E contract](../contracts/marketing-metadata-sync.md). Source acceptance still NOT_RUN: SRC-056 authority/credential/revoke-race first; SRC-051 metadata/scheduling/history/lookup/change-stream next.20 request-schema examples validate design shape only, not deployed auth or worker behavior. Live Meta remains independent.

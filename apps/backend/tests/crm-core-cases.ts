@@ -53,7 +53,7 @@ export function crmCoreCases(isolated:(name:string)=>Promise<DataSource>){descri
     expect(second).not.toBe(lead);expect((await get('lead',second)).data.fields).toMatchObject({status:'qualifying'});
     await expect(create('lead',{contact_id:contact})).rejects.toThrow('OBJECT_NOT_IMPLEMENTED');await expect(create('deal',{})).rejects.toThrow('OBJECT_NOT_IMPLEMENTED');
     await expect(leads.create(account,tenant,{contact_id:contact,qualification_session_id:randomUUID()},randomUUID(),'synthetic')).rejects.toThrow('FORBIDDEN');
-    await expect(leads.create(account,tenant,{contact_id:contact,conversation_id:randomUUID()},randomUUID(),'synthetic')).rejects.toThrow('M2_REFERENCE_NOT_AVAILABLE');
+    await expect(leads.create(account,tenant,{contact_id:contact,conversation_id:randomUUID()},randomUUID(),'synthetic')).rejects.toThrow('NOT_FOUND');
     await expect(ds.query('UPDATE `lead` SET qualification_session_id=? WHERE record_id=?',[randomUUID(),lead])).rejects.toThrow();
     await expect(records.uow.run({tenantId:tenant},s=>unavailableSessionLeadCreation.createFromSession(s,{sessionId:randomUUID(),ownerRevision:'1',contactId:contact,qualification:{}}))).rejects.toThrow('M2_REFERENCE_NOT_AVAILABLE');
     await patch('lead',lead,{qualification:{need_summary:'Draft need'}},'1');expect((await get('lead',lead)).data).toMatchObject({version:'2',fields:{status:'qualifying',qualification:{need_summary:'Draft need'}}});

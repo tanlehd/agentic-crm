@@ -1,0 +1,37 @@
+CREATE TABLE report_query_run (
+ tenant_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+ id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+ owner_principal_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+ request_key CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+ request_hash CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+ binding_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+ generation_id CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+ executor_version VARCHAR(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+ definition JSON NOT NULL,
+ state VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL DEFAULT 'queued',
+ version BIGINT UNSIGNED NOT NULL DEFAULT 1,
+ attempt INT UNSIGNED NOT NULL DEFAULT 0,
+ result JSON NULL,
+ error_code VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL,
+ lease_until DATETIME(6) NULL,
+ created_at DATETIME(6) NOT NULL, updated_at DATETIME(6) NOT NULL, expires_at DATETIME(6) NOT NULL,
+ PRIMARY KEY (tenant_id,id),
+ UNIQUE KEY report_query_run_request (tenant_id,owner_principal_id,request_key),
+ CONSTRAINT report_query_run_generation FOREIGN KEY (tenant_id,binding_id,generation_id) REFERENCES report_projection_generation(tenant_id,binding_id,id),
+ CHECK (tenant_id NOT IN ('01900000-0000-7000-8000-000000000001','00000000-0000-0000-0000-000000000000')),
+ CHECK (version>=1 AND state IN ('queued','running','completed','failed','cancelled')),
+ CHECK ((state='completed' AND result IS NOT NULL) OR (state<>'completed' AND result IS NULL)),
+ CHECK ((state='running' AND lease_until IS NOT NULL) OR (state<>'running' AND lease_until IS NULL)),
+ CHECK ((state='failed' AND error_code IS NOT NULL) OR (state<>'failed' AND error_code IS NULL))
+) ENGINE=InnoDB COMMENT='Reporting owner-scoped durable mock query lifecycle and pinned aggregate';
+CREATE TABLE report_query_run_event (
+ tenant_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+ run_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+ version BIGINT UNSIGNED NOT NULL,
+ state VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+ attempt INT UNSIGNED NOT NULL,
+ created_at DATETIME(6) NOT NULL,
+ PRIMARY KEY (tenant_id,run_id,version),
+ CONSTRAINT report_query_run_event_parent FOREIGN KEY (tenant_id,run_id) REFERENCES report_query_run(tenant_id,id),
+ CHECK (version>=1 AND state IN ('queued','running','completed','failed','cancelled'))
+) ENGINE=InnoDB COMMENT='Reporting immutable minimized run lifecycle audit';

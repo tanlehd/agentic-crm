@@ -1,0 +1,529 @@
+<html><head><title>Ad Account, Insights</title><meta charset="UTF-8" /><style nonce="ANJABK5K">body { font-family: monospace; margin: 20px; }pre { white-space: pre-wrap; word-wrap: break-word; }</style></head><body><pre data-testid="developer-docs-markdown-page"># Ad Account, Insights
+
+
+
+The Insights API can return several metrics which are *estimated* or *in-development*. In some cases a metric may be **both ** *estimated and in-development*.
+
+- **Estimated** - Provide directional insights for outcomes that are hard to precisely quantify. They may evolve as we gather more data. See [Ads Help Center, Estimated metrics](https://www.facebook.com/business/help/181058782494426?helpref=faq_content#estimated).
+
+- **In Development** - Still being tested and may change as we improve our methodologies. We encourage you to use it for directional guidance, but please use caution when using it for historical comparisons or strategic planning. See [Ads Help Center, In development metrics](https://www.facebook.com/business/help/181058782494426?helpref=faq_content#indevelopment).
+
+For more information, see [Insights API, Estimated and Deprecated Metrics](https://developers.facebook.com/docs/marketing-api/insights/estimated-in-development)
+
+**Success:** Facebook will no longer be able to aggregate non-inline conversion metric values across iOS 14.5 and non-iOS 14.5 campaigns due to differences in attribution logic. Querying across iOS 14.5 and non-iOS 14.5 campaigns will result in no data getting returned for non-inline conversion metrics such as app installs and purchases. Inline event metrics like impressions, link clicks, and video views, however, can still be aggregated. Please visit our [changelog](https://developers.facebook.com/docs/graph-api/changelog/non-versioned-changes/jan-19-2021) for more information.
+
+**Warning:** The `date_preset = lifetime` parameter is disabled in Graph API v10.0 and replaced with `date_preset = maximum`, which returns a maximum of 37 months of data. For v9.0 and below, `date_preset = maximum` will be enabled on May 25, 2021, and any `lifetime` calls will default to `maximum` and return only 37 months of data.
+
+## Reading
+
+Provides insights on your advertising performance. Allows for deduped metrics across child objects, such as `unique_clicks`, sorting of metrics, and async reporting.
+
+#### Example
+
+### HTTP
+```
+GET /v25.0/&lt;AD_SET_ID&gt;/insights?fields=impressions&amp;breakdown=publisher_platform HTTP/1.1
+Host: graph.facebook.com
+```
+
+### PHP SDK
+```
+/* PHP SDK v5.0.0 */
+/* make the API call */
+try &#123;
+  // Returns a `Facebook\FacebookResponse` object
+  $response = $fb-&gt;get(
+    &#039;/&lt;AD_SET_ID&gt;/insights?fields=impressions&amp;breakdown=publisher_platform&#039;,
+    &#039;&#123;access-token&#125;&#039;
+  );
+&#125; catch(Facebook\Exceptions\FacebookResponseException $e) &#123;
+  echo &#039;Graph returned an error: &#039; . $e-&gt;getMessage();
+  exit;
+&#125; catch(Facebook\Exceptions\FacebookSDKException $e) &#123;
+  echo &#039;Facebook SDK returned an error: &#039; . $e-&gt;getMessage();
+  exit;
+&#125;
+$graphNode = $response-&gt;getGraphNode();
+/* handle the result */
+```
+
+### JavaScript SDK
+```
+/* make the API call */
+FB.api(
+    &quot;/&lt;AD_SET_ID&gt;/insights&quot;,
+    &#123;
+        &quot;fields&quot;: &quot;impressions&quot;,
+        &quot;breakdown&quot;: &quot;publisher_platform&quot;
+    &#125;,
+    function (response) &#123;
+      if (response &amp;&amp; !response.error) &#123;
+        /* handle the result */
+      &#125;
+    &#125;
+);
+```
+
+### Android SDK
+```
+Bundle params = new Bundle();
+params.putString(&quot;fields&quot;, &quot;impressions&quot;);
+params.putString(&quot;breakdown&quot;, &quot;publisher_platform&quot;);
+/* make the API call */
+new GraphRequest(
+    AccessToken.getCurrentAccessToken(),
+    &quot;/&lt;AD_SET_ID&gt;/insights&quot;,
+    params,
+    HttpMethod.GET,
+    new GraphRequest.Callback() &#123;
+        public void onCompleted(GraphResponse response) &#123;
+            /* handle the result */
+        &#125;
+    &#125;
+).executeAsync();
+```
+
+### iOS SDK
+```
+NSDictionary *params = &#064;&#123;
+  &#064;&quot;fields&quot;: &#064;&quot;impressions&quot;,
+  &#064;&quot;breakdown&quot;: &#064;&quot;publisher_platform&quot;,
+&#125;;
+/* make the API call */
+FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]
+                               initWithGraphPath:&#064;&quot;/&lt;AD_SET_ID&gt;/insights&quot;
+                                      parameters:params
+                                      HTTPMethod:&#064;&quot;GET&quot;];
+[request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
+                                      id result,
+                                      NSError *error) &#123;
+    // Handle the result
+&#125;];
+```
+
+### cURL
+```
+curl -X GET -G \
+  -d &#039;fields=&quot;impressions&quot;&#039; \
+  -d &#039;breakdown=&quot;publisher_platform&quot;&#039; \
+  -d &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/&lt;AD_SET_ID&gt;/insights
+```
+
+Try it in [Graph API Explorer](https://developers.facebook.com/tools/explorer/?method=GET&amp;path=%3CAD_SET_ID%3E%2Finsights%3Ffields%3Dimpressions%26breakdown%3Dpublisher_platform&amp;version=v25.0)
+
+If you want to learn how to use the Graph API, read our [Using Graph API guide](https://developers.facebook.com/docs/graph-api/using-graph-api)
+
+#### Parameters
+
+| Parameter | Description |
+| --- | --- |
+| `action_attribution_windows`&lt;br&gt;&lt;br&gt;*list&lt;enum&#123;1d_view, 7d_view, 28d_view, 1d_click, 7d_click, 28d_click, 1d_ev, dda, default, 7d_view_first_conversion, 28d_view_first_conversion, 7d_view_all_conversions, 28d_view_all_conversions, skan_view, skan_click, skan_click_second_postback, skan_view_second_postback, skan_click_third_postback, skan_view_third_postback&#125;&gt;* | **Default value: **`default`&lt;br&gt;The attribution window for the actions. &lt;br&gt;&lt;br&gt;The attribution window determines the window (e.g. 7d) and engagement type (e.g click) that’s used as a filter to report actions. See [About attribution settings and models](https://www.facebook.com/business/help/460276478298895?id=561906377587030) for examples.&lt;br&gt;&lt;br&gt;The `default` option means `[&quot;7d_click&quot;,&quot;1d_view&quot;]`.&lt;br&gt; |
+| `action_breakdowns`&lt;br&gt;&lt;br&gt;*list&lt;enum&#123;action_device, conversion_destination, matched_persona_id, matched_persona_name, signal_source_bucket, standard_event_content_type, action_canvas_component_name, action_carousel_card_id, action_carousel_card_name, action_destination, action_reaction, action_target_id, action_type, action_video_sound, action_video_type, is_business_ai_assisted&#125;&gt;* | **Default value: **`Vec`&lt;br&gt;How to break down action results. Supports more than one breakdowns. Default value is [&quot;action_type&quot;].&lt;br&gt;&lt;br&gt;&lt;br&gt;Note: you must also include `actions` field whenever `action_breakdowns` is specified.&lt;br&gt; |
+| `action_report_time`&lt;br&gt;&lt;br&gt;*enum&#123;impression, conversion, mixed, lifetime&#125;* | Determines the report time of action stats. For example, if a person&lt;br&gt;saw the ad on Jan 1st but converted on Jan 2nd, when you query the API&lt;br&gt;with `action_report_time=impression`, you see a conversion on Jan&lt;br&gt;1st. When you query the API with `action_report_time=conversion`, you see a conversion on Jan 2nd.&lt;br&gt; |
+| `breakdowns`&lt;br&gt;&lt;br&gt;*list&lt;enum&#123;ad_extension_domain, ad_extension_url, ad_format_asset, age, app_id, body_asset, breakdown_ad_objective, breakdown_reporting_ad_id, call_to_action_asset, coarse_conversion_value, comscore_market, country, creative_automation_asset_id, creative_relaxation_asset_type, crm_advertiser_l12_territory_ids, crm_advertiser_subvertical_id, crm_advertiser_vertical_id, crm_ult_advertiser_id, description_asset, fidelity_type, flexible_format_asset_type, gen_ai_asset_type, gender, hsid, image_asset, impression_device, instagram_ads_follow_type, instagram_ads_instagram_media_product_type, instagram_ads_time_since_creation_bucket, internal_campaign_id, is_auto_advance, is_conversion_id_modeled, is_rendered_as_delayed_skip_ad, landing_destination, link_url_asset, mdsa_landing_destination, media_asset_url, media_creator, media_destination_url, media_format, media_origin_url, media_text_content, media_type, pa_creator_ig_handle, postback_sequence_index, product_brand_breakdown, product_category_breakdown, product_custom_label_0_breakdown, product_custom_label_1_breakdown, product_custom_label_2_breakdown, product_custom_label_3_breakdown, product_custom_label_4_breakdown, product_group_content_id_breakdown, product_id, redownload, region, rta_ugc_topic, skan_campaign_id, skan_conversion_id, skan_version, sot_attribution_model_type, sot_attribution_window, sot_channel, sot_event_type, sot_source, title_asset, user_persona_id, user_persona_name, video_asset, zip, rule_set_id, rule_set_name, dma, frequency_value, overlap_segment, hourly_stats_aggregated_by_advertiser_time_zone, hourly_stats_aggregated_by_audience_time_zone, mmm, place_page_id, publisher_platform, platform_position, device_platform, standard_event_content_type, conversion_destination, signal_source_bucket, reels_trending_topic, marketing_messages_btn_name, impression_view_time_advertiser_hour_v2&#125;&gt;* | How to break down the result. For more than one breakdown, only certain combinations are available: See [Combining Breakdowns](https://developers.facebook.com/documentation/ads-commerce/marketing-api/insights/breakdowns#combiningbreakdowns) and the [Breakdowns](https://developers.facebook.com/documentation/ads-commerce/marketing-api/insights/breakdowns) page. The option `impression_device` cannot be used by itself.&lt;br&gt; |
+| `date_preset`&lt;br&gt;&lt;br&gt;*enum&#123;today, yesterday, this_month, last_month, this_quarter, maximum, data_maximum, last_3d, last_7d, last_14d, last_28d, last_30d, last_90d, last_week_mon_sun, last_week_sun_sat, last_quarter, last_year, this_week_mon_today, this_week_sun_today, this_year&#125;* | **Default value: **`last_30d`&lt;br&gt;Represents a relative time range. This field is ignored if `time_range` or `time_ranges` is specified.&lt;br&gt; |
+| `default_summary`&lt;br&gt;&lt;br&gt;*boolean* | **Default value: **`false`&lt;br&gt;Determine whether to return a summary. If `summary` is set, this param is be ignored; otherwise, a summary section with the same fields as specified by `fields` will be included in the summary section.&lt;br&gt; |
+| `export_columns`&lt;br&gt;&lt;br&gt;*list&lt;string&gt;* | Select fields on the exporting report file. It is an optional param. Exporting columns are equal to the param fields, if you leave this param blank&lt;br&gt; |
+| `export_format`&lt;br&gt;&lt;br&gt;*string* | Set the format of exporting report file. If the export_format is set, Report file is asyncrhonizely generated. It expects [&quot;xls&quot;, &quot;csv&quot;].&lt;br&gt; |
+| `export_name`&lt;br&gt;&lt;br&gt;*string* | Set the file name of the exporting report.&lt;br&gt; |
+| `fields`&lt;br&gt;&lt;br&gt;*list&lt;string&gt;* | Fields to be retrieved. Default behavior is to return impressions and spend.&lt;br&gt; |
+| `filtering`&lt;br&gt;&lt;br&gt;*list&lt;Filter Object&gt;* | **Default value: **`Vec`&lt;br&gt;Filters on the report data. This parameter is an array of filter objects.&lt;br&gt;&lt;br&gt;&lt;br&gt;`field` *string*&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;&lt;br&gt;`operator` *enum &#123;EQUAL, NOT_EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, IN_RANGE, NOT_IN_RANGE, CONTAIN, NOT_CONTAIN, CONTAINS_ANY, CONTAINS_ALL, NOT_CONTAINS_ANY, STEM_MATCH, IN, NOT_IN, STARTS_WITH, ENDS_WITH, ANY, ALL, AFTER, BEFORE, ON_OR_AFTER, ON_OR_BEFORE, NONE, TOP&#125;*&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;&lt;br&gt;`value` *string*&lt;br&gt;**[required]**&lt;br&gt; |
+| `level`&lt;br&gt;&lt;br&gt;*enum &#123;ad, adset, campaign, account&#125;* | Represents the level of result.&lt;br&gt; |
+| `limit`&lt;br&gt;&lt;br&gt;*integer* | limit&lt;br&gt; |
+| `product_id_limit`&lt;br&gt;&lt;br&gt;*integer* | Maximum number of product ids to be returned for each ad when breakdown by `product_id`.&lt;br&gt; |
+| `sort`&lt;br&gt;&lt;br&gt;*list&lt;string&gt;* | **Default value: **`Vec`&lt;br&gt;Field to sort the result, and direction of sorting. You can specify sorting direction by appending &quot;_ascending&quot; or &quot;_descending&quot; to the sort field. For example, &quot;reach_descending&quot;. For actions, you can sort by action type in form of &quot;actions:&lt;action_type&gt;&quot;. For example, [&quot;actions:link_click_ascending&quot;]. This array supports no more than one element. By default, the sorting direction is ascending.&lt;br&gt; |
+| `summary`&lt;br&gt;&lt;br&gt;*list&lt;string&gt;* | If this param is used, a summary section will be included, with the fields listed in this param.&lt;br&gt; |
+| `summary_action_breakdowns`&lt;br&gt;&lt;br&gt;*list&lt;enum&#123;action_device, conversion_destination, matched_persona_id, matched_persona_name, signal_source_bucket, standard_event_content_type, action_canvas_component_name, action_carousel_card_id, action_carousel_card_name, action_destination, action_reaction, action_target_id, action_type, action_video_sound, action_video_type, is_business_ai_assisted&#125;&gt;* | **Default value: **`Vec`&lt;br&gt;Similar to `action_breakdowns`, but applies to summary. Default value is [&quot;action_type&quot;].&lt;br&gt; |
+| `time_increment`&lt;br&gt;&lt;br&gt;*enum&#123;monthly, all_days&#125; or integer* | **Default value: **`all_days`&lt;br&gt;If it is an integer, it is the number of days from 1 to 90. After you pick a reporting period by using `time_range` or `date_preset`, you may choose to have the results for the whole period, or have results for smaller time slices. If &quot;all_days&quot; is used, it means one result set for the whole period. If &quot;monthly&quot; is used, you will get one result set for each calendar month in the given period. Or you can have one result set for each N-day period specified by this param. This param is ignored if `time_ranges` is specified.&lt;br&gt; |
+| `time_range`&lt;br&gt;&lt;br&gt;*&#123;&#039;since&#039;:YYYY-MM-DD,&#039;until&#039;:YYYY-MM-DD&#125;* | A single time range object. UNIX timestamp not supported. This param is ignored if `time_ranges` is provided.&lt;br&gt;&lt;br&gt;&lt;br&gt;`since` *datetime*&lt;br&gt;A date in the format of &quot;YYYY-MM-DD&quot;, which means from the beginning midnight of that day.&lt;br&gt;&lt;br&gt;&lt;br&gt;`until` *datetime*&lt;br&gt;A date in the format of &quot;YYYY-MM-DD&quot;, which means to the beginning midnight of the following day.&lt;br&gt; |
+| `time_ranges`&lt;br&gt;&lt;br&gt;*list&lt;&#123;&#039;since&#039;:YYYY-MM-DD,&#039;until&#039;:YYYY-MM-DD&#125;&gt;* | Array of time range objects. Time ranges can overlap, for example to return cumulative insights. Each time range will have one result set. You cannot have more granular results with `time_increment` setting in this case.If `time_ranges` is specified, `date_preset`, `time_range` and `time_increment` are ignored.&lt;br&gt;&lt;br&gt;&lt;br&gt;`since` *datetime*&lt;br&gt;A date in the format of &quot;YYYY-MM-DD&quot;, which means from the beginning midnight of that day.&lt;br&gt;&lt;br&gt;&lt;br&gt;`until` *datetime*&lt;br&gt;A date in the format of &quot;YYYY-MM-DD&quot;, which means to the beginning midnight of the following day.&lt;br&gt; |
+| `use_account_attribution_setting`&lt;br&gt;&lt;br&gt;*boolean* | **Default value: **`false`&lt;br&gt;When this parameter is set to `true`, your ads results will be shown using the attribution settings defined for the ad account.&lt;br&gt; |
+| `use_unified_attribution_setting`&lt;br&gt;&lt;br&gt;*boolean* | When this parameter is set to `true`, your ads results will be shown using unified attribution settings defined at ad set level and parameter `use_account_attribution_setting` will be ignored.&lt;br&gt; |
+
+#### Fields
+
+Reading from this edge will return a JSON formatted result:
+
+```
+&#123;
+&quot;data&quot;: [],
+&quot;paging&quot;: &#123;&#125;,
+&quot;summary&quot;: &#123;&#125;
+&#125;
+```
+
+##### data
+
+A list of AdsInsights nodes.
+
+##### paging
+
+For more details about pagination, see the [Graph API guide](https://developers.facebook.com/docs/graph-api/using-graph-api#paging).
+
+##### summary
+
+Aggregated information about the edge, such as counts. Specify the fields to fetch in the summary param (like summary=__type__).
+
+| Field | Description |
+| --- | --- |
+| `account_currency`&lt;br&gt;&lt;br&gt;*string* | Currency that is used by your ad account.&lt;br&gt; |
+| `account_id`&lt;br&gt;&lt;br&gt;*numeric string* | The ID number of your ad account, which groups your advertising activity. Your ad account includes your campaigns, ads and billing.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `account_name`&lt;br&gt;&lt;br&gt;*string* | The name of your ad account, which groups your advertising activity. Your ad account includes your campaigns, ads and billing.&lt;br&gt; |
+| `action_values`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The total value of all conversions attributed to your ads.&lt;br&gt; |
+| `actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The total number of actions Accounts Center accounts took that are attributed to your ads. Actions may include engagement, clicks or conversions.&lt;br&gt; |
+| `actions_per_impression`&lt;br&gt;&lt;br&gt;*numeric string* | Total number of actions divided by the number of impessions.&lt;br&gt; |
+| `actions_results`&lt;br&gt;&lt;br&gt;*[AdsActionStats](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The number of actions as a result of your ad. The results you see here are based on your objective.&lt;br&gt; |
+| `activity_recency`&lt;br&gt;&lt;br&gt;*string* | activity_recency&lt;br&gt; |
+| `ad_click_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | ad_click_actions&lt;br&gt; |
+| `ad_format_asset`&lt;br&gt;&lt;br&gt;*string* | ad_format_asset&lt;br&gt; |
+| `ad_id`&lt;br&gt;&lt;br&gt;*numeric string* | The unique ID of the ad you&#039;re viewing in reporting.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `ad_impression_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | ad_impression_actions&lt;br&gt; |
+| `ad_name`&lt;br&gt;&lt;br&gt;*string* | The name of the ad you&#039;re viewing in reporting.&lt;br&gt; |
+| `adjusted_offline_purchase`&lt;br&gt;&lt;br&gt;*numeric string* | The number of purchase events that occurred offline and are attributed to your ads, after adjusting attribution settings and based on information received from your offline event set.&lt;br&gt; |
+| `adset_end`&lt;br&gt;&lt;br&gt;*string* | The date your ad set is scheduled to stop.&lt;br&gt; |
+| `adset_id`&lt;br&gt;&lt;br&gt;*numeric string* | The unique ID of the ad set you&#039;re viewing in reporting. An ad set is a group of ads that share the same budget, schedule, delivery optimization and targeting.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `adset_name`&lt;br&gt;&lt;br&gt;*string* | The name of the ad set you&#039;re viewing in reporting. An ad set is a group of ads that share the same budget, schedule, delivery optimization and targeting.&lt;br&gt; |
+| `adset_start`&lt;br&gt;&lt;br&gt;*string* | The date your ad set is scheduled to start running.&lt;br&gt; |
+| `anchor_event_attribution_setting`&lt;br&gt;&lt;br&gt;*string* | anchor_event_attribution_setting&lt;br&gt; |
+| `anchor_events_performance_indicator`&lt;br&gt;&lt;br&gt;*string* | anchor_events_performance_indicator&lt;br&gt; |
+| `app_store_clicks`&lt;br&gt;&lt;br&gt;*numeric string* | The number of clicks on links to an app store in your ads.&lt;br&gt; |
+| `attention_events_per_impression`&lt;br&gt;&lt;br&gt;*numeric string* | attention_events_per_impression&lt;br&gt; |
+| `attention_events_unq_per_reach`&lt;br&gt;&lt;br&gt;*numeric string* | attention_events_unq_per_reach&lt;br&gt; |
+| `attribution_setting`&lt;br&gt;&lt;br&gt;*string* | The default attribution window to be used when attribution result is calculated. Each ad set has its own attribution setting value. The attribution setting for campaign or account is calculated based on existing ad sets.&lt;br&gt; |
+| `auction_bid`&lt;br&gt;&lt;br&gt;*numeric string* | auction_bid&lt;br&gt; |
+| `auction_competitiveness`&lt;br&gt;&lt;br&gt;*numeric string* | auction_competitiveness&lt;br&gt; |
+| `auction_max_competitor_bid`&lt;br&gt;&lt;br&gt;*numeric string* | auction_max_competitor_bid&lt;br&gt; |
+| `body_asset`&lt;br&gt;&lt;br&gt;*AdAssetBody* | body_asset&lt;br&gt; |
+| `buying_type`&lt;br&gt;&lt;br&gt;*string* | The method by which you pay for and target ads in your campaigns: through dynamic auction bidding, fixed-price bidding, or reach and frequency buying. This field is currently only visible at the campaign level.&lt;br&gt; |
+| `call_to_action_clicks`&lt;br&gt;&lt;br&gt;*numeric string* | The number of times Accounts Center accounts clicked the call-to-action button on your ad.&lt;br&gt; |
+| `campaign_end`&lt;br&gt;&lt;br&gt;*string* | The date your campaign is scheduled to stop.&lt;br&gt; |
+| `campaign_id`&lt;br&gt;&lt;br&gt;*numeric string* | The unique ID number of the ad campaign you&#039;re viewing in reporting. Your campaign contains ad sets and ads.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `campaign_name`&lt;br&gt;&lt;br&gt;*string* | The name of the ad campaign you&#039;re viewing in reporting. Your campaign contains ad sets and ads.&lt;br&gt; |
+| `campaign_start`&lt;br&gt;&lt;br&gt;*string* | The date your campaign is scheduled to start.&lt;br&gt; |
+| `cancel_subscription_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | cancel_subscription_actions&lt;br&gt; |
+| `canvas_avg_view_percent`&lt;br&gt;&lt;br&gt;*numeric string* | The average percentage of the Instant Experience that Accounts Center accounts saw. An Instant Experience is a screen that opens after someone interacts with your ad on a mobile device. It may include a series of interactive or multimedia components, including video, images product catalog and more.&lt;br&gt; |
+| `canvas_avg_view_time`&lt;br&gt;&lt;br&gt;*numeric string* | The average total time, in seconds, that Accounts Center accounts spent viewing an Instant Experience. An Instant Experience is a screen that opens after someone interacts with your ad on a mobile device. It may include a series of interactive or multimedia components, including video, images product catalog and more.&lt;br&gt; |
+| `card_views`&lt;br&gt;&lt;br&gt;*numeric string* | The number of times Accounts Center accounts viewed a product from your catalog in an ad. If you&#039;re using a carousel format, Accounts Center accounts may view multiple products in a single ad. Counts are updated daily, views for today are not included. This metric is currently in beta, and is only available for ads connected to a product catalog. This metric is in development.&lt;br&gt; |
+| `catalog_segment_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The number of actions performed attributed to your ads promoting your catalog segment, broken down by action type.&lt;br&gt; |
+| `catalog_segment_value`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The total value of all conversions from your catalog segment attributed to your ads.&lt;br&gt; |
+| `catalog_segment_value_in_catalog_currency`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The total value of all conversions from your catalog segment attributed to your ads, in the same currency as the catalog.&lt;br&gt; |
+| `catalog_segment_value_mobile_purchase_roas`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The total return on ad spend (ROAS) from mobile app purchases for your catalog segment.&lt;br&gt; |
+| `catalog_segment_value_omni_purchase_roas`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The total return on ad spend (ROAS) from all purchases for your catalog segment.&lt;br&gt; |
+| `catalog_segment_value_website_purchase_roas`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The total return on ad spend (ROAS) from website purchases for your catalog segment.&lt;br&gt; |
+| `clicks`&lt;br&gt;&lt;br&gt;*numeric string* | The number of clicks on your ads.&lt;br&gt; |
+| `coarse_conversion_value`&lt;br&gt;&lt;br&gt;*string* | Allows advertisers and ad networks to receive directional post-install quality insights when the volume of campaign conversions isn&#039;t high enough to meet the privacy threshold needed to unlock the standard conversion value. Possible values of this breakdown are `low`, `medium` and `high`.&lt;br&gt;&lt;br&gt;**Note:** This breakdown is only supported by the `total_postbacks_detailed_v4` field.&lt;br&gt; |
+| `comparison_node`&lt;br&gt;&lt;br&gt;*AdsInsightsComparison* | Parent node that encapsulates fields to be compared (current time range Vs comparison time range)&lt;br&gt; |
+| `comscore_market`&lt;br&gt;&lt;br&gt;*string* | comscore_market&lt;br&gt; |
+| `conditional_time_spent_ms_over_10s_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | conditional_time_spent_ms_over_10s_actions&lt;br&gt; |
+| `conditional_time_spent_ms_over_15s_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | conditional_time_spent_ms_over_15s_actions&lt;br&gt; |
+| `conditional_time_spent_ms_over_2s_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | conditional_time_spent_ms_over_2s_actions&lt;br&gt; |
+| `conditional_time_spent_ms_over_3s_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | conditional_time_spent_ms_over_3s_actions&lt;br&gt; |
+| `conditional_time_spent_ms_over_6s_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | conditional_time_spent_ms_over_6s_actions&lt;br&gt; |
+| `configurable_attribution_action`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | configurable attribution action&lt;br&gt; |
+| `configurable_attribution_actionvalue`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | configurable attribution actionvalue&lt;br&gt; |
+| `configurable_audience_overlap_reach`&lt;br&gt;&lt;br&gt;*numeric string* | configurable audience overlap reach&lt;br&gt; |
+| `configurable_reachbyfrequency_action`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | configurable reachbyfrequency action&lt;br&gt; |
+| `configurable_reachbyfrequency_converters_count`&lt;br&gt;&lt;br&gt;*numeric string* | configurable reachbyfrequency converters count&lt;br&gt; |
+| `configurable_reachbyfrequency_impressions_cost`&lt;br&gt;&lt;br&gt;*numeric string* | configurable reachbyfrequency impressions cost&lt;br&gt; |
+| `configurable_reachbyfrequency_impressions_count`&lt;br&gt;&lt;br&gt;*numeric string* | configurable reachbyfrequency impressions count&lt;br&gt; |
+| `configurable_reachbyfrequency_reach`&lt;br&gt;&lt;br&gt;*numeric string* | configurable reachbyfrequency reach&lt;br&gt; |
+| `contact_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | contact_actions&lt;br&gt; |
+| `contact_value`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | contact_value&lt;br&gt; |
+| `conversion_values`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | conversion_values&lt;br&gt; |
+| `conversions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | conversions&lt;br&gt; |
+| `converted_product_app_custom_event_fb_mobile_purchase`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | converted_product_app_custom_event_fb_mobile_purchase&lt;br&gt; |
+| `converted_product_app_custom_event_fb_mobile_purchase_value`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | converted_product_app_custom_event_fb_mobile_purchase_value&lt;br&gt; |
+| `converted_product_offline_purchase`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | converted_product_offline_purchase&lt;br&gt; |
+| `converted_product_offline_purchase_value`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | converted_product_offline_purchase_value&lt;br&gt; |
+| `converted_product_omni_purchase`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | converted_product_omni_purchase&lt;br&gt; |
+| `converted_product_omni_purchase_values`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | converted_product_omni_purchase_values&lt;br&gt; |
+| `converted_product_quantity`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The number of products purchased which are recorded by your merchant partner&#039;s pixel or app SDK for a given product ID and driven by your ads. Has to be used together with converted product ID breakdown.&lt;br&gt; |
+| `converted_product_value`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The value of purchases recorded by your merchant partner&#039;s pixel or app SDK for a given product ID and driven by your ads. Has to be used together with converted product ID breakdown.&lt;br&gt; |
+| `converted_product_website_pixel_purchase`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | converted_product_website_pixel_purchase&lt;br&gt; |
+| `converted_product_website_pixel_purchase_value`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | converted_product_website_pixel_purchase_value&lt;br&gt; |
+| `cost_per_15_sec_video_view`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | cost_per_15_sec_video_view&lt;br&gt; |
+| `cost_per_2_sec_continuous_video_view`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | cost_per_2_sec_continuous_video_view&lt;br&gt; |
+| `cost_per_action_result`&lt;br&gt;&lt;br&gt;*[AdsActionStats](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The average you paid for each action associated with your objective.&lt;br&gt; |
+| `cost_per_action_type`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The average cost of a relevant action.&lt;br&gt; |
+| `cost_per_ad_click`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | cost_per_ad_click&lt;br&gt; |
+| `cost_per_completed_video_view`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | cost_per_completed_video_view&lt;br&gt; |
+| `cost_per_contact`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | cost_per_contact&lt;br&gt; |
+| `cost_per_conversion`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | cost_per_conversion&lt;br&gt; |
+| `cost_per_customize_product`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | cost_per_customize_product&lt;br&gt; |
+| `cost_per_dda_countby_convs`&lt;br&gt;&lt;br&gt;*numeric string* | cost_per_dda_countby_convs&lt;br&gt; |
+| `cost_per_donate`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | cost_per_donate&lt;br&gt; |
+| `cost_per_dwell`&lt;br&gt;&lt;br&gt;*numeric string* | The average cost per 1,000 Dwells&lt;br&gt; |
+| `cost_per_dwell_3_sec`&lt;br&gt;&lt;br&gt;*numeric string* | cost_per_dwell_3_sec&lt;br&gt; |
+| `cost_per_dwell_5_sec`&lt;br&gt;&lt;br&gt;*numeric string* | cost_per_dwell_5_sec&lt;br&gt; |
+| `cost_per_dwell_7_sec`&lt;br&gt;&lt;br&gt;*numeric string* | cost_per_dwell_7_sec&lt;br&gt; |
+| `cost_per_find_location`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | cost_per_find_location&lt;br&gt; |
+| `cost_per_inline_link_click`&lt;br&gt;&lt;br&gt;*numeric string* | The average cost of each inline link click.&lt;br&gt; |
+| `cost_per_inline_post_engagement`&lt;br&gt;&lt;br&gt;*numeric string* | The average cost of each inline post engagement.&lt;br&gt; |
+| `cost_per_objective_result`&lt;br&gt;&lt;br&gt;*list&lt;AdsInsightsResult&gt;* | The average cost per objective result from your ads. Objective results are what you&#039;re trying to get the most of in your ad campaign, based on the objective you selected.&lt;br&gt; |
+| `cost_per_one_thousand_ad_impression`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | cost_per_one_thousand_ad_impression&lt;br&gt; |
+| `cost_per_outbound_click`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The average cost for each outbound click.&lt;br&gt; |
+| `cost_per_result`&lt;br&gt;&lt;br&gt;*list&lt;AdsInsightsResult&gt;* | The average cost per result from your ads.&lt;br&gt; |
+| `cost_per_schedule`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | cost_per_schedule&lt;br&gt; |
+| `cost_per_start_trial`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | cost_per_start_trial&lt;br&gt; |
+| `cost_per_submit_application`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | cost_per_submit_application&lt;br&gt; |
+| `cost_per_subscribe`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | cost_per_subscribe&lt;br&gt; |
+| `cost_per_thruplay`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The average cost for each ThruPlay. This metric is in development.&lt;br&gt; |
+| `cost_per_total_action`&lt;br&gt;&lt;br&gt;*numeric string* | The average cost of a relevant action.&lt;br&gt; |
+| `cost_per_unique_action_type`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The average cost of each unique action. This metric is estimated.&lt;br&gt; |
+| `cost_per_unique_click`&lt;br&gt;&lt;br&gt;*numeric string* | The average cost for each unique click (all). This metric is estimated.&lt;br&gt; |
+| `cost_per_unique_conversion`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | cost_per_unique_conversion&lt;br&gt; |
+| `cost_per_unique_inline_link_click`&lt;br&gt;&lt;br&gt;*numeric string* | The average cost of each unique inline link click. This metric is estimated.&lt;br&gt; |
+| `cost_per_unique_outbound_click`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The average cost for each unique outbound click. This metric is estimated.&lt;br&gt; |
+| `country`&lt;br&gt;&lt;br&gt;*string* | country&lt;br&gt; |
+| `cpc`&lt;br&gt;&lt;br&gt;*numeric string* | The average cost for each click (all).&lt;br&gt; |
+| `cpm`&lt;br&gt;&lt;br&gt;*numeric string* | The average cost for 1,000 impressions.&lt;br&gt; |
+| `cpp`&lt;br&gt;&lt;br&gt;*numeric string* | The average cost to reach 1,000 Accounts Center accounts. This metric is estimated.&lt;br&gt; |
+| `created_time`&lt;br&gt;&lt;br&gt;*string* | created_time&lt;br&gt; |
+| `creative_automation_asset_id`&lt;br&gt;&lt;br&gt;*AdAssetMedia* | creative_automation_asset_id&lt;br&gt; |
+| `creative_diversity_data`&lt;br&gt;&lt;br&gt;*list&lt;CreativeDiversityData&gt;* | creative diversity data&lt;br&gt; |
+| `creative_diversity_label`&lt;br&gt;&lt;br&gt;*string* | creative diversity label&lt;br&gt; |
+| `creative_diversity_score`&lt;br&gt;&lt;br&gt;*string* | creative diversity score&lt;br&gt; |
+| `creative_fatigue_summary`&lt;br&gt;&lt;br&gt;*list&lt;CreativeFatigueSummary&gt;* | creative fatigue summary&lt;br&gt; |
+| `creative_fatigued_ads`&lt;br&gt;&lt;br&gt;*list&lt;CreativeFatiguedAds&gt;* | creative fatigued ads&lt;br&gt; |
+| `creative_relaxation_asset_type`&lt;br&gt;&lt;br&gt;*string* | creative_relaxation_asset_type&lt;br&gt; |
+| `ctr`&lt;br&gt;&lt;br&gt;*numeric string* | The percentage of times Accounts Center accounts saw your ad and performed a click (all).&lt;br&gt; |
+| `customize_product_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | customize_product_actions&lt;br&gt; |
+| `customize_product_value`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | customize_product_value&lt;br&gt; |
+| `date_start`&lt;br&gt;&lt;br&gt;*string* | The start date for your data. This is controlled by the date range you&#039;ve selected for your reporting view.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `date_stop`&lt;br&gt;&lt;br&gt;*string* | The end date for your data. This is controlled by the date range you&#039;ve selected for your reporting view.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `dda_countby_convs`&lt;br&gt;&lt;br&gt;*numeric string* | dda_countby_convs&lt;br&gt; |
+| `dda_results`&lt;br&gt;&lt;br&gt;*list&lt;AdsInsightsDdaResult&gt;* | dda_results&lt;br&gt; |
+| `deduping_1st_source_ratio`&lt;br&gt;&lt;br&gt;*numeric string* | This is the auction removal rate for the ad set with the highest amount of audience overlap with the selected ad set.&lt;br&gt; |
+| `deduping_2nd_source_ratio`&lt;br&gt;&lt;br&gt;*numeric string* | This is the auction removal rate for the ad set with the second highest amount of audience overlap with the selected ad set.&lt;br&gt; |
+| `deduping_3rd_source_ratio`&lt;br&gt;&lt;br&gt;*numeric string* | This is the auction removal rate for the ad set with the third highest amount of audience overlap with the selected ad set.&lt;br&gt; |
+| `deduping_ratio`&lt;br&gt;&lt;br&gt;*numeric string* | The total auction removal rate is the percentage of auctions that an ad set did not compete in due to audience overlap with other ad sets.&lt;br&gt; |
+| `deeplink_clicks`&lt;br&gt;&lt;br&gt;*numeric string* | The number of clicks on links to specific parts of an app.&lt;br&gt; |
+| `description_asset`&lt;br&gt;&lt;br&gt;*AdAssetDescription* | description_asset&lt;br&gt; |
+| `device_platform`&lt;br&gt;&lt;br&gt;*string* | device_platform&lt;br&gt; |
+| `dma`&lt;br&gt;&lt;br&gt;*string* | dma&lt;br&gt; |
+| `donate_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | donate_actions&lt;br&gt; |
+| `donate_value`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | donate_value&lt;br&gt; |
+| `dwell_3_sec`&lt;br&gt;&lt;br&gt;*numeric string* | dwell_3_sec&lt;br&gt; |
+| `dwell_5_sec`&lt;br&gt;&lt;br&gt;*numeric string* | dwell_5_sec&lt;br&gt; |
+| `dwell_7_sec`&lt;br&gt;&lt;br&gt;*numeric string* | dwell_7_sec&lt;br&gt; |
+| `dwell_rate`&lt;br&gt;&lt;br&gt;*numeric string* | The number of times someone dwells on your display ad divided by the total number of impressions&lt;br&gt; |
+| `fidelity_type`&lt;br&gt;&lt;br&gt;*string* | To differentiate StoreKit-rendered ads from view-through ads, SKAdNetwork defines a fidelity-type parameter, which you include in the ad signature and receive in the install-validation postback. Use a fidelity-type value of `1` for StoreKit-rendered ads and attributable web ads, and `0` for view-through ads.&lt;br&gt;&lt;br&gt;**Note:** This breakdown is only supported by the `total_postbacks_detailed_v4` field.&lt;br&gt; |
+| `find_location_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | find_location_actions&lt;br&gt; |
+| `find_location_value`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | find_location_value&lt;br&gt; |
+| `flexible_format_asset_type`&lt;br&gt;&lt;br&gt;*string* | flexible_format_asset_type&lt;br&gt; |
+| `frequency`&lt;br&gt;&lt;br&gt;*numeric string* | The average number of times each person saw your ad. This metric is estimated.&lt;br&gt; |
+| `frequency_value`&lt;br&gt;&lt;br&gt;*string* | frequency_value&lt;br&gt; |
+| `full_view_impressions`&lt;br&gt;&lt;br&gt;*numeric string* | The number of Full Views on your Page&#039;s posts as a result of your ad.&lt;br&gt; |
+| `full_view_reach`&lt;br&gt;&lt;br&gt;*numeric string* | The number of Accounts Center accounts that performed a Full View on your Page&#039;s post as a result of your ad.&lt;br&gt; |
+| `gen_ai_asset_type`&lt;br&gt;&lt;br&gt;*string* | gen_ai_asset_type&lt;br&gt; |
+| `hourly_stats_aggregated_by_advertiser_time_zone`&lt;br&gt;&lt;br&gt;*string* | hourly_stats_aggregated_by_advertiser_time_zone&lt;br&gt; |
+| `hourly_stats_aggregated_by_audience_time_zone`&lt;br&gt;&lt;br&gt;*string* | hourly_stats_aggregated_by_audience_time_zone&lt;br&gt; |
+| `hsid`&lt;br&gt;&lt;br&gt;*string* | The `hsid` key is available for ad impressions that use SKAdNetwork 4 and later. This integer can have up to four digits. You can encode information about your advertisement in each set of digits; you may receive two, three, or all four digits of the sourceIdentifier in the first winning postback, depending on the ad impression&#039;s postback data tier.&lt;br&gt;&lt;br&gt;**Note:** This breakdown is only supported by the `total_postbacks_detailed_v4` field.&lt;br&gt; |
+| `image_asset`&lt;br&gt;&lt;br&gt;*AdAssetImage* | image_asset&lt;br&gt; |
+| `impression_device`&lt;br&gt;&lt;br&gt;*string* | impression_device&lt;br&gt; |
+| `impressions`&lt;br&gt;&lt;br&gt;*numeric string* | The number of times your ads were on screen.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `impressions_auto_refresh`&lt;br&gt;&lt;br&gt;*string* | impressions_auto_refresh&lt;br&gt; |
+| `impressions_gross`&lt;br&gt;&lt;br&gt;*string* | impressions_gross&lt;br&gt; |
+| `inline_link_click_ctr`&lt;br&gt;&lt;br&gt;*numeric string* | The percentage of time Accounts Center accounts saw your ads and performed an inline link click.&lt;br&gt; |
+| `inline_link_clicks`&lt;br&gt;&lt;br&gt;*numeric string* | The number of clicks on links to select destinations or experiences, on or off Facebook-owned properties. Inline link clicks use a fixed 1-day-click attribution window.&lt;br&gt; |
+| `inline_post_engagement`&lt;br&gt;&lt;br&gt;*numeric string* | The total number of actions that Accounts Center accounts take involving your ads. Inline post engagements use a fixed 1-day-click attribution window.&lt;br&gt; |
+| `instagram_upcoming_event_reminders_set`&lt;br&gt;&lt;br&gt;*numeric string* | instagram_upcoming_event_reminders_set&lt;br&gt; |
+| `instant_experience_clicks_to_open`&lt;br&gt;&lt;br&gt;*numeric string* | instant_experience_clicks_to_open&lt;br&gt; |
+| `instant_experience_clicks_to_start`&lt;br&gt;&lt;br&gt;*numeric string* | instant_experience_clicks_to_start&lt;br&gt; |
+| `instant_experience_outbound_clicks`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | instant_experience_outbound_clicks&lt;br&gt; |
+| `interactive_component_tap`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | interactive_component_tap&lt;br&gt; |
+| `is_auto_advance`&lt;br&gt;&lt;br&gt;*string* | is_auto_advance&lt;br&gt; |
+| `landing_page_view_per_link_click`&lt;br&gt;&lt;br&gt;*numeric string* | landing_page_view_per_link_click&lt;br&gt; |
+| `marketing_messages_delivered`&lt;br&gt;&lt;br&gt;*numeric string* | The number of messages your business sent to customers that were delivered. Some messages may not be delivered, such as when a customer&#039;s device is out of service. This metric doesn’t include messages delivered to Europe and Japan. In some cases, this metric may be estimated and may differ from what’s shown on your invoice due to small variations in data processing.&lt;br&gt; |
+| `marketing_messages_delivery_rate`&lt;br&gt;&lt;br&gt;*numeric string* | The number of messages delivered divided by the number of messages sent. Some messages may not be delivered, such as when a customer&#039;s device is out of service. This metric doesn&#039;t include messages sent to Europe and Japan.&lt;br&gt; |
+| `marketing_messages_read_rate_benchmark`&lt;br&gt;&lt;br&gt;*string* | We calculate this metric as the 75th percentile of read rates across similar businesses, representing the percentage of messages read out of total messages delivered.&lt;br&gt; |
+| `media_asset`&lt;br&gt;&lt;br&gt;*AdAssetMedia* | media_asset&lt;br&gt; |
+| `mobile_app_purchase_roas`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The total return on ad spend (ROAS) from mobile app purchases. This is based on the value that you assigned when you set up the app event. For information on how it&#039;s calculated, please refer to https://www.facebook.com/business/help/1848669175353398&lt;br&gt; |
+| `multi_event_conversion_attribution_setting`&lt;br&gt;&lt;br&gt;*string* | multi_event_conversion_attribution_setting&lt;br&gt; |
+| `newsfeed_avg_position`&lt;br&gt;&lt;br&gt;*numeric string* | The average position where your ad was inserted into news feeds on mobile and desktop. Position 1 is the one at the top of the feed.&lt;br&gt; |
+| `newsfeed_clicks`&lt;br&gt;&lt;br&gt;*numeric string* | The total number of clicks your ad received in news feed, on mobile and desktop.&lt;br&gt; |
+| `newsfeed_impressions`&lt;br&gt;&lt;br&gt;*numeric string* | The total number of times your ad was inserted into news feeds, on mobile and desktop.&lt;br&gt; |
+| `objective`&lt;br&gt;&lt;br&gt;*string* | The objective reflecting the goal you want to achieve with your advertising. It may be different from the selected objective of the campaign in some cases.&lt;br&gt; |
+| `objective_result_rate`&lt;br&gt;&lt;br&gt;*list&lt;AdsInsightsResult&gt;* | The number of objective results you received divided by the number of impressions.&lt;br&gt; |
+| `objective_results`&lt;br&gt;&lt;br&gt;*list&lt;AdsInsightsResult&gt;* | The number of responses you wanted to achieve from your ad campaign, based on your selected objective. For example, if you selected promote your Page as your campaign objective, this metric shows the number of Page likes that happened as a result of your ads.&lt;br&gt; |
+| `opportunity_score_l4`&lt;br&gt;&lt;br&gt;*numeric string* | opportunity score l4&lt;br&gt; |
+| `optimization_goal`&lt;br&gt;&lt;br&gt;*string* | The optimization goal you selected for your ad or ad set. Your optimization goal reflects what you want to optimize for the ads.&lt;br&gt; |
+| `outbound_clicks`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The number of clicks on links that take Accounts Center accounts off Facebook-owned properties.&lt;br&gt; |
+| `outbound_clicks_ctr`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The percentage of times Accounts Center accounts saw your ad and performed an outbound click.&lt;br&gt; |
+| `performance_indicator`&lt;br&gt;&lt;br&gt;*string* | performance_indicator&lt;br&gt; |
+| `platform_position`&lt;br&gt;&lt;br&gt;*string* | platform_position&lt;br&gt; |
+| `postback_sequence_index`&lt;br&gt;&lt;br&gt;*string* | Sequence of postbacks received from SkAdNetwork API version 4.0. Possible values of this breakdown are `0` (first postback), `1` (second postback) and `2` (third postback).&lt;br&gt;&lt;br&gt;**Note:** This breakdown is only supported by the `total_postbacks_detailed_v4` field.&lt;br&gt; |
+| `private_attribution_conversions`&lt;br&gt;&lt;br&gt;*unsigned integer* | private_attribution_conversions&lt;br&gt; |
+| `product_brand`&lt;br&gt;&lt;br&gt;*string* | product_brand&lt;br&gt; |
+| `product_brand_breakdown`&lt;br&gt;&lt;br&gt;*string* | product_brand_breakdown&lt;br&gt; |
+| `product_category`&lt;br&gt;&lt;br&gt;*string* | product_category&lt;br&gt; |
+| `product_category_breakdown`&lt;br&gt;&lt;br&gt;*string* | product_category_breakdown&lt;br&gt; |
+| `product_content_id`&lt;br&gt;&lt;br&gt;*string* | product_content_id&lt;br&gt; |
+| `product_custom_label_0`&lt;br&gt;&lt;br&gt;*string* | product_custom_label_0&lt;br&gt; |
+| `product_custom_label_0_breakdown`&lt;br&gt;&lt;br&gt;*string* | product_custom_label_0_breakdown&lt;br&gt; |
+| `product_custom_label_1`&lt;br&gt;&lt;br&gt;*string* | product_custom_label_1&lt;br&gt; |
+| `product_custom_label_1_breakdown`&lt;br&gt;&lt;br&gt;*string* | product_custom_label_1_breakdown&lt;br&gt; |
+| `product_custom_label_2`&lt;br&gt;&lt;br&gt;*string* | product_custom_label_2&lt;br&gt; |
+| `product_custom_label_2_breakdown`&lt;br&gt;&lt;br&gt;*string* | product_custom_label_2_breakdown&lt;br&gt; |
+| `product_custom_label_3`&lt;br&gt;&lt;br&gt;*string* | product_custom_label_3&lt;br&gt; |
+| `product_custom_label_3_breakdown`&lt;br&gt;&lt;br&gt;*string* | product_custom_label_3_breakdown&lt;br&gt; |
+| `product_custom_label_4`&lt;br&gt;&lt;br&gt;*string* | product_custom_label_4&lt;br&gt; |
+| `product_custom_label_4_breakdown`&lt;br&gt;&lt;br&gt;*string* | product_custom_label_4_breakdown&lt;br&gt; |
+| `product_custom_number_0`&lt;br&gt;&lt;br&gt;*string* | product_custom_number_0&lt;br&gt; |
+| `product_custom_number_1`&lt;br&gt;&lt;br&gt;*string* | product_custom_number_1&lt;br&gt; |
+| `product_custom_number_2`&lt;br&gt;&lt;br&gt;*string* | product_custom_number_2&lt;br&gt; |
+| `product_custom_number_3`&lt;br&gt;&lt;br&gt;*string* | product_custom_number_3&lt;br&gt; |
+| `product_custom_number_4`&lt;br&gt;&lt;br&gt;*string* | product_custom_number_4&lt;br&gt; |
+| `product_group_content_id`&lt;br&gt;&lt;br&gt;*string* | product_group_content_id&lt;br&gt; |
+| `product_group_content_id_breakdown`&lt;br&gt;&lt;br&gt;*string* | product_group_content_id_breakdown&lt;br&gt; |
+| `product_group_retailer_id`&lt;br&gt;&lt;br&gt;*string* | product_group_retailer_id&lt;br&gt; |
+| `product_id`&lt;br&gt;&lt;br&gt;*string* | product_id&lt;br&gt; |
+| `product_name`&lt;br&gt;&lt;br&gt;*string* | product_name&lt;br&gt; |
+| `product_retailer_id`&lt;br&gt;&lt;br&gt;*string* | product_retailer_id&lt;br&gt; |
+| `product_set_id_breakdown`&lt;br&gt;&lt;br&gt;*string* | product_set_id_breakdown&lt;br&gt; |
+| `product_vendor_id`&lt;br&gt;&lt;br&gt;*string* | product_vendor_id&lt;br&gt; |
+| `product_vendor_id_breakdown`&lt;br&gt;&lt;br&gt;*string* | product_vendor_id_breakdown&lt;br&gt; |
+| `product_views`&lt;br&gt;&lt;br&gt;*string* | product_views&lt;br&gt; |
+| `promoted_product_set_result`&lt;br&gt;&lt;br&gt;*string* | promoted product set result&lt;br&gt; |
+| `publisher_platform`&lt;br&gt;&lt;br&gt;*string* | publisher_platform&lt;br&gt; |
+| `purchase_per_landing_page_view`&lt;br&gt;&lt;br&gt;*numeric string* | purchase_per_landing_page_view&lt;br&gt; |
+| `purchase_roas`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The total return on ad spend (ROAS) from purchases. This is based on information received from one or more of your connected Facebook Business Tools and attributed to your ads. For information on how it&#039;s calculated, please refer to https://www.facebook.com/business/help/274294333328345&lt;br&gt; |
+| `qualifying_question_qualify_answer_rate`&lt;br&gt;&lt;br&gt;*numeric string* | qualifying_question_qualify_answer_rate&lt;br&gt; |
+| `reach`&lt;br&gt;&lt;br&gt;*numeric string* | The number of Accounts Center accounts that saw your ads at least once. Reach is different from impressions, which may include multiple views of your ads by the same Accounts Center accounts. This metric is estimated.&lt;br&gt; |
+| `recurring_subscription_payment_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | recurring_subscription_payment_actions&lt;br&gt; |
+| `redownload`&lt;br&gt;&lt;br&gt;*string* | Boolean flag that indicates the customer redownloaded and reinstalled the app when the value is true. A `1` indicates customer has reinstalled the app and `0` indicates that customer hasn’t reinstalled the app&lt;br&gt;&lt;br&gt;**Note:** This breakdown is only supported by the `total_postbacks_detailed_v4` field.&lt;br&gt; |
+| `reels_trending_topic`&lt;br&gt;&lt;br&gt;*string* | reels_trending_topic&lt;br&gt; |
+| `result_rate`&lt;br&gt;&lt;br&gt;*list&lt;AdsInsightsResult&gt;* | The percentage of results you received out of all the views of your ads.&lt;br&gt; |
+| `result_values_performance_indicator`&lt;br&gt;&lt;br&gt;*string* | result_values_performance_indicator&lt;br&gt; |
+| `results`&lt;br&gt;&lt;br&gt;*list&lt;AdsInsightsResult&gt;* | The number of times your ad achieved an outcome, based on the objective and settings you selected.&lt;br&gt; |
+| `rta_ugc_topic`&lt;br&gt;&lt;br&gt;*string* | rta_ugc_topic&lt;br&gt; |
+| `rule_asset`&lt;br&gt;&lt;br&gt;*AdAssetRule* | rule_asset&lt;br&gt; |
+| `rule_set_id`&lt;br&gt;&lt;br&gt;*string* | rule_set_id&lt;br&gt; |
+| `rule_set_name`&lt;br&gt;&lt;br&gt;*string* | rule_set_name&lt;br&gt; |
+| `schedule_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | schedule_actions&lt;br&gt; |
+| `schedule_value`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | schedule_value&lt;br&gt; |
+| `shops_assisted_purchases`&lt;br&gt;&lt;br&gt;*string* | shops_assisted_purchases&lt;br&gt; |
+| `skan_version`&lt;br&gt;&lt;br&gt;*string* | skan_version&lt;br&gt; |
+| `social_spend`&lt;br&gt;&lt;br&gt;*numeric string* | The total amount you&#039;ve spent so far for your ads showed with social information. (ex: Jane Doe likes this).&lt;br&gt; |
+| `spend`&lt;br&gt;&lt;br&gt;*numeric string* | The estimated total amount of money you&#039;ve spent on your campaign, ad set or ad during its schedule. This metric is estimated.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `start_trial_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | start_trial_actions&lt;br&gt; |
+| `start_trial_value`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | start_trial_value&lt;br&gt; |
+| `submit_application_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | submit_application_actions&lt;br&gt; |
+| `submit_application_value`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | submit_application_value&lt;br&gt; |
+| `subscribe_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | subscribe_actions&lt;br&gt; |
+| `subscribe_value`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | subscribe_value&lt;br&gt; |
+| `thumb_stops`&lt;br&gt;&lt;br&gt;*numeric string* | The number of times someone dwells on your display ad.&lt;br&gt; |
+| `title_asset`&lt;br&gt;&lt;br&gt;*AdAssetTitle* | title_asset&lt;br&gt; |
+| `today_spend`&lt;br&gt;&lt;br&gt;*numeric string* | How much money you&#039;ve spent on your campaign, ad set or ad since 12 AM today (in your ad account&#039;s time zone). If you set a daily budget, you&#039;ll see your progress toward it here to determine how much more you can spend before the day ends. This metric is estimated.&lt;br&gt; |
+| `total_action_value`&lt;br&gt;&lt;br&gt;*numeric string* | total_action_value&lt;br&gt; |
+| `total_actions`&lt;br&gt;&lt;br&gt;*numeric string* | The total number of actions Accounts Center accounts took that are attributed to your ads. Actions may include engagement, clicks or conversions.&lt;br&gt; |
+| `total_card_view`&lt;br&gt;&lt;br&gt;*string* | total_card_view&lt;br&gt; |
+| `total_unique_actions`&lt;br&gt;&lt;br&gt;*numeric string* | The number of Accounts Center accounts that took an action that was attributed to your ads. This metric is estimated.&lt;br&gt; |
+| `unique_impressions`&lt;br&gt;&lt;br&gt;*numeric string* | The number of Accounts Center accounts that saw your ads at least once.&lt;br&gt; |
+| `updated_time`&lt;br&gt;&lt;br&gt;*string* | updated_time&lt;br&gt; |
+| `user_segment_key`&lt;br&gt;&lt;br&gt;*string* | user_segment_key&lt;br&gt; |
+| `video_30_sec_watched_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The number of times your video played for at least 30 seconds, or for nearly its total length if it&#039;s shorter than 30 seconds. For each impression of a video, we&#039;ll count video views separately and exclude any time spent replaying the video.&lt;br&gt; |
+| `video_6_sec_watched_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | video 6 sec watched actions&lt;br&gt; |
+| `video_asset`&lt;br&gt;&lt;br&gt;*AdAssetVideo* | video_asset&lt;br&gt; |
+| `video_avg_time_watched_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The average time a video was played, including any time spent replaying the video for a single impression.&lt;br&gt; |
+| `video_complete_watched_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | This shows the number of total views of at least 30 seconds or to the end of your video, whichever occurs first.&lt;br&gt; |
+| `video_completed_view_or_15s_passed_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | video_completed_view_or_15s_passed_actions&lt;br&gt; |
+| `video_continuous_2_sec_watched_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | video_continuous_2_sec_watched_actions&lt;br&gt; |
+| `video_p100_watched_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The number of times your video was played at 100% of its length, including plays that skipped to this point.&lt;br&gt; |
+| `video_p25_watched_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The number of times your video was played at 25% of its length, including plays that skipped to this point.&lt;br&gt; |
+| `video_p50_watched_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The number of times your video was played at 50% of its length, including plays that skipped to this point.&lt;br&gt; |
+| `video_p75_watched_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The number of times your video was played at 75% of its length, including plays that skipped to this point.&lt;br&gt; |
+| `video_p95_watched_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The number of times your video was played at 95% of its length, including plays that skipped to this point.&lt;br&gt; |
+| `video_play_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The number of times your video starts to play. This is counted for each impression of a video, and excludes replays. This metric is in development.&lt;br&gt; |
+| `video_play_curve_actions`&lt;br&gt;&lt;br&gt;*list&lt;AdsHistogramStats&gt;* | A video-play based curve graph that illustrates the percentage of video plays that reached a given second. Entries 0 to 14 represent seconds 0 thru 14. Entries 15 to 17 represent second ranges [15 to 20), [20 to 25), and [25 to 30). Entries 18 to 20 represent second ranges [30 to 40), [40 to 50), and [50 to 60). Entry 21 represents plays over 60 seconds.&lt;br&gt; |
+| `video_play_retention_0_to_15s_actions`&lt;br&gt;&lt;br&gt;*list&lt;AdsHistogramStats&gt;* | video_play_retention_0_to_15s_actions&lt;br&gt; |
+| `video_play_retention_20_to_60s_actions`&lt;br&gt;&lt;br&gt;*list&lt;AdsHistogramStats&gt;* | video_play_retention_20_to_60s_actions&lt;br&gt; |
+| `video_play_retention_graph_actions`&lt;br&gt;&lt;br&gt;*list&lt;AdsHistogramStats&gt;* | video_play_retention_graph_actions&lt;br&gt; |
+| `video_time_watched_actions`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | video_time_watched_actions&lt;br&gt; |
+| `website_clicks`&lt;br&gt;&lt;br&gt;*numeric string* | The number of clicks on links to your website in your ads.&lt;br&gt; |
+| `website_ctr`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The percentage of times Accounts Center accounts saw your ad and performed a link click.&lt;br&gt; |
+| `website_purchase_roas`&lt;br&gt;&lt;br&gt;*[list&lt;AdsActionStats&gt;](https://developers.facebook.com/docs/marketing-api/reference/ads-action-stats)* | The total return on ad spend (ROAS) from website purchases. This is based on the value of all conversions recorded by the Facebook pixel on your website and attributed to your ads. For information on how it&#039;s calculated, please refer to https://www.facebook.com/business/help/1283504535023899&lt;br&gt; |
+| `wish_bid`&lt;br&gt;&lt;br&gt;*numeric string* | wish_bid&lt;br&gt; |
+| `zip`&lt;br&gt;&lt;br&gt;*string* | zip&lt;br&gt; |
+
+#### Error Codes
+
+| Error Code | Description |
+| --- | --- |
+| 200 | Permissions error |
+| 100 | Invalid parameter |
+| 3018 | The start date of the time range cannot be beyond 37 months from the current date |
+| 613 | Calls to this api have exceeded the rate limit. |
+| 2642 | Invalid cursors values |
+| 2635 | You are calling a deprecated version of the Ads API. Please update to the latest version. |
+| 190 | Invalid OAuth 2.0 Access Token |
+| 2500 | Error parsing graph query |
+| 105 | The number of parameters exceeded the maximum for this operation |
+| 3001 | Invalid query |
+
+## Creating
+
+### /act_&#123;ad_account_id&#125;/insights
+You can make a POST request to *insights* edge from the following paths:
+
+- [/act_&#123;ad_account_id&#125;/insights](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/insights)
+
+When posting to this edge, an [AdReportRun](https://developers.facebook.com/docs/marketing-api/reference/ad-report-run) will be created.
+
+#### Parameters
+
+| Parameter | Description |
+| --- | --- |
+| `action_attribution_windows`&lt;br&gt;&lt;br&gt;*list&lt;enum&#123;1d_view, 7d_view, 28d_view, 1d_click, 7d_click, 28d_click, 1d_ev, dda, default, 7d_view_first_conversion, 28d_view_first_conversion, 7d_view_all_conversions, 28d_view_all_conversions, skan_view, skan_click, skan_click_second_postback, skan_view_second_postback, skan_click_third_postback, skan_view_third_postback&#125;&gt;* | **Default value: **`default`&lt;br&gt;The attribution window for the actions. The attribution window determines the window (e.g. 7d) and engagement type (e.g click) that’s used as a filter to report actions. See [About attribution settings and models](https://www.facebook.com/business/help/460276478298895?id=561906377587030) for examples. The `default` option means `[&quot;7d_view&quot;,&quot;1d_click&quot;]`.&lt;br&gt; |
+| `action_breakdowns`&lt;br&gt;&lt;br&gt;*list&lt;enum&#123;action_device, conversion_destination, matched_persona_id, matched_persona_name, signal_source_bucket, standard_event_content_type, action_canvas_component_name, action_carousel_card_id, action_carousel_card_name, action_destination, action_reaction, action_target_id, action_type, action_video_sound, action_video_type, is_business_ai_assisted&#125;&gt;* | **Default value: **`Vec`&lt;br&gt;How to break down action results. Supports more than one breakdowns. Default value is [&quot;action_type&quot;]&lt;br&gt;&lt;br&gt;&lt;br&gt;Note: you must also include `actions` field whenever `action_breakdowns` is specified.&lt;br&gt; |
+| `action_report_time`&lt;br&gt;&lt;br&gt;*enum&#123;impression, conversion, mixed, lifetime&#125;* | Determines the report time of action stats. For example, if a person            saw the ad on Jan 1st but converted on Jan 2nd, when you query the API            with `action_report_time=impression`, you see a conversion on Jan            1st. When you query the API with `action_report_time=conversion`, you see a conversion on Jan 2nd&lt;br&gt; |
+| `breakdowns`&lt;br&gt;&lt;br&gt;*list&lt;enum&#123;ad_extension_domain, ad_extension_url, ad_format_asset, age, app_id, body_asset, breakdown_ad_objective, breakdown_reporting_ad_id, call_to_action_asset, coarse_conversion_value, comscore_market, country, creative_automation_asset_id, creative_relaxation_asset_type, crm_advertiser_l12_territory_ids, crm_advertiser_subvertical_id, crm_advertiser_vertical_id, crm_ult_advertiser_id, description_asset, fidelity_type, flexible_format_asset_type, gen_ai_asset_type, gender, hsid, image_asset, impression_device, instagram_ads_follow_type, instagram_ads_instagram_media_product_type, instagram_ads_time_since_creation_bucket, internal_campaign_id, is_auto_advance, is_conversion_id_modeled, is_rendered_as_delayed_skip_ad, landing_destination, link_url_asset, mdsa_landing_destination, media_asset_url, media_creator, media_destination_url, media_format, media_origin_url, media_text_content, media_type, pa_creator_ig_handle, postback_sequence_index, product_brand_breakdown, product_category_breakdown, product_custom_label_0_breakdown, product_custom_label_1_breakdown, product_custom_label_2_breakdown, product_custom_label_3_breakdown, product_custom_label_4_breakdown, product_group_content_id_breakdown, product_id, redownload, region, rta_ugc_topic, skan_campaign_id, skan_conversion_id, skan_version, sot_attribution_model_type, sot_attribution_window, sot_channel, sot_event_type, sot_source, title_asset, user_persona_id, user_persona_name, video_asset, zip, rule_set_id, rule_set_name, dma, frequency_value, overlap_segment, hourly_stats_aggregated_by_advertiser_time_zone, hourly_stats_aggregated_by_audience_time_zone, mmm, place_page_id, publisher_platform, platform_position, device_platform, standard_event_content_type, conversion_destination, signal_source_bucket, reels_trending_topic, marketing_messages_btn_name, impression_view_time_advertiser_hour_v2&#125;&gt;* | How to break down the result. For more than one breakdown, only certain combinations are available: See &quot;Combining Breakdowns&quot; in the Breakdowns page. The option `impression_device` cannot be used by itself&lt;br&gt; |
+| `date_preset`&lt;br&gt;&lt;br&gt;*enum&#123;today, yesterday, this_month, last_month, this_quarter, maximum, data_maximum, last_3d, last_7d, last_14d, last_28d, last_30d, last_90d, last_week_mon_sun, last_week_sun_sat, last_quarter, last_year, this_week_mon_today, this_week_sun_today, this_year&#125;* | **Default value: **`last_30d`&lt;br&gt;Represents a relative time range. This field is ignored if `time_range` or `time_ranges` is specified&lt;br&gt; |
+| `default_summary`&lt;br&gt;&lt;br&gt;*boolean* | **Default value: **`false`&lt;br&gt;Determine whether to return a summary. If `summary` is set, this param is ignored; otherwise, a summary section with the same fields as specified by `fields` is included in the summary section&lt;br&gt; |
+| `export_columns`&lt;br&gt;&lt;br&gt;*list&lt;string&gt;* | Select fields on the exporting report file. It is an optional param. Exporting columns are equal to the param fields if you leave this param blank&lt;br&gt; |
+| `export_format`&lt;br&gt;&lt;br&gt;*string* | Set the format of exporting report file. If the export_format is set, Report file is asyncrhonizely generated. It expects [&quot;xls&quot;, &quot;csv&quot;].&lt;br&gt; |
+| `export_name`&lt;br&gt;&lt;br&gt;*string* | Set the file name of the exporting report.&lt;br&gt; |
+| `fields`&lt;br&gt;&lt;br&gt;*list&lt;string&gt;* | Fields to be retrieved. Default behavior is to return a list of most used fields&lt;br&gt; |
+| `filtering`&lt;br&gt;&lt;br&gt;*list&lt;Filter Object&gt;* | **Default value: **`Vec`&lt;br&gt;Filters on the report data. This parameter is an array of filter objects&lt;br&gt;&lt;br&gt;&lt;br&gt;`field` *string*&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;&lt;br&gt;`operator` *enum &#123;EQUAL, NOT_EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, IN_RANGE, NOT_IN_RANGE, CONTAIN, NOT_CONTAIN, CONTAINS_ANY, CONTAINS_ALL, NOT_CONTAINS_ANY, STEM_MATCH, IN, NOT_IN, STARTS_WITH, ENDS_WITH, ANY, ALL, AFTER, BEFORE, ON_OR_AFTER, ON_OR_BEFORE, NONE, TOP&#125;*&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;&lt;br&gt;`value` *string*&lt;br&gt;**[required]**&lt;br&gt; |
+| `graph_cache`&lt;br&gt;&lt;br&gt;*boolean* | **Default value: **`true`&lt;br&gt;[internal use only] This param controls whether the the Graph API level cache should be used for insights endpoint&lt;br&gt; |
+| `level`&lt;br&gt;&lt;br&gt;*enum &#123;ad, adset, campaign, account&#125;* | Represents the level of result&lt;br&gt; |
+| `limit`&lt;br&gt;&lt;br&gt;*integer* | limit&lt;br&gt; |
+| `product_id_limit`&lt;br&gt;&lt;br&gt;*integer* | Maximum number of product ids to be returned for each ad when breakdown by `product_id`.&lt;br&gt; |
+| `sort`&lt;br&gt;&lt;br&gt;*list&lt;string&gt;* | **Default value: **`Vec`&lt;br&gt;Field to sort the result, and direction of sorting. You can specify sorting direction by appending &quot;_ascending&quot; or &quot;_descending&quot; to the sort field. For example, &quot;reach_descending&quot;. For actions, you can sort by action type in form of &quot;actions:&lt;action_type&gt;&quot;. For example, [&quot;actions:link_click_ascending&quot;]. This array supports no more than one element. By default, the sorting direction is ascending&lt;br&gt; |
+| `summary`&lt;br&gt;&lt;br&gt;*list&lt;string&gt;* | If this param is used, a summary section is included, with the fields listed in this param&lt;br&gt; |
+| `summary_action_breakdowns`&lt;br&gt;&lt;br&gt;*list&lt;enum&#123;action_device, conversion_destination, matched_persona_id, matched_persona_name, signal_source_bucket, standard_event_content_type, action_canvas_component_name, action_carousel_card_id, action_carousel_card_name, action_destination, action_reaction, action_target_id, action_type, action_video_sound, action_video_type, is_business_ai_assisted&#125;&gt;* | **Default value: **`Vec`&lt;br&gt;Similar to `action_breakdowns`, but applies to summary. Default value is [&quot;action_type&quot;]&lt;br&gt; |
+| `time_increment`&lt;br&gt;&lt;br&gt;*enum&#123;monthly, all_days&#125; or integer* | **Default value: **`all_days`&lt;br&gt;If it is an integer, it is the number of days from 1 to 90. After you pick a reporting period by using `time_range` or `date_preset`, you may choose to have the results for the whole period, or have results for smaller time slices. If &quot;all_days&quot; is used, it means one result set for the whole period. If &quot;monthly&quot; is used, you get one result set for each calendar month in the given period. Or you can have one result set for each N-day period specified by this param. This param is ignored if `time_ranges` is specified&lt;br&gt; |
+| `time_range`&lt;br&gt;&lt;br&gt;*&#123;&#039;since&#039;:YYYY-MM-DD,&#039;until&#039;:YYYY-MM-DD&#125;* | A single time range object. UNIX timestamp not supported. This param is ignored if `time_ranges` is provided&lt;br&gt;&lt;br&gt;&lt;br&gt;`since` *datetime*&lt;br&gt;A date in the format of &quot;YYYY-MM-DD&quot;, which means from the beginning midnight of that day.&lt;br&gt;&lt;br&gt;&lt;br&gt;`until` *datetime*&lt;br&gt;A date in the format of &quot;YYYY-MM-DD&quot;, which means to the beginning midnight of the following day.&lt;br&gt; |
+| `time_ranges`&lt;br&gt;&lt;br&gt;*list&lt;&#123;&#039;since&#039;:YYYY-MM-DD,&#039;until&#039;:YYYY-MM-DD&#125;&gt;* | Array of time range objects. Time ranges can overlap, for example to return cumulative insights. Each time range has one result set. You cannot have more granular results with `time_increment` setting in this case.If `time_ranges` is specified, `date_preset`, `time_range` and `time_increment` are ignored&lt;br&gt;&lt;br&gt;&lt;br&gt;`since` *datetime*&lt;br&gt;A date in the format of &quot;YYYY-MM-DD&quot;, which means from the beginning midnight of that day.&lt;br&gt;&lt;br&gt;&lt;br&gt;`until` *datetime*&lt;br&gt;A date in the format of &quot;YYYY-MM-DD&quot;, which means to the beginning midnight of the following day.&lt;br&gt; |
+| `use_account_attribution_setting`&lt;br&gt;&lt;br&gt;*boolean* | **Default value: **`false`&lt;br&gt;When this parameter is set to true, your ads results are shown using the attribution settings defined for the ad account&lt;br&gt; |
+| `use_unified_attribution_setting`&lt;br&gt;&lt;br&gt;*boolean* | When this parameter is set to `true`, your ads results will be shown using unified attribution settings defined at ad set level and parameter `use_account_attribution_setting` will be ignored.&lt;br&gt;&lt;br&gt;**Note:** Please set this to `true` to get the same behavior as in the Ads Manager.&lt;br&gt; |
+
+#### Return Type
+
+```
+Struct  &#123;
+report_run_id: numeric string,
+&#125;
+```
+
+#### Error Codes
+
+| Error Code | Description |
+| --- | --- |
+| 100 | Invalid parameter |
+| 2635 | You are calling a deprecated version of the Ads API. Please update to the latest version. |
+| 190 | Invalid OAuth 2.0 Access Token |
+| 3018 | The start date of the time range cannot be beyond 37 months from the current date |
+| 200 | Permissions error |
+| 2500 | Error parsing graph query |
+
+## Updating
+
+You can&#039;t perform this operation on this endpoint.
+
+## Deleting
+
+You can&#039;t perform this operation on this endpoint.
+
+</pre></body></html>

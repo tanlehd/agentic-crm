@@ -1,0 +1,41 @@
+import {addReportMetric} from './reporting-measures-browser.mjs';
+import {expect} from '@playwright/test';
+import assert from 'node:assert/strict';
+import {mkdir,writeFile} from 'node:fs/promises';
+
+export async function captureReportingUsecase(page){
+ const dir='artifacts/reporting-usecase';await mkdir(dir,{recursive:true});
+ await page.setViewportSize({width:1800,height:1450});
+ const name='Chuyển đổi hội thoại theo quảng cáo · Mock';
+ await page.getByLabel('Tên báo cáo',{exact:true}).fill(name);
+ await page.getByRole('checkbox',{name:/session → ad/}).check();
+ await page.getByRole('button',{name:'Bỏ chiều session.opened_at',exact:true}).click();
+ await page.getByRole('button',{name:'Thêm chiều ad.name',exact:true}).click();
+ await addReportMetric(page,'crm_leads');
+ await addReportMetric(page,'deals_won');
+ await page.getByLabel('Từ ngày (UTC, bao gồm)',{exact:true}).fill('2026-09-01');
+ await page.getByLabel('Đến ngày (UTC, không bao gồm)',{exact:true}).fill('2026-09-08');
+ await page.getByText('Bộ lọc AND (0)',{exact:true}).click();
+ await page.getByLabel('Field lọc',{exact:true}).selectOption('session.source_kind');
+ await page.getByLabel('Giá trị',{exact:true}).selectOption('paid');
+ await page.getByRole('button',{name:'Thêm bộ lọc',exact:true}).click();
+ await page.getByLabel('Kiểu hiển thị',{exact:true}).selectOption('bar');
+ const preview=async()=>{const pending=page.waitForResponse(r=>r.url().endsWith('/api/v1/reporting/query')&&r.request().method()==='POST');await page.getByRole('button',{name:'Chạy preview',exact:true}).click();const response=await pending;assert.equal(response.status(),200);const body=await response.json();await expect(page.getByRole('status')).toContainText('Preview hoàn tất');return body.data;};
+ const save=async()=>{const pending=page.waitForResponse(r=>/\/api\/v1\/reporting\/definitions(?:\/[0-9a-f-]+)?$/.test(r.url())&&['POST','PATCH'].includes(r.request().method()));await page.getByRole('button',{name:'Lưu draft',exact:true}).click();const response=await pending;assert.equal(response.status(),200);await expect(page.getByRole('status')).toContainText('Đã lưu draft');return (await response.json()).data;};
+ const chart=await preview();assert.deepEqual(chart.totals,{sessions_opened:'4',crm_leads:'3',deals_won:'3'});await save();
+ await expect(page.getByRole('img',{name:/Biểu đồ cột/})).toBeVisible();
+ await page.getByRole('heading',{name:'Từ dữ liệu đến báo cáo'}).scrollIntoViewIfNeeded();
+ await page.screenshot({path:dir+'/conversion-by-ad-chart.png',fullPage:true});
+ await page.getByLabel('Kiểu hiển thị',{exact:true}).selectOption('table');
+ await addReportMetric(page,'session_to_lead_rate');
+ await addReportMetric(page,'won_value');
+ const table=await preview();assert.deepEqual(table.totals,{sessions_opened:'4',crm_leads:'3',deals_won:'3',session_to_lead_rate:'50.000000',won_value:'400.000000'});
+ assert.equal(table.rows.length,2);const a=table.rows.find(r=>r.dimensions[0]==='Ad A'),b=table.rows.find(r=>r.dimensions[0]==='Ad B');assert.equal(a.metrics.crm_leads,'2');assert.equal(b.metrics.crm_leads,'1');assert.equal(a.metrics.won_value,'200.000000');assert.equal(b.metrics.won_value,'200.000000');
+ const draft=await save();
+ const download=page.waitForEvent('download');await page.getByRole('button',{name:'Xuất CSV',exact:true}).click();await(await download).saveAs(dir+'/conversion-by-ad.csv');
+ await page.getByRole('heading',{name:'Từ dữ liệu đến báo cáo'}).scrollIntoViewIfNeeded();
+ await page.screenshot({path:dir+'/conversion-by-ad-table.png',fullPage:true});
+ await page.locator('.rpt-preview').screenshot({path:dir+'/conversion-by-ad-result.png'});
+ await writeFile(dir+'/report.json',JSON.stringify({name,mode:'mock; isolated native test fixture via browser-only transport proxy',reportId:draft.id,version:draft.revision,definition:draft.definition,chart,table,screenshots:['conversion-by-ad-chart.png','conversion-by-ad-table.png','conversion-by-ad-result.png']},null,2));
+ console.log('PASS usecase:4 paid sessions,3 CRM Leads,3 won Deals,50% session-to-lead,400 USD won value; saved draft and screenshots.');return ['paid conversion by Ad: chart, table, draft, CSV and golden totals'];
+}

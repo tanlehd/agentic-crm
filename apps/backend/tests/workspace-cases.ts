@@ -1,3 +1,4 @@
+import { historicalConversation } from './historical-conversation.js';
 import { workspaceCatalogCases } from './workspace-catalog-cases.js';
 import { workspaceActivityCases } from './workspace-activity-cases.js';
 import { describe,it,expect } from 'vitest';
@@ -38,10 +39,7 @@ export function workspaceCases(isolated:(name:string)=>Promise<DataSource>){desc
     records=new CrmRecords(ds,'workspace',coreDomains());contact=String((await records.mutate(account,tenant,{object:'contact',kind:'records'},{fields:{display_name:'Đặng Synthetic'}},randomUUID(),undefined,'workspace-fixture')).body.data.id);
     await ds.query("INSERT INTO channel_connection(id,tenant_id,provider,external_account_id,team_id) VALUES (?,?,'mock_messenger','synthetic-workspace-page',?)",[connection,tenant,team]);
     await ds.query("INSERT INTO contact_identity(id,tenant_id,connection_id,contact_id,external_subject_id) VALUES (?,?,?,?,'workspace-one')",[identity,tenant,connection,contact]);
-    chat=new Conversations(ds,'workspace');ws=new ChatWorkspace(ds,'workspace');id=(await receive()).conversationId;
-    await ds.query('UPDATE crm_record SET owner_principal_id=? WHERE tenant_id=? AND id=?',[principal,tenant,id]);
-    await chat.mutate(account,tenant,id,'messages',{text:'Synthetic legacy coverage unknown',owner_revision:'1'},randomUUID(),undefined,'workspace-fixture');
-    await ds.query('UPDATE crm_record SET owner_principal_id=NULL WHERE tenant_id=? AND id=?',[tenant,id]);
+    chat=new Conversations(ds,'workspace');ws=new ChatWorkspace(ds,'workspace');id=await historicalConversation(ds,{tenant,contact,identity,connection,principal,account,outbound:true});
     const before=await ds.query('SELECT * FROM message'),journal=await ds.query('SELECT * FROM schema_migration');
     expect(await migrate(ds)).toBe(migrations.length-19);expect(await ds.query('SELECT * FROM message')).toEqual(before);expect((await ds.query('SELECT * FROM schema_migration ORDER BY version')).slice(0,19)).toEqual(journal);
     expect((await ws.capabilities(account,tenant)).data.features.queue_v1).toBe(false);await expect(ws.list(account,tenant,{})).rejects.toThrow('WORKSPACE_BACKFILLING');

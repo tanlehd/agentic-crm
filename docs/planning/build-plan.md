@@ -1,5 +1,26 @@
 # Kế hoạch sinh source code M1–M2
 
+**2026-10-12 / CHG-20261012-06:** User accepted early API-backed UI. [PLAN-022H](../contracts/reporting-authoring.md) scopes source/model/fields/axes/flat filters/chart/pivot/private draft/CSV over delivered APIs. SRC-064 is the sole active source task; SRC-059 requeued READY, incomplete scope/evidence preserved. Full SRC-060 follows SRC-059 and SRC-064; no publish/dashboard/drilldown completion claim. No database changes.
+
+**2026-10-12 / CHG-20261012-05:** PLAN-022G [durable run contract/table designs](../contracts/reporting-runs.md) implemented as SRC-059 lifecycle slice: owner/current native ACL,lease attempts,cancel,pinned snapshot/result persistence in own schema3. [Evidence](../tracking/details/SRC-059.md). No automatic worker; exact drilldown design next. SRC-059 remains sole active source task, SRC-060 UI unclaimed.
+
+**2026-10-12 / CHG-20261012-04:** PLAN-022F adds [native mock query/CSV contract](../contracts/reporting-query-api.md), implemented as SRC-059 second phase with explicit complete-source grants and live result-delivery checks. [Evidence](../tracking/details/SRC-059.md). SRC-059 remains the sole active source task; exact durable run/drilldown design is next. No connected ACL/UI completion claim.
+
+**2026-10-12 / CHG-20261012-03:** PLAN-022E scopes the [internal mock query core](../contracts/reporting-query.md); SRC-059 IN_PROGRESS now delivers executable26metrics/group/pivot/authorization ports/cache/CSV. [Evidence](../tracking/details/SRC-059.md). Remaining exact native query/source policy and run/drilldown gates precede their implementation; no UI completion claim, no second active source task.
+
+**2026-10-12 / CHG-20261012-02:** PLAN-022D/SRC-058 add [typed synthetic adapter and durable projection generations](../contracts/reporting-projections.md),own schema2; G1 dataset and replay/checkpoint/tombstone/activation isolation tested. Next exact query/native source ACL gate before SRC-059, no UI/runtime KPI completion claim. [Evidence](../tracking/details/SRC-058.md).
+
+**2026-10-12 / CHG-20261012-01:** PLAN-022C scopes [private draft persistence/native ACL](../contracts/reporting-persistence.md); SRC-057 implements own Reporting MySQL schema/API and native BFF. Broader PLAN-022 remains the projection/query/publish/UI gate. Next complete exact synthetic datasource/projection contract before SRC-058; one source task at a time. [Evidence](../tracking/details/SRC-057.md).
+
+**2026-10-10 / PLAN-022A:** [Report Builder plan](report-builder.md) bổ sung mock-first sequence PLAN-022 → SRC-057…062, sau đó SRC-049 connected integration (còn cần SRC-051/053/055). Datasource/model/attribute/relation/metric catalog dùng chung cho chart/pivot/dashboard và templates. Đây là product planning, không mở source task thứ hai; SRC-051 hiện vẫn IN_PROGRESS. Exact API/DDL/producer/ACL gates phải Ready trước source.
+
+**Implementation override CHG-20261010-02:** user requests sequential implementation; SRC-051 requeued READY, progress retained. PLAN-022B/SRC-063 delivers first scoped semantic catalog/validator kernel, then remaining PLAN-022 gates → persisted foundation SRC-057. No parallel source work, DB reset or scope completion claim for Marketing.
+
+**Current priority CHG-20261007-14:** Lead/Deal → organic Conversation→Lead→Deal won with value → organic Page report/release (SRC-045/046/052/050); then Marketing sync/campaign reports (SRC-051/049). Ticket/receipts follow separately. CHG-20261007-15: marketing reports measure conversion performance for resource, content/message and audience strategy; won value is a funnel outcome, receipts are independent. Exact scoped design: [organic Sales base](../contracts/organic-sales-base.md).
+
+
+Ưu tiên hiện hành CHG-20261007-14: [CRM base outcomes](crm-base-outcomes.md), scoped organic release → PLAN-011 Marketing exact design → SRC-051/049; Ticket/receipts và frameworks theo sau. M1–M2 dưới đây giữ nguyên evidence lịch sử. Lead từ Conversation có immutable system attribution, khác nguồn khai báo agent chọn.
+
 ADR-021/PLAN-007 supersedes Keycloak as future auth design: [native auth + schema plan](native-identity-data-plan.md). Các W0–W6/gates OIDC dưới đây ghi baseline lịch sử; task mới dùng CRM-owned MySQL authentication và [DB guideline](../data/database-guidelines.md).
 
 Status: Ready for implementation theo từng task và design gate. Baseline kế hoạch: 2026-10-02; scaffold/Docker SRC-001…003 đã có ngày 2026-10-03, trạng thái thực thi theo tracker.
@@ -125,3 +146,23 @@ Theo CHG-20261006-19 và chỉ đạo mở rộng thiết kế từ sample, [wor
 User-directed local tooling now separates persistent Docker infrastructure from Windows/macOS/Linux host application processes. [Runbook](../development/service-manager.md), [evidence](../tracking/details/ENV-003.md). Lifecycle does not migrate or reset data; normal synthetic QA can reuse tenant/user records. Source extraction and production Linux deployment gates remain unchanged.
 
 UX-003 bổ sung [app shell và Inbox redesign](../ux/README.md), UX guidelines và template mỗi màn. SRC-036 kế thừa layout mới cùng UX-002 contracts sau SRC-035; mock không phải source release. Deal/Marketing/Reporting và global CRM record search giữ design gate riêng.
+
+CHG-20261007-13: CRM base chain adds SRC-051 Marketing hierarchy sync after SRC-048 and before SRC-049. Marketing owns crm_marketing and Facebook Ad Account→Campaign→Ad Set→Ad; report consumes scoped API/events. Exact source gate remains PLAN-011; live verification separate from local release.
+
+SRC-053 DONE scoped local2026-10-08: [session evidence](../tracking/details/SRC-053.md), schema26 and session-based Lead/Deal lineage. PLAN-011B closes only session design; next remaining PLAN-011 Marketing exact sync design → SRC-051 → SRC-049.
+
+PLAN-019 / CHG-20261008-05: [Meta-native Marketing operations](../contracts/marketing-operating-flow.md). Remove CRM strategic taxonomy from active scope. PLAN-011 must define the metadata+Insights ingestion/report delivery sequence; SRC-051 metadata alone cannot close joined Insights reporting.
+
+PLAN-021 / CHG-20261008-07 supersedes fixed-report interpretation: Marketing provides [source datasets/storage/field descriptions](../data/marketing-source-catalog.md); Reporting owns the [builder and reusable templates](../planning/report-builder-data-model.md). The three PLAN-020 families are examples, not a limit or separate Marketing report engines. Source ingestion acceptance and Reporting template/query acceptance are separate. PLAN-011 is the Marketing data gate; PLAN-022 is the Reporting implementation gate.
+
+PLAN-023 / CHG-20261008-09: [Shared account and Page tenant admission](../contracts/marketing-tenant-admission.md). All tables retain tenant_id NOT NULL. The same external Ad Account may have independent tenant-local replicas/bindings. Ads/related metadata/Insights are admitted only when Creative Page resolves to the sync tenant; foreign Ads skip, unresolved defer. Parent configuration can be shared; children and ad-level Insights remain tenant-filtered. No cross-tenant payload/history persistence or campaign/account aggregate metric substitution.
+
+## Marketing data first — CHG-20261008-10
+
+User prioritizes database implementation before periodic backend. PLAN-011D closes the scoped database gate; SRC-054 creates own schema/migrations/grants. Next PLAN-011 completes auth/API/Page validation/cadence/retention, then SRC-051 periodic metadata and SRC-055 periodic base/age/region Insights. Reporting PLAN-022 → SRC-049 consumes their data contracts. Database completion does not close live synchronization or reporting acceptance.
+
+PLAN-011E metadata design now specifies [authority → worker sequence](marketing-backend.md). Add SRC-056 for Channels account credential/Page admission prerequisite; SRC-051 depends on it and scoped PLAN-011E. SRC-055 remains gated by remaining Insights design. Do not close broad PLAN-011 from metadata design alone.
+
+## Common visualization extension — 2026-10-12
+
+CHG-20261012-08: [Ready scoped contract](../contracts/reporting-visualizations.md) adds horizontal bar, stacked bar, area, pie/donut and descriptor-driven quick-start presets to SRC-064. Trend uses temporal line/area, composition requires additive measures and complete nonnegative partitions, exact table remains available. Existing definitions stay compatible; no database migration. Published reusable templates/dashboard/period comparison remain separate.

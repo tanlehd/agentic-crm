@@ -8,6 +8,8 @@ Owner `—` nghĩa chưa claim. Evidence `—` nghĩa chưa kiểm thử/hoàn t
 
 Git sync S-20261004-03: initial commit `7c05518` đã push lên `origin/main` theo yêu cầu người dùng; implementation status không đổi. Xem [execution log](log.md).
 
+Git sync S-20261013-01: user explicitly requested commit/push of the accumulated workspace on main. Pre-commit checks recorded in [execution log](log.md); feature statuses and acceptance scope unchanged (SRC-064 IN_PROGRESS, SRC-059/SRC-051 READY). No implementation task claimed for this Git-only session.
+
 ## Công việc chuẩn bị
 
 | ID | Công việc | Status | Owner | Evidence |
@@ -238,7 +240,78 @@ User-prioritized sequence; [framework plan](../planning/automation-frameworks.md
 
 | ID | Deliverable | Deps | Status | Owner | Gate / evidence |
 |---|---|---|---|---|---|
-| PLAN-009 | Baseline gap review and exact Workflow/Chatflow/AI Agent framework scopes | UX-006; SRC-018; SRC-019; SRC-020 | TODO | unassigned | Definitions/config/UI/auth/runtime acceptance Ready before source |
+| PLAN-009 | Baseline gap review and exact Workflow/Chatflow/AI Agent framework scopes | UX-006; SRC-018; SRC-019; SRC-020; SRC-050 | TODO | unassigned | CRM base release first per CHG-20261007-12; definitions/config/UI/auth/runtime acceptance Ready before source |
 | SRC-042 | Workflow framework on existing engine | PLAN-009; SRC-019 | TODO | unassigned | Exact PLAN-009 scope; definition/action/trigger/binding/auth/run tests |
 | SRC-043 | Chatflow framework on Workflow foundation | SRC-042; SRC-020 | TODO | unassigned | Exact PLAN-009 scope; session/node/context/action lifecycle tests |
 | SRC-044 | AI Agent definition/skill/permission/execution framework | SRC-043; SRC-018 | TODO | unassigned | Exact PLAN-009 scope; structured results and suggestion-only Assist guard tests |
+
+## CRM base first — 2026-10-07
+
+CHG-20261007-12 supersedes immediate framework-first priority. [CRM base plan](../planning/crm-base-outcomes.md) and [source rules](../contracts/crm-source-attribution.md): manual Lead/Deal, primary Conversation→Lead path, immutable system channel/Page/ad attribution and separate editable declared source. Sales owns Lead/Deal; CRM base is platform scope, not a transfer of all domain ownership into CRM Core. Scoped implementation uses PLAN-011A; remaining scopes still require PLAN-011.
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-010 | CRM base priority, outcome scope, immutable attribution product rules and source backlog | SRC-041; UX-006 | DONE | Codex 2026-10-07 | Design-only; S-20261007-15; docs links/DAG and whitespace PASS; runtime NOT_RUN |
+| PLAN-011 | Exact CRM base domain/API/UI/data/ACL/migration/report design | PLAN-010 | TODO | unassigned | Scoped specs Ready before source; baseline gap review and table templates required |
+| SRC-045 | Manual/Conversation Lead creation, immutable attribution and declared source UI/API | PLAN-011A; SRC-041 | DONE | Codex 2026-10-07 | [Evidence](details/SRC-045.md);4 MySQL groups/native browser/107 unit/typechecks PASS |
+| SRC-046 | Manual Deal and Lead→Deal pipeline, won/lost and Customer lifecycle | SRC-045 | DONE | Codex 2026-10-07 | [Evidence](details/SRC-046.md); scoped terminal won/lost,6 MySQL groups/browser PASS |
+| SRC-047 | Ticket basic commands, queue/detail, ownership and lifecycle | SRC-049 | TODO | unassigned | CRM-BASE-05; advanced SLA stays Draft, not full AC-10 |
+| SRC-048 | Deal-linked collected-money evidence, partial receipts and refund/reversal | SRC-047 | TODO | unassigned | CRM-BASE-06; manual evidence, audit/idempotency; no implied payment integration |
+| SRC-049 | Connected Reporting adapters and reusable Marketing/CRM templates release | SRC-051; SRC-053; SRC-055; SRC-062; PLAN-022 | TODO | unassigned | CRM-BASE-07/RB-17; [builder plan](../planning/report-builder.md); authorized producer APIs/events, source reconciliation/ACL/coverage; live Meta evidence separate |
+| SRC-050 | Lead/Deal organic Page won-value local release | SRC-052 | DONE | Codex 2026-10-07 | [Evidence](details/SRC-050.md);222 MySQL/109 unit/9 canonical gates/browser/restart PASS; full CRM-BASE-08/Ticket/receipts deferred |
+| PLAN-012 | Marketing hierarchy ownership and campaign grouping refinement | PLAN-010 | DONE | Codex 2026-10-07 | S-20261007-16; docs links/DAG/whitespace PASS, product design only; runtime NOT_RUN |
+| SRC-051 | Periodic Facebook hierarchy/Creative/targeting sync and Marketing lookup/events | PLAN-011E; SRC-050; SRC-054; SRC-056 | READY | Codex 2026-10-08 | Requeued2026-10-10 for user-prioritized Reporting slices, not completed; [preserved progress](details/SRC-051.md): schema3/scheduler/change store verified, producer/API/worker pending; CHG-20261010-02 |
+
+| PLAN-011A | Exact Lead/Deal and organic Page won-value scoped contract | PLAN-010; PLAN-012 | DONE | Codex 2026-10-07 | [Design](../contracts/organic-sales-base.md); document review, full PLAN-011 remains TODO |
+| SRC-052 | Organic won-value report by Page with currency/date/ACL and browser flow | SRC-046 | DONE | Codex 2026-10-07 | [Evidence](details/SRC-052.md);8 MySQL groups/native browser and109 unit PASS |
+| PLAN-013 | Marketing conversion performance purpose and dimension/metric requirements | PLAN-012; SRC-050 | DONE | Codex 2026-10-07 | [Requirements](../planning/marketing-conversion-performance.md); product design only, exact contracts remain PLAN-011 |
+| PLAN-014 | Official Meta Marketing Markdown dossier and CRM field mapping | PLAN-013 | DONE | Codex 2026-10-07 | [Evidence](details/PLAN-014.md);24 official Markdown/raw pairs,103 traced fields; logical merge only, PLAN-011 physical/API gate remains |
+| PLAN-015 | Marketing logical ERD for review | PLAN-014 | DONE | Codex 2026-10-08 | [ERD](../data/marketing-erd.md); logical review artifact only, physical DDL remains PLAN-011 |
+| PLAN-016 | Add Facebook Page and Instagram identity/post relationships to Marketing ERD | PLAN-015 | DONE | Codex 2026-10-08 | [ERD](../data/marketing-erd.md); actor/post/media refs and observed links, logical only |
+| PLAN-017 | Merge Marketing core and Page/Instagram ERDs | PLAN-016 | DONE | Codex 2026-10-08 | [Combined ERD](../data/marketing-erd.md);16 entities/19 unique relations, docs/whitespace PASS |
+| PLAN-018 | Page–Conversation–Session acquisition model and CRM lineage | PLAN-017 | DONE | Codex 2026-10-08 | [Product contract](../contracts/conversation-acquisition-session.md); ERD/compatibility only, runtime gate SRC-053 |
+| SRC-053 | Conversation acquisition sessions, message membership and session-based Lead/Deal lineage | PLAN-011B; SRC-050 | DONE | Codex 2026-10-08 | [Evidence](details/SRC-053.md): schema26, sessions/API/UI/Lead–Deal source,223 MySQL/9 gates,local browser/restart; campaign reporting remains SRC-049 |
+| PLAN-011B | Exact scoped acquisition session API/data/lifecycle design | PLAN-018; SRC-050 | DONE | Codex 2026-10-08 | [Ready contract](../contracts/acquisition-session-implementation.md); table templates/review complete, broader PLAN-011 remains |
+
+| PLAN-019 | Meta-native Marketing operating flow and CRM outcome join; remove manual taxonomy | PLAN-014; SRC-053 | DONE | Codex 2026-10-08 | [Operating flow](../contracts/marketing-operating-flow.md); ERD/mapping/ownership/AC synced; docs191/1364 links PASS; runtime unchanged, exact sync/Insights remains PLAN-011 |
+
+| PLAN-020 | Separate Meta breakdown, CRM conversion and joined ad performance reports | PLAN-019 | DONE | Codex 2026-10-08 | CHG-20261008-06; operating contract/ERD/reporting/mapping/AC synced; docs191/1372 links and whitespace PASS; design-only |
+
+| PLAN-021 | Separate Marketing source data design from Reporting builder/templates | PLAN-020 | DONE | Codex 2026-10-08 | CHG-20261008-07; Marketing source catalog + Reporting builder direction, docs193/1396 links/whitespace PASS; implementation remains PLAN-011/022 |
+
+| PLAN-022 | Exact Reporting builder API/schema/producer adapter implementation gate | PLAN-022A | TODO | unassigned | Product plan in PLAN-022A; exact OpenAPI/JSON Schema, producer field/event coverage, filled table templates/index/migration and runtime limits before builder source; separate from Marketing ingestion |
+| PLAN-022A | Report Builder product/semantic/UX design and mock-first delivery plan | PLAN-021 | DONE | Codex 2026-10-10 | [Evidence](details/PLAN-022A.md); plan/semantic/UX/RB-01…17, source sequence SRC-057…062 then049; docs/link/JSON/DAG and whitespace checks PASS; design-only, exact gate PLAN-022 TODO |
+| PLAN-022B | Exact semantic registry/definition validator scoped contract | PLAN-022A | DONE | Codex 2026-10-10 | [Ready contract](../contracts/reporting-semantic-kernel.md); reviewed no-persistence/no-HTTP scope, typed schema/graph/ACL/limits and kernel acceptance; broader PLAN-022 unchanged |
+| PLAN-022C | Exact private draft/version persistence and native ACL API contract | SRC-063 | DONE | Codex 2026-10-12 | [Ready scoped contract](../contracts/reporting-persistence.md); complete table templates, own/all authorization, signed admission window, CAS/idempotency and native/private HTTP; query/publish/UI remain PLAN-022 |
+| PLAN-022D | Exact mock adapter/snapshot/projection persistence contract | SRC-057; SRC-053 | DONE | Codex 2026-10-12 | [Ready contract](../contracts/reporting-projections.md); typed observations,generations,replay,tombstones,coverage,filled tables; no public query |
+| PLAN-022E | Bounded internal mock query-core execution/authorization port contract | SRC-058 | DONE | Codex 2026-10-12 | [Scoped contract](../contracts/reporting-query.md);26metrics,group/pivot,exact arithmetic,rights ports/cache/aggregate CSV; native API/run/drilldown gate remains open |
+| PLAN-022F | Native mock preview/CSV API, explicit source grant and signed query admission | PLAN-022E; SRC-058 | DONE | Codex 2026-10-12 | [Scoped contract](../contracts/reporting-query-api.md); live Identity/session delivery check; no connected rights/run/drilldown completion |
+| PLAN-022G | Durable caller-driven mock runs, pinned snapshot/lease/cancel/result and owner ACL | PLAN-022F; SRC-058 | DONE | Codex 2026-10-12 | [Ready contract/table templates](../contracts/reporting-runs.md); two own-schema tables, no automatic worker/drilldown |
+| PLAN-022H | Bounded early mock authoring UI/discovery contract | SRC-057; SRC-058; SRC-063; PLAN-022F; PLAN-022G | DONE | Codex 2026-10-12 | [Scoped contract](../contracts/reporting-authoring.md); CHG-20261012-06, design-only; full UX scope remains open |
+
+| PLAN-011C | Exact Meta provider field/storage dictionary and dataset sync profiles | PLAN-021 | DONE | Codex 2026-10-08 | [105-field dictionary](../data/marketing-storage-dictionary.md), storage/sync design; source trace/regeneration/docs/lint PASS; auth/API/DDL gates still PLAN-011 |
+
+| PLAN-023 | Shared Meta Ad Account and Page-gated tenant ingestion | PLAN-011C | DONE | Codex 2026-10-08 | [Tenant admission](../contracts/marketing-tenant-admission.md); shared account/Page-filtered sync, dictionary/ERD/AC synced; docs196/1537 links/lint/regeneration PASS; design-only |
+
+| PLAN-011D | Ready database-only Marketing schema/table/operator contract | PLAN-023; SRC-053 | DONE | Codex 2026-10-08 | [Contract](../contracts/marketing-database.md); scoped table-template review; sync API gate remains PLAN-011 |
+| SRC-054 | Independent Marketing database, migrations, grants and persistent MySQL verification | PLAN-011D; SRC-053 | DONE | Codex 2026-10-08 | [Evidence](details/SRC-054.md):23 tables/352 columns/105 provider fields,17 MySQL groups,local v1 and warm preservation; periodic sync deferred |
+| SRC-055 | Periodic Meta base/age/region Insights ingestion | PLAN-011; SRC-051; SRC-054 | TODO | unassigned | Ad/Page admission, versioned grains, late corrections, cadence/backfill/retry/fence; no report builder |
+
+| PLAN-011E | Exact metadata backend credential/Page authority/schedule/API/migration design | PLAN-023; SRC-054 | DONE | Codex 2026-10-08 | [Evidence](details/PLAN-011E.md):88-field manifest,20 schema examples,docs/source traces/lint PASS; design only |
+
+| SRC-056 | Channels Marketing credential/Graph proxy/Page authority and admission receipts | PLAN-011E; SRC-054; SRC-031; SRC-038 | DONE | Codex 2026-10-08 | [Ready design](../contracts/marketing-metadata-sync.md); prerequisite to SRC-051, native ACL/encrypted credential/forward migration/revoke race; live gate separate |
+
+## Report Builder mock-first delivery — PLAN-022A, 2026-10-10
+
+[Plan](../planning/report-builder.md) · [semantic model](../data/reporting-semantic-model.md) · [UX](../ux/report-builder.md) · [acceptance](../quality/report-builder-acceptance.md). SRC-063 kernel,SRC-057 drafts,SRC-058 mock projections use scoped PLAN-022B/C/D gates. SRC-059 READY with retained progress through PLAN-022E query core and PLAN-022F native mock preview/CSV; PLAN-022G durable caller-driven runs implemented; drilldown still needs its exact gate. SRC-060…062 TODO. SRC-051 stays READY with preserved progress; only one source task may be active.
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| SRC-057 | Reporting persisted private drafts/immutable versions, native BFF/ACL and own schema | PLAN-022C; SRC-038; SRC-063 | DONE | Codex 2026-10-12 | [Evidence](details/SRC-057.md);17 MySQL/native HTTP groups repeated,178 unit,build/types/OpenAPI/docs/lint PASS; local/test Reportingv1,CRM27 preserved; no query/publish/UI claim |
+| SRC-058 | Synthetic datasource adapters and typed CRM/Marketing fact/dimension projections | PLAN-022D; SRC-057; SRC-053 | DONE | Codex 2026-10-12 | [Evidence](details/SRC-058.md);25objects/120fields/86canonical G1 rows,10 MySQL+17 regression groups,196 unit/types/build/static PASS; local/test schema2 preserves11 tables,CRM27 unchanged; no public query |
+| SRC-059 | Semantic validator/query planner, metrics/cohort/pivot/run/cache/drilldown/CSV | PLAN-022E; PLAN-022F; PLAN-022G; SRC-058 | READY | Codex 2026-10-12 (progress retained) | [Evidence](details/SRC-059.md);26metric core/native preview + durable caller-driven run/cancel/result,schema3;248 unit,13 lifecycle MySQL/12 native/24 regression groups PASS; drilldown/remaining KPI semantics still required |
+| SRC-060 | Next.js Report Builder, source/related fields, axes/charts/pivot and report templates | SRC-059; SRC-064 | TODO | unassigned | RB-11/12/14; API-backed authoring, keyboard/mobile/zoom, version conflict and late response tests |
+| SRC-061 | Dynamic dashboards, versioned widgets, filters/comparison/cross-filter and library | SRC-060 | TODO | unassigned | RB-13; per-widget snapshot/freshness/filter scope and viewer permission; browser evidence |
+| SRC-062 | RB-MOCK local release, catalog extension proof and preservation/capacity verification | SRC-061 | TODO | unassigned | RB-14…16 and full RB-MOCK; MySQL/browser/restart/warm upgrade, golden KPI and extension fixtures; no live Meta claim |
+| SRC-063 | Reporting semantic catalog and strict definition/ACL/grain/visualization validator | PLAN-022B; SRC-038 | DONE | Codex 2026-10-10 | [Evidence](details/SRC-063.md):19 objects/85 fields/26 metrics/4 models,49 kernel+109 existing unit PASS,build/workspace types/static checks; no DB/API/UI execution claim |
+| SRC-064 | Early API-backed mock report builder: discover/configure/preview/chart/pivot/private draft/CSV | PLAN-022H; SRC-057; SRC-058; SRC-063; PLAN-022F; PLAN-022G | IN_PROGRESS | Codex 2026-10-12 | [Evidence](details/SRC-064.md); Field/formula picker +10visual types/quick-start presets implemented;293unit/13native/16browser top-level groups PASS (14visual +9measure subgroups); screenshots/mobile verified; local Alpha role approval pending; SRC-059 progress retained |

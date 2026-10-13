@@ -1,0 +1,163 @@
+<html><head><title>Advantage+ audience</title><meta charset="UTF-8" /><style nonce="PzmiSfEd">body { font-family: monospace; margin: 20px; }pre { white-space: pre-wrap; word-wrap: break-word; }</style></head><body><pre data-testid="developer-docs-markdown-page"># Advantage+ audience
+
+
+
+Enable Advantage+ audience on your campaigns to expand the eligible audience pool the delivery system can search, subject to your non-negotiable constraints. Non-negotiable business constraints are NOT expanded, these include location constraints, minimum age, language, and custom audience exclusions.
+
+* To opt in, set the `advantage_audience` parameter within `targeting_automation` to `1`.
+* To opt out, set the `advantage_audience` parameter within `targeting_automation` to `0`.
+
+**Warning:** Prior to v23.0, the `advantage_audience` parameter within `targeting_automation` was optional and wasn&#039;t explicitly required to be set in the targeting spec when creating a new ad set or updating an existing one.
+
+Beginning with v23.0, the `advantage_audience` parameter within `targeting_automation` defaults to `1` or requires an explicit value of either `1` or `0`. This behavior applies only when creating a new ad set; updating an existing ad set will not exhibit this behavior on any version.
+
+## Enable Advantage+ audience
+
+When Advantage+ audience is enabled, you can set the `age_range` parameter within `targeting_spec`.
+
+```json
+&quot;targeting&quot;: &#123;
+  &quot;age_range&quot;: [25, 35],
+  &quot;geo_locations&quot;: &#123;
+    &quot;countries&quot;: [&quot;GB&quot;]
+  &#125;,
+  &quot;targeting_automation&quot;: &#123;
+    &quot;advantage_audience&quot;: 1
+  &#125;
+&#125;
+```
+
+* When you omit `age_range`, the delivery system creates the age range from `age_min` and `age_max`.
+* When Advantage+ audience is enabled, the delivery system resets `age_min` and `age_max` to default values.
+* When Advantage+ audience is enabled, advertisers can pass `age_min` values ranging between 18 to 25 only.
+* When Advantage+ audience is enabled, advertisers cannot set `age_max` values. `age_max` is fixed at 65.
+
+### Example request
+
+The following request enables Advantage+ audience on a new ad set by setting `advantage_audience` to `1` within `targeting_automation`.
+
+```html
+curl -X POST \
+  -F &#039;name=&quot;advantage audience test&quot;&#039; \
+  -F &#039;is_autobid=&quot;true&quot;&#039; \
+  -F &#039;daily_budget=&quot;100&quot;&#039; \
+  -F &#039;billing_event=&quot;IMPRESSIONS&quot;&#039; \
+  -F &#039;campaign_id=&quot;&lt;CAMPAIGN ID&gt;&quot;&#039; \
+  -F &#039;targeting=&#123;&quot;age_max&quot;: 65, &quot;age_min&quot;: 18, &quot;age_range&quot;: [25,35], &quot;geo_locations&quot;: &#123;&quot;countries&quot;: [&quot;US&quot;, &quot;GB&quot;]&#125;,&quot;targeting_automation&quot;: &#123;&quot;advantage_audience&quot;: 1 &#125;&#125;&#039; \
+  -F &#039;access_token=&quot;&lt;ACCESS_TOKEN&gt;&quot;&#039; \
+https://facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+## Default opted-in cases
+
+The `advantage_audience` parameter within `targeting_automation` defaults to `1` unless explicitly specified in the following scenarios:
+
+* **Default Targeting Setup:** When passing default values for Age, Gender, Custom Audience Inclusion, and Detailed Targeting Inclusion, or omitting these fields.
+* **Relaxed Targeting Setup:** When using a relaxed setup by applying individual relaxation settings for Age, Gender, Custom Audience Inclusion, and Detailed Targeting Inclusion.
+
+### Examples
+
+The following examples show targeting setups that opt in to Advantage+ audience by default without explicitly setting `advantage_audience`.
+
+#### Default setup
+
+The following targeting spec shows a default setup that passes default values for age and location and omits inclusion fields.
+
+```json
+&#123;
+   &quot;targeting&quot;:&#123;
+      &quot;geo_locations&quot;:&#123;
+         &quot;countries&quot;:[
+            &quot;US&quot;
+         ]
+      &#125;,
+      &quot;age_max&quot;:65,
+      &quot;age_min&quot;:18,
+   &#125;
+&#125;
+```
+
+#### Relaxed setup
+
+The following targeting spec shows a relaxed setup that applies individual relaxation settings for custom audiences and lookalikes.
+
+```json
+&#123;
+   &quot;targeting&quot;:&#123;
+      &quot;age_max&quot;:65,
+      &quot;age_min&quot;:18,
+      &quot;custom_audiences&quot;:[
+         &#123;
+            &quot;id&quot;:&quot;&lt;CUSTOM_AUDIENCE_ID&gt;&quot;
+         &#125;,
+         &#123;
+            &quot;id&quot;:&quot;&lt;LOOKALIKE_ID&gt;&quot;
+         &#125;
+      ],
+      &quot;flexible_spec&quot;:[
+         &#123;
+            &quot;interests&quot;:[
+               &#123;
+                  &quot;id&quot;:&quot;&lt;INTEREST_ID&gt;&quot;
+               &#125;
+            ]
+         &#125;
+      ],
+      &quot;geo_locations&quot;:&#123;
+         &quot;countries&quot;:[
+            &quot;US&quot;
+         ],
+         &quot;location_types&quot;:[
+            &quot;home&quot;,
+            &quot;recent&quot;
+         ]
+      &#125;,
+      &quot;targeting_relaxation_types&quot;:&#123;
+         &quot;custom_audience&quot;:1,
+         &quot;lookalike&quot;:1
+      &#125;,
+      &quot;targeting_optimization&quot;:&quot;expansion_all&quot;
+   &#125;
+&#125;
+```
+
+## Troubleshooting
+
+The API returns an error when you create an ad set if your setup is not either default or relaxed, which means you have:
+
+* Used non-default settings for any of Age, Gender, Custom Audience Inclusion, and Detailed Targeting Inclusion.
+* Not used individual relaxation settings for these parameters.
+
+### Example
+
+The following targeting spec triggers this error because it uses a non-default, non-relaxed setup without explicitly setting `advantage_audience`.
+
+```json
+&#123;
+   &quot;targeting&quot;:&#123;
+      &quot;age_max&quot;:50,
+      &quot;age_min&quot;:30,
+      &quot;custom_audiences&quot;:[
+         &#123;
+            &quot;id&quot;:&quot;&lt;CUSTOM_AUDIENCE_ID&gt;&quot;
+         &#125;
+      ],
+      &quot;geo_locations&quot;:&#123;
+         &quot;countries&quot;:[
+            &quot;US&quot;
+         ],
+         &quot;location_types&quot;:[
+            &quot;home&quot;,
+            &quot;recent&quot;
+         ]
+      &#125;
+   &#125;
+&#125;
+```
+
+To resolve this, you must explicitly set the `advantage_audience` parameter within `targeting_automation` to either `1` or `0`.
+
+## Learn more
+
+* [Help Center: About Advantage+ audience](https://www.facebook.com/business/help/273363992030035)
+</pre></body></html>

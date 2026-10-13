@@ -13,6 +13,8 @@ export interface CrmLeadCreate {
       note: string;
     };
   };
-  conversation_id?: null;
+  conversation_id?: string | null;
   qualification_session_id?: null;
+  declared_source?: null | "referral" | "website" | "facebook" | "phone" | "other";
+  conversation_session_id?: string | null;
 }

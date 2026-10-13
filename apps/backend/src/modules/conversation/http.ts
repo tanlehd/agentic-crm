@@ -18,12 +18,12 @@ export class ConversationRuntime implements OnModuleDestroy {
 @Controller('conversations')
 export class ConversationController {
   constructor(@Inject(AuthRuntime) private readonly auth:AuthRuntime,@Inject(ConversationRuntime) private readonly runtime:ConversationRuntime){}
-  private async respond(req:Request,res:ServerResponse,kind:'detail'|'messages'|'envelopes'|'rich'|'intent'|'notes'|'transition',mutation=false,contactBound=false){
+  private async respond(req:Request,res:ServerResponse,kind:'detail'|'messages'|'envelopes'|'rich'|'intent'|'notes'|'acquisition-sessions'|'transition',mutation=false,contactBound=false){
     const correlation=randomUUID();res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json');res.setHeader('X-Content-Type-Options','nosniff');
     try{
       const session=mutation?await this.auth.service.requireMutation(cookie(req,'crm_session'),req.headers.origin,req.headers['x-csrf-token']):await this.auth.service.session(cookie(req,'crm_session'),true),tenant=req.headers['x-tenant-id'];
       if(!uuid(tenant)||Object.values(req.params).some(v=>!uuid(v)))throw new CommandError(400,'INVALID_REQUEST');await this.runtime.ready();
-      if(!mutation){const result=await this.runtime.conversations.read(session.account_id,tenant,req.params.id,kind as 'detail'|'messages'|'envelopes'|'rich'|'intent'|'notes',req.query,req.params.intentId);if(!Array.isArray(result.data)&&result.data.version)res.setHeader('ETag',`"${result.data.version}"`);res.end(JSON.stringify({...result,meta:{correlation_id:correlation}}));return;}
+      if(!mutation){const result=await this.runtime.conversations.read(session.account_id,tenant,req.params.id,kind as 'detail'|'messages'|'envelopes'|'rich'|'intent'|'notes'|'acquisition-sessions',req.query,req.params.intentId);if(!Array.isArray(result.data)&&result.data.version)res.setHeader('ETag',`"${result.data.version}"`);res.end(JSON.stringify({...result,meta:{correlation_id:correlation}}));return;}
       const key=req.headers['idempotency-key'],match=req.headers['if-match'];
       if(Object.keys(req.query).length||typeof key!=='string'||!/^application\/json(?:;|$)/i.test(req.headers['content-type']??'')||match!==undefined&&(typeof match!=='string'||!/^"[1-9][0-9]{0,19}"$/.test(match)))throw new CommandError(400,'INVALID_REQUEST');
       const result=await this.runtime.conversations.mutate(session.account_id,tenant,req.params.id!,kind as 'messages'|'notes'|'transition',req.body,key,typeof match==='string'?match.slice(1,-1):undefined,correlation,contactBound);res.statusCode=result.status;if(result.body.data.version)res.setHeader('ETag',`"${result.body.data.version}"`);res.end(JSON.stringify(result.body));
@@ -31,6 +31,7 @@ export class ConversationController {
   }
   @Get() list(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'detail');}
   @Get(':id') detail(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'detail');}
+  @Get(':id/acquisition-sessions') acquisitions(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'acquisition-sessions');}
   @Get(':id/messages') messages(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'messages');}
   @Get(':id/message-envelopes-v3') rich(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'rich');}
   @Get(':id/message-envelopes') envelopes(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'envelopes');}

@@ -1,6 +1,17 @@
 # Roadmap và backlog
 
+**2026-10-12 / CHG-20261012-06:** User accepted early API-backed UI. [PLAN-022H](../contracts/reporting-authoring.md) scopes source/model/fields/axes/flat filters/chart/pivot/private draft/CSV over delivered APIs. SRC-064 is the sole active source task; SRC-059 requeued READY, incomplete scope/evidence preserved. Full SRC-060 follows SRC-059 and SRC-064; no publish/dashboard/drilldown completion claim. No database changes.
+
+CHG-20261010-02: triển khai Reporting từng phần, bắt đầu PLAN-022B/SRC-063 semantic kernel; SRC-051 requeue READY và giữ nguyên progress. Tiếp theo exact PLAN-022 persistence/native API gate → SRC-057, rồi chuỗi mock builder đã định nghĩa. Không cần hoàn thành Marketing ingestion để xây kernel mock.
+
+**PLAN-022A / 2026-10-10:** [Report Builder](../planning/report-builder.md) được chia RB-MOCK (PLAN-022 exact design → SRC-057…062) và RB-CONNECTED (SRC-049 sau SRC-051/053/055 và mock release). Planning bổ sung catalog mở rộng, related CRM/Marketing objects, metric/cohort/owner semantics, axes/pivot/charts/dashboard. Không thay trạng thái source đang active SRC-051; scheduling/warehouse/multi-touch vẫn ngoài v1.
+
+**Current priority CHG-20261007-14:** Lead/Deal → organic Conversation→Lead→Deal won with value → organic Page report/release (SRC-045/046/052/050); then Marketing sync/campaign reports (SRC-051/049). Ticket/receipts follow separately. CHG-20261007-15: marketing reports measure conversion performance for resource, content/message and audience strategy; won value is a funnel outcome, receipts are independent. Exact scoped design: [organic Sales base](../contracts/organic-sales-base.md).
+
+
 Status: Ready for implementation — thứ tự và gate; không cam kết ngày.
+
+CHG-20261007-12: ưu tiên [CRM base](../planning/crm-base-outcomes.md) trước các framework automation. Tách scope Lead/Deal/Ticket basic, collection evidence và fixed attribution reporting từ M4/M5 thành PLAN-011 → SRC-045…050. Không chờ live M3 để kiểm logic local, không đóng toàn M4/M5: advanced SLA, Appointment, Google Ads, visual builders và custom reports giữ gate riêng. Sau CRM base mới PLAN-009 và SRC-042…044.
 
 | Milestone | Đầu ra | Gate hoàn tất |
 |---|---|---|
@@ -37,3 +48,7 @@ Theo dõi thực thi nhiều ngày bằng [tracker 25 task](../tracking/tasks.md
 - M5: chốt giới hạn graph/report, publish/migration, cache và report execution budget trước xây builder.
 
 Mỗi milestone có thể chia nhiều PR nhỏ; một PR phải trỏ requirement, design và scenario. Không cần triển khai microservice hoặc warehouse để hoàn tất M1–M2.
+
+Marketing scope refinement CHG-20261007-13: [Ad Account hierarchy sync](../services/marketing.md) SRC-051 precedes CRM base campaign report SRC-049. Local adapter acceptance and live Facebook Marketing API validation are separate; Ads Insights/spend and ad creation/editing remain outside this hierarchy scope.
+
+CHG-20261008-10: Marketing storage first (PLAN-011D/SRC-054); periodic metadata backend SRC-051 and Insights SRC-055 remain planned after exact PLAN-011 integration design. Reporting builder remains PLAN-022/SRC-049.

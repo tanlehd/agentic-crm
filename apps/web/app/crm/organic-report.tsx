@@ -1,0 +1,11 @@
+'use client';
+import { useState } from 'react';
+import { useApi,ErrorNotice } from './api';
+import { Button } from '../../components/ui/button';
+export function OrganicReport({tenant,openDeal}:{tenant:string;openDeal:(id:string)=>void}){
+ const today=new Date(),[from,setFrom]=useState(new Date(Date.UTC(today.getUTCFullYear(),today.getUTCMonth(),1)).toISOString().slice(0,10)),[to,setTo]=useState(new Date(Date.UTC(today.getUTCFullYear(),today.getUTCMonth(),today.getUTCDate()+1)).toISOString().slice(0,10));
+ const [period,setPeriod]=useState({from:from+'T00:00:00Z',to:to+'T00:00:00Z'}),query=useApi(tenant,'/api/v1/sales/reports/organic-pages?'+new URLSearchParams(period));
+ return <section className="crm-card"><h2>Doanh thu chốt thắng organic theo Page</h2><p>Tổng giá trị Deal won theo ngày chốt (UTC), chưa phải tiền đã thu. Organic: hội thoại không ghi nhận referral quảng cáo tại lúc tạo Lead.</p><form className="crm-toolbar" onSubmit={e=>{e.preventDefault();setPeriod({from:from+'T00:00:00Z',to:to+'T00:00:00Z'});}}><label>Từ ngày<input aria-label="Báo cáo từ ngày" type="date" required value={from} onChange={e=>setFrom(e.target.value)}/></label><label>Đến trước ngày<input aria-label="Báo cáo đến trước ngày" type="date" required value={to} onChange={e=>setTo(e.target.value)}/></label><Button type="submit">Xem báo cáo</Button></form>
+ <ErrorNotice error={query.error} reload={()=>void query.refetch()}/>{query.isPending?<p role="status">Đang tính báo cáo…</p>:query.data&&<><p>Chỉ gồm Deal bạn có quyền đọc. Không gồm nguồn thủ công, paid hoặc chưa xác định.</p><div style={{overflowX:'auto'}}><table><thead><tr><th>Kênh</th><th>Page</th><th>Tiền tệ</th><th>Deal won</th><th>Giá trị chốt thắng</th><th>Đối soát</th></tr></thead><tbody>{query.data.data.map((r:any)=><tr key={JSON.stringify([r.channel,r.page_id,r.currency])}><td>{r.channel}</td><td>{r.page_id}</td><td>{r.currency}</td><td>{r.won_deal_count}</td><td>{r.won_value}</td><td><details><summary>Xem Deals</summary>{r.deal_ids.map((id:string)=><button key={id} onClick={()=>openDeal(id)}>{id.slice(0,8)}</button>)}</details></td></tr>)}</tbody></table></div>{!query.data.data.length&&<p>Chưa có Deal organic chốt thắng trong kỳ.</p>}</>}
+ </section>;
+}

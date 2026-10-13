@@ -59,6 +59,7 @@ const crmRecords=JSON.parse(await readFile('packages/contracts/schemas/crm-recor
 for(const [name,definition] of Object.entries(crmRecords.definitions))spec.components.schemas[name]=JSON.parse(JSON.stringify(definition).replaceAll('#/definitions/','#/components/schemas/'));
 const crmRoutes=[
   ['get','crm/context',null,'context-response'],['get','objects/{key}/descriptor',null,'descriptor-response'],
+  ['get','deals',null,'record-list'],['get','deals/{id}',null,'record-response'],['post','deals','deal-create','record-response'],['patch','deals/{id}','deal-patch','record-response',true],
   ['get','leads',null,'record-list'],['get','leads/{id}',null,'record-response'],['post','leads','lead-create','record-response'],['post','leads/{id}/qualification','lead-qualify','record-response',true],['post','leads/{id}/disqualify','lead-disqualify','record-response',true],
   ['get','object-types/{key}/properties',null,'property-list'],['post','object-types/{key}/properties','property-create','property-response',true],
   ['patch','object-types/{key}/properties/{id}','property-patch','property-response',true],
@@ -74,6 +75,10 @@ for(const [method,path,input,output,match] of crmRoutes){
   (spec.paths[`/api/v1/${path}`]??={})[method]={operationId:`crm-${method}-${path.replaceAll(/[{}]/g,'').replaceAll('/','-')}`,security:[{sessionCookie:[]}],parameters,...(input?{requestBody:{required:true,content:{'application/json':{schema:{$ref:`#/components/schemas/crm-${input}`}}}}}:{}),responses};
 }
 spec.info.description='Health, OIDC, Identity, CRM registry and metadata, standard records and Lead qualification APIs.';
+
+const organicReportSchema={"type":"object","additionalProperties":false,"required":["data","period","metric","scope","excluded_sources","organic_basis","meta"],"properties":{"data":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["channel","page_id","currency","won_deal_count","deal_ids","won_value"],"properties":{"channel":{"type":"string"},"page_id":{"type":"string"},"currency":{"type":"string"},"won_deal_count":{"type":"integer","minimum":0},"deal_ids":{"type":"array","items":{"type":"string","format":"uuid"}},"won_value":{"type":"string","pattern":"^[0-9]+\\.[0-9]{6}$"}}}},"period":{"type":"object","required":["from","to"],"properties":{"from":{"type":"string","format":"date-time"},"to":{"type":"string","format":"date-time"}}},"metric":{"const":"won_value"},"scope":{"const":"authorized_deals"},"excluded_sources":{"type":"array","items":{"enum":["manual","paid","unknown"]}},"organic_basis":{"const":"no_ad_referral_observed"},"meta":{"type":"object","required":["correlation_id"],"properties":{"correlation_id":{"type":"string"}}}}};
+spec.components.schemas['organic-page-report']=organicReportSchema;
+spec.paths['/api/v1/sales/reports/organic-pages']={get:{operationId:'sales-organic-page-report',security:[{sessionCookie:[]}],parameters:[tenantHeader,...['from','to'].map(name=>({name,in:'query',required:true,schema:{type:'string',format:'date-time'},description:'UTC closed-date range [from,to), maximum366 days'}))],responses:{200:response('organic-page-report','Authorized won Deal value by organic Page and currency'),...adminErrors}}};
 const conversations=JSON.parse(await readFile('packages/contracts/schemas/conversation.json','utf8'));
 for(const [name,definition] of Object.entries(conversations.definitions))spec.components.schemas[name]=JSON.parse(JSON.stringify(definition).replaceAll('#/definitions/','#/components/schemas/'));
 for(const [method,path,input,output] of [
@@ -81,10 +86,12 @@ for(const [method,path,input,output] of [
   ['get','conversations/{id}/message-envelopes',null,'envelope-timeline'],
   ['get','conversations/{id}/message-envelopes-v3',null,'rich-timeline'],
   ['get','conversations/{id}/outbound-intents/{intentId}',null,'intent-response'],['post','conversations/{id}/messages','send','send-response'],
+  ['get','conversations/{id}/acquisition-sessions',null,'acquisition-sessions'],
   ['get','conversations/{id}/notes',null,'notes'],['post','conversations/{id}/notes','note','note-response'],['post','conversations/{id}/transition','transition','response'],
 ]){
   const parameters=[tenantHeader,...[...path.matchAll(/\{(\w+)\}/g)].map(m=>({name:m[1],in:'path',required:true,schema:{type:'string',format:'uuid'}})),...(input?mutationHeaders:[]),...(input==='transition'?[{name:'If-Match',in:'header',required:true,schema:{type:'string'}}]:[])];
   if(['list','timeline','envelope-timeline','rich-timeline','notes'].includes(output))parameters.push(...listParams);
+  if(output==='acquisition-sessions')parameters.push(listParams[0],{name:'before_sequence',in:'query',schema:{type:'string',pattern:'^[1-9][0-9]{0,19}$'}});
   if(output==='list')parameters.push(...['state','owner','team'].map(name=>({name,in:'query',schema:{type:'string'}})));
   const status=input==='send'?202:input==='note'?201:200;
   (spec.paths[`/api/v1/${path}`]??={})[method]={operationId:`conversation-${method}-${path.replaceAll(/[{}]/g,'').replaceAll('/','-')}`,security:[{sessionCookie:[]}],parameters,...(input?{requestBody:{required:true,content:{'application/json':{schema:{$ref:`#/components/schemas/conversation-${input}`}}}}}:{}),responses:{...adminErrors,[status]:response(`conversation-${output}`,'Authorized Conversation result')}};

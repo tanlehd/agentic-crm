@@ -1,5 +1,8 @@
 # MOD-05 — Lead/Opportunity & Sale Workspace
 
+**Current priority CHG-20261007-14:** Lead/Deal → organic Conversation→Lead→Deal won with value → organic Page report/release (SRC-045/046/052/050); then Marketing sync/campaign reports (SRC-051/049). Ticket/receipts follow separately. Phase1 revenue means won Deal value, not cash collected. Exact scoped design: [organic Sales base](../contracts/organic-sales-base.md).
+
+
 > Kiến trúc đích microservice theo ADR-017: [Sales](../services/sales.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.
 Status: Ready for implementation Lead qualification/handoff M2; Deal/customer đầy đủ Draft M4. Requirements: REQ-03, REQ-06, REQ-09.
 
@@ -48,3 +51,7 @@ SRC-012 triển khai manual Lead create/draft/qualification/disqualify và sessi
 SRC-021 exact commands, transaction authorization and durable attention: [Sales handoff contract](../contracts/sales-handoff.md).
 
 SRC-022 Sales workspace projection, source/team/owner filters and explicit accept UI: [exact contract](../contracts/workspaces-m2.md). Related Contact/Conversation links require current read permission; queue/detail do not accept automatically.
+
+## CRM base priority — PLAN-010
+
+[CRM base plan](../planning/crm-base-outcomes.md) ưu tiên manual Lead/Deal và Conversation→Lead trước framework automation. [Source attribution rules](../contracts/crm-source-attribution.md): system channel/Page/ad và origin refs do backend snapshot một lần, không editable; declared source agent được chọn/sửa riêng có audit. Deal từ Lead pin lineage tới receipts/refunds và marketing report. Manual Deal không Lead hợp lệ, không fabricated attribution. Lead qualification/consent/handoff hiện có giữ nguyên; Deal pipeline/won/lost/reopen, collection evidence và exact permissions/API/DDL/UI chờ PLAN-011 Ready. SRC-045/046/048 là source follow-up, không claim runtime từ product rules này.

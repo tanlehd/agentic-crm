@@ -1,10 +1,24 @@
 # Reporting & Analytics
 
-Status: Target architecture accepted direction — PLAN-005 / ADR-017. Service extraction/API/physical schema chưa Ready; không đồng nghĩa deployed. [Module hiện tại](../modules/reporting.md) · [Catalog](README.md) · [Cross-service rules](../contracts/service-boundaries.md).
+**2026-10-12 / CHG-20261012-06:** User accepted early API-backed UI. [PLAN-022H](../contracts/reporting-authoring.md) scopes source/model/fields/axes/flat filters/chart/pivot/private draft/CSV over delivered APIs. SRC-064 is the sole active source task; SRC-059 requeued READY, incomplete scope/evidence preserved. Full SRC-060 follows SRC-059 and SRC-064; no publish/dashboard/drilldown completion claim. No database changes.
+
+SRC-059 lifecycle phase2026-10-12 adds caller-driven [durable run API/storage](../contracts/reporting-runs.md) in own schema3,owner/current native authority,pinned snapshot/executor,attempt lease/cancel fencing and result retrieval. No producer SQL,automatic worker or shared UoW. [Runbook](../development/reporting-runs.md), [evidence](../tracking/details/SRC-059.md). Drilldown/production worker/UI are subsequent scopes; prior slice descriptions below are historical.
+
+SRC-059 native phase2026-10-12 adds [query/CSV API](../contracts/reporting-query-api.md) over own mock snapshots, signed admission and native BFF delivery fences. Only explicit tenant-complete synthetic source grants supported; connected policy/run/drilldown/UI remain pending. [Runbook](../development/reporting-query-api.md), [evidence](../tracking/details/SRC-059.md). Existing schema/migrations unchanged.
+
+SRC-059 first phase2026-10-12 adds bounded in-memory execution of own mock snapshots,26metrics/group/pivot, exact arithmetic, explicit authority/load ports and reauthorized cache/CSV. [Contract](../contracts/reporting-query.md), [runbook](../development/reporting-query.md), [evidence](../tracking/details/SRC-059.md). No new service endpoints/tables or cross-service reads. Native query admission/source policy and durable run/drilldown remain pending; historical slice boundaries below do not describe this new core.
+
+Status: Target architecture accepted direction — PLAN-005 / ADR-017. SRC-057 private draft API/own schema and SRC-058 internal mock projections implemented through PLAN-022C/D; query/connected producers/deployment remain pending. [Module hiện tại](../modules/reporting.md) · [Catalog](README.md) · [Cross-service rules](../contracts/service-boundaries.md).
+
+PLAN-022A (2026-10-10): [Module delivery plan](../planning/report-builder.md) và [semantic catalog](../data/reporting-semantic-model.md) định nghĩa datasource/model/field/relation/metric registries, report/template/dashboard versions, query/grain/ACL và synthetic adapter path. SRC-057 supplies own NestJS draft API through [exact scoped contract](../contracts/reporting-persistence.md); SRC-058 adds mock projections in schema2. No cross-service SQL. SRC-059…062 need remaining exact PLAN-022 gates; SRC-049 is connected adapters/release after Marketing producers. [Local draft runbook](../development/reporting-storage.md), [draft evidence](../tracking/details/SRC-057.md).
 
 ## Phạm vi và trách nhiệm
 
-Event-derived read models, metrics/report definitions, query execution và controlled export.
+SRC-058 adds own-schema2 mock projection storage, versioned internal SnapshotAdapter and descriptor-typed25object/120field G1 source. [Contract](../contracts/reporting-projections.md), [runbook](../development/reporting-projections.md). Atomic complete-generation activation protects readers from partial rebuild; query/public datasource/connected ACL remain pending. No service daemon automatically started.
+
+SRC-063 adds a real TypeScript [semantic kernel package](../../services/reporting/README.md), independent of producer implementations and database. SRC-057 adds private draft persistence/native BFF, own/all permissions, immutable history and pinned catalog snapshots. Scope is unvalidated nonexecutable metadata; query/worker/publish/UI and production service deployment remain future work. PLAN-022B/C are scoped gates; broader PLAN-022 stays open.
+
+Report builder platform: data-source catalog, linked objects, attribution/attribute fields, metrics, reusable versioned templates, event-derived read models, query execution và controlled export.
 
 Ngoài phạm vi: Không transactional source of truth, không SELECT business databases xuyên service.
 
@@ -28,7 +42,7 @@ Mỗi service có local `outbox_event`, `consumer_inbox`, `idempotency_receipt`,
 
 Consumes minimized domain events; authorized bulk snapshot API for rebuild/backfill; QueryReport/ExportReport. Definition contract declares grain/timezone/as_of/watermark and row/field policy.
 
-Các tên interface/event ở đây là logical proposals, chưa endpoint/schema được triển khai. Exact OpenAPI/JSON Schema, auth scopes, errors, versions, payload minimization và consumer contract tests thuộc PLAN-006 gate; legacy wire types giữ nguyên tới compatibility cutover. Không dùng DTO chung để import domain/service implementation.
+QueryReport/ExportReport/producer event interfaces remain logical proposals. Draft CRUD/history/archive now use [versioned storage JSON Schema](../contracts/reporting-storage-v1.schema.json) and [native OpenAPI](../contracts/reporting-storage.openapi.json). Internal immutable event facts report.definition.create/update/archive.v1 carry IDs/revision only; no relay/consumer contract enabled. Legacy wire types remain compatible; no shared DTO importing another service domain implementation.
 
 ## Consistency, authorization và failure handling
 
@@ -50,4 +64,21 @@ Rollback/cutover tuân [migration plan](../planning/microservices-migration.md):
 
 ## Acceptance trước service Ready
 
-Own DB credentials không đọc được DB khác; API/consumer schemas và tenant ACL negative tests; duplicate/out-of-order/lost ACK; crash sau remote effect; permission/owner revoked; broker/downstream outage; poison event/DLQ replay; migrate/restore và compatibility với client/run phiên bản cũ. Thêm domain cases ở module hiện hữu; với Draft module phải chốt domain AC trước code. Chưa test service phân tán, tất cả gates này NOT_RUN.
+Full-service gates include own DB isolation, API/consumer schemas, ACL, duplicate/out-of-order/lost ACK, crash/revoke, downstream outage, DLQ, migration/restore and compatibility. SRC-057 verifies only draft/native HTTP isolation, replay/CAS, current own/all grants, bounded admission expiry, warm migration and reconnect ([evidence](../tracking/details/SRC-057.md)). Producer/consumer replay, projection/query execution, restore drill and production deployment remain NOT_RUN.
+PLAN-014 [dimension mapping](../data/marketing-field-mapping.md) adds versioned creative/targeting projections from Meta. Meta Insights metrics/settings remain separate from CRM conversion facts. No cross-service SQL; no per-asset/demographic attribution from ad-only evidence.
+
+PLAN-020 / CHG-20261008-06: [Three report families](../contracts/marketing-operating-flow.md) separate Meta delivery/engagement by age and region, CRM conversions via Session ad_id, and joined ad-total performance. Sync age/region breakdowns for impressions/clicks/spend; no person-level demographic join, no allocation of CRM won to breakdown rows. Preserve separate datasets and recompute distinct Contact totals. Exact Insights ingestion and query/period contracts remain PLAN-011.
+
+PLAN-021 / CHG-20261008-07 supersedes fixed-report interpretation: Marketing provides [source datasets/storage/field descriptions](../data/marketing-source-catalog.md); Reporting owns the [builder and reusable templates](../planning/report-builder-data-model.md). The three PLAN-020 families are examples, not a limit or separate Marketing report engines. Source ingestion acceptance and Reporting template/query acceptance are separate. PLAN-011 is the Marketing data gate; PLAN-022 is the Reporting implementation gate.
+
+PLAN-023 / CHG-20261008-09: [Shared account and Page tenant admission](../contracts/marketing-tenant-admission.md). All tables retain tenant_id NOT NULL. The same external Ad Account may have independent tenant-local replicas/bindings. Ads/related metadata/Insights are admitted only when Creative Page resolves to the sync tenant; foreign Ads skip, unresolved defer. Parent configuration can be shared; children and ad-level Insights remain tenant-filtered. No cross-tenant payload/history persistence or campaign/account aggregate metric substitution.
+
+SRC-064 adds authorized read-only authoring discovery and own-DB health, with Next.js consuming versioned HTTP only. [Contract](../contracts/reporting-authoring.md), [local runbook](../development/reporting-builder.md). No schema change.
+
+## Field summaries extension — 2026-10-12
+
+CHG-20261012-07: [bounded Ready contract](../contracts/reporting-measures.md) adds field/aggregation authoring and registered COUNT/AVG/MIN/MAX on existing numeric populations. Distinct, missing-data policy, formula dependencies and recomputed totals are explicit. Existing26 descriptors remain unchanged; no schema migration, freeform formula editor or new source grain.
+
+## Common visualization extension — 2026-10-12
+
+CHG-20261012-08: [Ready scoped contract](../contracts/reporting-visualizations.md) adds horizontal bar, stacked bar, area, pie/donut and descriptor-driven quick-start presets to SRC-064. Trend uses temporal line/area, composition requires additive measures and complete nonnegative partitions, exact table remains available. Existing definitions stay compatible; no database migration. Published reusable templates/dashboard/period comparison remain separate.

@@ -1,3 +1,4 @@
+import { captureLeadSource,declaredSource,sourceKeys } from './source.js';
 import { requireInactiveSession } from '../chatflow/lifecycle.js';
 import type { DataSource } from 'typeorm';
 import type { TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
@@ -40,14 +41,16 @@ export function leadDomain(contacts:ContactReferencePort):RecordDomain{
   const row=async(s:TransactionScope,id:string)=>{const [r]=await s.query('SELECT * FROM `lead` WHERE tenant_id=? AND record_id=?',[s.context.tenantId,id]);if(!r)throw new CommandError(404,'NOT_FOUND');return r;};
   return {genericCreate:false,allowCustomValues:false,updateAction:'qualify',
     adapter:{insert:async(s,id,input,a,correlation)=>{
-      const b=object(input,['contact_id','qualification']);if(!uuid(b.contact_id))fieldError('contact_id');await contacts.requireActive(s,a,b.contact_id);
+      const b=object(input,['contact_id','qualification','conversation_id','conversation_session_id','declared_source']);if(b.conversation_id!==undefined&&b.conversation_id!==null&&!uuid(b.conversation_id))fieldError('conversation_id');if(!uuid(b.contact_id))fieldError('contact_id');await contacts.requireActive(s,a,b.contact_id);
+      if(b.conversation_session_id!=null&&(!uuid(b.conversation_session_id)||!b.conversation_id))fieldError('conversation_session_id');
       const q=qualification(b.qualification??{},a,false);if(Object.keys(q).length&&!allows(a,'lead','qualify',{tenantId:a.tenantId,ownerPrincipalId:a.principalId,teamId:null,sharedTeamIds:[]}))throw new CommandError(403,'FORBIDDEN');
       await s.query('INSERT INTO `lead`(tenant_id,record_id,contact_id,status,qualification) VALUES (?,?,?,?,?)',[s.context.tenantId,id,b.contact_id,Object.keys(q).length?'qualifying':'new',JSON.stringify(q)]);
-      await new DurableCommands().domainEvent(s,a.principalId,correlation,'lead.created',id,'1',{lead_id:id,contact_id:b.contact_id,conversation_id:null});
+      await captureLeadSource(s,a,id,b.contact_id,b.conversation_id??null,b.conversation_session_id);await s.query('UPDATE `lead` SET declared_source=? WHERE tenant_id=? AND record_id=?',[declaredSource(b.declared_source),s.context.tenantId,id]);
+      await new DurableCommands().domainEvent(s,a.principalId,correlation,'lead.created',id,'1',{lead_id:id,contact_id:b.contact_id,conversation_id:b.conversation_id??null});
     },exists:async(s,id)=>!!(await s.query('SELECT record_id FROM `lead` WHERE tenant_id=? AND record_id=?',[s.context.tenantId,id]))[0],eligible:async()=>{},assigned:async()=>{}},
-    read:async(s,r)=>{const data=await row(s,r.id);return {contact_id:data.contact_id,conversation_id:data.conversation_id,qualification_session_id:data.qualification_session_id,source_touchpoint_id:data.source_touchpoint_id,status:data.status,qualification:json(data.qualification),qualified_at:stamp(data.qualified_at),accepted_at:stamp(data.accepted_at)};},
+    read:async(s,r)=>{const data=await row(s,r.id);return {...Object.fromEntries(sourceKeys.map(k=>[k,k==='source_captured_at'?stamp(data[k]):data[k]])),declared_source:data.declared_source,contact_id:data.contact_id,conversation_id:data.conversation_id,conversation_session_id:data.conversation_session_id,qualification_session_id:data.qualification_session_id,source_touchpoint_id:data.source_touchpoint_id,status:data.status,qualification:json(data.qualification),qualified_at:stamp(data.qualified_at),accepted_at:stamp(data.accepted_at)};},
     update:async(s,r,fields,a)=>{
-      const b=object(fields,['qualification']);if(!Object.hasOwn(b,'qualification'))throw new CommandError(400,'INVALID_REQUEST');const data=await row(s,r.id);await requireInactiveSession(s,data.qualification_session_id);if(!['new','qualifying'].includes(data.status))throw new CommandError(409,'INVALID_TRANSITION');
+      const b=object(fields,['qualification','declared_source']);if(!Object.keys(b).length)throw new CommandError(400,'INVALID_REQUEST');const data=await row(s,r.id);if(Object.hasOwn(b,'declared_source'))await s.query('UPDATE `lead` SET declared_source=? WHERE tenant_id=? AND record_id=?',[declaredSource(b.declared_source),s.context.tenantId,r.id]);if(!Object.hasOwn(b,'qualification'))return;await requireInactiveSession(s,data.qualification_session_id);if(!['new','qualifying'].includes(data.status))throw new CommandError(409,'INVALID_TRANSITION');
       const q=qualification(b.qualification,a,false,json(data.qualification));await s.query("UPDATE `lead` SET qualification=?,status=? WHERE tenant_id=? AND record_id=?",[JSON.stringify(q),Object.keys(q).length?'qualifying':'new',s.context.tenantId,r.id]);
     },archive:async()=>{throw new CommandError(422,'OBJECT_NOT_IMPLEMENTED');},
   };
@@ -59,10 +62,10 @@ export class LeadService {
   private readonly commands=new DurableCommands();
   constructor(private readonly records:CrmRecords,private readonly contacts:ContactReferencePort){}
   async create(account:string,tenant:string,input:unknown,key:string,correlation:string){
-    const b=object(input,['contact_id','qualification','conversation_id','qualification_session_id']);
+    const b=object(input,['contact_id','qualification','conversation_id','conversation_session_id','qualification_session_id','declared_source']);
     if(b.qualification_session_id!==undefined&&b.qualification_session_id!==null)throw new CommandError(403,'FORBIDDEN');
-    if(b.conversation_id!==undefined&&b.conversation_id!==null)throw new CommandError(422,'M2_REFERENCE_NOT_AVAILABLE');
-    return this.records.mutate(account,tenant,{object:'lead',kind:'records'},{fields:{contact_id:b.contact_id,qualification:b.qualification??{}}},key,undefined,correlation,true);
+    if(b.conversation_id!==undefined&&b.conversation_id!==null&&!uuid(b.conversation_id))fieldError('conversation_id');
+    return this.records.mutate(account,tenant,{object:'lead',kind:'records'},{fields:{contact_id:b.contact_id,qualification:b.qualification??{},...(b.conversation_session_id!==undefined?{conversation_session_id:b.conversation_session_id}:{}),...(b.conversation_id?{conversation_id:b.conversation_id}:{}),...(b.declared_source!==undefined?{declared_source:b.declared_source}:{})}},key,undefined,correlation,true);
   }
   async command(account:string,tenant:string,id:string,action:'qualification'|'disqualify',input:unknown,key:string,version:string|undefined,correlation:string){
     if(!uuid(id)||!key||key.length>128||!/^[\x21-\x7e]+$/.test(key))throw new CommandError(400,'INVALID_REQUEST');if(!version)throw new CommandError(428,'PRECONDITION_REQUIRED');if(!/^[1-9][0-9]{0,19}$/.test(version))throw new CommandError(400,'INVALID_REQUEST');
@@ -79,7 +82,7 @@ export class LeadService {
         await this.contacts.requireActive(scope,access,lead.contact_id);
         const q=qualification(body.qualification,access,true);await scope.query("UPDATE `lead` SET qualification=?,status='qualified',qualified_at=UTC_TIMESTAMP(6) WHERE tenant_id=? AND record_id=?",[JSON.stringify(q),tenant,id]);
         const [saved]=await scope.query('SELECT qualified_at FROM `lead` WHERE tenant_id=? AND record_id=?',[tenant,id]);
-        await this.commands.domainEvent(scope,access.principalId,correlation,'lead.qualified',id,String(BigInt(record.version)+1n),{lead_id:id,qualified_at:stamp(saved.qualified_at),source_touchpoint_id:null});
+        await this.commands.domainEvent(scope,access.principalId,correlation,'lead.qualified',id,String(BigInt(record.version)+1n),{lead_id:id,qualified_at:stamp(saved.qualified_at),source_touchpoint_id:lead.source_touchpoint_id});
       }else{
         if(typeof body.reason!=='string'||!body.reason.trim()||body.reason.length>1000)fieldError('reason');
         await scope.query("UPDATE `lead` SET status='disqualified' WHERE tenant_id=? AND record_id=?",[tenant,id]);

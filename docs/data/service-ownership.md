@@ -1,5 +1,15 @@
 # Data ownership — monolith to service databases
 
+SRC-059 lifecycle phase: Reporting now owns report_query_run and immutable report_query_run_event in crm_reporting v3. Tenant-bound FK references only own projection generation/run; native principal is a logical Identity reference. No auth token stored; every operation resolves current native rights and exact owner. [Run table dictionary](../contracts/reporting-runs.md).
+
+SRC-059 native query phase: Identity resolves explicit run/export and tenant-complete report_mock_source grants; BFF signs a query admission and rechecks live Identity/session before public result delivery. Reporting executes only own synthetic snapshots. [Contract](../contracts/reporting-query-api.md). No new tables, shared SQL/UoW, producer field-policy authority or source owner-ID mapping.
+
+SRC-059 first phase executes only Reporting-owned mock snapshots through trusted authority ports ([contract](../contracts/reporting-query.md)). It adds no persisted entities, source ownership changes or producer SQL reads. Connected source authorization/native query integration remain pending.
+
+SRC-058: Reporting additionally owns binding/generation/page/observation/activation records in its own schema2 ([contract](../contracts/reporting-projections.md)). Synthetic adapter supplies mock source snapshots; these do not become authoritative CRM/Marketing records or bypass their future query ACL. No direct reads/writes into producer schemas.
+
+SRC-057: independent crm_reporting owns six private draft/catalog/version/receipt/audit/outbox tables plus migration journal ([physical contract](../contracts/reporting-persistence.md)). Native CRM BFF reads Identity through its own authorization port then calls Reporting HTTP; no SQL/UoW/FK or domain import across these services. Reporting owner_principal_id is a logical Identity ref; missing/revoked identities deny access without automatic reassignment.
+
 ADR-021: [schema catalog](schema-catalog.md) gắn tên database cho từng owner; [guideline](database-guidelines.md) bắt buộc tenant_id NOT NULL cả control-plane/journal và [inventory](table-placement-inventory.md) mapping baseline. Identity sở hữu native credential/session MySQL; Keycloak không còn target. Những dòng dưới mô tả domain ownership, không cấp ngoại lệ thiếu tenant.
 
 ADR-017 / PLAN-005. Target logical ownership below; current dictionary/ERD/physical schema describe monolith through18. Existing composite FK/UoW invariant still enforced there. Extraction requires new schemas/migrations, not editing applied history. Shared MySQL engine is allowed locally, shared database credentials/tables across services are not target architecture.
@@ -24,6 +34,8 @@ ADR-017 / PLAN-005. Target logical ownership below; current dictionary/ERD/physi
 | outbox_event, consumer_inbox, idempotency_record, audit_entry, schema_migration | One set per owning service, never shared writes | Operations aggregated immutable audit/status projection; migration lineage retained |
 | media_asset/blob/rendition/extraction | Media — target only | Opaque media refs, authenticated retrieval; Chat applied extraction revision |
 | ticket/SLA, report definitions/projections/export | Ticket / Reporting — target Draft | Minimized authorized references, not generic DB access |
+
+PLAN-022A: [Reporting semantic model](reporting-semantic-model.md) bổ sung source/model/attribute/relation/metric registry và dashboard/template versions thuộc Reporting; canonical CRM/Chat/Sales/Marketing/Identity ownership không đổi. Post/provider-media là Marketing references, khác Media service blob/Chat attachment. Historical agent/team dimensions không phải authorization authority. Producer adapters dùng versioned APIs/events, không cross-schema SQL hoặc shared UoW.
 
 Exact source names and columns remain [physical schema](physical-schema.md)/[dictionary](dictionary.md); logical target fields are in each [service document](../services/README.md). A row in this matrix does not assert a Draft table already exists.
 
@@ -57,3 +69,20 @@ SRC-030 moves lookup/create SQL behind CRM ContactIdentities application port in
 ## UX-002 — Workspace ownership extension
 
 Chat sở hữu read state/unread sequence, response coverage, queue metrics query, saved inbox/share, conversation tag catalog/links, snippets, snooze/deadline worker và activity reference projection theo [data design](agent-chat-workspace.md). Shared inbox không grant Conversation ACL. CRM sở hữu Contact address/language/identities và Activity note body; Workflow/Chatflow sở hữu source run states. Chỉ trao đổi versioned ports/API/events, không shared SQL/UoW giữa services. SRC-032/033 implemented; SRC-034 schema22/ports/notifications source under verification. Current monolith composes local ports; no extraction or deployment claim.
+
+## CRM base outcome scope — PLAN-010
+
+Sales owns Lead/Deal pinned attribution snapshots, declared source selection and proposed Deal-linked collection/refund evidence; Connector owns messaging provider/touchpoint evidence; Marketing owns Facebook Ad Account/Campaign/Ad Set/Ad replica and sync history in crm_marketing; Chat owns Conversation references/context; CRM owns Contact/metadata; Reporting owns derived metrics. Catalog writer and exact receipt model must be fixed in PLAN-011. No shared cross-service writer/SQL/FK/UoW is introduced. [Plan](../planning/crm-base-outcomes.md) is a scoped product roadmap, not service extraction evidence.
+PLAN-014: [Marketing mapping](marketing-field-mapping.md) adds creative/targeting metadata, audience references and provider observation history under Marketing; provider Insights observations remain separate from CRM outcome facts. Reporting consumes API/events; Sales immutable source is unchanged. No cross-service SQL/FK or shared writer.
+
+PLAN-018 ownership: Chat owns Conversation acquisition sessions and message membership, Connector referral evidence, Core Contact/associations, Sales Lead/Deal origin snapshots, Marketing ad dimensions, Reporting session cohort facts. [Contract](../contracts/conversation-acquisition-session.md). No cross-service SQL/FK; Page ownership of Conversations is business/channel identity relation, not Marketing database ownership of Chat.
+
+SRC-053: Chat is sole writer of conversation_acquisition_session and message_acquisition_membership (target crm_chat). Sales stores validated logical session refs on Lead/Deal (target crm_sales), no new cross-service FK. Baseline uses Conversation source application port and existing UoW; extraction remains separately gated. [Physical contract](../contracts/acquisition-session-implementation.md).
+
+PLAN-021: Marketing owns provider object/metrics observations and their source field descriptions; Reporting owns source/link semantic catalog, computed metrics, builder and template definitions. [Catalog](marketing-source-catalog.md). Existing CRM producers retain business objects and immutable source.
+
+PLAN-023 / CHG-20261008-09: [Shared account and Page tenant admission](../contracts/marketing-tenant-admission.md). All tables retain tenant_id NOT NULL. The same external Ad Account may have independent tenant-local replicas/bindings. Ads/related metadata/Insights are admitted only when Creative Page resolves to the sync tenant; foreign Ads skip, unresolved defer. Parent configuration can be shared; children and ad-level Insights remain tenant-filtered. No cross-tenant payload/history persistence or campaign/account aggregate metric substitution.
+
+SRC-054: Marketing now physically owns22 business tables and the migration journal in `crm_marketing`; see [physical dictionary](marketing-physical-dictionary.md). No SQL/FK/import into another service, no CRM data move, no second writer for Page ownership. Backend ingestion and Reporting transport remain planned.
+
+PLAN-011E: current Channels owns [Marketing credential and Page admission ports](../contracts/marketing-metadata-sync.md); Marketing owns schedules/accepted metadata and durable change stream. SRC-056 is the producer dependency for SRC-051. Standalone Connector capture does not become a second Page/credential writer.

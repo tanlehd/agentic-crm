@@ -1,5 +1,24 @@
 # Agentic CRM
 
+**Report visuals (2026-10-12):** 10 display types and quick-start presets: table, KPI, column, horizontal bar, stacked column, line/area trend, pie/donut and pivot. Exact table fallback, safe additive/temporal rules and mobile layout verified. [Inventory](docs/contracts/reporting-visualizations.md) · [Evidence](docs/tracking/details/SRC-064.md). Isolated native fixture validated; normal Alpha activation remains pending.
+
+**Report configuration (2026-10-12):** Field + SUM/COUNT/AVG/MIN/MAX selection and separate registered formula KPI picker now implemented with exact recomputed totals. [Salesforce/HubSpot comparison and scope](docs/contracts/reporting-measures.md).265unit + native/browser evidence; validation uses isolated test fixture, Alpha activation remains pending.
+
+**Report Builder early UI (2026-10-12):** Source/model/related fields, metrics/axes/AND filters, table/KPI/bar/line/pivot, private draft save/reopen and CSV now implemented. [Runbook](docs/development/reporting-builder.md) · [Evidence](docs/tracking/details/SRC-064.md). Browser validated against isolated native fixture; normal Alpha activation awaits explicit role approval. SRC-064 IN_PROGRESS; SRC-059 requeued READY with remaining scope preserved.
+
+**Report Builder part 6 (2026-10-12):** Native durable runs now support create/replay, execute, status, cancel and persisted JSON/CSV result with owner/current rights checks. Snapshot/executor pins and lease fences protect recovery and cancel races.248 unit,13 lifecycle MySQL and12 native HTTP groups PASS. Local/test Reporting schema3 preserves prior data; CRM27 unchanged. [Runbook](docs/development/reporting-runs.md) · [Evidence](docs/tracking/details/SRC-059.md). SRC-059 still IN_PROGRESS; drilldown/remaining KPI semantics next, UI later. Execution is caller-driven; no automatic worker or app restart.
+
+**Report Builder part 5 (2026-10-12):** Native POST /api/v1/reporting/query now runs authorized mock reports and exports aggregate CSV. Explicit run/source/export grants, signed private transport and live Identity/session rechecks protect results and cache.243 unit cases,8 new native HTTP/MySQL groups plus24 regression groups PASS. [API runbook](docs/development/reporting-query-api.md) · [Evidence](docs/tracking/details/SRC-059.md). SRC-059 remains IN_PROGRESS for durable runs/drilldown and remaining KPI semantics; UI follows. No running app restart or default grant/binding activation.
+
+**Report Builder part 4 (2026-10-12):** SRC-059 has an internal mock query core for26 metrics, group by/pivot with recomputed totals, exact decimal arithmetic, authorization ports/scoped cache and aggregate CSV.230 unit cases,7 MySQL query groups and17 draft/native regression groups PASS. [Query runbook](docs/development/reporting-query.md) · [Evidence](docs/tracking/details/SRC-059.md). SRC-059 remains IN_PROGRESS: native query/source policy, run lifecycle and drilldown come next; builder/dashboard UI follows.
+
+**Report Builder part 3 (2026-10-12):** [Reporting](services/reporting/README.md) now has private draft/version API plus a typed mock datasource and durable snapshots:25 objects/120 fields, atomic activation, revision/tombstone replay and extensible descriptors. [Mock runbook](docs/development/reporting-projections.md), [evidence](docs/tracking/details/SRC-058.md), [plan](docs/planning/report-builder.md). Local/test Reporting schema2 preserves earlier drafts; CRM remains27. Query engine, live source ACL and dashboard UI follow; drafts remain unvalidated/nonexecutable. No app process restarted or default mock datasource enabled.
+
+**Current priority CHG-20261007-14:** Lead/Deal → organic Conversation→Lead→Deal won with value → organic Page report/release (SRC-045/046/052/050); then Marketing sync/campaign reports (SRC-051/049). Ticket/receipts follow separately. CHG-20261007-15: marketing reports measure conversion performance for resource, content/message and audience strategy; won value is a funnel outcome, receipts are independent. Exact scoped design: [organic Sales base](docs/contracts/organic-sales-base.md).
+
+
+**CRM base local (2026-10-07):** đã có Lead/Deal thủ công, tạo Lead từ hội thoại với nguồn channel/Page/ad bất biến và nguồn khai báo chỉnh riêng, chuyển Lead→Deal won có giá trị, báo cáo organic theo Page/currency và mở Deal đối soát. Kiểm thử dùng dữ liệu synthetic; doanh thu ở bước này là giá trị won, chưa phải tiền đã thu. Conversation acquisition sessions đã có ở SRC-053/schema26: agent đóng phiên, tin tiếp theo mở phiên mới trên cùng thread; Lead/Deal giữ nguồn đúng phiên. Bước tiếp theo: PLAN-011 chốt Marketing sync → SRC-051 → SRC-049 báo cáo campaign; Ticket và receipts theo [kế hoạch](docs/planning/crm-base-outcomes.md).
+
 **Thiết kế mới ADR-021 (2026-10-07):** bỏ Keycloak khỏi target; CRM Identity tự quản lý đăng nhập/session/quyền trong MySQL. Mọi bảng ứng dụng có tenant_id, schema theo service. [DB guideline](docs/data/database-guidelines.md) · [Schema catalog](docs/data/schema-catalog.md) · [Native auth/cutover plan](docs/planning/native-identity-data-plan.md). SRC-038 đã cutover native local; [runbook](docs/development/native-auth.md). Physical schema extraction còn PLAN-007B.
 
 Nền tảng conversational CRM dạng SaaS multi-tenant, nơi Human Agent và AI Agent cùng xử lý hội thoại, lead, cơ hội bán hàng và yêu cầu hỗ trợ.
@@ -10,7 +29,7 @@ Nền tảng conversational CRM dạng SaaS multi-tenant, nơi Human Agent và A
 
 Mở [ứng dụng local](http://localhost:8080) sau khi khởi động theo [hướng dẫn chạy](docs/development/local.md).
 
-Host development Windows/macOS/Linux: [hướng dẫn hạ tầng và service monitor](docs/development/service-manager.md). `pnpm infra:start`, `pnpm local:init`, `pnpm local:monitor`; start/stop từng ứng dụng và giữ dữ liệu MySQL/Redis. DB local đã migration23, native login và readiness đạt.
+Host development Windows/macOS/Linux: [hướng dẫn hạ tầng và service monitor](docs/development/service-manager.md). `pnpm infra:start`, `pnpm local:init`, `pnpm local:monitor`; start/stop từng ứng dụng và giữ dữ liệu MySQL/Redis. DB local đã migration26, native login và organic flow đạt trên localhost:18080.
 
 ## Bắt đầu đọc
 
@@ -59,3 +78,5 @@ SRC-034 snooze/activity backend and schema22 source are implemented; SRC-038 reg
 UI/UX redesign UX-003: [bộ thiết kế](docs/ux/README.md), [app shell](docs/ux/app-shell.md), [Inbox spec](docs/ux/inbox-screen.md) và [mock tương tác](docs/ux/mockups/inbox.html). Header + business navigation, UX guidelines và template đặc tả từng màn; thiết kế/mock độc lập, chưa thay UI ứng dụng đang chạy.
 
 SRC-039 triển khai shell không tab và Inbox trên API hiện có: [evidence](docs/tracking/details/SRC-039.md). Local hiện tại [localhost:18080](http://localhost:18080). Queue/search/filter, takeover, reply/note và Contact dialog đã kiểm thử; SRC-035/036/037 full workspace vẫn chưa hoàn tất.
+
+Marketing database-only local setup: [runbook](docs/development/marketing-database.md). Separate `crm_marketing` schema; periodic Meta synchronization is not enabled.

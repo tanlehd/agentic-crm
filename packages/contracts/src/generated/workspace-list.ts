@@ -69,4 +69,5 @@ export interface ConversationEntity {
   channel_id?: string;
   page_id?: string;
   channel_name?: string;
+  need_response?: boolean | null;
 }

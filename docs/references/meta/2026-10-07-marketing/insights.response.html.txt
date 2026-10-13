@@ -1,0 +1,131 @@
+<html><head><title>Ads Insights API</title><meta charset="UTF-8" /><style nonce="UhTTwGVl">body { font-family: monospace; margin: 20px; }pre { white-space: pre-wrap; word-wrap: break-word; }</style></head><body><pre data-testid="developer-docs-markdown-page"># Ads Insights API
+
+
+
+The Ads Insights API provides performance data and statistics for Meta ads. With its flexible reporting options, you can customize your requests and obtain nearly any metric available in Meta Ads Manager.
+
+## Before you begin
+
+To access the Ads Insights API, you will need:
+
+* An [app](https://developers.facebook.com/apps). (See [Meta App Development](https://developers.facebook.com/docs/development) for more information.)
+* The ads_read permission. (See [Permissions](https://developers.facebook.com/docs/permissions) and [Authorization](https://developers.facebook.com/documentation/ads-commerce/marketing-api/get-started/authorization) for more information.)
+
+You should also set up your ads to track the actions you&#039;re interested in. For that, you can use tools like the Conversions API or Meta Pixel.
+
+## Calling the Ads Insights API
+
+The Ads Insights API is available as an edge off of all ad objects. (See more information about Meta&#039;s ad hierarchy [here](https://developers.facebook.com/documentation/ads-commerce/marketing-api/overview#how-it-works).)
+
+| Resource | Provides |
+| --- | --- |
+| [`/&#123;ad-account-id&#125;/insights`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/insights) | Insights from an ad account |
+| [`/&#123;campaign-id&#125;/insights`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign-group/insights) | Insights from an ad campaign |
+| [`/&#123;ad-set-id&#125;/insights`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign/insights) | Insights from an ad set |
+| [`/&#123;ad-id&#125;/insights`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/adgroup/insights) | Insights from an ad |
+
+By default, `GET` requests will return basic metrics for the ad object, typically from the past 30 days.
+
+### Example request
+
+```html
+curl -G \
+  -d &quot;access_token=&lt;ACCESS_TOKEN&gt;&quot; \
+&quot;https://graph.facebook.com/v25.0/&lt;CAMPAIGN_ID&gt;/insights&quot;
+```
+
+### Example response:
+
+```json
+&#123;
+  &quot;data&quot;: [
+    &#123;
+      &quot;account_id&quot;: &quot;&lt;AD_ACCOUNT_ID&gt;&quot;,
+      &quot;campaign_id&quot;: &quot;&lt;CAMPAIGN_ID&gt;&quot;,
+      &quot;date_start&quot;: &quot;2025-03-14&quot;,
+      &quot;date_stop&quot;: &quot;2025-04-12&quot;,
+      &quot;impressions&quot;: &quot;361324&quot;,
+      &quot;spend&quot;: &quot;5339.5&quot;
+    &#125;
+  ],
+  &quot;paging&quot;: &#123;
+    &quot;cursors&quot;: &#123;
+    &quot;before&quot;: &quot;MAZDZD&quot;,
+    &quot;after&quot;: &quot;MAZDZD&quot;
+    &#125;
+  &#125;
+&#125;
+```
+
+## Customizing Your Requests
+
+You can obtain much more specific data by leveraging three main components in your request: parameters (to specify things like time ranges, attribution windows, etc.), fields (i.e., metrics), and breakdowns. For example, to know the number of clicks (all) by gender that happened in the last 7 days of your campaign, you might include:
+
+* Parameters: `date_preset=last_7d`
+* Fields: `clicks`
+* Breakdowns: `gender`
+
+### Example request
+
+```html
+curl -G \
+  -d &quot;date_preset=last_7d&quot; \
+  -d &quot;fields=clicks&quot; \
+  -d &quot;breakdowns=gender&quot; \
+  -d &quot;access_token=&lt;ACCESS_TOKEN&gt;&quot; \
+&quot;https://graph.facebook.com/v25.0/&lt;CAMPAIGN_ID&gt;/insights&quot;
+```
+
+### Example response
+
+```json
+&#123;
+  &quot;data&quot;: [
+    &#123;
+      &quot;clicks&quot;: &quot;7346&quot;,
+      &quot;date_start&quot;: &quot;2025-04-06&quot;,
+      &quot;date_stop&quot;: &quot;2025-04-12&quot;,
+      &quot;gender&quot;: &quot;female&quot;
+    &#125;,
+    &#123;
+      &quot;clicks&quot;: &quot;3788&quot;,
+      &quot;date_start&quot;: &quot;2025-04-06&quot;,
+      &quot;date_stop&quot;: &quot;2025-04-12&quot;,
+      &quot;gender&quot;: &quot;male&quot;
+    &#125;,
+    &#123;
+      &quot;clicks&quot;: &quot;79&quot;,
+      &quot;date_start&quot;: &quot;2025-04-06&quot;,
+      &quot;date_stop&quot;: &quot;2025-04-12&quot;,
+      &quot;gender&quot;: &quot;unknown&quot;
+    &#125;,
+  ],
+  &quot;paging&quot;: &#123;
+    &quot;cursors&quot;: &#123;
+    &quot;before&quot;: &quot;MAZDZD&quot;,
+    &quot;after&quot;: &quot;MAZDZD&quot;
+    &#125;
+  &#125;
+&#125;
+```
+
+## Learn More
+
+The Ads Insights API can be powerful, so be sure to read on and learn how to master its features:
+
+* Parameters and Fields
+* Metrics
+* [Breakdowns](https://developers.facebook.com/documentation/ads-commerce/marketing-api/insights/breakdowns)
+* [Asynchronous Requests](https://developers.facebook.com/documentation/ads-commerce/marketing-api/insights/best-practices#asynchronous)
+* [Limits and Best Practices](https://developers.facebook.com/documentation/ads-commerce/marketing-api/insights/best-practices)
+* Specific guides for [conversions reporting](https://developers.facebook.com/documentation/ads-commerce/marketing-api/tracking-specs), Product-Level Reporting, and [Marketing Mix Modeling](https://developers.facebook.com/documentation/ads-commerce/marketing-api/insights/marketing-mix-modeling)
+
+You can additionally find auto-generated reference documentation for each ad object&#039;s insights edge:
+
+* [Ad Account Insights](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/insights)
+* [Ad Campaign Insights](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign-group/insights)
+* [Ad Set Insights](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign/insights)
+* [Ad Insights](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/adgroup/insights)
+
+If you plan to include data from the Ads Insights API in your solution, please also review the [Meta Platform Terms](https://developers.facebook.com/terms) and [Developer Policies for Marketing API](https://developers.facebook.com/devpolicy/#marketingapi).
+</pre></body></html>

@@ -38,3 +38,7 @@ Escalation retry không lặp assignment/notification; clock drift và lịch ng
 ## Mở rộng còn Draft
 
 Trước M4 chốt SLA business calendar/timezone, điều kiện pause/resume, reopen window, stage version/migration, escalation target và reply channel policy. Chưa có bảng SLA vật lý hay endpoint implementable trong baseline này.
+
+## CRM base basic scope — PLAN-010
+
+[CRM base plan](../planning/crm-base-outcomes.md) tách Ticket basic SRC-047: manual/from Conversation, Contact/Deal links, owner/priority, queue/detail, transition/resolution/reopen có audit/ACL. Exact state machine/API/DDL/UI chờ PLAN-011 Ready. Ticket là nhánh chăm sóc, không là bước bắt buộc trong attribution Lead→Deal→receipt. SLA calendar/pause/escalation nâng cao giữ Draft M4; basic release không đóng toàn AC-10. Chưa có source mới trong PLAN-010.

@@ -1,0 +1,123 @@
+<html><head><title>Marketing API insights</title><meta charset="UTF-8" /><style nonce="rJSVKldm">body { font-family: monospace; margin: 20px; }pre { white-space: pre-wrap; word-wrap: break-word; }</style></head><body><pre data-testid="developer-docs-markdown-page"># Insights
+
+
+
+You can read insights for ad set and ad objects using [Dynamic Creative](https://developers.facebook.com/documentation/ads-commerce/marketing-api/ad-creative/asset-feed-spec/dynamic-creative), [Placement Asset Customization](https://developers.facebook.com/documentation/ads-commerce/marketing-api/dynamic-creative/placement-asset-customization), and [Segment Asset Customization](https://developers.facebook.com/docs/marketing-api/dynamic-creative/segment-asset-customization).
+
+In Ads Manager, you can view your asset level breakdowns. Using the API, you can get the following breakdowns:
+
+* `body_asset`
+* `description_asset`
+* `image_asset`
+* `title_asset`
+* `call_to_action_asset`
+* `link_url_asset`
+* `video_asset`
+* `ad_format_asset`
+
+You can combine these in your results with these [breakdowns](https://developers.facebook.com/documentation/ads-commerce/marketing-api/insights/breakdowns):
+
+* `age`
+* `gender`
+* `age`, `gender`
+
+For **Dynamic Creative**, we currently show only creative-asset level breakdowns such as metrics by `image`, `title`, `body`, `video`. Insights on full delivered ads are found in Ads Manager under `By Dynamic Creative Asset`.
+
+## Build your query
+
+Get the following fields in your query:
+
+| Field | Description |
+| --- | --- |
+| `actions` | Number of actions taken on your ad, grouped by action type. |
+| `clicks` | Total number of clicks on your ad. |
+| `impressions` | Number of times your ad was served. |
+
+Facebook supports different values derived from the fields above. For example you can also retrieve `ctr` and `actions_per_impressions`.
+
+## Examples
+To retrieve insights for an **ad** with the `body_asset` breakdown:
+
+```bash
+curl -G
+-d &quot;breakdowns=body_asset&quot;
+-d &quot;fields=impressions&quot;
+-d &quot;access_token=&lt;ACCESS_TOKEN&gt;&quot;
+https://graph.facebook.com/&lt;API_VERSION&gt;/&lt;AD_ID&gt;/insights
+```
+
+A sample response looks like this:
+
+```json
+&#123;
+  &quot;data&quot;: [
+    &#123;
+      &quot;impressions&quot;: &quot;8801&quot;,
+      &quot;date_start&quot;: &quot;2016-04-29&quot;,
+      &quot;date_stop&quot;: &quot;2016-05-13&quot;,
+      &quot;body_asset&quot;: &#123;
+        &quot;text&quot;: &quot;Test text&quot;,
+        &quot;id&quot;: &quot;6051732675652&quot;
+      &#125;
+    &#125;,
+    &#123;
+      &quot;impressions&quot;: &quot;7558&quot;,
+      &quot;date_start&quot;: &quot;2016-04-29&quot;,
+      &quot;date_stop&quot;: &quot;2016-05-13&quot;,
+      &quot;body_asset&quot;: &#123;
+        &quot;text&quot;: &quot;Test ext new&quot;,
+        &quot;id&quot;: &quot;6051732676452&quot;
+      &#125;
+    &#125;,
+  ],
+  &quot;paging&quot;: &#123;
+    &quot;cursors&quot;: &#123;
+      &quot;before&quot;: &quot;MAZDZD&quot;,
+      &quot;after&quot;: &quot;MgZDZD&quot;
+    &#125;
+  &#125;&#125;
+```
+
+To retrieve insights for an **ad set** broken down by `image_asset` and `age`:
+
+```bash
+curl -G
+-d &quot;breakdowns=image_asset,age&quot;
+-d &quot;fields=impressions&quot;
+-d &quot;access_token=&lt;ACCESS_TOKEN&gt;&quot;
+https://graph.facebook.com/&lt;API_VERSION&gt;/&lt;ADSET_ID&gt;/insights
+```
+
+A sample response looks like this:
+
+```json
+&#123;
+  &quot;data&quot;: [
+    &#123;
+      &quot;impressions&quot;: &quot;5497&quot;,
+      &quot;date_start&quot;: &quot;2016-04-29&quot;,
+      &quot;date_stop&quot;: &quot;2016-05-13&quot;,
+      &quot;image_asset&quot;: &#123;
+        &quot;hash&quot;: &quot;&lt;REDACTED&gt;&quot;,
+        &quot;url&quot;: &quot;&lt;REDACTED&gt;&quot;,
+        &quot;id&quot;: &quot;6051732672052&quot;
+      &#125;
+    &#125;,
+    &#123;
+      &quot;impressions&quot;: &quot;5962&quot;,
+      &quot;date_start&quot;: &quot;2016-04-29&quot;,
+      &quot;date_stop&quot;: &quot;2016-05-13&quot;,
+      &quot;image_asset&quot;: &#123;
+        &quot;hash&quot;: &quot;&lt;REDACTED&gt;&quot;,
+        &quot;url&quot;: &quot;&lt;REDACTED&gt;&quot;,
+        &quot;id&quot;: &quot;6051732672652&quot;
+      &#125;
+    &#125;,
+  ],
+  &quot;paging&quot;: &#123;
+    &quot;cursors&quot;: &#123;
+      &quot;before&quot;: &quot;MAZDZD&quot;,
+      &quot;after&quot;: &quot;MwZDZD&quot;
+    &#125;
+```
+</pre></body></html>

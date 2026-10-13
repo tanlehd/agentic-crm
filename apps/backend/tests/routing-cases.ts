@@ -1,3 +1,4 @@
+import { historicalConversation } from './historical-conversation.js';
 import { faultProcess } from './fixtures/fault-process.js';
 import { routingAccessConsumer } from '../src/modules/agents/access-consumer.js';
 import { DurableDelivery } from '../src/kernel/reliability/delivery.js';
@@ -37,9 +38,12 @@ export function routingCases(isolated:(name:string)=>Promise<DataSource>){descri
     await ds.query("INSERT INTO service_actor(id,tenant_id,`key`,role_id,created_at,updated_at) VALUES (?,?,'routing',?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[service,tenant,role]);
     for(const key of ['contact','lead','conversation'])await ds.query("INSERT INTO object_type(id,tenant_id,`key`,label,kind,created_at,updated_at) VALUES (?,?,?,?,'standard',UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[randomUUID(),tenant,key,key]);
     const domains=coreDomains();domains.set('lead',leadDomain(contactReferences));records=new CrmRecords(ds,'synthetic',domains);const contact=String((await records.mutate(account,tenant,{object:'contact',kind:'records'},{fields:{display_name:'Synthetic routing contact'}},randomUUID(),undefined,'synthetic')).body.data.id);
-    lead=String((await new LeadService(records,contactReferences).create(account,tenant,{contact_id:contact},randomUUID(),'synthetic')).body.data.id);
+    // Seed historical v10 Lead directly before exercising forward migration.
+    lead=randomUUID();const [leadType]=await ds.query("SELECT id FROM object_type WHERE tenant_id=? AND `key`='lead'",[tenant]);
+    await ds.query('INSERT INTO crm_record(id,tenant_id,object_type_id,owner_principal_id,created_at,updated_at) VALUES (?,?,?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))',[lead,tenant,leadType.id,owner]);
+    await ds.query('INSERT INTO `lead`(tenant_id,record_id,contact_id) VALUES (?,?,?)',[tenant,lead,contact]);
     const connection=randomUUID(),identity=randomUUID();await ds.query("INSERT INTO channel_connection(id,tenant_id,provider,external_account_id,team_id) VALUES (?,?,'mock_messenger','routing',?)",[connection,tenant,team]);await ds.query("INSERT INTO contact_identity(id,tenant_id,connection_id,contact_id,external_subject_id) VALUES (?,?,?,?,'synthetic-routing')",[identity,tenant,connection,contact]);
-    conversations=new Conversations(ds,'synthetic');id=(await conversations.uow.run({tenantId:tenant},s=>conversations.receive(s,{identityId:identity,providerMessageId:randomUUID(),text:'Synthetic',occurredAt:'2026-10-05T01:00:00Z',correlation:'synthetic'}))).conversationId;
+    conversations=new Conversations(ds,'synthetic');id=await historicalConversation(ds,{tenant,contact,identity,connection});
     const before=await ds.query('SELECT * FROM crm_record ORDER BY id');expect(await migrate(ds)).toBe(migrations.length-10);expect(await migrate(ds)).toBe(0);expect(await ds.query('SELECT * FROM crm_record ORDER BY id')).toEqual(before);routing=new Routing(ds);
     await expect(ds.query('INSERT INTO agent_capacity_slot VALUES (?,?,?,UTC_TIMESTAMP(6),NULL)',[beta,randomUUID(),ai])).rejects.toThrow();
   });

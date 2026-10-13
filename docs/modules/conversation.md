@@ -81,3 +81,7 @@ Chat bounded cache is a hint, hydrated only after successful ingress commit. Con
 ## SRC-034 implementation
 
 SRC-034 adds schema22 snooze commands/deadline scanning, transactional wake/activity hooks and source-authorized activity reads. Legacy DTOs and owner semantics remain unchanged. Verification status and limitations: [task evidence](../tracking/details/SRC-034.md).
+
+Target clarification CHG-20261008-03: [acquisition sessions](../contracts/conversation-acquisition-session.md) introduce long-lived Conversation → interaction Sessions under Page/channel identity. This supersedes the legacy closed→new Conversation behavior for the target only; current runtime is unchanged until SRC-053. Chat owns session boundaries/message membership; acquisition sessions are distinct from Chatflow sessions. Exact close/reopen/referral/timeout migration gate is PLAN-011.
+
+SRC-053 implementation follows [acquisition session contract](../contracts/acquisition-session-implementation.md): canonical thread reopens after close; organic joins active session until agent closes, new CTM referral opens a new session. Legacy first-touch attribution remains thread-level; Lead creation resolves a selected acquisition session. Runtime verification tracked separately in SRC-053, not inferred from design.

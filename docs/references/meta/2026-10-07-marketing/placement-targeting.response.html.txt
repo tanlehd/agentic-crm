@@ -1,0 +1,427 @@
+<html><head><title>Placement Targeting</title><meta charset="UTF-8" /><style nonce="BoEybDb5">body { font-family: monospace; margin: 20px; }pre { white-space: pre-wrap; word-wrap: break-word; }</style></head><body><pre data-testid="developer-docs-markdown-page"># Placement Targeting
+
+
+
+Deliver ads on specific placements, such as desktop Feed only or mobile Feed plus Audience Network Rewarded Video. **You can only use certain placement options depending on your [campaign objective](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign-group). See [Campaign, Objective, and Placements](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign-group#placement) for more information.**
+
+The platforms and positions available are `device_platforms`, `publisher_platforms`, `facebook_positions`, `audience_network_positions`, `instagram_positions`, `threads_positions`, and `messenger_positions`. See the [Device, Publisher, and Positions](#newplacement) section for more information.
+
+```
+curl -X POST \
+  -F &#039;name=&quot;My AdSet&quot;&#039; \
+  -F &#039;optimization_goal=&quot;REACH&quot;&#039; \
+  -F &#039;billing_event=&quot;IMPRESSIONS&quot;&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=&quot;&lt;AD_CAMPAIGN_ID&gt;&quot;&#039; \
+  -F &#039;targeting=&#123;
+       &quot;geo_locations&quot;: &#123;
+         &quot;countries&quot;: [
+           &quot;US&quot;
+         ]
+       &#125;,
+       &quot;publisher_platforms&quot;: [
+         &quot;facebook&quot;
+       ],
+       &quot;facebook_positions&quot;: [
+         &quot;feed&quot;
+       ]
+     &#125;&#039; \
+  -F &#039;promoted_object=&#123;
+       &quot;page_id&quot;: &quot;&lt;PAGE_ID&gt;&quot;
+     &#125;&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+If you do not specify anything for a particular placement field, Facebook considers **all possible default positions** for that field. For example, if you set `publisher_platforms` to `facebook`, but select nothing for `facebook_positions`, Facebook considers **all default** Facebook positions such as `feed`, `right_hand_column`, and so on. Or, if you do not select any `publisher_platforms`, Facebook considers **all default** `publisher_platforms`. Facebook may also automatically consider new positions or platforms as they become available.
+
+On Audience Network, you can limit which publishers display your ads. Exclude publishers by category, or create a custom list of app store URLs or domain URLs to exclude.
+
+You cannot use only `right_hand_column` alone as a placement for video, collection, or canvas ads.
+
+Inventory Filter helps you control whether your ads display next to different types of content for in-content ads (Facebook in-stream videos, ads on Facebook Reels and ads on Instagram Reels), Audience Network ads and feed ads (Facebook Feed, Instagram Feed, Facebook Reels Feed and Instagram Reels Feed). To learn more about these content categories, see [Ads Help Center, Inventory Filter](https://www.facebook.com/business/help/252190302162738?helpref=faq_content). You can choose separate values for in-content, Audience Network, and feed ads. Options include: `Expanded`, `Moderate`, and `Limited`. For details, see `brand_safety_content_filter_levels` below:
+
+| Name | Description |
+| --- | --- |
+| `brand_safety_content_filter_levels`  &lt;br&gt;&lt;br&gt;array&lt;string&gt; | For in-content ads (Facebook in-stream and ads on Facebook Reels), Meta allows these values:&lt;br&gt;&lt;br&gt;* `EXPANDED`: `FACEBOOK_RELAXED`&lt;br&gt;* `MODERATE`: `FACEBOOK_STANDARD`&lt;br&gt;* `LIMITED`: `FACEBOOK_STRICT`&lt;br&gt;&lt;br&gt;For Audience Network, Meta allows these values:&lt;br&gt;&lt;br&gt;* `EXPANDED`: `AN_RELAXED`&lt;br&gt;* `MODERATE`: `AN_STANDARD`&lt;br&gt;* `LIMITED`: `AN_STRICT`&lt;br&gt;&lt;br&gt;For Feed ads (Facebook Feed, Instagram Feed, Facebook Reels Feed and Instagram Reels Feed), Meta allows these values:&lt;br&gt;&lt;br&gt;* `EXPANDED`: `FEED_RELAXED`&lt;br&gt;* `MODERATE`: `FEED_STANDARD`&lt;br&gt;* `LIMITED`: `FEED_STRICT`&lt;br&gt;&lt;br&gt;Example: `&quot;brand_safety_content_filter_levels&quot;:[&quot;FACEBOOK_STRICT&quot;, &quot;AN_RELAXED&quot;]`&lt;br&gt;&lt;br&gt;**Note:** When a filter is applied at the ad account level, only more restrictive options will be available at the campaign level. For example, if the account is set to `MODERATE`, the user will only be able to select `MODERATE` or `LIMITED` for a campaign. Less restrictive options (in this example, `EXPANDED`) will not be available. |
+| `excluded_publisher_categories`  &lt;br&gt;&lt;br&gt;array&lt;string&gt; | Includes: `dating` and `gambling` |
+| `excluded_publisher_list_ids`  &lt;br&gt;&lt;br&gt;array&lt;numeric strings&gt; | Each string is a list ID for exclusions. Create custom lists in [Ads Manager](https://www.facebook.com/brand_safety/block_lists) or [Marketing API, Publisher Block List](https://developers.facebook.com/docs/marketing-api/reference/publisher-block-list).&lt;br&gt;&lt;br&gt;**Example:**  &lt;br&gt;`&quot;excluded_publisher_list_ids&quot;:[&quot;&#123;block_list_id_1&#125;&quot;,&quot;&#123;block_list_id_2&#125;&quot;]` |
+
+For example, to use `brand_safety_content_filter_levels`:
+
+```
+curl \
+  -F &#039;name=My AdSet&#039; \
+  -F &#039;optimization_goal=REACH&#039; \
+  -F &#039;billing_event=IMPRESSIONS&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=CAMPAIGN_ID&#039; \
+  -F &#039;targeting= &#123; &quot;geo_locations&quot;:&#123;&quot;countries&quot;:[&quot;US&quot;]&#125;, &quot;brand_safety_content_filter_levels&quot;:[&quot;FACEBOOK_STRICT&quot;,&quot;AN_STANDARD&quot;]&#125;&#039; \
+  -F &#039;status=ACTIVE&#039; \
+  -F &#039;access_token=ACCESS_TOKEN&#039; \
+  https://graph.facebook.com/VERSION/AD_ACCOUNT_ID/adsets
+```
+
+For Audience Network and In-Stream video you can also exclude publishers by category:
+
+| Name | Description |
+| --- | --- |
+| `excluded_publisher_categories`  &lt;br&gt;&lt;br&gt;array&lt;string&gt; | Includes:  &lt;br&gt;&lt;br&gt;- `debated_social_issues`  &lt;br&gt;- `mature_audiences`  &lt;br&gt;- `tragedy_and_conflict`  &lt;br&gt;&lt;br&gt;**Example:**  &lt;br&gt;`&quot;excluded_publisher_categories&quot;: [&quot;debated_social_issues&quot;, &quot;mature_audiences&quot;]` |
+
+## Device, publisher, and positions &#123;#newplacement&#125;
+
+| Name: Options | Description |
+| --- | --- |
+| `device_platforms`: `mobile`, `desktop` | **Optional.**  &lt;br&gt;**Default**: All  &lt;br&gt;The device types someone has who sees your ad. |
+| `publisher_platforms`: `facebook`, `instagram`, `threads`, `messenger`, `audience_network` | **Optional.**  &lt;br&gt;**Default**: All  &lt;br&gt;The publishing channel for your ad. You can set the publishing channel position by setting them within `facebook_positions`, `instagram_positions`, `threads_positions`, `audience_network_positions`, or `messenger_positions`.  &lt;br&gt;&lt;br&gt;**Notes:**&lt;br&gt;&lt;br&gt;* If provided, `publisher_platforms` must include `facebook`, or do not provide it to default to all positions.&lt;br&gt;* To deliver ads to Threads, include both `instagram` and `threads` under `publisher_platforms` in your ad set. |
+| `facebook_positions`: `feed`, `right_hand_column`, `marketplace`, `video_feeds`, `story`, `search`, `instream_video`, `facebook_reels`, `facebook_reels_overlay`, `profile_feed`, `notification` | **Optional.**  &lt;br&gt;**Default**: All  &lt;br&gt;&lt;br&gt;**Notes:**&lt;br&gt;&lt;br&gt;- If provided, `publisher_platforms` must include `facebook` or do not provide to default to all.&lt;br&gt;- `feed` includes Feed for Desktop, Mobile, and the Friends Tab on Mobile.&lt;br&gt;- For campaigns targeting the United States (US), United Kingdom (GB), France (FR), Spain (ES), Germany (DE), Mexico (MX), India (IN) and Thailand (TH), you can use `instream_video` without `feed` for the `VIDEO_VIEWS` and `POST_ENGAGEMENT` objectives. `instream_video` is not supported for the `CONVERSIONS` objective.&lt;br&gt;- If you select `story`, you must use Facebook `feed` or Instagram `story` and `device_platforms: mobile` because Facebook Stories is mobile-only.&lt;br&gt;- If you select `marketplace`, `search`, `profile_feed`, or `notification`, you must use `feed`.&lt;br&gt;- As of v3.0, `right_hand_column` is only available for single image, single video, and carousel formats for the `TRAFFIC`, `CONVERSIONS`, and `PRODUCT_CATALOG_SALES` objectives. |
+| `instagram_positions`: `stream`, `story`, `explore`, `explore_home`, `reels`, `profile_feed`, `ig_search`, `profile_reels` | **Optional.**  &lt;br&gt;**Default**: All  &lt;br&gt;You can target Instagram carousel ads for Instagram `stream`, `story` or `ig_search`. If you are using unprompted carousel creative in stories, you cannot select both options for the same ad set.  &lt;br&gt;Ads using `story` will be displayed in both the Instagram Desktop and Mobile web feeds. |
+| `threads_positions`: `threads_stream` | **Optional.**  &lt;br&gt;To use the Threads `threads_stream` placement, you must select the Instagram `stream` placement as well. |
+| `audience_network_positions`: `classic`, `rewarded_video` | **Optional.**  &lt;br&gt;**Default**: All  &lt;br&gt;By default, the API does not return `effective_audience_network_positions` when you read the targeting spec for an ad set. This may differ from your configured `audience_network_positions`. If you specify a position that is not supported for a given objective, it appears in the list of configured positions, but not in the list of effective positions. |
+| `messenger_positions`: `sponsored_messages`, `story` | **Optional.**  &lt;br&gt;**Default**: `story`  &lt;br&gt;&lt;br&gt;**Notes:**&lt;br&gt;&lt;br&gt;- If you select `story`, you must use Facebook `feed` or Instagram `story` and `device_platforms: mobile` because Messenger Stories is mobile-only. You can use `story` for single image and video formats in ad campaigns with the `CONVERSIONS`, `TRAFFIC`, `REACH`, `BRAND_AWARENESS`, and `APP_INSTALLS` objectives for ads driving traffic to websites and apps.&lt;br&gt;- You cannot use `sponsored_messages` with the other placements, including Facebook placements. |
+| `whatsapp_positions`: `status` | **Optional.**  &lt;br&gt;&lt;br&gt;**Notes:**&lt;br&gt;&lt;br&gt;- To use the WhatsApp Status placement, you must select the Instagram story placement as well.&lt;br&gt;- To use the WhatsApp Status placement, you must configure your settings for [Ads that Click to WhatsApp](https://developers.facebook.com/documentation/ads-commerce/marketing-api/ad-creative/messaging-ads/click-to-whatsapp). |
+
+### Logic
+
+* The logic for options in the same parameter is `OR`.  
+For example, `publisher_platforms=[&#039;facebook&#039;,&#039;instagram&#039;]` means deliver ads on Facebook and Instagram.
+* The logic between parameters is `AND`.  
+For example, `publisher_platforms=[&#039;facebook&#039;]&amp;device_platforms=[&#039;mobile&#039;]` means deliver these ads to Facebook Mobile only.
+* If the logic results in targeting no one, such as `publisher_platforms=[&#039;instagram&#039;]&amp; device_platforms=[&#039;desktop&#039;]`, you will see an error.
+
+### Limitations
+
+* You cannot use Audience Network alone, so `publisher_platforms: audience_network` cannot be selected by itself.
+* The `audience_network` placement with the `VIDEO_VIEWS` objective must be used with the `THRUPLAYS` optimization goal.
+* You cannot select `story` for `facebook_positions` by itself. If you select `story` for `facebook_positions`, you must also select Facebook `feed` or Instagram `story`.
+* You cannot select `story` for `messenger_positions` by itself. If you select `story` for `messenger_positions`, you must also select either Facebook `feed` or Instagram `story`.
+* You cannot select `notification` for `facebook_positions` by itself. If you select `notification` for `facebook_positions`, you must also select Facebook `feed`.
+* Instagram Web Feeds ads use the `stream` placement and are checked for web eligibility to be delivered to both desktop and mobile web feeds. The compatible objectives are `BRAND_AWARENESS`, `REACH`, `LINK_CLICKS`, `POST_ENGAGEMENT`, `VIDEO_VIEWS`, and `CONVERSIONS`.
+* You cannot select `threads_stream` for `threads_positions` by itself. If you select `threads_stream` for `threads_positions`, you must also select Instagram `stream`.
+* You cannot select `status` for `whatsapp_positions` by itself. If you select `status` for `whatsapp_positions`, you must also select Instagram `story`.
+
+### Limited spend on excluded placements
+
+If you use placement controls to exclude certain placements for your ad sets, you can allow up to 5% of your spend to be allocated to each excluded placement when it&#039;s likely to improve performance.
+
+#### Opt-out with limited spend
+
+To opt out of a placement with limited spend, pass the desired placement positions with the `placement_soft_opt_out` field when creating or updating an ad set.  
+
+The available positions are `facebook_positions`, `audience_network_positions`, `instagram_positions`, `threads_positions`, and `messenger_positions`.
+
+##### Example request
+
+```html
+&quot;placement_soft_opt_out&quot;: &#123;
+  &quot;facebook_positions&quot;: [
+    &quot;marketplace&quot;,
+    &quot;profile_feed&quot;
+  ],
+  &quot;audience_network_positions&quot;: [
+    &quot;classic&quot;,
+    &quot;rewarded_video&quot;
+  ]
+&#125;
+```
+
+#### Retrieve limited spend settings
+
+To see which placements have limited spend set, query an ad set&#039;s `placement_soft_opt_out` field.
+
+##### Example request
+
+```html
+curl -G \
+  -d &quot;access_token=&lt;ACCESS_TOKEN&gt;&quot; \
+&quot;https://graph.facebook.com/v25.0/&lt;AD_SET_ID&gt;?fields=placement_soft_opt_out&quot;
+```
+
+## Examples &#123;#examples&#125;
+
+### Stories &#123;#stories&#125;
+
+To use Facebook Stories as your placement:
+
+```
+curl \
+  -F &#039;name=My Ad Set&#039;
+  -F &#039;optimization_goal=CONVERSIONS&#039;
+  -F &#039;billing_event=IMPRESSIONS&#039;
+  -F &#039;bid_amount=2&#039;
+  -F &#039;daily_budget=1000&#039;
+  -F &#039;campaign_id=&lt;AD_CAMPAIGN_ID&gt;&#039;
+  -F &#039;targeting=&#123;&quot;geo_locations&quot;:&#123;&quot;countries&quot;:[&quot;US&quot;]&#125;, &quot;publisher_platforms&quot;:[&quot;messenger&quot;, &quot;facebook&quot;], &quot;facebook_positions&quot;:[&quot;story&quot;], &quot;messenger_positions&quot;:[&quot;story&quot;]&#125;&#039;
+  -F &#039;status=ACTIVE&#039;
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039;
+  https://graph.facebook.com/API_VERSION/act_AD_ACCOUNT_ID/adsets
+```
+
+### In-stream Video &#123;#instream&#125;
+To create an ad set with only `instream_video` placement that targets a supported country listed above:
+
+```
+curl \
+  -F &#039;name=My AdSet&#039; \
+  -F &#039;optimization_goal=REACH&#039; \
+  -F &#039;billing_event=IMPRESSIONS&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=CAMPAIGN_ID&#039; \
+  -F &#039;targeting=&#123;&quot;geo_locations&quot;:&#123;&quot;countries&quot;:[&quot;US&quot;]&#125;,&quot;publisher_platforms&quot;:[&quot;facebook&quot;], &quot;facebook_positions&quot;:[&quot;instream_video&quot;]&#125;&#039; \
+  -F &#039;status=ACTIVE&#039; \
+  -F &#039;access_token=ACCESS_TOKEN&#039; \
+  https://graph.facebook.com/API_VERSION/act_AD_ACCOUNT_ID/adsets
+```
+
+### Audience Network &#123;#an&#125;
+To target the Audience Network Rewarded Video placement:
+
+```
+curl \
+  -F &#039;name=My Ad Set&#039; \
+  -F &#039;optimization_goal=OFFSITE_CONVERSIONS&#039; \
+  -F &#039;billing_event=IMPRESSIONS&#039; \
+  -F &#039;is_autobid=true&#039; \
+  -F &#039;daily_budget=40000&#039; \
+  -F &#039;campaign_id=&lt;AD_CAMPAIGN_ID&gt;&#039; \
+  -F &#039;targeting=&#123;&quot;app_install_state&quot;: &quot;not_installed&quot;,&quot;geo_locations&quot;:&#123;&quot;countries&quot;:[&quot;US&quot;]&#125;,&quot;facebook_positions&quot;:[&quot;feed&quot;],&quot;device_platforms&quot;: [&quot;mobile&quot;],&quot;audience_network_positions&quot;: [&quot;classic&quot;,&quot;rewarded_video&quot;],&quot;user_device&quot;: [&quot;Android_Smartphone&quot;,&quot;Android_Tablet&quot;],&quot;user_os&quot;: [&quot;Android_ver_4.4_and_above&quot;]&#125;&#039; \
+  -F &#039;promoted_object=&#123;&quot;application_id&quot;: &quot;&lt;APPLICATION_ID&gt;&quot;,&quot;custom_event_type&quot;: &quot;PURCHASE&quot;,&quot;object_store_url&quot;: &quot;&lt;OBJECT_STORE_URL&gt;&quot;&#125;&#039; \
+  -F &#039;status=ACTIVE&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/&lt;APIVERSION&gt;/&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+This returns:
+
+```
+&#123;
+  &quot;targeting&quot;: &#123;
+    &quot;audience_network_positions&quot;: [
+      &quot;classic&quot;,
+      &quot;rewarded_video&quot;
+    ],
+    &quot;effective_audience_network_positions&quot;: [
+      &quot;classic&quot;,
+      &quot;rewarded_video&quot;
+    ]
+  &#125;,
+  &quot;id&quot;: &quot;&lt;AD_SET_ID&gt;&quot;
+&#125;
+```
+
+### Reels &#123;#reels&#125;
+To use Facebook Reels as your placement:
+
+```
+curl \
+  -F &#039;name=My AdSet&#039; \
+  -F &#039;optimization_goal=REACH&#039; \
+  -F &#039;billing_event=IMPRESSIONS&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=CAMPAIGN_ID&#039; \
+  -F &#039;targeting=&#123;&quot;geo_locations&quot;:&#123;&quot;countries&quot;:[&quot;US&quot;]&#125;,&quot;publisher_platforms&quot;:[&quot;facebook&quot;], &quot;facebook_positions&quot;:[&quot;facebook_reels&quot;]&#125;&#039; \
+  -F &#039;status=ACTIVE&#039; \
+  -F &#039;access_token=ACCESS_TOKEN&#039; \
+  https://graph.facebook.com/API_VERSION/act_AD_ACCOUNT_ID/adsets
+```
+
+### Instagram Explore home
+
+To create an ad set with the `explore_home` placement that targets a supported country (e.g., &quot;US&quot;):
+
+```
+curl -X POST \
+  -F &#039;name=&quot;My AdSet&quot;&#039; \
+  -F &#039;optimization_goal=&quot;LINK_CLICKS&quot;&#039; \
+  -F &#039;billing_event=&quot;IMPRESSIONS&quot;&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=&quot;&lt;AD_CAMPAIGN_ID&gt;&quot;&#039; \
+  -F &#039;targeting=&#123;
+       &quot;geo_locations&quot;: &#123;
+         &quot;countries&quot;: [
+           &quot;US&quot;
+         ]
+       &#125;,
+       &quot;publisher_platforms&quot;: [
+         &quot;instagram&quot;
+       ],
+       &quot;instagram_positions&quot;: [
+         &quot;stream&quot;,
+         &quot;explore&quot;,
+         &quot;explore_home&quot;
+       ],
+     &#125;&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+### Instagram search results
+
+To create an ad set with the `ig_search` placement that targets a supported country (e.g., &quot;US&quot;):
+
+```
+curl -X POST \
+  -F &#039;name=&quot;My AdSet&quot;&#039; \
+  -F &#039;optimization_goal=&quot;LINK_CLICKS&quot;&#039; \
+  -F &#039;billing_event=&quot;IMPRESSIONS&quot;&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=&quot;&lt;AD_CAMPAIGN_ID&gt;&quot;&#039; \
+  -F &#039;targeting=&#123;
+       &quot;geo_locations&quot;: &#123;
+         &quot;countries&quot;: [
+           &quot;US&quot;
+         ]
+       &#125;,
+       &quot;publisher_platforms&quot;: [
+         &quot;instagram&quot;
+       ],
+       &quot;instagram_positions&quot;: [
+         &quot;stream&quot;,
+         &quot;ig_search&quot;
+       ],
+     &#125;&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+### Threads stream placement
+
+```
+curl \
+  -F &#039;name=Threads Adset&#039; \
+  -F &#039;optimization_goal=LINK_CLICKS&#039; \
+  -F &#039;billing_event=IMPRESSIONS&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=&lt;CAMPAIGN_ID&gt;&#039; \
+  -F &#039;targeting=&#123;
+    &quot;geo_locations&quot;: &#123;&quot;countries&quot;:[&quot;US&quot;]&#125;,
+    &quot;publisher_platforms&quot;: [&quot;instagram&quot;, &quot;threads&quot;],
+    &quot;instagram_positions&quot;: [&quot;stream&quot;],
+    &quot;threads_positions&quot;: [&quot;threads_stream&quot;],
+    &quot;user_os&quot;: [&quot;iOS&quot;]
+  &#125;&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+### WhatsApp status placement
+
+```
+curl \
+  -F &#039;name=Threads Adset&#039; \
+  -F &#039;optimization_goal=LINK_CLICKS&#039; \
+  -F &#039;billing_event=IMPRESSIONS&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=&lt;CAMPAIGN_ID&gt;&#039; \
+  -F  &#039;promoted_object =
+       &#123;
+        &quot;page_id&quot;:&lt;PAGE_ID&gt;,
+        &quot;whatsapp_phone_number&quot;: &lt;PHONE_NUMBER&gt;
+       &#125;&#039; \
+  -F &#039;targeting=&#123;
+    &quot;geo_locations&quot;: &#123;&quot;countries&quot;:[&quot;US&quot;]&#125;,
+    &quot;publisher_platforms&quot;: [&quot;instagram&quot;, &quot;whatsapp&quot;],
+    &quot;instagram_positions&quot;: [&quot;story&quot;],
+    &quot;whatsapp_positions&quot;: [&quot;status&quot;],
+    &quot;user_age_unknown&quot;: false
+    &#125;&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+## Effective placement with targeting &#123;#effective_placement&#125;
+
+You create ad sets with placements in the targeting spec, however you do not always know if Facebook delivered your ad to the placements specified. This is because your selected placement may not apply to your chosen advertising objective. With the effective placements API for targeting, you can determine which placements your ad will deliver to, given your targeting options, and receive validation messages to understand why some placements are filtered out. If you do not provide targeting, you can still determine the effective placement based on ad set and ad campaign settings.
+
+To read an effective placement based on your targeting, put `effective_` in front of the placement field name. For example:
+
+```
+curl -G \
+  -d &quot;fields=targeting&#123;effective_publisher_platforms,effective_facebook_positions,effective_device_platforms,effective_audience_network_positions,effective_instagram_positions&#125;&quot; \
+  -d &quot;access_token=&lt;access_token&gt;&quot; \
+  https://graph.facebook.com/&lt;VERSION&gt;/&lt;AD_SET_ID&gt;
+```
+
+To see why some placements got filtered out use the `recommendation` field:
+
+```
+curl -G \
+  -d &quot;fields=recommendations&quot; \
+  -d &quot;access_token=&lt;access_token&gt;&quot; \
+  https://graph.facebook.com/&lt;VERSION&gt;/23842573364570019
+```
+
+With the effective placements, you can determine which placements your ad will deliver to based on your ad set&#039;s `billing_event`, `optimization_goal` and `promoted_object` as well as your ad campaign&#039;s `buying_type` and `objective`. All parameters for `/ad_campaign_placement` include:
+
+- Ad `account_id` and access token
+- `billing_event`, such as `IMPRESSIONS`
+- Buying Type, such as `AUCTION`
+- Objective, such as `POST_ENGAGEMENT`
+- Optimization Goal, which is optional, such as `POST_ENGAGEMENT`
+- Promoted Object, such as `PIXEL_ID`
+
+All parameters except for `promoted_object` and `optimization_goal` are required. If you do provide targeting, you can use Marketing API to determine the effective placement based on the ones permitted for your settings, see [Effective Placement with Targeting](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/advanced-targeting#effective_placement). For example:
+
+```
+curl -G \
+-d &#039;account_id=&lt;ACCOUNT_ID&gt;&#039; \
+-d &#039;billing_event=IMPRESSIONS&#039; \
+-d &#039;buying_type=AUCTION&#039; \
+-d &#039;objective=PAGE_LIKES&#039; \
+-d &#039;optimization_goal=IMPRESSIONS&#039; \
+https://graph.facebook.com/&lt;VERSION&gt;/ad_campaign_placement?access_token=&lt;TOKEN&gt;
+```
+
+The call returns:
+
+```
+&#123;
+   &quot;effective_device_platforms&quot;: [
+      &quot;mobile&quot;,
+      &quot;desktop&quot;
+   ],
+   &quot;effective_facebook_positions&quot;: [
+      &quot;feed&quot;,
+      &quot;right_hand_column&quot;
+   ],
+   &quot;effective_publisher_platforms&quot;: [
+      &quot;facebook&quot;
+   ],
+   &quot;recommendations&quot;: [
+      &#123;
+         &quot;title&quot;: &quot;Placement Not Supported By Objective&quot;,
+         &quot;message&quot;: &quot;Ads with PAGE_LIKES objective do not support facebook.instream_video, facebook.suggested_video, facebook.marketplace, audience_network.classic, audience_network.instream_video, audience_network.rewarded_video, instagram.stream, instagram.story&quot;,
+         &quot;code&quot;: 1815609,
+         &quot;importance&quot;: &quot;LOW&quot;,
+         &quot;confidence&quot;: &quot;HIGH&quot;,
+         &quot;blame_field&quot;: &quot;targeting&quot;
+      &#125;,
+      &#123;
+         &quot;title&quot;: &quot;Device Platform Not Supported By Objective&quot;,
+         &quot;message&quot;: &quot;Ads with PAGE_LIKES objective do not support connected_tv.&quot;,
+         &quot;code&quot;: 1815610,
+         &quot;importance&quot;: &quot;LOW&quot;,
+         &quot;confidence&quot;: &quot;HIGH&quot;,
+         &quot;blame_field&quot;: &quot;targeting&quot;
+      &#125;
+   ],
+   &#125;
+&#125;
+```
+
+You can use the `code` field from this result in a call to `/ad-recommendation` to see a detailed reason. For example, you can get this information:
+
+```
+[&#123;&quot;code&quot;: 1815610, &quot;summary&quot;: &quot;Device Platform Not Supported By Objective&quot;&#125;,]
+```
+
+For more information, see [Ad Recommendation Reference](https://developers.facebook.com/docs/marketing-api/reference/ad-recommendation) and [Effective Placement with Targeting](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/advanced-targeting#effective_placement).
+</pre></body></html>

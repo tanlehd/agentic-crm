@@ -168,3 +168,7 @@ erDiagram
 ## UX-002 — Workspace logical extension
 
 [Workspace ERD và keys](agent-chat-workspace.md) bổ sung Chat-owned per-Human read state, saved inbox/share, tags links, snooze schedule, activity refs và message coverage. Conversation lifecycle vẫn open/pending/closed; snooze là overlay, tags là của Conversation. Contact/note vẫn CRM, Human/team vẫn Identity, run vẫn Workflow/Chatflow. Không cross-service FK; chưa tạo database objects. Đọc contract cùng ERD trước SRC-032…037.
+
+SRC-053 acquisition session source is implemented on schema26: [exact model](../contracts/acquisition-session-implementation.md) and [runtime evidence](../tracking/details/SRC-053.md). Long-lived Conversation contains immutable acquisition episodes; Lead/Deal store validated session lineage. Marketing objects in the combined ERD remain design-only.
+
+SRC-054 implements the Marketing portion as [database v1](marketing-physical-dictionary.md), with tenant/account composite keys and logical remote Page authority. [ERD](marketing-erd.md) remains a logical overview; physical canonical names/normalized Insights grain follow [database contract](../contracts/marketing-database.md).

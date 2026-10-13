@@ -1,0 +1,14 @@
+'use client';
+import { useState } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { request,useCommand,ErrorNotice } from './api';
+import { LeadCreate } from './records';
+import { Button } from '../../components/ui/button';
+export function AcquisitionSessions({tenant,conversation,contactId,version,canClose,onClosed,onCreated}:{tenant:string;conversation:string;contactId:string;version:string;canClose:boolean;onClosed:()=>void;onCreated?:(r:any)=>void}){
+ const [selected,setSelected]=useState(''),command=useCommand(tenant);
+ const sessions=useInfiniteQuery({queryKey:[tenant,`/api/v1/conversations/${conversation}/acquisition-sessions`],initialPageParam:null as string|null,queryFn:({signal,pageParam})=>request(tenant,`/api/v1/conversations/${conversation}/acquisition-sessions?limit=50${pageParam?'&before_sequence='+pageParam:''}`,{signal}),getNextPageParam:page=>page.next_before_sequence??undefined,refetchInterval:5000,retry:false});
+ const rows:any[]=sessions.data?.pages.flatMap(p=>p.data)??[],chosen=rows.find(r=>r.id===selected),active=rows.find(r=>r.status==='active');
+ if(sessions.isPending)return <p role="status">Đang tải phiên hội thoại…</p>;
+ if(sessions.error)return <ErrorNotice error={sessions.error} reload={()=>void sessions.refetch()}/>;
+ return <section className="crm-form"><h4>PHIÊN HỘI THOẠI</h4>{rows.length?<><label>Phiên tạo nhu cầu<select aria-label="Phiên tạo nhu cầu" value={selected} onChange={e=>setSelected(e.target.value)}><option value="">Chọn phiên…</option>{rows.map(r=><option key={r.id} value={r.id}>#{r.sequence} · {r.status==='active'?'Đang mở':'Đã đóng'} · {r.source_ad_id?'Ad '+r.source_ad_id:r.source_classification==='organic'?'Organic':'Chưa xác định'} · {new Date(r.opened_at).toLocaleString('vi-VN')}</option>)}</select></label>{chosen&&<p>Page: {chosen.source_page_id??'—'} · Ad: {chosen.source_ad_id??'—'}<br/>Nguồn phiên được giữ nguyên khi tạo Lead.</p>}</>:<p>Hội thoại cũ chưa có phiên. Lead dùng nguồn hội thoại đã ghi nhận.</p>}{sessions.hasNextPage&&<Button variant="outline" disabled={sessions.isFetchingNextPage} onClick={()=>void sessions.fetchNextPage()}>Tải phiên cũ hơn</Button>}{active&&canClose&&<><p>Đóng phiên hiện tại #{active.sequence}; tin đến sau đó sẽ mở phiên mới.</p><Button variant="outline" disabled={command.busy} onClick={async()=>{if(await command.run(`/api/v1/conversations/${conversation}/transition`,{target_status:'closed',reason:'Agent closes acquisition session'},'POST',version)){await sessions.refetch();onClosed();}}}>Đóng phiên hiện tại</Button><ErrorNotice error={command.error} reload={onClosed}/></>}{onCreated&&(chosen||!rows.length)&&<LeadCreate key={selected||'legacy'} tenant={tenant} conversation={conversation} contactId={contactId} acquisitionSession={chosen?.id} onCreated={onCreated}/>}</section>;
+}

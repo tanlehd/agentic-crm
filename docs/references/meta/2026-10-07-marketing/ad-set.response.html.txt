@@ -1,0 +1,1214 @@
+<html><head><title>Ad Set</title><meta charset="UTF-8" /><style nonce="o8PIogWv">body { font-family: monospace; margin: 20px; }pre { white-space: pre-wrap; word-wrap: break-word; }</style></head><body><pre data-testid="developer-docs-markdown-page"># Ad Set
+
+
+
+**Warning:** Beginning September 2, 2025, we will start to roll out more proactive restrictions on custom audiences and custom conversions that may suggest information not permitted under [our terms](https://www.facebook.com/legal/terms/businesstools?_rdr). For example, any custom audience or custom conversions suggesting specific health conditions (e.g., &quot;arthritis&quot;, &quot;diabetes&quot;) or financial status (e.g., &quot;credit score&quot;, &quot;high income&quot;) will be flagged and prevented from being used to run ad campaigns.
+
+**What these restrictions mean for your campaigns:**
+
+* You won’t be able to use flagged custom audiences or custom conversions when creating new campaigns.
+* If you have an active campaign using flagged custom audiences or custom conversions, you should promptly review and resolve the issues by following the resolution steps to avoid delivery and performance issues.
+
+**For API developers:**
+
+* Starting September 2, 2025, if an ad set contains one or more flagged custom audiences and custom conversions, the [`issues_info` list](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign#Reading) will be populated with one issue per flagged items.
+* Creation and editing of ad sets that contain flagged custom audiences and custom conversions will not be blocked, but campaign delivery and performance may be impacted unless the flags are resolved.
+
+More information on this update and how to resolve flagged custom audiences can be found [here](https://www.facebook.com/business/help/1055828013359808), while information for resolving flagged custom conversions is available [here](https://www.facebook.com/business/help/2455915321411996).
+
+An ad set is a group of ads that share the same daily or lifetime budget, schedule, bid type, bid info, and targeting data. Ad sets enable you to group ads according to your criteria, and you can retrieve the ad-related statistics that apply to a set. See [Optimized CPM](https://developers.facebook.com/documentation/ads-commerce/marketing-api/bidding/guides/cost-per-action-ads) and [Promoted Object](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-promoted-object).
+
+For example, create an ad set with a daily budget:
+
+```html
+curl -X POST \
+  -F &#039;name=&quot;My Reach Ad Set&quot;&#039; \
+  -F &#039;optimization_goal=&quot;REACH&quot;&#039; \
+  -F &#039;billing_event=&quot;IMPRESSIONS&quot;&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=&quot;&lt;AD_CAMPAIGN_ID&gt;&quot;&#039; \
+  -F &#039;targeting=&#123;
+       &quot;geo_locations&quot;: &#123;
+         &quot;countries&quot;: [
+           &quot;US&quot;
+         ]
+       &#125;,
+       &quot;facebook_positions&quot;: [
+         &quot;feed&quot;
+       ]
+     &#125;&#039; \
+  -F &#039;status=&quot;PAUSED&quot;&#039; \
+  -F &#039;promoted_object=&#123;
+       &quot;page_id&quot;: &quot;&lt;PAGE_ID&gt;&quot;
+     &#125;&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+Create an ad set with a lifetime budget
+
+```html
+curl -X POST \
+  -F &#039;name=&quot;My First Adset&quot;&#039; \
+  -F &#039;lifetime_budget=20000&#039; \
+  -F &#039;start_time=&quot;2025-12-04T20:32:30-0800&quot;&#039; \
+  -F &#039;end_time=&quot;2025-12-14T20:32:30-0800&quot;&#039; \
+  -F &#039;campaign_id=&quot;&lt;AD_CAMPAIGN_ID&gt;&quot;&#039; \
+  -F &#039;bid_amount=100&#039; \
+  -F &#039;billing_event=&quot;LINK_CLICKS&quot;&#039; \
+  -F &#039;optimization_goal=&quot;LINK_CLICKS&quot;&#039; \
+  -F &#039;targeting=&#123;
+       &quot;facebook_positions&quot;: [
+         &quot;feed&quot;
+       ],
+       &quot;geo_locations&quot;: &#123;
+         &quot;countries&quot;: [
+           &quot;US&quot;
+         ]
+       &#125;,
+       &quot;publisher_platforms&quot;: [
+         &quot;facebook&quot;,
+         &quot;audience_network&quot;
+       ]
+     &#125;&#039; \
+  -F &#039;status=&quot;PAUSED&quot;&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+### Limits &#123;#limits&#125;
+
+The following are the limits on ad sets
+
+| Limit | Value |
+| --- | --- |
+| Maximum number of ad sets per regular ad account | 5000 non-deleted ad sets |
+| Maximum number of ad sets per bulk ad account | 10000 non-deleted ad sets |
+| Maximum number of ads per ad set | 50 non-archived ads |
+
+### Housing, Employment and Credit Ads
+
+Facebook is committed to protecting people from discrimination, and we are continually improving our ability to detect and deter potential abuse. It’s already against [our policies](https://www.facebook.com/policies/ads/prohibited_content/discriminatory_practices) to discriminate by wrongfully targeting or excluding specific groups of people. As part of a [historic settlement agreement](https://newsroom.fb.com/news/2019/03/protecting-against-discrimination-in-ads/), we are making changes to the way we manage housing, employment and credit ads.
+
+Advertisers must specify a `special_ad_category` for ad campaigns that market housing, employment, and credit. In doing so, the set of targeting options available for ads in these campaigns will be restricted. See [Special Ad Category](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/special-ad-category) for more information.
+
+### Flagged custom conversions, custom audiences and/or lookalike audiences
+
+If an ad set contains one or more custom lookalike audiences flagged with an `operation_status` of `471`, the `issues_info` list will be populated with one issue per flagged audience as warning.
+
+**Example**
+
+```html
+&#123;
+  &quot;effective_status&quot;: &quot;ACTIVE&quot;,
+  &quot;issues_info&quot;: [
+    &#123;
+      &quot;level&quot;: &quot;AD_SET&quot;,
+      &quot;error_code&quot;: 2460003,
+      &quot;error_summary&quot;: &quot;Custom Audience is blocked&quot;,
+      &quot;error_message&quot;: &quot;Custom Audience is blocked: Some of this ad set’s custom audiences and/or lookalikes are blocked because they suggest the use of information (e.g., health, financial) not allowed under Meta’s terms. Go to Audience Manager for more details, and you can either review each custom audience or lookalike and remove prohibited information, or choose a different one for your ad set or create a new one and make sure it does not include potentially prohibited information. You can also request a review in Audience Manager if you think any don’t use restricted information.&quot;,
+      &quot;error_type&quot;: &quot;SOFT_ERROR&quot;,
+      &quot;additional_info&quot;: &quot;Custom Audience ID: 120231141155310247&quot;
+    &#125;,
+    &#123;
+      &quot;level&quot;: &quot;AD_SET&quot;,
+      &quot;error_code&quot;: 2460003,
+      &quot;error_summary&quot;: &quot;Custom Audience is blocked&quot;,
+      &quot;error_message&quot;: &quot;Custom Audience is blocked: Some of this ad set’s custom audiences and/or lookalikes are blocked because they suggest the use of information (e.g., health, financial) not allowed under Meta’s terms. Go to Audience Manager for more details, and you can either review each custom audience or lookalike and remove prohibited information, or choose a different one for your ad set or create a new one and make sure it does not include potentially prohibited information. You can also request a review in Audience Manager if you think any don’t use restricted information.&quot;,
+      &quot;error_type&quot;: &quot;SOFT_ERROR&quot;,
+      &quot;additional_info&quot;: &quot;Custom Audience ID: 120232742978230247&quot;
+    &#125;,
+    &#123;
+      &quot;level&quot;: &quot;AD_SET&quot;,
+      &quot;error_code&quot;: 2460004,
+      &quot;error_summary&quot;: &quot;Custom Conversion is blocked&quot;,
+      &quot;error_message&quot;: &quot;Custom Conversion is blocked: This ad set’s custom conversion is blocked because it suggests the use of information (e.g., health, financial) not allowed under Meta’s terms. You can’t edit this custom conversion, but you can choose a different one for this ad set or create a new one that doesn’t use prohibited information. You can also request a review if you think your custom conversion doesn’t use prohibited information.&quot;,
+      &quot;error_type&quot;: &quot;SOFT_ERROR&quot;,
+      &quot;additional_info&quot;: &quot;Custom Conversion ID: 730362226205831&quot;
+    &#125;
+  ],
+  &quot;id&quot;: &quot;120228591637010247&quot;
+&#125;
+```
+
+In addition, attempting to create or modify ad sets containing any flagged custom audience, lookalike audience or custom conversion will fail with an error. The error will contain the list of IDs for the restricted assets.
+
+##### For flagged custom audiences
+
+```json
+&#123;
+  &quot;error&quot;: &#123;
+    &quot;error_subcode&quot;: 246003,
+    &quot;error_data&quot;: &#123;
+      &quot;Restricted Custom Audience IDs&quot;: [
+        &quot;&lt;CUSTOM_AUDIENCE_ID1&gt;&quot;,
+        &quot;&lt;CUSTOM_AUDIENCE_ID2&gt;&quot;
+      ]
+    &#125;
+    &quot;error_user_title&quot;: &quot;Your custom audience is currently blocked&quot;,
+    &quot;error_user_msg&quot;: &quot;  This custom audience is blocked because it may contain information (e.g., health, financial) not allowed under Meta’s terms. Visit the audience manager to appeal this decision, edit your audience and remove prohibited information, or choose a different audience.&quot;
+  &#125;,
+&#125;
+```
+
+##### For flagged custom conversions
+
+```json
+&#123;
+  &quot;error&quot;: &#123;
+    &quot;error_subcode&quot;: 246004,
+    &quot;error_data&quot;: &#123;
+      &quot;Restricted Custom Conversion ID&quot;: &quot;&lt;CUSTOM_CONVERSION_ID&gt;&quot;
+    &#125;
+    &quot;error_user_title&quot;: &quot;Your custom conversion is currently blocked&quot;,
+    &quot;error_user_msg&quot;: &quot;This custom conversion is blocked because it may contain information (e.g., health, financial) not allowed under Meta’s terms. Visit the events manager to appeal this decision, edit your custom conversion and remove prohibited information, or choose a different custom conversion.&quot;
+  &#125;,
+&#125;
+```
+
+#### To resolve flagged audiences
+
+If your custom or lookalike audiences are flagged, consider these options.
+
+To resolve flagged custom audiences:
+
+* **Review flagged audiences**: Use Audience Manager to review your custom audience along with other information included in an audience, and remove any information that is not allowed under edit the audience to comply with [Meta&#039;s terms](https://www.facebook.com/legal/terms/businesstools/).
+* **Create new or choose different audiences**: Alternatively, you can create a new custom audience or choose a different existing custom audience and make sure that it does not include information not allowed under our terms and use that to run campaigns.
+
+To resolve flagged lookalike audiences:
+
+* **Resolve issues with the underlying custom audience**: If the underlying custom audience (also known as the seed audience) of your lookalike audience is flagged, you will need to resolve the issue with the underlying custom audience on which the lookalike audience is built. Please refer to the preceding section on how to resolve flagged custom audiences.
+* **Create new audiences**: Consider developing new lookalike audiences and make sure that they don&#039;t include information that is not allowed under our terms.
+
+##### Request a review
+
+If you believe your custom audience or lookalike audience has been flagged in error and doesn&#039;t include non-permitted information, you can request a review via Ads Manager under the campaigns table or, or in Audience Manager by clicking on individual audiences and under the summary tab of the impacted audience.
+
+#### To resolve flagged custom conversions
+
+If any of your custom conversions are flagged for suggesting information that is not allowed under our terms, you may want to consider the following options.
+
+To resolve a flagged custom conversion in a new campaign creation:
+
+* **Create new custom conversion**: Use a new custom conversion and make sure that it does not include information that is not allowed under our terms.
+* **Choose a different custom conversion**: Select a different existing custom conversion and make sure it does not include information that is not allowed under our terms.
+
+To resolve a flagged custom conversion in an existing campaign:
+
+* **Duplicate your campaign and select an existing custom conversion**: If you have a running campaign that is flagged due to a flagged custom conversion, consider duplicating the campaign and selecting a different custom conversion that is not flagged before publishing the new duplicated campaign. **Note:** Once the campaign is published, you cannot remove or select a different custom conversion.
+
+##### Request a review
+
+If you believe your custom conversion has been flagged in error and doesn&#039;t include non-permitted information, you can request a review via Ads Manager under the campaigns table, or in Events Manager under the custom conversions page.
+
+### Targeting European Union Ads
+
+Beginning Tuesday, May 16, 2023 advertisers who include the European Union (EU), associated territories, or select global/worldwide in their ad targeting on Facebook and Instagram will be asked to include information about who benefits from the ad (the beneficiary) and who is paying for the ad (the payor) for each ad set. Advertisers will be prompted for this information in all ads buying surfaces including Ads Manager and the Marketing API. Beginning Wednesday, August 16, 2023, if beneficiary and payer information is not provided, the ad will not be published.
+
+We are launching this requirement to respond to the EU Digital Services Act (DSA) which goes into full effect for Facebook and Instagram later this year.
+
+Ad sets targeted to the EU and/or associated territories (see [here](https://www.facebook.com/business/help/605021638170961/) for a complete list) are required to provide beneficiary information (who benefits from the ad running), and payer information (who pays for the ad). This applies to new ads, duplicated ads, or significantly edited ads from May 16 forward, and without the required information, the API will respond with a wrong parameter error. For convenience the advertiser can set a saved beneficiary and payor in their ad account, which will be auto-populated during ad set creation, copying, and updating targets to include EU locations and ads under existing ad seta without configured the payor and beneficiary.. For more information about the ad account level parameters, `default_dsa_payor` and `default_dsa_beneficiary`, see to the check the [Ad Account reference document](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account).
+
+To facilitate the creation of ad sets targeting the EU, we&#039;re offering a new API which allows developers to get a list of likely beneficiary/payer strings, based on ad account activity. See [Ad Account DSA Recommendations](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/dsa_recommendations) for more information.
+
+**Notice:**
+
+* When the default values are set in the ad account, during ad set creation, updating, and ad creation under an existing ad set, if one of them is not provided, the API will automatically fill the default value listed in the ad account. **Do not pass only one of them and expect the API to set the other one to be the same value.** For example, in the ad account settings, `default_dsa_payor` is `payor_default` and `default_dsa_beneficiary` is `beneficiary_default`. During ad set creation, if only `dsa_payor` is passed with the payor, the `dsa_beneficiary` will be automatically filled with value of `beneficiary_default` instead of `dsa_payor`.
+* If no saved default values are set or the values are unset, without explicitly passing the payor or beneficiary during ad set creation or when making updates, it will trigger an error and the request will fail.
+* The `payer` and the `beneficiary` fields are only for ad sets targeting the EU and/or associated territories.
+* For ad sets targeting regions other than the EU and/or associated territories, that information will not be saved even if it is provided.
+
+To facilitate the creation of ad sets targeting the EU, we&#039;re offering a new API which allows developers to get a list of likely beneficiary/payer strings, based on ad account activity. See [Ad Account Dsa Recommendations](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/dsa_recommendations) for more information.
+
+## Reading
+
+An ad set is a group of ads that share the same daily or lifetime budget, schedule, bid type, bid info, and targeting data. Ad sets enable you to group ads according to your criteria, and you can retrieve the ad-related statistics that apply to a set.
+
+**Warning:** The `date_preset = lifetime` parameter is disabled in Graph API v10.0 and replaced with `date_preset = maximum`, which returns a maximum of 37 months of data. For v9.0 and below, `date_preset = maximum` will be enabled on May 25, 2021, and any `lifetime` calls will default to `maximum` and return only 37 months of data.
+
+### Examples &#123;#read-examples&#125;
+
+```html
+curl -X GET \
+  -d &#039;fields=&quot;name,status&quot;&#039; \
+  -d &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/&lt;AD_SET_ID&gt;/
+```
+
+To retrieve date-time related fields in a UNIX timestamp format, use the `date_format` parameter:
+
+```html
+curl -X GET \
+  -d &#039;fields=&quot;id,name,start_time,end_time&quot;&#039; \
+  -d &#039;date_format=&quot;U&quot;&#039; \
+  -d &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/&lt;AD_SET_ID&gt;/
+```
+
+#### Example
+
+### HTTP
+```
+GET /v25.0/&lt;AD_SET_ID&gt;/?fields=adset_schedule HTTP/1.1
+Host: graph.facebook.com
+```
+
+### PHP SDK
+```
+/* PHP SDK v5.0.0 */
+/* make the API call */
+try &#123;
+  // Returns a `Facebook\FacebookResponse` object
+  $response = $fb-&gt;get(
+    &#039;/&lt;AD_SET_ID&gt;/?fields=adset_schedule&#039;,
+    &#039;&#123;access-token&#125;&#039;
+  );
+&#125; catch(Facebook\Exceptions\FacebookResponseException $e) &#123;
+  echo &#039;Graph returned an error: &#039; . $e-&gt;getMessage();
+  exit;
+&#125; catch(Facebook\Exceptions\FacebookSDKException $e) &#123;
+  echo &#039;Facebook SDK returned an error: &#039; . $e-&gt;getMessage();
+  exit;
+&#125;
+$graphNode = $response-&gt;getGraphNode();
+/* handle the result */
+```
+
+### JavaScript SDK
+```
+/* make the API call */
+FB.api(
+    &quot;/&lt;AD_SET_ID&gt;/&quot;,
+    &#123;
+        &quot;fields&quot;: &quot;adset_schedule&quot;
+    &#125;,
+    function (response) &#123;
+      if (response &amp;&amp; !response.error) &#123;
+        /* handle the result */
+      &#125;
+    &#125;
+);
+```
+
+### Android SDK
+```
+Bundle params = new Bundle();
+params.putString(&quot;fields&quot;, &quot;adset_schedule&quot;);
+/* make the API call */
+new GraphRequest(
+    AccessToken.getCurrentAccessToken(),
+    &quot;/&lt;AD_SET_ID&gt;/&quot;,
+    params,
+    HttpMethod.GET,
+    new GraphRequest.Callback() &#123;
+        public void onCompleted(GraphResponse response) &#123;
+            /* handle the result */
+        &#125;
+    &#125;
+).executeAsync();
+```
+
+### iOS SDK
+```
+NSDictionary *params = &#064;&#123;
+  &#064;&quot;fields&quot;: &#064;&quot;adset_schedule&quot;,
+&#125;;
+/* make the API call */
+FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]
+                               initWithGraphPath:&#064;&quot;/&lt;AD_SET_ID&gt;/&quot;
+                                      parameters:params
+                                      HTTPMethod:&#064;&quot;GET&quot;];
+[request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
+                                      id result,
+                                      NSError *error) &#123;
+    // Handle the result
+&#125;];
+```
+
+### cURL
+```
+curl -X GET -G \
+  -d &#039;fields=&quot;adset_schedule&quot;&#039; \
+  -d &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/&lt;AD_SET_ID&gt;/
+```
+
+Try it in [Graph API Explorer](https://developers.facebook.com/tools/explorer/?method=GET&amp;path=%3CAD_SET_ID%3E%2F%3Ffields%3Dadset_schedule&amp;version=v25.0)
+
+If you want to learn how to use the Graph API, read our [Using Graph API guide](https://developers.facebook.com/docs/graph-api/using-graph-api)
+
+#### Parameters
+
+| Parameter | Description |
+| --- | --- |
+| `date_preset`&lt;br&gt;&lt;br&gt;*enum&#123;today, yesterday, this_month, last_month, this_quarter, maximum, data_maximum, last_3d, last_7d, last_14d, last_28d, last_30d, last_90d, last_week_mon_sun, last_week_sun_sat, last_quarter, last_year, this_week_mon_today, this_week_sun_today, this_year&#125;* | Date Preset&lt;br&gt; |
+| `time_range`&lt;br&gt;&lt;br&gt;*&#123;&#039;since&#039;:YYYY-MM-DD,&#039;until&#039;:YYYY-MM-DD&#125;* | Time Range. Note if time range is invalid, it will be ignored.&lt;br&gt;&lt;br&gt;&lt;br&gt;`since` *datetime*&lt;br&gt;A date in the format of &quot;YYYY-MM-DD&quot;, which means from the beginning midnight of that day.&lt;br&gt;&lt;br&gt;&lt;br&gt;`until` *datetime*&lt;br&gt;A date in the format of &quot;YYYY-MM-DD&quot;, which means to the beginning midnight of the following day.&lt;br&gt; |
+
+#### Fields
+
+| Field | Description |
+| --- | --- |
+| `id`&lt;br&gt;&lt;br&gt;*numeric string* | ID for the Ad Set&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `account_id`&lt;br&gt;&lt;br&gt;*numeric string* | ID for the Ad Account associated with this Ad Set&lt;br&gt; |
+| `adlabels`&lt;br&gt;&lt;br&gt;*[list&lt;AdLabel&gt;](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-label)* | Ad Labels associated with this ad set&lt;br&gt; |
+| `adset_schedule`&lt;br&gt;&lt;br&gt;*list&lt;DayPart&gt;* | Ad set schedule, representing a delivery schedule for a single day&lt;br&gt; |
+| `asset_feed_id`&lt;br&gt;&lt;br&gt;*numeric string* | The ID of the asset feed that constains a content to create ads&lt;br&gt; |
+| `attribution_spec`&lt;br&gt;&lt;br&gt;*list&lt;AttributionSpec&gt;* | Conversion attribution spec used for attributing conversions for optimization. Supported window lengths differ by optimization goal and campaign objective. See [Objective, Optimization Goal and `attribution_spec`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign-group#attribution_spec).&lt;br&gt; |
+| `bid_adjustments`&lt;br&gt;&lt;br&gt;*[AdBidAdjustments](https://developers.facebook.com/docs/marketing-api/reference/ad-bid-adjustments)* | Map of bid adjustment types to values&lt;br&gt; |
+| `bid_amount`&lt;br&gt;&lt;br&gt;*unsigned int32* | Bid cap or target cost for this ad set. The bid cap used in a *lowest cost bid strategy* is defined as the maximum bid you want to pay for a result based on your `optimization_goal`. The target cost used in a *target cost bid strategy* lets Facebook bid on your behalf to meet your target on average and keep costs stable as you raise budget.&lt;br&gt;&lt;br&gt;&lt;br&gt;The bid amount&#039;s unit is cents for currencies like USD, EUR, and the basic unit for currencies like JPY, KRW. The bid amount for ads with `IMPRESSION` or `REACH` as `billing_event` is per 1,000 occurrences of that event, and the bid amount for ads with other `billing_event`s is for each occurrence.&lt;br&gt; |
+| `bid_constraints`&lt;br&gt;&lt;br&gt;*[AdCampaignBidConstraint](https://developers.facebook.com/docs/marketing-api/reference/ad-campaign-bid-constraint)* | Choose bid constraints for ad set to suit your specific business goals. It usually works together with `bid_strategy` field.&lt;br&gt; |
+| `bid_info`&lt;br&gt;&lt;br&gt;*map&lt;string, unsigned int32&gt;* | Map of bid objective to bid value.&lt;br&gt; |
+| `bid_strategy` This field is only accessible in v3.0 or later.&lt;br&gt;&lt;br&gt;*enum &#123;LOWEST_COST_WITHOUT_CAP, LOWEST_COST_WITH_BID_CAP, COST_CAP, LOWEST_COST_WITH_MIN_ROAS&#125;* | Bid strategy for this ad set when you use `AUCTION` as your buying type:&lt;br&gt;&lt;br&gt;`LOWEST_COST_WITHOUT_CAP`: Designed to get the most results for your budget based on&lt;br&gt;your ad set `optimization_goal` without limiting your bid amount. This is the best strategy&lt;br&gt;if you care most about cost efficiency. However with this strategy it may be harder to get&lt;br&gt;stable average costs as you spend. This strategy is also known as *automatic bidding*.&lt;br&gt;Learn more in [Ads Help Center, About bid strategies: Lowest cost](https://www.facebook.com/business/help/721453268045071).&lt;br&gt;&lt;br&gt;`LOWEST_COST_WITH_BID_CAP`: Designed to get the most results for your budget based on&lt;br&gt;your ad set `optimization_goal` while limiting actual bid to your specified&lt;br&gt;amount. With a bid cap you have more control over your&lt;br&gt;cost per actual optimization event. However if you set a limit which is too low you may&lt;br&gt;get less ads delivery. Get your bid cap with the field `bid_amount`.&lt;br&gt;This strategy is also known as *manual maximum-cost bidding*.&lt;br&gt;Learn more in [Ads Help Center, About bid strategies: Lowest cost](https://www.facebook.com/business/help/721453268045071).&lt;br&gt;&lt;br&gt;Notes:&lt;br&gt;&lt;br&gt;&lt;br&gt;• If you enable campaign budget optimization, you should get `bid_strategy` at the parent campaign level.&lt;br&gt;• `TARGET_COST` bidding strategy has been deprecated with [Marketing API v9](https://developers.facebook.com/docs/graph-api/changelog/version9.0).&lt;br&gt; |
+| `billing_event`&lt;br&gt;&lt;br&gt;*enum &#123;APP_INSTALLS, CLICKS, IMPRESSIONS, LINK_CLICKS, NONE, OFFER_CLAIMS, PAGE_LIKES, POST_ENGAGEMENT, THRUPLAY, PURCHASE, LISTING_INTERACTION&#125;* | The billing event for this ad set:&lt;br&gt;`APP_INSTALLS`: Pay when people install your app.&lt;br&gt;`CLICKS`: Pay when people click anywhere in the ad. &lt;br&gt;`IMPRESSIONS`: Pay when the ads are shown to people.&lt;br&gt;`LINK_CLICKS`: Pay when people click on the link of the ad.&lt;br&gt;`OFFER_CLAIMS`: Pay when people claim the offer.&lt;br&gt;`PAGE_LIKES`: Pay when people like your page.&lt;br&gt;`POST_ENGAGEMENT`: Pay when people engage with your post.&lt;br&gt;`VIDEO_VIEWS`: Pay when people watch your video ads for at least 10 seconds.&lt;br&gt;`THRUPLAY`: Pay for ads that are played to completion, or played for at least 15 seconds.&lt;br&gt; |
+| `brand_safety_config`&lt;br&gt;&lt;br&gt;*BrandSafetyCampaignConfig* | brand_safety_config&lt;br&gt; |
+| `budget_remaining`&lt;br&gt;&lt;br&gt;*numeric string* | Remaining budget of this Ad Set&lt;br&gt; |
+| `campaign`&lt;br&gt;&lt;br&gt;*[Campaign](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign-group)* | The campaign that contains this ad set&lt;br&gt; |
+| `campaign_active_time`&lt;br&gt;&lt;br&gt;*numeric string* | Campaign running length&lt;br&gt; |
+| `campaign_attribution`&lt;br&gt;&lt;br&gt;*enum* | campaign_attribution, a new field for app ads campaign, used to indicate a campaign&#039;s attribution type, eg: SKAN or AEM&lt;br&gt; |
+| `campaign_id`&lt;br&gt;&lt;br&gt;*numeric string* | The ID of the campaign that contains this ad set&lt;br&gt; |
+| `configured_status`&lt;br&gt;&lt;br&gt;*enum &#123;ACTIVE, PAUSED, DELETED, ARCHIVED&#125;* | The status set at the ad set level. It can be different from the&lt;br&gt;effective status due to its parent campaign. Prefer using &#039;status&#039;&lt;br&gt;instead of this.&lt;br&gt; |
+| `contextual_bundling_spec`&lt;br&gt;&lt;br&gt;*ContextualBundlingSpec* | specs of contextual bundling Ad Set setup, including signal of opt-in/out the feature&lt;br&gt; |
+| `created_time`&lt;br&gt;&lt;br&gt;*datetime* | Time when this Ad Set was created&lt;br&gt; |
+| `creative_sequence`&lt;br&gt;&lt;br&gt;*list&lt;numeric string&gt;* | Order of the adgroup sequence to be shown to users&lt;br&gt; |
+| `daily_budget`&lt;br&gt;&lt;br&gt;*numeric string* | The daily budget of the set defined in your [account currency](https://developers.facebook.com/documentation/ads-commerce/marketing-api).&lt;br&gt; |
+| `daily_min_spend_target`&lt;br&gt;&lt;br&gt;*numeric string* | Daily minimum spend target of the ad set defined in your account currency. To use this field, daily budget must be specified in the Campaign. This target is not a guarantee but our best effort.&lt;br&gt; |
+| `daily_spend_cap`&lt;br&gt;&lt;br&gt;*numeric string* | Daily spend cap of the ad set defined in your account currency. To use this field, daily budget must be specified in the Campaign.&lt;br&gt; |
+| `destination_type`&lt;br&gt;&lt;br&gt;*string* | Destination of ads in this Ad Set.&lt;br&gt;&lt;br&gt;&lt;br&gt;Options include: `WEBSITE`, `APP`, `MESSENGER`, `INSTAGRAM_DIRECT`.&lt;br&gt;&lt;br&gt;&lt;br&gt;The `ON_AD`, `ON_POST`, `ON_VIDEO`, `ON_PAGE`, and `ON_EVENT` destination types are currently in limited beta testing. Trying to duplicate campaigns with existing destination types using these new destination types may throw an error. See the [Outcome-Driven Ads Experiences](#odax) section below for more information.&lt;br&gt; |
+| `dsa_beneficiary`&lt;br&gt;&lt;br&gt;*string* | The beneficiary of all ads in this ad set.&lt;br&gt; |
+| `dsa_payor`&lt;br&gt;&lt;br&gt;*string* | The payor of all ads in this ad set.&lt;br&gt; |
+| `effective_status`&lt;br&gt;&lt;br&gt;*enum &#123;ACTIVE, PAUSED, DELETED, CAMPAIGN_PAUSED, ARCHIVED, IN_PROCESS, WITH_ISSUES&#125;* | The effective status of the adset. The status could be effective either&lt;br&gt;because of its own status, or the status of its parent campaign. `WITH_ISSUES` is available for version 3.2 or higher. `IN_PROCESS` is available for version 4.0 or higher.&lt;br&gt; |
+| `end_time`&lt;br&gt;&lt;br&gt;*datetime* | End time, in UTC UNIX timestamp&lt;br&gt; |
+| `frequency_control_specs`&lt;br&gt;&lt;br&gt;*[list&lt;AdCampaignFrequencyControlSpecs&gt;](https://developers.facebook.com/docs/marketing-api/reference/ad-campaign-frequency-control-specs)* | An array of frequency control specs for this ad set. Writes to this field are only available in ad sets where `REACH` and `THRUPLAY` are the performance goal.&lt;br&gt; |
+| `instagram_user_id` This field is only accessible in v22.0 or later.&lt;br&gt;&lt;br&gt;*numeric string* | Represents your Instagram account id, used for ads, including dynamic creative ads on Instagram.&lt;br&gt; |
+| `is_dynamic_creative` This field is only accessible in v3.2 or later.&lt;br&gt;&lt;br&gt;*bool* | Whether this ad set is a dynamic creative ad set. dynamic creative ad can be created only under ad set with this field set to be true.&lt;br&gt; |
+| `is_incremental_attribution_enabled`&lt;br&gt;&lt;br&gt;*bool* | Whether the campaign should use incremental attribution optimization.&lt;br&gt; |
+| `issues_info` This field is only accessible in v3.2 or later.&lt;br&gt;&lt;br&gt;*[list&lt;AdCampaignIssuesInfo&gt;](https://developers.facebook.com/docs/marketing-api/reference/ad-campaign-issues-info)* | Issues for this ad set that prevented it from deliverying&lt;br&gt; |
+| `learning_stage_info`&lt;br&gt;&lt;br&gt;*[AdCampaignLearningStageInfo](https://developers.facebook.com/docs/marketing-api/reference/ad-campaign-learning-stage-info)* | Info about whether the ranking or delivery system is still learning for this ad set. While the ad set is still in learning , we might unstablized delivery performances.&lt;br&gt; |
+| `lifetime_budget`&lt;br&gt;&lt;br&gt;*numeric string* | The lifetime budget of the set defined in your [account currency](https://developers.facebook.com/documentation/ads-commerce/marketing-api).&lt;br&gt; |
+| `lifetime_imps`&lt;br&gt;&lt;br&gt;*int32* | Lifetime impressions. Available only for campaigns with `buying_type=FIXED_CPM`&lt;br&gt; |
+| `lifetime_min_spend_target`&lt;br&gt;&lt;br&gt;*numeric string* | Lifetime minimum spend target of the ad set defined in your account currency. To use this field, lifetime budget must be specified in the Campaign. This target is not a guarantee but our best effort.&lt;br&gt; |
+| `lifetime_spend_cap`&lt;br&gt;&lt;br&gt;*numeric string* | Lifetime spend cap of the ad set defined in your account currency. To use this field, lifetime budget must be specified in the Campaign.&lt;br&gt; |
+| `min_budget_spend_percentage`&lt;br&gt;&lt;br&gt;*numeric string* | min_budget_spend_percentage&lt;br&gt; |
+| `multi_optimization_goal_weight`&lt;br&gt;&lt;br&gt;*string* | multi_optimization_goal_weight&lt;br&gt; |
+| `name`&lt;br&gt;&lt;br&gt;*string* | Name of the ad set&lt;br&gt; |
+| `optimization_goal`&lt;br&gt;&lt;br&gt;*enum &#123;NONE, APP_INSTALLS, AD_RECALL_LIFT, ENGAGED_USERS, EVENT_RESPONSES, IMPRESSIONS, LEAD_GENERATION, QUALITY_LEAD, LINK_CLICKS, OFFSITE_CONVERSIONS, PAGE_LIKES, POST_ENGAGEMENT, QUALITY_CALL, REACH, LANDING_PAGE_VIEWS, VISIT_INSTAGRAM_PROFILE, ENGAGED_PAGE_VIEWS, VALUE, THRUPLAY, DERIVED_EVENTS, APP_INSTALLS_AND_OFFSITE_CONVERSIONS, CONVERSATIONS, IN_APP_VALUE, MESSAGING_PURCHASE_CONVERSION, MESSAGING_DEEP_CONVERSATION_AND_FOLLOW, SUBSCRIBERS, REMINDERS_SET, MEANINGFUL_CALL_ATTEMPT, PROFILE_VISIT, PROFILE_AND_PAGE_ENGAGEMENT, ADVERTISER_SILOED_VALUE, AUTOMATIC_OBJECTIVE, MESSAGING_APPOINTMENT_CONVERSION&#125;* | The optimization goal this ad set is using.&lt;br&gt;&lt;br&gt;`NONE`: Only available in read mode for campaigns created pre-v2.4.&lt;br&gt;&lt;br&gt;`APP_INSTALLS`: Optimize for people more likely to install your app.&lt;br&gt;&lt;br&gt;`AD_RECALL_LIFT`: Optimize for people more likely to remember seeing your ads.&lt;br&gt;&lt;br&gt;`CLICKS`: Deprecated. Only available in read mode.&lt;br&gt;&lt;br&gt;`ENGAGED_USERS`: Optimize for people more likely to take a particular action in your app.&lt;br&gt;&lt;br&gt;`EVENT_RESPONSES`: Optimize for people more likely to attend your event.&lt;br&gt;&lt;br&gt;`IMPRESSIONS`: Show the ads as many times as possible.&lt;br&gt;&lt;br&gt;`LEAD_GENERATION`: Optimize for people more likely to fill out a lead generation form.&lt;br&gt;&lt;br&gt;`QUALITY_LEAD`: Optimize for people who are likely to have a deeper conversation with advertisers after lead submission.&lt;br&gt;&lt;br&gt;`LINK_CLICKS`: Optimize for people more likely to click in the link of the ad.&lt;br&gt;&lt;br&gt;`OFFSITE_CONVERSIONS`: Optimize for people more likely to make a conversion on the site.&lt;br&gt;&lt;br&gt;`PAGE_LIKES`: Optimize for people more likely to like your page.&lt;br&gt;&lt;br&gt;`POST_ENGAGEMENT`: Optimize for people more likely to engage with your post.&lt;br&gt;&lt;br&gt;`QUALITY_CALL`: Optimize for people who are likely to call the advertiser.&lt;br&gt;&lt;br&gt;`REACH`: Optimize to reach the most unique users for each day or interval specified in `frequency_control_specs`.&lt;br&gt;&lt;br&gt;`LANDING_PAGE_VIEWS`: Optimize for people who are most likely to click on and load your chosen landing page.&lt;br&gt;&lt;br&gt;`VISIT_INSTAGRAM_PROFILE`: Optimize for visits to the advertiser&#039;s Instagram profile.&lt;br&gt;&lt;br&gt;`VALUE`: Optimize for maximum total purchase value within the specified attribution window.&lt;br&gt;&lt;br&gt;`THRUPLAY`: Optimize delivery of your ads to people who are more likely to play your ad to completion, or play it for at least 15 seconds.&lt;br&gt;&lt;br&gt;`DERIVED_EVENTS`: Optimize for retention, which reaches people who are most likely to return to the app and open it again during a given time frame after installing. You can choose either two days, meaning the app is likely to be reopened between 24 and 48 hours after installation; or seven days, meaning the app is likely to be reopened between 144 and 168 hours after installation.&lt;br&gt;&lt;br&gt;`APP_INSTALLS_AND_OFFSITE_CONVERSIONS`: Optimizes for people more likely to install your app and make a conversion on your site. &lt;br&gt;&lt;br&gt;`CONVERSATIONS`: Directs ads to people more likely to have a conversation with the business.&lt;br&gt; |
+| `optimization_sub_event`&lt;br&gt;&lt;br&gt;*string* | Optimization sub event for a specific optimization goal. For example: Sound-On event for Video-View-2s optimization goal.&lt;br&gt; |
+| `pacing_type`&lt;br&gt;&lt;br&gt;*list&lt;string&gt;* | Defines the pacing type, standard or using ad scheduling&lt;br&gt; |
+| `promoted_object`&lt;br&gt;&lt;br&gt;*[AdPromotedObject](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-promoted-object)* | The object this ad set is promoting across all its ads.&lt;br&gt; |
+| `recommendations`&lt;br&gt;&lt;br&gt;*list&lt;AdRecommendation&gt;* | If there are recommendations for this ad set, this field includes them. Otherwise, will not be included in the response. This field is not included in redownload mode.&lt;br&gt; |
+| `recurring_budget_semantics`&lt;br&gt;&lt;br&gt;*bool* | If this field is `true`, your daily spend may be more than your daily budget while your weekly spend will not exceed 7 times your daily budget. More details explained in the [Ad Set Budget](https://developers.facebook.com/documentation/ads-commerce/marketing-api) document. If this is `false`, your amount spent daily will not exceed the daily budget. This field is not applicable for lifetime budgets.&lt;br&gt; |
+| `regional_regulated_categories`&lt;br&gt;&lt;br&gt;*list&lt;enum&gt;* | This param is used to specify `regional_regulated_categories`. Currently it supports `null` and the following values:&lt;br&gt;&lt;br&gt;&lt;br&gt;• TAIWAN_FINSERV: Use this value to declare a Financial Service ad set if the ad targets Taiwan Audience&lt;br&gt;• AUSTRALIA_FINSERV: Use this value to declare a Financial Service ad set if the ad set targets Australia Audience&lt;br&gt;• INDIA_FINSERV: Use this value to declare a Securities and Investments ad set if the ad set targets India Audience&lt;br&gt;• TAIWAN_UNIVERSAL: Use this value to declare an ad set if it targets Taiwan Audience&lt;br&gt;• SINGAPORE_UNIVERSAL: Use this value to declare an ad set if it targets Singapore Audience&lt;br&gt;• THAILAND_UNIVERSAL: Use this value to declare an ad set if it targets Thailand Audience and you are seeing &quot;Beneficiary/payer is missing&quot; errors (3858634, 3858636).&lt;br&gt;• BRAZIL_REGULATION: Use this value to declare an Ad Set if it targets Thailand Audience and you are seeing &quot;Beneficiary/payer is missing&quot; errors (3858634, 3858636).&lt;br&gt;&lt;br&gt;&lt;br&gt;If an ad set is a Financial Service Ad and it targets Taiwan, it needs to declare both `TAIWAN_FINSERV` and `TAIWAN_UNIVERSAL`&lt;br&gt;&lt;br&gt;&lt;br&gt;Example: `null` or `[AUSTRALIA_FINSERV]` or `[TAIWAN_FINSERV, TAIWAN_UNIVERSAL]`&lt;br&gt; |
+| `regional_regulation_identities`&lt;br&gt;&lt;br&gt;*RegionalRegulationIdentities* | This param is used to specify regional_regulation_identities used to represent the ad set. Currently it supports the following fields:&lt;br&gt;&lt;br&gt;&lt;br&gt;• taiwan_finserv_beneficiary: used for TAIWAN_FINSERV category&lt;br&gt;• taiwan_finserv_payer: used for TAIWAN_FINSERV category&lt;br&gt;• australia_finserv_beneficiary: used for AUSTRALIA_FINSERV category&lt;br&gt;• australia_finserv_payer: used for AUSTRALIA_FINSERV category&lt;br&gt;• india_finserv_beneficiary: used for INDIA_FINSERV category&lt;br&gt;• india_finserv_payer: used for INDIA_FINSERV category&lt;br&gt;• taiwan_universal_beneficiary: used for TAIWAN_UNIVERSAL category&lt;br&gt;• taiwan_universal_payer: used for TAIWAN_UNIVERSAL category&lt;br&gt;• singapore_universal_beneficiary: used for SINGAPORE_UNIVERSAL category&lt;br&gt;• singapore_universal_payer: used for SINGAPORE_UNIVERSAL category&lt;br&gt;• universal_beneficiary: used for THAILAND_UNIVERSAL category&lt;br&gt;• universal_payer: used for THAILAND_UNIVERSAL category&lt;br&gt;• universal_beneficiary: used for BRAZIL_REGULATION category&lt;br&gt;• universal_payer: used for BRAZIL_REGULATION category&lt;br&gt;&lt;br&gt;&lt;br&gt;Example:&lt;br&gt;&lt;br&gt;&lt;br&gt;`regional_regulation_identities: &#123;&lt;br&gt;&quot;taiwan_finserv_beneficiary&quot;: &lt;verified_identity_id&gt;,&lt;br&gt;&quot;taiwan_finserv_payer&quot;: &lt;verified_identity_id&gt;,&lt;br&gt;&quot;taiwan_universal_beneficiary&quot;: &lt;verified_identity_id&gt;,&lt;br&gt;&quot;taiwan_universal_payer&quot;: &lt;verified_identity_id&gt;,&lt;br&gt;&#125;`&lt;br&gt;&lt;br&gt;&lt;br&gt;During creation and update, the passed identities fields need to correspond to declared categories. Both beneficiary and payer identities must be included, and they can use the same identity ID.&lt;br&gt;&lt;br&gt;&lt;br&gt;To update an existing ad set identities, you need to pass new values for both categories and identities to overwrite the identity id or `null` to remove existing id.&lt;br&gt;&lt;br&gt;&lt;br&gt;For example:&lt;br&gt;&lt;br&gt;&lt;br&gt;Upon creation, `regional_regulated_categories` is `[TAIWAN_FINSERV, TAIWAN_UNIVERSAL]` and `regional_regulation_identities` is&lt;br&gt;&lt;br&gt;&lt;br&gt;`regional_regulation_identities: &#123;&lt;br&gt;&quot;taiwan_finserv_beneficiary&quot;: &lt;id_123&gt;,&lt;br&gt;&quot;taiwan_finserv_payer&quot;: &lt;id_123&gt;,&lt;br&gt;&quot;taiwan_universal_beneficiary&quot;: &lt;id_456&gt;,&lt;br&gt;&quot;taiwan_universal_payer&quot;: &lt;id_456&gt;,&lt;br&gt;&#125;`&lt;br&gt;&lt;br&gt;&lt;br&gt;For update, passing `[TAIWAN_UNIVERSAL]` and&lt;br&gt;`regional_regulation_identities: &#123;&lt;br&gt;&quot;taiwan_finserv_beneficiary&quot;: null&lt;br&gt;&quot;taiwan_finserv_payer&quot;: null,&lt;br&gt;&quot;taiwan_universal_beneficiary&quot;: &lt;id_789&gt;,&lt;br&gt;&quot;taiwan_universal_payer&quot;: &lt;id_789&gt;,&lt;br&gt;&#125;`&lt;br&gt;&lt;br&gt;&lt;br&gt;will remove `TAIWAN_FINSERV` declaration and update the identities ID of `TAIWAN_UNIVERSAL`&lt;br&gt; |
+| `review_feedback`&lt;br&gt;&lt;br&gt;*string* | Reviews for dynamic creative ad&lt;br&gt; |
+| `rf_prediction_id`&lt;br&gt;&lt;br&gt;*id* | Reach and frequency prediction ID&lt;br&gt; |
+| `source_adset`&lt;br&gt;&lt;br&gt;*[AdSet](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign)* | The source ad set that this ad set was copied from&lt;br&gt; |
+| `source_adset_id`&lt;br&gt;&lt;br&gt;*numeric string* | The source ad set id that this ad set was copied from&lt;br&gt; |
+| `start_time`&lt;br&gt;&lt;br&gt;*datetime* | Start time, in UTC UNIX timestamp&lt;br&gt; |
+| `status`&lt;br&gt;&lt;br&gt;*enum &#123;ACTIVE, PAUSED, DELETED, ARCHIVED&#125;* | The status set at the ad set level. It can be different from the&lt;br&gt;effective status due to its parent campaign. The field returns the same&lt;br&gt;value as `configured_status`, and is the suggested one to use.&lt;br&gt; |
+| `targeting`&lt;br&gt;&lt;br&gt;*Targeting* | Targeting&lt;br&gt; |
+| `targeting_optimization_types` This field is only accessible in v12.0 or later.&lt;br&gt;&lt;br&gt;*list&lt;KeyValue:string,int32&gt;* | Targeting options that are relaxed and used as a signal for optimization&lt;br&gt; |
+| `time_based_ad_rotation_id_blocks`&lt;br&gt;&lt;br&gt;*list&lt;list&lt;integer&gt;&gt;* | Specify ad creative that displays at custom date ranges in a campaign&lt;br&gt;as an array. A list of Adgroup IDs. The list of ads to display for each&lt;br&gt;time range in a given schedule. For example display first ad in Adgroup&lt;br&gt;for first date range, second ad for second date range, and so on. You&lt;br&gt;can display more than one ad per date range by providing more than&lt;br&gt;one ad ID per array. For example set&lt;br&gt;`time_based_ad_rotation_id_blocks` to [[1], [2, 3], [1, 4]]. On the&lt;br&gt;first date range show ad 1, on the second date range show ad 2 and ad 3&lt;br&gt;and on the last date range show ad 1 and ad 4. Use with&lt;br&gt;`time_based_ad_rotation_intervals` to specify date ranges.&lt;br&gt; |
+| `time_based_ad_rotation_intervals`&lt;br&gt;&lt;br&gt;*list&lt;unsigned int32&gt;* | Date range when specific ad creative displays during a campaign.&lt;br&gt;Provide date ranges in an array of UNIX timestamps where each&lt;br&gt;timestamp represents the start time for each date range. For example a&lt;br&gt;3-day campaign from May 9 12am to  May 11 11:59PM PST can have three&lt;br&gt;date ranges, the first date range starts from May 9 12:00AM to&lt;br&gt;May 9 11:59PM, second date range starts from May 10 12:00AM to&lt;br&gt;May 10 11:59PM and last starts from  May 11 12:00AM to  May 11 11:59PM.&lt;br&gt;The first timestamp should match the campaign start time. The last&lt;br&gt;timestamp should be at least 1 hour before the campaign end time. You&lt;br&gt;must provide at least two date ranges. All date ranges must cover the&lt;br&gt;whole campaign length, so any date range cannot exceed campaign length.&lt;br&gt;Use with `time_based_ad_rotation_id_blocks` to specify ad creative for&lt;br&gt;each date range.&lt;br&gt; |
+| `updated_time`&lt;br&gt;&lt;br&gt;*datetime* | Time when the Ad Set was updated&lt;br&gt; |
+| `use_new_app_click`&lt;br&gt;&lt;br&gt;*bool* | If set, allows Mobile App Engagement ads to optimize for LINK_CLICKS&lt;br&gt; |
+| `value_rule_set_id`&lt;br&gt;&lt;br&gt;*numeric string* | value_rule_set_id&lt;br&gt; |
+
+#### Edges
+
+| Edge | Description |
+| --- | --- |
+| [`activities`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign/activities)&lt;br&gt;&lt;br&gt;*Edge&lt;AdActivity&gt;* | The activities of this ad set&lt;br&gt; |
+| [`ad_studies`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign/ad_studies)&lt;br&gt;&lt;br&gt;*Edge&lt;AdStudy&gt;* | The ad studies containing this ad set&lt;br&gt; |
+| [`adcreatives`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign/adcreatives)&lt;br&gt;&lt;br&gt;*Edge&lt;AdCreative&gt;* | The creatives of this ad set&lt;br&gt; |
+| [`adrules_governed`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign/adrules_governed)&lt;br&gt;&lt;br&gt;*Edge&lt;AdRule&gt;* | Ad rules that govern this ad set - by default, this only returns rules that either directly mention the ad set by id or indirectly through the set `entity_type`&lt;br&gt; |
+| [`ads`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign/ads)&lt;br&gt;&lt;br&gt;*Edge&lt;Adgroup&gt;* | The ads under this ad set&lt;br&gt; |
+| [`asyncadrequests`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign/asyncadrequests)&lt;br&gt;&lt;br&gt;*Edge&lt;AdAsyncRequest&gt;* | Async ad requests for this ad set&lt;br&gt; |
+| [`copies`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign/copies)&lt;br&gt;&lt;br&gt;*Edge&lt;AdCampaign&gt;* | The copies of this ad set&lt;br&gt; |
+| [`delivery_estimate`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign/delivery_estimate)&lt;br&gt;&lt;br&gt;*Edge&lt;AdCampaignDeliveryEstimate&gt;* | The delivery estimate for this ad set&lt;br&gt; |
+| [`message_delivery_estimate`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign/message_delivery_estimate)&lt;br&gt;&lt;br&gt;*Edge&lt;MessageDeliveryEstimate&gt;* | Delivery estimation of the marketing message campaign&lt;br&gt; |
+| [`targetingsentencelines`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign/targetingsentencelines)&lt;br&gt;&lt;br&gt;*Edge&lt;TargetingSentenceLine&gt;* | The targeting description sentence for this ad set&lt;br&gt; |
+
+#### Error Codes
+
+| Error Code | Description |
+| --- | --- |
+| 2635 | You are calling a deprecated version of the Ads API. Please update to the latest version. |
+| 100 | Invalid parameter |
+| 80004 | There have been too many calls to this ad-account. Wait a bit and try again. For more info, please refer to /docs/graph-api/overview/rate-limiting#ads-management. |
+| 190 | Invalid OAuth 2.0 Access Token |
+| 200 | Permissions error |
+| 2500 | Error parsing graph query |
+
+## Creating
+
+**Warning:** For v20.0+, the Impressions optimization goal is deprecated for the legacy Post Engagement objective and the `ON_POST` destination_type.
+
+### Examples &#123;#create-examples&#125;
+
+Validate an ad set with a daily budget where the campaign objective is set to `APP_INSTALLS`.
+
+```html
+curl -X POST \
+  -F &#039;name=&quot;Mobile App Installs Ad Set&quot;&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;billing_event=&quot;IMPRESSIONS&quot;&#039; \
+  -F &#039;optimization_goal=&quot;APP_INSTALLS&quot;&#039; \
+  -F &#039;campaign_id=&quot;&lt;AD_CAMPAIGN_ID&gt;&quot;&#039; \
+  -F &#039;promoted_object=&#123;
+       &quot;application_id&quot;: &quot;&lt;APP_ID&gt;&quot;,
+       &quot;object_store_url&quot;: &quot;&lt;APP_STORE_URL&gt;&quot;
+     &#125;&#039; \
+  -F &#039;targeting=&#123;
+       &quot;device_platforms&quot;: [
+         &quot;mobile&quot;
+       ],
+       &quot;facebook_positions&quot;: [
+         &quot;feed&quot;
+       ],
+       &quot;geo_locations&quot;: &#123;
+         &quot;countries&quot;: [
+           &quot;US&quot;
+         ]
+       &#125;,
+       &quot;publisher_platforms&quot;: [
+         &quot;facebook&quot;,
+         &quot;audience_network&quot;
+       ],
+       &quot;user_os&quot;: [
+         &quot;IOS&quot;
+       ]
+     &#125;&#039; \
+  -F &#039;status=&quot;PAUSED&quot;&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+### Considerations &#123;#create-considerations&#125;
+
+#### Bid/Budget Validations
+
+**Note:**
+
+- All values in this section are in US Dollars.
+
+- Differenct currencies have different minimum daily budget limits.
+
+- Minimum values are defined in terms of the daily budget but apply to lifetime budgets as well.
+
+- Minimum budget takes the total spent budget into account.
+
+When creating an ad set, there will be a minimum budget for different billing events (Clicks, Impressions, Actions).  If the minimum daily budget is $5, a campaign lasting 5 days will need at least $25 for budget.
+
+**Warning:** Budget amounts shown are for illustrative purposes only and can change based on situation.
+
+If `bid_strategy` is set to `LOWEST_COST_WITHOUT_CAP` in the ad set:
+
+| Billing Event | Minimum Daily Budget |
+| --- | --- |
+| Impressions | $0.50 |
+| Clicks/Likes/Video Views | $2.50 |
+| Low-frequency Actions  &lt;br&gt;(Includes mobile app installs, offer claims, or canvas app installs) | $40  &lt;br&gt;**Important:** This minimum daily budget is the same for all countries. |
+
+If `bid_strategy` is set to `LOWEST_COST_WITH_BID_CAP` in the ad set:
+
+| Billing Event | Minimum Daily Budget |
+| --- | --- |
+| Impressions | At least the `bid_amount`. For example, if the bid amount is $10, then $10 will be the minimum budget required. |
+| Clicks/Actions | 5x the `bid_amount` for a Click or Action. For example, if the bid amount is $5 per click/action, then $25 will be the minimum budget required. |
+
+**Note:** Budgets in non-USD currencies will be converted and validated upon time of ad set creation.
+
+**Note:** For ads belonging to ad accounts from countries in the list below, the minimum values are 2x the ones in the tables. For example, if the billing event is an Impression, the minimum daily budget is $0.50, but in the the following countries the minimum would be $1.00:
+
+Australia, Austria, Belgium, Canada, Denmark, Finland, France, Germany, Greece, Hong Kong, Israel, Italy, Japan, Netherlands, New Zealand, Norway, Singapore, South Korea, Spain, Sweden, Switzerland, Taiwan, United Kingdom, United States of America.
+
+The only exception to this rule are Low-Frequency Actions when `bid_strategy` is `LOWEST_COST_WITHOUT_CAP`.
+
+#### Locale targeted page post
+
+If you promote a Page post which has been targeted by locale the ad set targeting must include the same, or a subset of, locale targeting as the Page post.
+
+E.g. if the Page post is targeted at locales 6 (US English) and 24 (UK English), then the ad set must be targeted at one or more of the same locales.
+
+#### Mobile App Ads
+
+Mobile app ad sets should
+
+- be used in conjunction with [targeting spec](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/advanced-targeting#mobile) fields `user_device` and `user_os`
+
+- have a `MOBILE_APP_*` objective on the [campaign](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign-group)
+
+#### Desktop App Ads
+
+Desktop app ad sets must
+
+- include a [targeting spec](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/advanced-targeting) of either
+
+- `&#039;page_types&#039;:[&#039;desktopfeed&#039;]` or
+
+- `&#039;page_types&#039;:[&#039;rightcolumn&#039;]` or
+
+- `&#039;page_types&#039;:[&#039;desktop&#039;]` along with the other targeting options you have selected.
+
+- include a `CANVAS_APP_*` objective
+
+#### Lookalike Expansion
+
+Beginning with v13.0, for newly created ad sets that optimize for value, conversions, or app events, lookalike expansion will be turned on by default and cannot be disabled. When getting an ad set that optimizes for value, conversions, or app events, we will return a new lookalike property in the `targeting_optimization_types` map that indicates lookalike expansion is enabled and complements the existing `detailed_targeting` property for the detailed targeting expansion.
+
+#### Targeting DSA Regulated Locations (EU)
+
+For ad sets targeting the EU and/or associated territories, the `dsa_payor` and `dsa_beneficiary` fields are required. The information provided in these 2 fields  will be shown to end users to indicate who is paying for the ad and who is the beneficiary of the ad.
+
+**Request**
+
+Include the following fields in an API call to the `/&#123;adset_id&#125;` endpoint.
+
+```
+&#123;
+  &quot;dsa_payor&quot;: &quot;&lt;PAYOR_NAME&gt;&quot;,
+  &quot;dsa_beneficiary&quot;: &quot;&lt;BENEFICIARY_NAME&gt;&quot;
+  ...
+&#125;
+```
+
+**Fields**
+
+| Name | Description |
+| --- | --- |
+| `dsa_payor`&lt;br&gt;&lt;br&gt;string (max 512 char) | The payor of all ads in this ad set. |
+| `dsa_beneficiary`&lt;br&gt;&lt;br&gt;string (max 512 char) | The beneficiary of all ads in this ad set. |
+
+If these fields are not provided, the API may returns the following errors:
+
+**Payor missing error**
+
+```
+&#123;
+  &quot;error&quot;: &#123;
+    &quot;message&quot;: &quot;Invalid parameter&quot;,
+    &quot;type&quot;: &quot;FacebookApiException&quot;,
+    &quot;code&quot;: 100,
+    &quot;error_data&quot;: &quot;&#123;\&quot;blame_field_specs\&quot;:[[\&quot;dsa_payor\&quot;]]&#125;&quot;,
+    &quot;error_subcode&quot;: 3858079,
+    &quot;is_transient&quot;: false,
+    &quot;error_user_title&quot;: &quot;No payor provided in DSA regulated region&quot;,
+    &quot;error_user_msg&quot;: &quot;The DSA requires ads to provide payor information in regulated regions. Updating/creating ad needs to provide payor of the ad.&quot;,
+    &quot;fbtrace_id&quot;: &quot;fbtrace_id&quot;
+  &#125;,
+  &quot;__fb_trace_id__&quot;: &quot;fbtrace_id&quot;,
+  &quot;__www_request_id__&quot;: &quot;request_id&quot;
+&#125;
+```
+
+**Beneficiary missing error**
+
+```
+&#123;
+  &quot;error&quot;: &#123;
+    &quot;message&quot;: &quot;Invalid parameter&quot;,
+    &quot;type&quot;: &quot;FacebookApiException&quot;,
+    &quot;code&quot;: 100,
+    &quot;error_data&quot;: &quot;&#123;\&quot;blame_field_specs\&quot;:[[\&quot;dsa_beneficiary\&quot;]]&#125;&quot;,
+    &quot;error_subcode&quot;: 3858081,
+    &quot;is_transient&quot;: false,
+    &quot;error_user_title&quot;: &quot;No payor/beneficiary provided in DSA regulated location&quot;,
+    &quot;error_user_msg&quot;: &quot;The DSA requires ads to provide beneficiary information in regulated regions. Updating/creating ad needs to provide beneficiary of the ad.&quot;,
+    &quot;fbtrace_id&quot;: &quot;fbtrace_id&quot;
+  &#125;,
+  &quot;__fb_trace_id__&quot;: &quot;fbtrace_id&quot;,
+  &quot;__www_request_id__&quot;: &quot;request_id&quot;
+&#125;
+```
+
+### /&#123;ad_set_id&#125;/copies
+You can make a POST request to *copies* edge from the following paths:
+
+- [/&#123;ad_set_id&#125;/copies](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign/copies)
+
+When posting to this edge, an [AdSet](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign) will be created.
+
+#### Parameters
+
+| Parameter | Description |
+| --- | --- |
+| `campaign_id`&lt;br&gt;&lt;br&gt;*numeric string or integer* | Single ID of a campaign to make parent of the copy. The copy inherits all campaign settings, such as budget from the parent.Ignore if you want to keep the copy under the original campaign parent.&lt;br&gt; |
+| `deep_copy`&lt;br&gt;&lt;br&gt;*boolean* | **Default value: **`false`&lt;br&gt;Whether to copy all the child ads. Limits: the total number of children ads to copy should not exceed 3 for a synchronous call and 51 for an asynchronous call.&lt;br&gt; |
+| `end_time`&lt;br&gt;&lt;br&gt;*datetime* | The end time of the set, e.g. `2015-03-12 23:59:59-07:00` or `2015-03-12 23:59:59 PDT`. UTC UNIX timestamp. When creating a set with a daily budget, specify `end_time=0` to set the set to be ongoing without end date. If not set, the copied adset will inherit the end time from the original set&lt;br&gt; |
+| `rename_options`&lt;br&gt;&lt;br&gt;*JSON or object-like arrays* | Rename options&lt;br&gt;&lt;br&gt;&lt;br&gt;`rename_strategy` *enum &#123;DEEP_RENAME, ONLY_TOP_LEVEL_RENAME, NO_RENAME&#125;*&lt;br&gt;&lt;br&gt;**Default value: **`ONLY_TOP_LEVEL_RENAME`&lt;br&gt;`DEEP_RENAME`: will change this object&#039;s name and children&#039;s names in the copied object. `ONLY_TOP_LEVEL_RENAME`: will change the this object&#039;s name but won&#039;t change the children&#039;s name in the copied object. `NO_RENAME`: will change no name in the copied object&lt;br&gt;&lt;br&gt;&lt;br&gt;`rename_prefix` *string*&lt;br&gt;A prefix to copy names. Defaults to null if not provided.&lt;br&gt;&lt;br&gt;&lt;br&gt;`rename_suffix` *string*&lt;br&gt;A suffix to copy names. Defaults to null if not provided and appends a localized string of `- Copy` based on the ad account locale.&lt;br&gt; |
+| `start_time`&lt;br&gt;&lt;br&gt;*datetime* | The start time of the set, e.g. `2015-03-12 23:59:59-07:00` or `2015-03-12 23:59:59 PDT`. UTC UNIX timestamp. If not set, the copied adset will inherit the start time from the original set&lt;br&gt; |
+| `status_option`&lt;br&gt;&lt;br&gt;*enum &#123;ACTIVE, PAUSED, INHERITED_FROM_SOURCE&#125;* | **Default value: **`PAUSED`&lt;br&gt;`ACTIVE`: the copied adset will have active status. `PAUSED`: the copied adset will have paused status. `INHERITED_FROM_SOURCE`: the copied adset will have the status from the original set.&lt;br&gt; |
+
+#### Return Type
+
+This endpoint supports [read-after-write](https://developers.facebook.com/docs/graph-api/overview#read-after-write) and will read the node represented by *copied_adset_id* in the return type.
+
+```
+Struct  &#123;
+copied_adset_id: numeric string,
+ad_object_ids:  List  [ Struct  &#123;
+ad_object_type: enum &#123;
+unique_adcreative,
+ad,
+ad_set,
+campaign,
+opportunities,
+privacy_info_center,
+topline,
+ad_account,
+product&#125;,
+source_id: numeric string,
+copied_id: numeric string,
+&#125;],
+&#125;
+```
+
+#### Error Codes
+
+| Error Code | Description |
+| --- | --- |
+| 100 | Invalid parameter |
+| 200 | Permissions error |
+| 190 | Invalid OAuth 2.0 Access Token |
+| 2695 | The ad set creation reached its campaign group(ios14) limit. |
+| 2635 | You are calling a deprecated version of the Ads API. Please update to the latest version. |
+
+### /act_&#123;ad_account_id&#125;/adsets
+You can make a POST request to *adsets* edge from the following paths:
+
+- [/act_&#123;ad_account_id&#125;/adsets](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/adsets)
+
+When posting to this edge, an [AdSet](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign) will be created.
+
+#### Example
+
+### HTTP
+```
+POST /v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets HTTP/1.1
+Host: graph.facebook.com
+
+name=My+First+Adset&amp;lifetime_budget=20000&amp;start_time=2026-05-12T10%3A45%3A09-0700&amp;end_time=2026-05-22T10%3A45%3A09-0700&amp;campaign_id=%3CAD_CAMPAIGN_ID%3E&amp;bid_amount=100&amp;billing_event=LINK_CLICKS&amp;optimization_goal=LINK_CLICKS&amp;targeting=%7B%22facebook_positions%22%3A%5B%22feed%22%5D%2C%22geo_locations%22%3A%7B%22countries%22%3A%5B%22US%22%5D%7D%2C%22publisher_platforms%22%3A%5B%22facebook%22%2C%22audience_network%22%5D%7D&amp;status=PAUSED
+```
+
+### PHP SDK
+```
+/* PHP SDK v5.0.0 */
+/* make the API call */
+try &#123;
+  // Returns a `Facebook\FacebookResponse` object
+  $response = $fb-&gt;post(
+    &#039;/act_&lt;AD_ACCOUNT_ID&gt;/adsets&#039;,
+    array (
+      &#039;name&#039; =&gt; &#039;My First Adset&#039;,
+      &#039;lifetime_budget&#039; =&gt; &#039;20000&#039;,
+      &#039;start_time&#039; =&gt; &#039;2026-05-12T10:45:09-0700&#039;,
+      &#039;end_time&#039; =&gt; &#039;2026-05-22T10:45:09-0700&#039;,
+      &#039;campaign_id&#039; =&gt; &#039;&lt;AD_CAMPAIGN_ID&gt;&#039;,
+      &#039;bid_amount&#039; =&gt; &#039;100&#039;,
+      &#039;billing_event&#039; =&gt; &#039;LINK_CLICKS&#039;,
+      &#039;optimization_goal&#039; =&gt; &#039;LINK_CLICKS&#039;,
+      &#039;targeting&#039; =&gt; &#039;&#123;&quot;facebook_positions&quot;:[&quot;feed&quot;],&quot;geo_locations&quot;:&#123;&quot;countries&quot;:[&quot;US&quot;]&#125;,&quot;publisher_platforms&quot;:[&quot;facebook&quot;,&quot;audience_network&quot;]&#125;&#039;,
+      &#039;status&#039; =&gt; &#039;PAUSED&#039;,
+    ),
+    &#039;&#123;access-token&#125;&#039;
+  );
+&#125; catch(Facebook\Exceptions\FacebookResponseException $e) &#123;
+  echo &#039;Graph returned an error: &#039; . $e-&gt;getMessage();
+  exit;
+&#125; catch(Facebook\Exceptions\FacebookSDKException $e) &#123;
+  echo &#039;Facebook SDK returned an error: &#039; . $e-&gt;getMessage();
+  exit;
+&#125;
+$graphNode = $response-&gt;getGraphNode();
+/* handle the result */
+```
+
+### JavaScript SDK
+```
+/* make the API call */
+FB.api(
+    &quot;/act_&lt;AD_ACCOUNT_ID&gt;/adsets&quot;,
+    &quot;POST&quot;,
+    &#123;
+        &quot;name&quot;: &quot;My First Adset&quot;,
+        &quot;lifetime_budget&quot;: &quot;20000&quot;,
+        &quot;start_time&quot;: &quot;2026-05-12T10:45:09-0700&quot;,
+        &quot;end_time&quot;: &quot;2026-05-22T10:45:09-0700&quot;,
+        &quot;campaign_id&quot;: &quot;&lt;AD_CAMPAIGN_ID&gt;&quot;,
+        &quot;bid_amount&quot;: &quot;100&quot;,
+        &quot;billing_event&quot;: &quot;LINK_CLICKS&quot;,
+        &quot;optimization_goal&quot;: &quot;LINK_CLICKS&quot;,
+        &quot;targeting&quot;: &quot;&#123;\&quot;facebook_positions\&quot;:[\&quot;feed\&quot;],\&quot;geo_locations\&quot;:&#123;\&quot;countries\&quot;:[\&quot;US\&quot;]&#125;,\&quot;publisher_platforms\&quot;:[\&quot;facebook\&quot;,\&quot;audience_network\&quot;]&#125;&quot;,
+        &quot;status&quot;: &quot;PAUSED&quot;
+    &#125;,
+    function (response) &#123;
+      if (response &amp;&amp; !response.error) &#123;
+        /* handle the result */
+      &#125;
+    &#125;
+);
+```
+
+### Android SDK
+```
+Bundle params = new Bundle();
+params.putString(&quot;name&quot;, &quot;My First Adset&quot;);
+params.putString(&quot;lifetime_budget&quot;, &quot;20000&quot;);
+params.putString(&quot;start_time&quot;, &quot;2026-05-12T10:45:09-0700&quot;);
+params.putString(&quot;end_time&quot;, &quot;2026-05-22T10:45:09-0700&quot;);
+params.putString(&quot;campaign_id&quot;, &quot;&lt;AD_CAMPAIGN_ID&gt;&quot;);
+params.putString(&quot;bid_amount&quot;, &quot;100&quot;);
+params.putString(&quot;billing_event&quot;, &quot;LINK_CLICKS&quot;);
+params.putString(&quot;optimization_goal&quot;, &quot;LINK_CLICKS&quot;);
+params.putString(&quot;targeting&quot;, &quot;&#123;\&quot;facebook_positions\&quot;:[\&quot;feed\&quot;],\&quot;geo_locations\&quot;:&#123;\&quot;countries\&quot;:[\&quot;US\&quot;]&#125;,\&quot;publisher_platforms\&quot;:[\&quot;facebook\&quot;,\&quot;audience_network\&quot;]&#125;&quot;);
+params.putString(&quot;status&quot;, &quot;PAUSED&quot;);
+/* make the API call */
+new GraphRequest(
+    AccessToken.getCurrentAccessToken(),
+    &quot;/act_&lt;AD_ACCOUNT_ID&gt;/adsets&quot;,
+    params,
+    HttpMethod.POST,
+    new GraphRequest.Callback() &#123;
+        public void onCompleted(GraphResponse response) &#123;
+            /* handle the result */
+        &#125;
+    &#125;
+).executeAsync();
+```
+
+### iOS SDK
+```
+NSDictionary *params = &#064;&#123;
+  &#064;&quot;name&quot;: &#064;&quot;My First Adset&quot;,
+  &#064;&quot;lifetime_budget&quot;: &#064;&quot;20000&quot;,
+  &#064;&quot;start_time&quot;: &#064;&quot;2026-05-12T10:45:09-0700&quot;,
+  &#064;&quot;end_time&quot;: &#064;&quot;2026-05-22T10:45:09-0700&quot;,
+  &#064;&quot;campaign_id&quot;: &#064;&quot;&lt;AD_CAMPAIGN_ID&gt;&quot;,
+  &#064;&quot;bid_amount&quot;: &#064;&quot;100&quot;,
+  &#064;&quot;billing_event&quot;: &#064;&quot;LINK_CLICKS&quot;,
+  &#064;&quot;optimization_goal&quot;: &#064;&quot;LINK_CLICKS&quot;,
+  &#064;&quot;targeting&quot;: &#064;&quot;&#123;\&quot;facebook_positions\&quot;:[\&quot;feed\&quot;],\&quot;geo_locations\&quot;:&#123;\&quot;countries\&quot;:[\&quot;US\&quot;]&#125;,\&quot;publisher_platforms\&quot;:[\&quot;facebook\&quot;,\&quot;audience_network\&quot;]&#125;&quot;,
+  &#064;&quot;status&quot;: &#064;&quot;PAUSED&quot;,
+&#125;;
+/* make the API call */
+FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]
+                               initWithGraphPath:&#064;&quot;/act_&lt;AD_ACCOUNT_ID&gt;/adsets&quot;
+                                      parameters:params
+                                      HTTPMethod:&#064;&quot;POST&quot;];
+[request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
+                                      id result,
+                                      NSError *error) &#123;
+    // Handle the result
+&#125;];
+```
+
+### cURL
+```
+curl -X POST \
+  -F &#039;name=&quot;My First Adset&quot;&#039; \
+  -F &#039;lifetime_budget=20000&#039; \
+  -F &#039;start_time=&quot;2026-05-12T10:45:09-0700&quot;&#039; \
+  -F &#039;end_time=&quot;2026-05-22T10:45:09-0700&quot;&#039; \
+  -F &#039;campaign_id=&quot;&lt;AD_CAMPAIGN_ID&gt;&quot;&#039; \
+  -F &#039;bid_amount=100&#039; \
+  -F &#039;billing_event=&quot;LINK_CLICKS&quot;&#039; \
+  -F &#039;optimization_goal=&quot;LINK_CLICKS&quot;&#039; \
+  -F &#039;targeting=&#123;
+       &quot;facebook_positions&quot;: [
+         &quot;feed&quot;
+       ],
+       &quot;geo_locations&quot;: &#123;
+         &quot;countries&quot;: [
+           &quot;US&quot;
+         ]
+       &#125;,
+       &quot;publisher_platforms&quot;: [
+         &quot;facebook&quot;,
+         &quot;audience_network&quot;
+       ]
+     &#125;&#039; \
+  -F &#039;status=&quot;PAUSED&quot;&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+Try it in [Graph API Explorer](https://developers.facebook.com/tools/explorer/?method=POST&amp;path=act_%3CAD_ACCOUNT_ID%3E%2Fadsets%3Fname%3DMy%2BFirst%2BAdset%26lifetime_budget%3D20000%26start_time%3D2026-05-12T10%253A45%253A09-0700%26end_time%3D2026-05-22T10%253A45%253A09-0700%26campaign_id%3D%253CAD_CAMPAIGN_ID%253E%26bid_amount%3D100%26billing_event%3DLINK_CLICKS%26optimization_goal%3DLINK_CLICKS%26targeting%3D%257B%2522facebook_positions%2522%253A%255B%2522feed%2522%255D%252C%2522geo_locations%2522%253A%257B%2522countries%2522%253A%255B%2522US%2522%255D%257D%252C%2522publisher_platforms%2522%253A%255B%2522facebook%2522%252C%2522audience_network%2522%255D%257D%26status%3DPAUSED&amp;version=v25.0)
+
+If you want to learn how to use the Graph API, read our [Using Graph API guide](https://developers.facebook.com/docs/graph-api/using-graph-api)
+
+#### Parameters
+
+| Parameter | Description |
+| --- | --- |
+| `adlabels`&lt;br&gt;&lt;br&gt;*list&lt;Object&gt;* | Specifies list of labels to be associated with this object. This field is optional&lt;br&gt; |
+| `adset_schedule`&lt;br&gt;&lt;br&gt;*list&lt;Object&gt;* | Ad set schedule, representing a delivery schedule for a single day&lt;br&gt;&lt;br&gt;&lt;br&gt;`start_minute` *int64*&lt;br&gt;A 0 based minute of the day representing when the schedule starts&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;&lt;br&gt;`end_minute` *int64*&lt;br&gt;A 0 based minute of the day representing when the schedule ends&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;&lt;br&gt;`days` *list&lt;int64&gt;*&lt;br&gt;Array of ints representing which days the schedule is active. Valid values are 0-6 with 0 representing Sunday, 1 representing Monday, ... and 6 representing Saturday.&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;&lt;br&gt;`timezone_type` *enum &#123;USER, ADVERTISER&#125;*&lt;br&gt;&lt;br&gt;**Default value: **`USER` |
+| `attribution_spec`&lt;br&gt;&lt;br&gt;*list&lt;JSON object&gt;* | Conversion attribution spec used for attributing conversions for optimization. Supported window lengths differ by optimization goal and campaign objective.&lt;br&gt;&lt;br&gt;&lt;br&gt;`event_type` *enum &#123;CLICK_THROUGH, VIEW_THROUGH, ENGAGED_VIDEO_VIEW&#125;*&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;&lt;br&gt;`window_days` *int64*&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;&lt;br&gt;`weight` *float*&lt;br&gt;&lt;br&gt;**Default value: **`100` |
+| `automatic_manual_state`&lt;br&gt;&lt;br&gt;*enum&#123;UNSET, AUTOMATIC, MANUAL&#125;* | automatic_manual_state&lt;br&gt; |
+| `bid_amount`&lt;br&gt;&lt;br&gt;*integer* | Bid cap or target cost for this ad set. The bid cap used in a *lowest cost bid strategy* is defined as the maximum bid you want to pay for a result based on your `optimization_goal`. The target cost used in a *target cost bid strategy* lets Facebook bid to meet your target on average and keep costs stable as you spend. If an ad level `bid_amount` is specified, updating this value will overwrite the previous ad level bid. Unless you are using [Reach and Frequency](https://developers.facebook.com/docs/marketing-api/reachandfrequency), `bid_amount` is required if `bid_strategy` is set to `LOWEST_COST_WITH_BID_CAP` or `COST_CAP`.&lt;br&gt;&lt;br&gt;The bid amount&#039;s unit is cents for currencies like USD, EUR, and the basic unit for currencies like JPY, KRW. The bid amount for ads with `IMPRESSION` or `REACH` as `billing_event` is per 1,000 occurrences, and has to be at least 2 US cents or more. For ads with other `billing_event`s, the bid amount is for each occurrence, and has a minimum value 1 US cents. The minimum bid amounts of other currencies are of similar value to the US Dollar values provided.&lt;br&gt; |
+| `bid_strategy` This field is only accessible in v3.0 or later.&lt;br&gt;&lt;br&gt;*enum&#123;LOWEST_COST_WITHOUT_CAP, LOWEST_COST_WITH_BID_CAP, COST_CAP, LOWEST_COST_WITH_MIN_ROAS&#125;* | Choose bid strategy for this ad set to suit your specific business goals.&lt;br&gt;Each strategy has tradeoffs and may be available for certain `optimization_goal`s:&lt;br&gt;&lt;br&gt;`LOWEST_COST_WITHOUT_CAP`: Designed to get the most results for your budget based on&lt;br&gt;your ad set `optimization_goal` without limiting your bid amount. This is the best strategy&lt;br&gt;if you care most about cost efficiency. However with this strategy it may be harder to get&lt;br&gt;stable average costs as you spend. This strategy is also known as *automatic bidding*.&lt;br&gt;Learn more in [Ads Help Center, About bid strategies: Lowest cost](https://www.facebook.com/business/help/721453268045071).&lt;br&gt;&lt;br&gt;`LOWEST_COST_WITH_BID_CAP`: Designed to get the most results for your budget based on&lt;br&gt;your ad set `optimization_goal` while limiting actual bid to your specified&lt;br&gt;amount. With a bid cap you have more control over your&lt;br&gt;cost per actual optimization event. However if you set a limit which is too low you may&lt;br&gt;get less ads delivery. If you select this, you must provide&lt;br&gt;a bid cap with the `bid_amount` field.&lt;br&gt;Note: during creation this bid strategy is set if you provide `bid_amount` only.&lt;br&gt;This strategy is also known as *manual maximum-cost bidding*.&lt;br&gt;Learn more in [Ads Help Center, About bid strategies: Lowest cost](https://www.facebook.com/business/help/721453268045071).&lt;br&gt;&lt;br&gt;&lt;br&gt;Notes:&lt;br&gt;&lt;br&gt;&lt;br&gt;• If you enable campaign budget optimization, you should set `bid_strategy` at the parent campaign level.&lt;br&gt;&lt;br&gt;• `TARGET_COST` bidding strategy has been deprecated with [Marketing API v9](https://developers.facebook.com/docs/graph-api/changelog/version9.0).&lt;br&gt;&lt;br&gt; |
+| `billing_event`&lt;br&gt;&lt;br&gt;*enum&#123;APP_INSTALLS, CLICKS, IMPRESSIONS, LINK_CLICKS, NONE, OFFER_CLAIMS, PAGE_LIKES, POST_ENGAGEMENT, THRUPLAY, PURCHASE, LISTING_INTERACTION&#125;* | The billing event that this ad set is using:&lt;br&gt;APP_INSTALLS: Pay when people install your app.&lt;br&gt;CLICKS: Deprecated.&lt;br&gt;IMPRESSIONS: Pay when the ads are shown to people.&lt;br&gt;LINK_CLICKS: Pay when people click on the link of the ad.&lt;br&gt;OFFER_CLAIMS: Pay when people claim the offer.&lt;br&gt;PAGE_LIKES: Pay when people like your page.&lt;br&gt;POST_ENGAGEMENT: Pay when people engage with your post.&lt;br&gt;VIDEO_VIEWS: Pay when people watch your video ads for at least 10 seconds.&lt;br&gt;THRUPLAY: Pay for ads that are played to completion, or played for at least 15 seconds.&lt;br&gt; |
+| `budget_schedule_specs`&lt;br&gt;&lt;br&gt;*list&lt;JSON or object-like arrays&gt;* | Initial high demand periods to be created with the ad set.&lt;br&gt;&lt;br&gt;Provide list of `time_start`, `time_end`,`budget_value`, and `budget_value_type`.&lt;br&gt;For example,&lt;br&gt;-F &#039;budget_schedule_specs=[&#123;&lt;br&gt;&lt;br&gt;&quot;time_start&quot;:1699081200,&lt;br&gt;&lt;br&gt;&quot;time_end&quot;:1699167600,&lt;br&gt;&lt;br&gt;&quot;budget_value&quot;:100,&lt;br&gt;&lt;br&gt;&quot;budget_value_type&quot;:&quot;ABSOLUTE&quot;&lt;br&gt;&lt;br&gt;&#125;]&#039;&lt;br&gt;&lt;br&gt;See [High Demand Period](https://developers.facebook.com/docs/graph-api/reference/high-demand-period) for more details on each field.&lt;br&gt;&lt;br&gt;&lt;br&gt;`id` *int64*&lt;br&gt;&lt;br&gt;`time_start` *datetime*&lt;br&gt;&lt;br&gt;`time_end` *datetime*&lt;br&gt;&lt;br&gt;`budget_value` *int64*&lt;br&gt;&lt;br&gt;`budget_value_type` *enum&#123;ABSOLUTE, MULTIPLIER&#125;*&lt;br&gt;&lt;br&gt;`recurrence_type` *enum&#123;ONE_TIME, WEEKLY&#125;*&lt;br&gt;&lt;br&gt;`weekly_schedule` *list&lt;JSON or object-like arrays&gt;*&lt;br&gt;&lt;br&gt;`days` *list&lt;int64&gt;*&lt;br&gt;&lt;br&gt;`minute_start` *int64*&lt;br&gt;&lt;br&gt;`minute_end` *int64*&lt;br&gt;&lt;br&gt;`timezone_type` *string* |
+| `budget_source`&lt;br&gt;&lt;br&gt;*enum&#123;NONE, RMN&#125;* | budget_source&lt;br&gt; |
+| `budget_split_set_id`&lt;br&gt;&lt;br&gt;*numeric string or integer* | budget_split_set_id&lt;br&gt; |
+| `campaign_attribution`&lt;br&gt;&lt;br&gt;*enum&#123;&#125;* | campaign_attribution&lt;br&gt; |
+| `campaign_id`&lt;br&gt;&lt;br&gt;*numeric string or integer* | The ad campaign you wish to add this ad set to.&lt;br&gt; |
+| `campaign_spec`&lt;br&gt;&lt;br&gt;*Campaign spec* | Provide `name`, `objective` and `buying_type` for a campaign you want to create. Otherwise you need to provide `campaign_id` for an existing ad campaign. For example:&lt;br&gt;-F &#039;campaign_spec=&#123;&lt;br&gt;  &quot;name&quot;: &quot;Inline created campaign&quot;,&lt;br&gt;  &quot;objective&quot;: &quot;CONVERSIONS&quot;,&lt;br&gt;  &quot;buying_type&quot;: &quot;AUCTION&quot;&lt;br&gt;&#125;&#039;&lt;br&gt;&lt;br&gt;Please refer to the [Outcome-Driven Ads Experiences mapping table](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign-group#odax-mapping) to find new objectives and their corresponding destination types, optimization goals and promoted objects.&lt;br&gt; |
+| `contextual_bundling_spec`&lt;br&gt;&lt;br&gt;*Object* | settings of Contextual Bundle to support ads serving in Facebook contextual surfaces&lt;br&gt;&lt;br&gt;&lt;br&gt;`status` *enum&#123;OPT_OUT, OPT_IN&#125;* |
+| `cost_bidding_mode`&lt;br&gt;&lt;br&gt;*enum&#123;VOLUME_FOCUSED, BALANCED, COST_FOCUSED&#125;* | cost_bidding_mode&lt;br&gt; |
+| `creative_sequence`&lt;br&gt;&lt;br&gt;*list&lt;numeric string or integer&gt;* | Order of the adgroup sequence to be shown to users&lt;br&gt; |
+| `daily_budget`&lt;br&gt;&lt;br&gt;*int64* | The daily budget defined in your [account currency](https://developers.facebook.com/documentation/ads-commerce/marketing-api), allowed only for ad sets with a duration (difference between `end_time` and `start_time`) longer than 24 hours. &lt;br&gt;Either `daily_budget` or `lifetime_budget` must be greater than 0.&lt;br&gt; |
+| `daily_imps`&lt;br&gt;&lt;br&gt;*int64* | Daily impressions. Available only for campaigns with `buying_type=FIXED_CPM`&lt;br&gt; |
+| `daily_min_spend_target`&lt;br&gt;&lt;br&gt;*int64* | Daily minimum spend target of the ad set defined in your account currency. To use this field, daily budget must be specified in the Campaign. This target is not a guarantee but our best effort.&lt;br&gt; |
+| `daily_spend_cap`&lt;br&gt;&lt;br&gt;*int64* | Daily spend cap of the ad set defined in your account currency. To use this field, daily budget must be specified in the Campaign. Set the value to 922337203685478 to remove the spend cap.&lt;br&gt; |
+| `destination_type`&lt;br&gt;&lt;br&gt;*enum&#123;WEBSITE, APP, MESSENGER, APPLINKS_AUTOMATIC, WHATSAPP, INSTAGRAM_DIRECT, FACEBOOK, MESSAGING_MESSENGER_WHATSAPP, MESSAGING_INSTAGRAM_DIRECT_MESSENGER, MESSAGING_INSTAGRAM_DIRECT_MESSENGER_WHATSAPP, MESSAGING_INSTAGRAM_DIRECT_WHATSAPP, SHOP_AUTOMATIC, ON_AD, ON_POST, ON_EVENT, ON_VIDEO, ON_PAGE, INSTAGRAM_PROFILE, FACEBOOK_PAGE, INSTAGRAM_PROFILE_AND_FACEBOOK_PAGE, INSTAGRAM_LIVE, FACEBOOK_LIVE, IMAGINE&#125;* | Destination of ads in this Ad Set. Options include: Website, App, Messenger, `INSTAGRAM_DIRECT`, `INSTAGRAM_PROFILE`.&lt;br&gt; |
+| `dsa_beneficiary`&lt;br&gt;&lt;br&gt;*string* | dsa_beneficiary&lt;br&gt; |
+| `dsa_payor`&lt;br&gt;&lt;br&gt;*string* | dsa_payor&lt;br&gt; |
+| `end_time`&lt;br&gt;&lt;br&gt;*datetime* | End time, required when `lifetime_budget` is specified. e.g. `2015-03-12 23:59:59-07:00` or `2015-03-12 23:59:59 PDT`. When creating a set with a daily budget, specify `end_time=0` to set the set to be ongoing and have no end date. UTC UNIX timestamp&lt;br&gt; |
+| `execution_options`&lt;br&gt;&lt;br&gt;*list&lt;enum&#123;validate_only, include_recommendations&#125;&gt;* | **Default value: **`Set`&lt;br&gt;An execution setting&lt;br&gt; `validate_only`: when this option is specified, the API call will not perform the mutation but will run through the validation rules against values of each field. &lt;br&gt;`include_recommendations`: this option cannot be used by itself. When this option is used, recommendations  for ad object&#039;s configuration will be included. A separate section [recommendations](https://developers.facebook.com/docs/marketing-api/reference/ad-recommendation) will be included in the response, but only if recommendations for this specification exist.&lt;br&gt;If the call passes validation or review, response will be `&#123;&quot;success&quot;: true&#125;`. If the call does not pass, an error will be returned with more details. These options can be used to improve any UI to display errors to the user much sooner, e.g. as soon as a new value is typed into any field corresponding to this ad object, rather than at the upload/save stage, or after review.&lt;br&gt; |
+| `existing_customer_budget_percentage`&lt;br&gt;&lt;br&gt;*int64* | existing_customer_budget_percentage&lt;br&gt; |
+| `frequency_control_specs`&lt;br&gt;&lt;br&gt;*list&lt;Object&gt;* | An array of frequency control specs for this ad set. Writes to this field are only available in ad sets where `REACH` and `THRUPLAY` are the performance goal.&lt;br&gt;&lt;br&gt;&lt;br&gt;`event` *enum&#123;IMPRESSIONS, VIDEO_VIEWS, VIDEO_VIEWS_2S, VIDEO_VIEWS_15S&#125;*&lt;br&gt;Event name, only `IMPRESSIONS` currently.&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;&lt;br&gt;`interval_days` *integer*&lt;br&gt;Interval period in days, between 1 and 90&lt;br&gt;(inclusive)&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;&lt;br&gt;`max_frequency` *integer*&lt;br&gt;The maximum frequency, between 1 and 90&lt;br&gt;(inclusive)&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;&lt;br&gt;`type` *enum&#123;NONE, CAP, TARGET&#125;* |
+| `is_dc_follow_optimized`&lt;br&gt;&lt;br&gt;*boolean* | is_dc_follow_optimized&lt;br&gt; |
+| `is_dynamic_creative` This field is only accessible in v3.2 or later.&lt;br&gt;&lt;br&gt;*boolean* | Indicates the ad set must only be used for dynamic creatives. Dynamic creative ads can be created in this ad set. Defaults to `false`&lt;br&gt; |
+| `is_sac_cfca_terms_certified`&lt;br&gt;&lt;br&gt;*boolean* | is_sac_cfca_terms_certified&lt;br&gt; |
+| `lifetime_budget`&lt;br&gt;&lt;br&gt;*int64* | Lifetime budget, defined in  your [account currency](https://developers.facebook.com/documentation/ads-commerce/marketing-api). If specified, you must also specify an `end_time`.&lt;br&gt;Either `daily_budget` or `lifetime_budget` must be greater than 0.&lt;br&gt; |
+| `lifetime_imps`&lt;br&gt;&lt;br&gt;*int64* | Lifetime impressions. Available only for campaigns with `buying_type=FIXED_CPM`&lt;br&gt; |
+| `lifetime_min_spend_target`&lt;br&gt;&lt;br&gt;*int64* | Lifetime minimum spend target of the ad set defined in your account currency. To use this field, lifetime budget must be specified in the Campaign. This target is not a guarantee but our best effort.&lt;br&gt; |
+| `lifetime_spend_cap`&lt;br&gt;&lt;br&gt;*int64* | Lifetime spend cap of the ad set defined in your account currency. To use this field, lifetime budget must be specified in the Campaign. Set the value to 922337203685478 to remove the spend cap.&lt;br&gt; |
+| `max_budget_spend_percentage`&lt;br&gt;&lt;br&gt;*int64* | max_budget_spend_percentage&lt;br&gt; |
+| `min_budget_spend_percentage`&lt;br&gt;&lt;br&gt;*int64* | min_budget_spend_percentage&lt;br&gt; |
+| `multi_event_conversion_attribution_window_seconds`&lt;br&gt;&lt;br&gt;*int64* | multi_event_conversion_attribution_window_seconds&lt;br&gt; |
+| `multi_optimization_goal_weight`&lt;br&gt;&lt;br&gt;*enum&#123;UNDEFINED, BALANCED, PREFER_INSTALL, PREFER_EVENT&#125;* | multi_optimization_goal_weight&lt;br&gt; |
+| `name`&lt;br&gt;&lt;br&gt;*string* | Ad set name, max length of 400 characters.&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;**[supports emoji]**&lt;br&gt; |
+| `optimization_goal`&lt;br&gt;&lt;br&gt;*enum&#123;NONE, APP_INSTALLS, AD_RECALL_LIFT, ENGAGED_USERS, EVENT_RESPONSES, IMPRESSIONS, LEAD_GENERATION, QUALITY_LEAD, LINK_CLICKS, OFFSITE_CONVERSIONS, PAGE_LIKES, POST_ENGAGEMENT, QUALITY_CALL, REACH, LANDING_PAGE_VIEWS, VISIT_INSTAGRAM_PROFILE, ENGAGED_PAGE_VIEWS, VALUE, THRUPLAY, DERIVED_EVENTS, APP_INSTALLS_AND_OFFSITE_CONVERSIONS, CONVERSATIONS, IN_APP_VALUE, MESSAGING_PURCHASE_CONVERSION, MESSAGING_DEEP_CONVERSATION_AND_FOLLOW, SUBSCRIBERS, REMINDERS_SET, MEANINGFUL_CALL_ATTEMPT, PROFILE_VISIT, PROFILE_AND_PAGE_ENGAGEMENT, ADVERTISER_SILOED_VALUE, AUTOMATIC_OBJECTIVE, MESSAGING_APPOINTMENT_CONVERSION&#125;* | What the ad set is optimizing for. &lt;br&gt;`APP_INSTALLS`: Will optimize for people more likely to install your app.&lt;br&gt;`ENGAGED_USERS`: Will optimize for people more likely to take a particular action in your app.&lt;br&gt;`EVENT_RESPONSES`: Will optimize for people more likely to attend your event.&lt;br&gt;`IMPRESSIONS`: Will show the ads as many times as possible.&lt;br&gt;`LEAD_GENERATION`: Will optimize for people more likely to fill out a lead generation form.&lt;br&gt;`LINK_CLICKS`: Will optimize for people more likely to click in the link of the ad.&lt;br&gt;`OFFER_CLAIMS`: Will optimize for people more likely to claim the offer.&lt;br&gt;`OFFSITE_CONVERSIONS`: Will optimize for people more likely to make a conversion in the site&lt;br&gt;`PAGE_ENGAGEMENT`: Will optimize for people more likely to engage with your page.&lt;br&gt;`PAGE_LIKES`: Will optimize for people more likely to like your page.&lt;br&gt;`POST_ENGAGEMENT`: Will optimize for people more likely to engage with your post.&lt;br&gt;`REACH`: Optimize to reach the most unique users of each day or interval specified in `frequency_control_specs`.&lt;br&gt;`SOCIAL_IMPRESSIONS`: Increase the number of impressions with social context. For example, with the names of one or more of the user&#039;s friends attached to the ad who have already liked the page or installed the app.&lt;br&gt;`VALUE`: Will optimize for maximum total purchase value within the specified attribution window.&lt;br&gt;`THRUPLAY`: Will optimize delivery of your ads to people are more likely to play your ad to completion, or play it for at least 15 seconds.&lt;br&gt;`AD_RECALL_LIFT`: Optimize for people more likely to remember seeing your ads.&lt;br&gt;`VISIT_INSTAGRAM_PROFILE`: Optimize for visits to the advertiser&#039;s instagram profile.&lt;br&gt; |
+| `optimization_sub_event`&lt;br&gt;&lt;br&gt;*enum&#123;NONE, VIDEO_SOUND_ON, TRIP_CONSIDERATION, TRAVEL_INTENT, TRAVEL_INTENT_NO_DESTINATION_INTENT, TRAVEL_INTENT_BUCKET_01, TRAVEL_INTENT_BUCKET_02, TRAVEL_INTENT_BUCKET_03, TRAVEL_INTENT_BUCKET_04, TRAVEL_INTENT_BUCKET_05, POST_INTERACTION&#125;* | Optimization sub event for a specific optimization goal (ex: Sound-On event for Video-View-2s optimization goal)&lt;br&gt; |
+| `pacing_type`&lt;br&gt;&lt;br&gt;*list&lt;string&gt;* | Defines the pacing type, standard by default or using [ad scheduling](https://developers.facebook.com/docs/marketing-api/adset/pacing)&lt;br&gt; |
+| `promoted_object`&lt;br&gt;&lt;br&gt;*Object* | The object this ad set is promoting across all its ads.&lt;br&gt;Required with certain campaign objectives.&lt;br&gt;&lt;br&gt;**CONVERSIONS**&lt;br&gt;• `pixel_id` (Conversion pixel ID)&lt;br&gt;• `pixel_id` (Facebook pixel ID) and `custom_event_type`&lt;br&gt;• `pixel_id` (Facebook pixel ID) and `pixel_rule` and `custom_event_type`&lt;br&gt;• `event_id` (Facebook event ID) and `custom_event_type`&lt;br&gt;• `application_id`, `object_store_url`, and `custom_event_type` for&lt;br&gt;mobile app events&lt;br&gt;• `offline_conversion_data_set_id` (Offline dataset ID) and&lt;br&gt;`custom_event_type` for offline conversions&lt;br&gt;&lt;br&gt;**PAGE_LIKES**&lt;br&gt;• `page_id`&lt;br&gt;&lt;br&gt;**OFFER_CLAIMS**&lt;br&gt;• `page_id`&lt;br&gt;&lt;br&gt;**LINK_CLICKS**&lt;br&gt;• `application_id` and `object_store_url` for mobile app or Canvas app engagement link clicks&lt;br&gt;&lt;br&gt;**APP_INSTALLS**&lt;br&gt;• `application_id` and `object_store_url`&lt;br&gt;&lt;br&gt;**if the `optimization_goal` is `OFFSITE_CONVERSIONS`**&lt;br&gt;• `application_id`, `object_store_url`, and `custom_event_type` (Standard Events)&lt;br&gt;• `application_id`, `object_store_url`, `custom_event_type = OTHER` and `custom_event_str` (Custom Events)&lt;br&gt;&lt;br&gt;**PRODUCT_CATALOG_SALES**&lt;br&gt;• `product_set_id`&lt;br&gt;• `product_set_id` and `custom_event_type`&lt;br&gt;&lt;br&gt;When `optimization_goal` is `LEAD_GENERATION`, `page_id` needs to be passed as promoted_object.&lt;br&gt;&lt;br&gt;Please refer to the [Outcome-Driven Ads Experiences mapping table](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign-group#odax-mapping) to find new objectives and their corresponding destination types, optimization goals and promoted objects.&lt;br&gt;&lt;br&gt;`application_id` *int*&lt;br&gt;The ID of a Facebook Application. Usually related to mobile or canvas games being promoted on Facebook for installs or engagement&lt;br&gt;&lt;br&gt;&lt;br&gt;`pixel_id` *numeric string or integer*&lt;br&gt;The ID of a Facebook conversion pixel.  Used with offsite conversion campaigns.&lt;br&gt;&lt;br&gt;&lt;br&gt;`custom_event_type` *enum&#123;AD_IMPRESSION, RATE, TUTORIAL_COMPLETION, CONTACT, CUSTOMIZE_PRODUCT, DONATE, FIND_LOCATION, SCHEDULE, START_TRIAL, SUBMIT_APPLICATION, SUBSCRIBE, ADD_TO_CART, ADD_TO_WISHLIST, INITIATED_CHECKOUT, ADD_PAYMENT_INFO, PURCHASE, LEAD, COMPLETE_REGISTRATION, CONTENT_VIEW, SEARCH, SERVICE_BOOKING_REQUEST, MESSAGING_CONVERSATION_STARTED_7D, LEVEL_ACHIEVED, ACHIEVEMENT_UNLOCKED, SPENT_CREDITS, LISTING_INTERACTION, D2_RETENTION, D7_RETENTION, OTHER&#125;*&lt;br&gt;The event from an App Event of a mobile app,&lt;br&gt;not in the standard event list.&lt;br&gt;&lt;br&gt;&lt;br&gt;`object_store_url` *URL*&lt;br&gt;The uri of the mobile / digital store where an application can be bought / downloaded. This is platform specific. When combined with the &quot;application_id&quot; this uniquely specifies an object which can be the subject of a Facebook advertising campaign.&lt;br&gt;&lt;br&gt;&lt;br&gt;`object_store_urls` *list&lt;URL&gt;*&lt;br&gt;The vec of uri of the mobile / digital store where an application can be bought / downloaded. This is platform specific. When combined with the &quot;application_id&quot; this uniquely specifies an object which can be the subject of a Facebook advertising campaign.&lt;br&gt;&lt;br&gt;&lt;br&gt;`offer_id` *numeric string or integer*&lt;br&gt;The ID of an Offer from a Facebook Page.&lt;br&gt;&lt;br&gt;&lt;br&gt;`page_id` *Page ID*&lt;br&gt;The ID of a Facebook Page&lt;br&gt;&lt;br&gt;&lt;br&gt;`product_catalog_id` *numeric string or integer*&lt;br&gt;The ID of a Product Catalog. Used with&lt;br&gt;[Dynamic Product Ads](https://developers.facebook.com/docs/marketing-api/dynamic-product-ads).&lt;br&gt;&lt;br&gt;&lt;br&gt;`product_item_id` *numeric string or integer*&lt;br&gt;The ID of the product item.&lt;br&gt;&lt;br&gt;&lt;br&gt;`job_listing_id` *numeric string or integer*&lt;br&gt;The ID of the marketplace job listing.&lt;br&gt;&lt;br&gt;&lt;br&gt;`instagram_profile_id` *numeric string or integer*&lt;br&gt;The ID of the instagram profile id.&lt;br&gt;&lt;br&gt;&lt;br&gt;`product_set_id` *numeric string or integer*&lt;br&gt;The ID of a Product Set within an Ad Set level Product&lt;br&gt;Catalog. Used with&lt;br&gt;[Dynamic Product Ads](https://developers.facebook.com/docs/marketing-api/dynamic-product-ads).&lt;br&gt;&lt;br&gt;&lt;br&gt;`event_id` *numeric string or integer*&lt;br&gt;The ID of a Facebook Event&lt;br&gt;&lt;br&gt;&lt;br&gt;`offline_conversion_data_set_id` *numeric string or integer*&lt;br&gt;The ID of the offline dataset.&lt;br&gt;&lt;br&gt;&lt;br&gt;`fundraiser_campaign_id` *numeric string or integer*&lt;br&gt;The ID of the fundraiser campaign.&lt;br&gt;&lt;br&gt;&lt;br&gt;`custom_event_str` *string*&lt;br&gt;The event from an App Event of a mobile app,&lt;br&gt;not in the standard event list.&lt;br&gt;&lt;br&gt;&lt;br&gt;`mcme_conversion_id` *numeric string or integer*&lt;br&gt;The ID of a MCME conversion.&lt;br&gt;&lt;br&gt;&lt;br&gt;`conversion_goal_id` *numeric string or integer*&lt;br&gt;The ID of a Conversion Goal.&lt;br&gt;&lt;br&gt;&lt;br&gt;`offsite_conversion_event_id` *numeric string or integer*&lt;br&gt;The ID of a Offsite Conversion Event&lt;br&gt;&lt;br&gt;&lt;br&gt;`boosted_product_set_id` *numeric string or integer*&lt;br&gt;The ID of the Boosted Product Set within an Ad Set level Product&lt;br&gt;Catalog. Should only be present when the advertiser has&lt;br&gt;opted into Product Set Boosting.&lt;br&gt;&lt;br&gt;&lt;br&gt;`lead_ads_form_event_source_type` *enum&#123;inferred, meta_source, offsite_crm, offsite_web, onsite_crm, onsite_crm_single_event, onsite_clo_dep_aet, onsite_web, onsite_p2b_call, onsite_messaging, qualified_lead_file&#125;*&lt;br&gt;The event source of lead ads form.&lt;br&gt;&lt;br&gt;&lt;br&gt;`lead_ads_custom_event_type` *enum&#123;AD_IMPRESSION, RATE, TUTORIAL_COMPLETION, CONTACT, CUSTOMIZE_PRODUCT, DONATE, FIND_LOCATION, SCHEDULE, START_TRIAL, SUBMIT_APPLICATION, SUBSCRIBE, ADD_TO_CART, ADD_TO_WISHLIST, INITIATED_CHECKOUT, ADD_PAYMENT_INFO, PURCHASE, LEAD, COMPLETE_REGISTRATION, CONTENT_VIEW, SEARCH, SERVICE_BOOKING_REQUEST, MESSAGING_CONVERSATION_STARTED_7D, LEVEL_ACHIEVED, ACHIEVEMENT_UNLOCKED, SPENT_CREDITS, LISTING_INTERACTION, D2_RETENTION, D7_RETENTION, OTHER&#125;*&lt;br&gt;The event from an App Event of a mobile app,&lt;br&gt;not in the standard event list.&lt;br&gt;&lt;br&gt;&lt;br&gt;`lead_ads_custom_event_str` *string*&lt;br&gt;The event from an App Event of a mobile app,&lt;br&gt;not in the standard event list.&lt;br&gt;&lt;br&gt;&lt;br&gt;`lead_ads_offsite_conversion_type` *enum&#123;default, clo&#125;*&lt;br&gt;The offsite conversion type for lead ads&lt;br&gt;&lt;br&gt;&lt;br&gt;`value_semantic_type` *enum &#123;VALUE, MARGIN, LIFETIME_VALUE&#125;*&lt;br&gt;The semantic of the event value to be using for optimization&lt;br&gt;&lt;br&gt;&lt;br&gt;`variation` *enum &#123;OMNI_CHANNEL_SHOP_AUTOMATIC_DATA_COLLECTION, PRODUCT_SET_AND_APP, PRODUCT_SET_AND_IN_STORE, PRODUCT_SET_AND_OMNICHANNEL, PRODUCT_SET_AND_PHONE_CALL, PRODUCT_SET_AND_WEBSITE, PRODUCT_SET_AND_WEBSITE_AND_PHONE_CALL, PRODUCT_SET_WEBSITE_APP_AND_INSTORE&#125;*&lt;br&gt;Variation of the promoted object for a PCA ad&lt;br&gt;&lt;br&gt;&lt;br&gt;`passback_pixel_id` *numeric string or integer*&lt;br&gt;ID of the pixel used for tracking passback events&lt;br&gt;&lt;br&gt;&lt;br&gt;`passback_application_id` *numeric string or integer*&lt;br&gt;ID of the application used for tracking passback events&lt;br&gt;&lt;br&gt;&lt;br&gt;`product_set_optimization` *enum&#123;enabled, disabled&#125;*&lt;br&gt;Enum defining whether or not the ad should be optimized for the promoted product set&lt;br&gt;&lt;br&gt;&lt;br&gt;`full_funnel_objective` *enum&#123;OFFER_CLAIMS, PAGE_LIKES, EVENT_RESPONSES, POST_ENGAGEMENT, WEBSITE_CONVERSIONS, LINK_CLICKS, VIDEO_VIEWS, LOCAL_AWARENESS, PRODUCT_CATALOG_SALES, LEAD_GENERATION, BRAND_AWARENESS, STORE_VISITS, REACH, APP_INSTALLS, MESSAGES, OUTCOME_AWARENESS, OUTCOME_ENGAGEMENT, OUTCOME_LEADS, OUTCOME_SALES, OUTCOME_TRAFFIC, OUTCOME_APP_PROMOTION&#125;*&lt;br&gt;Enum defining the full funnel objective of the campaign&lt;br&gt;&lt;br&gt;&lt;br&gt;`dataset_split_id` *numeric string or integer*&lt;br&gt;ID of the dataset split used to perform additional optimization on the dataset&lt;br&gt;&lt;br&gt;&lt;br&gt;`dataset_split_ids` *array&lt;numeric string&gt;*&lt;br&gt;IDs of the dataset splits used to perform additional optimization on the dataset&lt;br&gt;&lt;br&gt;&lt;br&gt;`lead_ads_selected_pixel_id` *numeric string or integer*&lt;br&gt;The selected pixel id for lead ads conversion leads optimization&lt;br&gt;&lt;br&gt;&lt;br&gt;`custom_attribution_source_ids` *array&lt;numeric string&gt;*&lt;br&gt;IDs of the custom attribution sources used for tracking passback events&lt;br&gt;&lt;br&gt;&lt;br&gt;`multi_event_product` *int64*&lt;br&gt;Identifies which action-to-action product the advertiser is using&lt;br&gt;&lt;br&gt;&lt;br&gt;`product_sales_channel` *enum &#123;ONLINE, IN_STORE, OMNI&#125;*&lt;br&gt;ProductSalesChannel of the promoted object for Omni L3 DA SBLI ads&lt;br&gt;&lt;br&gt;&lt;br&gt;`anchor_event_config` *JSON object*&lt;br&gt;Configuration for anchor event in multi-event optimization campaigns&lt;br&gt;&lt;br&gt;&lt;br&gt;`multi_event_conversion_info` *JSON object*&lt;br&gt;Configuration for multi-event conversion info in CLO campaigns&lt;br&gt;&lt;br&gt;&lt;br&gt;`live_video_destination` *string*&lt;br&gt;The live video destination type for live video ads&lt;br&gt;&lt;br&gt;&lt;br&gt;`smart_pse_enabled` *boolean*&lt;br&gt;Whether Smart Product Set Expansion is enabled for this campaign.&lt;br&gt;&lt;br&gt;&lt;br&gt;`smart_pse_setting` *enum&#123;ENABLED, DISABLED&#125;*&lt;br&gt;Setting for Smart Product Set Expansion. Uses an enum instead of a boolean to avoid TAO null handling issues.&lt;br&gt;&lt;br&gt;&lt;br&gt;`lead_ads_follow_up_event` *enum&#123;whatsapp_conversations&#125;*&lt;br&gt;The selected lead follow-up event for lead ads campaigns.&lt;br&gt;&lt;br&gt;&lt;br&gt;`omnichannel_object` *Object*&lt;br&gt;&lt;br&gt;`app` *array&lt;JSON object&gt;*&lt;br&gt;&lt;br&gt;`pixel` *array&lt;JSON object&gt;*&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;&lt;br&gt;`onsite` *array&lt;JSON object&gt;*&lt;br&gt;&lt;br&gt;`whats_app_business_phone_number_id` *numeric string or integer*&lt;br&gt;&lt;br&gt;`whatsapp_phone_number` *string* |
+| `relative_value`&lt;br&gt;&lt;br&gt;*float* | relative_value&lt;br&gt; |
+| `rf_prediction_id`&lt;br&gt;&lt;br&gt;*numeric string or integer* | Reach and frequency prediction ID&lt;br&gt; |
+| `source_adset_id`&lt;br&gt;&lt;br&gt;*numeric string or integer* | The source adset id that this ad is copied from (if applicable).&lt;br&gt; |
+| `start_time`&lt;br&gt;&lt;br&gt;*datetime* | The start time of the set, e.g. `2015-03-12 23:59:59-07:00` or `2015-03-12 23:59:59 PDT`. UTC UNIX timestamp&lt;br&gt; |
+| `status`&lt;br&gt;&lt;br&gt;*enum&#123;ACTIVE, PAUSED, DELETED, ARCHIVED&#125;* | Only `ACTIVE` and `PAUSED` are valid for creation. The other statuses&lt;br&gt;can be used for update. If it is set to `PAUSED`, all its active ads&lt;br&gt;will be paused and have an effective status `ADSET_PAUSED`.&lt;br&gt; |
+| `targeting`&lt;br&gt;&lt;br&gt;*Targeting object* | An ad set&#039;s targeting structure.  &quot;countries&quot; is required. See [targeting](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/advanced-targeting).&lt;br&gt; |
+| `time_based_ad_rotation_id_blocks`&lt;br&gt;&lt;br&gt;*list&lt;list&lt;int64&gt;&gt;* | Specify ad creative that displays at custom date ranges in a campaign&lt;br&gt;as an array. A list of Adgroup IDs. The list of ads to display for each&lt;br&gt;time range in a given schedule. For example display first ad in Adgroup&lt;br&gt;for first date range, second ad for second date range, and so on. You&lt;br&gt;can display more than one ad per date range by providing more than&lt;br&gt;one ad ID per array. For example set&lt;br&gt;`time_based_ad_rotation_id_blocks` to [[1], [2, 3], [1, 4]]. On the&lt;br&gt;first date range show ad 1, on the second date range show ad 2 and ad 3&lt;br&gt;and on the last date range show ad 1 and ad 4. Use with&lt;br&gt;`time_based_ad_rotation_intervals` to specify date ranges.&lt;br&gt; |
+| `time_based_ad_rotation_intervals`&lt;br&gt;&lt;br&gt;*list&lt;int64&gt;* | Date range when specific ad creative displays during a campaign.&lt;br&gt;Provide date ranges in an array of UNIX timestamps where each&lt;br&gt;timestamp represents the start time for each date range. For example a&lt;br&gt;3-day campaign from May 9 12am to  May 11 11:59PM PST can have three&lt;br&gt;date ranges, the first date range starts from May 9 12:00AM to&lt;br&gt;May 9 11:59PM, second date range starts from May 10 12:00AM to&lt;br&gt;May 10 11:59PM and last starts from  May 11 12:00AM to  May 11 11:59PM.&lt;br&gt;The first timestamp should match the campaign start time. The last&lt;br&gt;timestamp should be at least 1 hour before the campaign end time. You&lt;br&gt;must provide at least two date ranges. All date ranges must cover the&lt;br&gt;whole campaign length, so any date range cannot exceed campaign length.&lt;br&gt;Use with `time_based_ad_rotation_id_blocks` to specify ad creative for&lt;br&gt;each date range.&lt;br&gt; |
+| `time_start`&lt;br&gt;&lt;br&gt;*datetime* | Time start&lt;br&gt; |
+| `time_stop`&lt;br&gt;&lt;br&gt;*datetime* | Time stop&lt;br&gt; |
+| `tune_for_category`&lt;br&gt;&lt;br&gt;*enum&#123;NONE, EMPLOYMENT, HOUSING, CREDIT, ISSUES_ELECTIONS_POLITICS, ONLINE_GAMBLING_AND_GAMING, FINANCIAL_PRODUCTS_SERVICES&#125;* | tune_for_category&lt;br&gt; |
+| `value_rule_set_id`&lt;br&gt;&lt;br&gt;*numeric string or integer* | Value Rule Set ID&lt;br&gt; |
+| `value_rules_applied`&lt;br&gt;&lt;br&gt;*boolean* | value_rules_applied&lt;br&gt; |
+
+#### Return Type
+
+This endpoint supports [read-after-write](https://developers.facebook.com/docs/graph-api/overview#read-after-write) and will read the node represented by *id* in the return type.
+
+```
+Struct  &#123;
+id: numeric string,
+success: bool,
+&#125;
+```
+
+#### Error Codes
+
+| Error Code | Description |
+| --- | --- |
+| 100 | Invalid parameter |
+| 200 | Permissions error |
+| 2635 | You are calling a deprecated version of the Ads API. Please update to the latest version. |
+| 368 | The action attempted has been deemed abusive or is otherwise disallowed |
+| 2695 | The ad set creation reached its campaign group(ios14) limit. |
+| 80004 | There have been too many calls to this ad-account. Wait a bit and try again. For more info, please refer to /docs/graph-api/overview/rate-limiting#ads-management. |
+| 2641 | Your ad includes or excludes locations that are currently restricted |
+| 190 | Invalid OAuth 2.0 Access Token |
+| 900 | No such application exists. |
+
+## Updating
+
+### Examples &#123;#update-examples&#125;
+
+```html
+curl -X POST \
+  -F &#039;billing_event=&quot;IMPRESSIONS&quot;&#039; \
+  -F &#039;optimization_goal=&quot;LINK_CLICKS&quot;&#039; \
+  -F &#039;bid_amount=200&#039; \
+  -F &#039;targeting=&#123;
+       &quot;geo_locations&quot;: &#123;
+         &quot;countries&quot;: [
+           &quot;US&quot;
+         ]
+       &#125;,
+       &quot;facebook_positions&quot;: [
+         &quot;feed&quot;
+       ]
+     &#125;&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/&lt;AD_SET_ID&gt;/
+```
+
+To update the `end_time` of an ad set, using ISO-8601 date-time format
+
+### PHP Business SDK
+```
+use FacebookAds\Object\AdSet;
+
+$adset = new AdSet(&#039;&lt;AD_SET_ID&gt;&#039;);
+$adset-&gt;end_time = &#039;2013-10-02T00:00:00-0700&#039;;
+$adset-&gt;update();
+```
+
+### Python Business SDK
+```
+from facebookads.objects import AdSet
+
+adset = AdSet(&#039;&lt;AD_SET_ID&gt;&#039;)
+adset[AdSet.Field.end_time] = &#039;2013-10-02T00:00:00-0700&#039;
+adset.remote_update()
+```
+
+### cURL
+```
+curl \
+-F &quot;end_time=2013-10-02T00:00:00-0700&quot; \
+-F &quot;access_token=&lt;ACCESS_TOKEN&gt;&quot; \
+&quot;https://graph.facebook.com/&lt;API_VERSION&gt;/&lt;AD_SET_ID&gt;&quot;
+```
+
+To update the status of an ad set to paused
+
+### PHP Business SDK
+```
+use FacebookAds\Object\AdSet;
+
+$adset = new AdSet(&#039;&lt;AD_SET_ID&gt;&#039;);
+$adset-&gt;campaign_status = AdSet::STATUS_PAUSED;
+$adset-&gt;update();
+```
+
+### Python Business SDK
+```
+from facebookads.objects import AdSet
+
+adset = AdSet(&#039;&lt;AD_SET_ID&gt;&#039;)
+adset[AdSet.Field.status] = AdSet.Status.paused
+adset.remote_update()
+```
+
+### cURL
+```
+curl \
+-F &quot;campaign_status=PAUSED&quot; \
+-F &quot;access_token=&lt;ACCESS_TOKEN&gt;&quot; \
+&quot;https://graph.facebook.com/&lt;API_VERSION&gt;/&lt;AD_SET_ID&gt;&quot;
+```
+
+### Remarks
+
+An archived ad set can only update two fields: `name` and `campaign_status`. The `campaign_status` field can only be changed to `DELETED`.
+
+A deleted ad set can only change its `name`.
+
+There are two considerations to take into account when adjusting an ad set&#039;s budget value or budget type:
+
+- When updating a set&#039;s lifetime or daily budget to a lower value, the new value must be at least 10% greater than the current amount spent already. For example: if an ad set has a $1000 lifetime budget and has spend $300 so far, the lowest new lifetime budget would be $330.
+
+- Since `v2.4`, ad sets have a minimum required budget. Any update must take that into consideration. Check the details at the [Create Considerations](#create-considerations) section from this page.
+
+**Note:** When using the Reservation buying type, some fields may not be available to be updated through the API.
+
+You can&#039;t perform this operation on this endpoint.
+
+## Deleting
+
+### Examples &#123;#delete-examples&#125;
+
+```html
+curl -X DELETE \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/&lt;AD_SET_ID&gt;/
+```
+
+### /&#123;ad_set_id&#125;
+You can delete an [AdSet](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign) by making a DELETE request to [/&#123;ad_set_id&#125;](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign).
+
+#### Example
+
+### HTTP
+```
+DELETE /v25.0/&lt;AD_SET_ID&gt;/ HTTP/1.1
+Host: graph.facebook.com
+```
+
+### PHP SDK
+```
+/* PHP SDK v5.0.0 */
+/* make the API call */
+try &#123;
+  // Returns a `Facebook\FacebookResponse` object
+  $response = $fb-&gt;delete(
+    &#039;/&lt;AD_SET_ID&gt;/&#039;,
+    array (),
+    &#039;&#123;access-token&#125;&#039;
+  );
+&#125; catch(Facebook\Exceptions\FacebookResponseException $e) &#123;
+  echo &#039;Graph returned an error: &#039; . $e-&gt;getMessage();
+  exit;
+&#125; catch(Facebook\Exceptions\FacebookSDKException $e) &#123;
+  echo &#039;Facebook SDK returned an error: &#039; . $e-&gt;getMessage();
+  exit;
+&#125;
+$graphNode = $response-&gt;getGraphNode();
+/* handle the result */
+```
+
+### JavaScript SDK
+```
+/* make the API call */
+FB.api(
+    &quot;/&lt;AD_SET_ID&gt;/&quot;,
+    &quot;DELETE&quot;,
+    function (response) &#123;
+      if (response &amp;&amp; !response.error) &#123;
+        /* handle the result */
+      &#125;
+    &#125;
+);
+```
+
+### Android SDK
+```
+/* make the API call */
+new GraphRequest(
+    AccessToken.getCurrentAccessToken(),
+    &quot;/&lt;AD_SET_ID&gt;/&quot;,
+    null,
+    HttpMethod.DELETE,
+    new GraphRequest.Callback() &#123;
+        public void onCompleted(GraphResponse response) &#123;
+            /* handle the result */
+        &#125;
+    &#125;
+).executeAsync();
+```
+
+### iOS SDK
+```
+/* make the API call */
+FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]
+                               initWithGraphPath:&#064;&quot;/&lt;AD_SET_ID&gt;/&quot;
+                                      parameters:params
+                                      HTTPMethod:&#064;&quot;DELETE&quot;];
+[request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
+                                      id result,
+                                      NSError *error) &#123;
+    // Handle the result
+&#125;];
+```
+
+### cURL
+```
+curl -X DELETE -G \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/&lt;AD_SET_ID&gt;/
+```
+
+Try it in [Graph API Explorer](https://developers.facebook.com/tools/explorer/?method=DELETE&amp;path=%3CAD_SET_ID%3E%2F&amp;version=v25.0)
+
+If you want to learn how to use the Graph API, read our [Using Graph API guide](https://developers.facebook.com/docs/graph-api/using-graph-api)
+
+#### Parameters
+
+This endpoint doesn&#039;t have any parameters.
+
+#### Return Type
+
+```
+Struct  &#123;
+success: bool,
+&#125;
+```
+
+#### Error Codes
+
+| Error Code | Description |
+| --- | --- |
+| 200 | Permissions error |
+| 100 | Invalid parameter |
+| 80004 | There have been too many calls to this ad-account. Wait a bit and try again. For more info, please refer to /docs/graph-api/overview/rate-limiting#ads-management. |
+
+## Outcome-Driven Ads Experiences &#123;#odax&#125;
+
+### Example
+
+**Outcome-Driven Ads Experiences (Engagement Outcome + `ON_PAGE` destination_type)**
+
+```
+curl -i -X POST \
+  -d &quot;name=New ODAX Adset&quot; \
+  -d &quot;autobid=true&quot; \
+  -d &quot;optimization_goal=PAGE_LIKES&quot; \
+  -d &quot;destination_type=ON_PAGE&quot; \
+  -d &quot;billing_event=IMPRESSIONS&quot; \
+  -d &quot;daily_budget=500&quot; \
+  -d &quot;targeting=&#123;\&quot;geo_locations\&quot;: &#123;\&quot;countries\&quot;: [\&quot;US\&quot;]&#125;&#125;&quot; \
+  -d &quot;promoted_object=&#123;\&quot;page_id\&quot;: PAGE_ID&#125;&quot; \
+  -d &quot;campaign_id=CAMPAIGN_ID&quot; \
+  -d &quot;status=PAUSED&quot; \
+  -d &quot;access_token=ACCESS_TOKEN&quot; \
+  https://graph.facebook.com/v11.0/
+  act_AD_ACCOUNT_ID/adsets
+```
+
+**Legacy**
+
+```
+curl -i -X POST \
+  -d &quot;name=New ODAX Adset&quot; \
+  -d &quot;autobid=true&quot; \
+  -d &quot;optimization_goal=PAGE_LIKES&quot; \
+  -d &quot;billing_event=IMPRESSIONS&quot; \
+  -d &quot;daily_budget=500&quot; \
+  -d &quot;targeting=&#123;\&quot;geo_locations\&quot;: &#123;\&quot;countries\&quot;: [\&quot;US\&quot;]&#125;&#125;&quot; \
+  -d &quot;promoted_object=&#123;\&quot;page_id\&quot;: PAGE_ID&#125;&quot; \
+  -d &quot;campaign_id=CAMPAIGN_ID&quot; \
+  -d &quot;status=PAUSED&quot; \
+  -d &quot;access_token=ACCESS_TOKEN&quot; \
+  https://graph.facebook.com/v11.0/
+  act_AD_ACCOUNT_ID/adsets
+```
+
+### Restrictions
+There will be new restrictions on Outcome-Driven Ads Experiences (ODAX) campaigns as outlined in the table below. Refer to the [Outcome-Driven Ads Experiences mapping table](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign-group#odax-mapping) to find the new objectives and their corresponding destination types, optimization goals and promoted objects.
+
+| ODAX Objectives | Conversion Location (L2) | Conversion Events (L2) | Optimization Goals (L2) | Legacy Objectives |
+| --- | --- | --- | --- | --- |
+| **Awareness**  &lt;br&gt;*Reach the largest number of people who are likely to remember your ad.* | N/A | N/A | Ad Recall Lift, Reach, Impressions&lt;br&gt;&lt;br&gt;API enum &#123;`AD_RECALL_LIFT`, `REACH`, `IMPRESSIONS`&#125; | Reach, Brand Awareness |
+| **Traffic**  &lt;br&gt;*Send people to a destination like your website, app or Shop.* | Facebook Shops (closed beta) | N/A | Link Clicks&lt;br&gt;&lt;br&gt;API enum &#123;`LINK_CLICKS`&#125; | Traffic |
+|  | Website | N/A | Landing Page Views, Link Clicks, Impressions, Daily Unique Reach&lt;br&gt;&lt;br&gt;API enum &#123;`LANDING_PAGE_VIEWS`, `LINK_CLICKS`, `IMPRESSIONS`, `REACH`&#125; | Traffic |
+|  | App | N/A | Link Clicks, Daily Unique Reach&lt;br&gt;&lt;br&gt;API enum &#123;`LINK_CLICKS`, `REACH`&#125; | Traffic |
+|  | Messenger | N/A | Link Clicks, Impressions, Daily Unique Reach&lt;br&gt;&lt;br&gt;API enum &#123;`LINK_CLICKS`, `IMPRESSIONS`, `REACH`&#125; | Traffic |
+|  | WhatsApp | N/A | Link Clicks, Impressions, Daily Unique Reach&lt;br&gt;&lt;br&gt;API enum &#123;`LINK_CLICKS`, `IMPRESSIONS`, `REACH`&#125; | Traffic |
+| **Engagement**  &lt;br&gt;*Find people likely to interact with your business online, and take actions like starting a conversation or commenting on posts.* | On Video | N/A | ThruPlay, 2 second continuous view&lt;br&gt;&lt;br&gt;API enum &#123;`THRUPLAY`, `TWO_SECOND_CONTINUOUS_VIDEO_VIEWS`&#125; | Video Views |
+|  | On Post | N/A | Post Engagement, Impressions, Daily Unique Reach&lt;br&gt;&lt;br&gt;API enum &#123;`POST_ENGAGEMENT`, `IMPRESSIONS`, `REACH`&#125; | Post Engagement |
+|  | On Event | N/A | Event Response, Impressions, Post Engagement, Daily Unique Reach&lt;br&gt;&lt;br&gt;API enum &#123;`EVENT_RESPONSES`, `IMPRESSIONS`, `POST_ENGAGEMENT`, `REACH`&#125; | Event Responses |
+|  | Messenger | N/A | Conversations, Link Clicks&lt;br&gt;&lt;br&gt;API enum &#123;`CONVERSATIONS`, `LINK_CLICKS`&#125; | Messages |
+|  | WhatsApp | N/A | Conversations, Link Clicks&lt;br&gt;&lt;br&gt;API enum &#123;`CONVERSATIONS`, `LINK_CLICKS`&#125; | Messages |
+|  | Instagram | N/A | Conversations, Link Clicks&lt;br&gt;&lt;br&gt;API enum &#123;`CONVERSATIONS`, `LINK_CLICKS`&#125; | Messages |
+|  | Website | AddToWishlist, Contact, CustomizeProduct, Donate, FindLocation,, Schedule, Search, StartTrial, SubmitApplication, Subscribe, ViewContent | Conversions, Landing Page Views, Link Clicks, Impressions, Daily Unique Reach&lt;br&gt;&lt;br&gt;API enum &#123;`OFFSITE_CONVERSIONS`, `ONSITE_CONVERSIONS`,  `LANDING_PAGE_VIEWS`, `LINK_CLICKS`, `IMPRESSIONS`, `REACH`&#125; | Conversions |
+|  | App | Achieve Level, Activate App, Add to Wishlist, Complete Tutorial, Contact, Customize Product, Donate, Find Location, In-App Ad Click, In-App Ad Impression, Rate, Schedule, Search, Spent Credits, Start Trial, Submit Application, Subscribe, Unlock Achievement, View Content | App Events, Link Clicks, Daily Unique Reach&lt;br&gt;&lt;br&gt;API enum &#123;`APP_INSTALLS_AND_OFFSITE_CONVERSIONS`, `LINK_CLICKS`, `REACH`&#125; | Conversions |
+|  | On Page | N/A | Page Likes&lt;br&gt;&lt;br&gt;API enum &#123;`PAGE_LIKES`&#125; | Engagement |
+| **Leads**  &lt;br&gt;*Find people interested in your business who are likely to share their contact information.* | Website | Lead, CompleteRegistration, Contact, FindLocation, Schedule, StartTrial, SubmitApplication, Subscribe | Conversions, Landing Page Views, Link Clicks, Impressions, Daily Unique Reach&lt;br&gt;&lt;br&gt;API enum &#123;`OFFSITE_CONVERSIONS`, `ONSITE_CONVERSIONS`,  `LANDING_PAGE_VIEWS`, `LINK_CLICKS`, `IMPRESSIONS`, `REACH`&#125; | Conversions |
+|  | Instant Forms | N/A | Leads&lt;br&gt;&lt;br&gt;API enum &#123;`LEAD_GENERATION`, `QUALITY_LEAD`&#125; | Lead Generation |
+|  | Messenger | N/A | Leads&lt;br&gt;&lt;br&gt;API enum &#123;`LEAD_GENERATION`, `QUALITY_LEAD`&#125; | Messages |
+|  | Calls | N/A | Calls&lt;br&gt;&lt;br&gt;API enum &#123;`QUALITY_CALL`&#125; | Lead Generation |
+|  | App | Complete Registration, Complete Tutorial, Contact, Find Location, Schedule, Start Trial, Submit Application, Subscribe | App Events, Link Clicks, Daily Unique Reach&lt;br&gt;&lt;br&gt;API enum &#123;`APP_INSTALLS_AND_OFFSITE_CONVERSIONS`, `LINK_CLICKS`, `REACH`&#125; | Conversions |
+| **App Promotion**  &lt;br&gt;*Find people likely to install your app.* | N/A | All app events, including all custom events | Non-AAA: Link Clicks, App Installs, App Events, Value&lt;br&gt;&lt;br&gt;API enum &#123;`LINK_CLICKS`, `APP_INSTALLS`, `APP_INSTALLS_AND_OFFSITE_CONVERSIONS`, `VALUE`&#125;&lt;br&gt;&lt;br&gt;AAA: App Installs, App Installs w/ App Events, App Events, Value&lt;br&gt;&lt;br&gt;API enum &#123;`APP_INSTALLS`, `APP_INSTALLS_AND_OFFSITE_CONVERSIONS`, `VALUE`&#125; | App Installs |
+| **Sales**  &lt;br&gt;*Find people likely to make purchases or take other important actions online or in store.* | Website &amp; Facebook Shops (closed beta) | Purchase, InitiateCheckout, AddPaymentInfo, AddToCart, CompleteRegistration, Donate, StartTrial, Subscribe, ViewContent | (source of truth: same as today&#039;s Conversions objective + web and shop)&lt;br&gt;&lt;br&gt;API enum &#123;`OFFSITE_CONVERSIONS`, `VALUE`, `LINK_CLICKS`, `LANDING_PAGE_VIEWS`, `LINK_CLICKS`, `IMPRESSIONS`, `REACH`&#125; | Conversions |
+|  | Website | Purchase, InitiateCheckout, AddPaymentInfo, AddToCart, CompleteRegistration, Donate, StartTrial, Subscribe, ViewContent | Conversions, Value, Landing Page Views, Link Clicks, Impressions, Daily Unique Reach&lt;br&gt;&lt;br&gt;API enum &#123;`OFFSITE_CONVERSIONS`, `VALUE`, `LANDING_PAGE_VIEWS`, `LINK_CLICKS`, `IMPRESSIONS`, `REACH`&#125; | Conversions |
+|  | App | Purchase, Initiate Checkout, Add Payment Info, Add to Cart, Complete Registration, Donate, In-App Ad Click, In-App Ad Impression, Spent Credits, Start Trial, Subscribe, View Content | App Events, Link Clicks, Daily Unique Reach&lt;br&gt;&lt;br&gt;API enum &#123;`OFFSITE_CONVERSIONS`, `LINK_CLICKS`, `REACH`&#125; | Conversions |
+|  | Website &amp; App | Purchase, InitiateCheckout, AddPaymentInfo, AddToCart, CompleteRegistration, Donate, StartTrial, Subscribe, ViewContent | Conversions&lt;br&gt;&lt;br&gt;API enum &#123;`OFFSITE_CONVERSIONS`&#125; | Conversions |
+|  | Messenger | Purchase, InitiateCheckout, AddPaymentInfo, AddToCart, CompleteRegistration, Donate, StartTrial, Subscribe, ViewContent | Conversations, Conversions, Link Clicks, Impressions, Reach&lt;br&gt;&lt;br&gt;API enum &#123;`CONVERSATIONS`, `OFFSITE_CONVERSIONS`, `LINK_CLICKS`, `IMPRESSIONS`, `REACH`&#125; | Conversions |
+|  | WhatsApp | Purchase, InitiateCheckout, AddPaymentInfo, AddToCart, CompleteRegistration, Donate, StartTrial, Subscribe, ViewContent | Conversions, Link Clicks, Impressions, Reach&lt;br&gt;&lt;br&gt;API enum &#123;`OFFSITE_CONVERSIONS`, `LINK_CLICKS`, `IMPRESSIONS`, `REACH`&#125; | Conversions |
+
+</pre></body></html>

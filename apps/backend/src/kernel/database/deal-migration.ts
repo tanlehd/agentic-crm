@@ -1,0 +1,6 @@
+import type { Migration } from './migrations.js';
+import { sourceColumns } from './lead-source-migration.js';
+const id='CHAR(36) CHARACTER SET ascii COLLATE ascii_bin';
+export const dealMigration:Migration={version:25,name:'sales_deal_base',statements:[
+  `CREATE TABLE deal(tenant_id ${id} NOT NULL,record_id ${id} NOT NULL,contact_id ${id} NOT NULL,lead_id ${id} NULL,title VARCHAR(255) NOT NULL,amount DECIMAL(20,6) NOT NULL CHECK(amount>=0),currency CHAR(3) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,stage VARCHAR(16) NOT NULL DEFAULT 'open' CHECK(stage IN ('open','qualified','proposal','won','lost')),closed_at DATETIME(6) NULL,${sourceColumns},PRIMARY KEY(tenant_id,record_id),CONSTRAINT fk_deal_record FOREIGN KEY(tenant_id,record_id) REFERENCES crm_record(tenant_id,id),CONSTRAINT ck_deal_closed CHECK((stage IN ('won','lost') AND closed_at IS NOT NULL) OR (stage NOT IN ('won','lost') AND closed_at IS NULL)),CONSTRAINT ck_deal_won CHECK(stage<>'won' OR amount>0),INDEX ix_deal_lead(tenant_id,lead_id,record_id),INDEX ix_deal_close(tenant_id,stage,closed_at,record_id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_as_cs COMMENT='Sales-owned Deal state and immutable origin; business tenant'`,
+]};

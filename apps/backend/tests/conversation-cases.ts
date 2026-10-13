@@ -47,7 +47,12 @@ export function conversationCases(isolated:(name:string)=>Promise<DataSource>){d
     await ds.query("INSERT INTO channel_connection(id,tenant_id,provider,external_account_id,team_id) VALUES (?,?,'mock_messenger','synthetic-page',?)",[connection,tenant,team]);
     await ds.query("INSERT INTO contact_identity(id,tenant_id,connection_id,contact_id,external_subject_id) VALUES (?,?,?,?,'synthetic-subject')",[identity,tenant,connection,contact]);
     app=new Conversations(ds,'conversation-test');dispatcher=new OutboundDispatcher(ds,new MockSender(ds));
-    await inbound('synthetic-pre18');const history=await ds.query('SELECT * FROM message'),oldJournal=await ds.query('SELECT * FROM schema_migration ORDER BY version');expect(await migrate(ds)).toBe(migrations.length-17);expect(await ds.query('SELECT * FROM message')).toEqual(history);expect((await ds.query('SELECT * FROM schema_migration ORDER BY version')).slice(0,17)).toEqual(oldJournal);expect(await migrate(ds)).toBe(0);
+    // Historical v17 writer fixture; current application code requires schema26.
+    const legacyConversation=randomUUID(),legacyMessage=randomUUID(),[conversationType]=await ds.query("SELECT id FROM object_type WHERE tenant_id=? AND `key`='conversation'",[tenant]);
+    await ds.query('INSERT INTO crm_record(tenant_id,id,object_type_id,created_at,updated_at) VALUES (?,?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))',[tenant,legacyConversation,conversationType.id]);
+    await ds.query('INSERT INTO conversation(tenant_id,record_id,contact_id,contact_identity_id,connection_id,opened_at) VALUES (?,?,?,?,?,UTC_TIMESTAMP(6))',[tenant,legacyConversation,contact,identity,connection]);
+    await ds.query("INSERT INTO message(id,tenant_id,conversation_id,connection_id,provider_message_id,direction,text,occurred_at,received_at,status) VALUES (?,?,?,?,'synthetic-pre18','inbound','Synthetic inbound','2026-10-05 01:00:00',UTC_TIMESTAMP(6),'received')",[legacyMessage,tenant,legacyConversation,connection]);
+    const history=await ds.query('SELECT * FROM message'),oldJournal=await ds.query('SELECT * FROM schema_migration ORDER BY version');expect(await migrate(ds)).toBe(migrations.length-17);expect(await ds.query('SELECT * FROM message')).toEqual(history);expect((await ds.query('SELECT * FROM schema_migration ORDER BY version')).slice(0,17)).toEqual(oldJournal);expect(await migrate(ds)).toBe(0);
   });
   it('concurrent inbound serializes identity; duplicate no-op; payload conflict; atomic rollback',async()=>{
     const results=await Promise.all([inbound(),inbound()]);expect(new Set(results.map(r=>r.conversationId)).size).toBe(1);id=results[0]!.conversationId;
@@ -178,7 +183,7 @@ export function conversationCases(isolated:(name:string)=>Promise<DataSource>){d
     const slow=new OutboundDispatcher(ds,{send:async input=>{started();await gate;return mock.send(input);},lookup:(t,i)=>mock.lookup(t,i)});const work=slow.dispatch(tenant,id,sending);await entered;
     try{detail=(await app.read(account,tenant,id)).data;await mutate('transition',{target_status:'closed',reason:'Synthetic close'},randomUUID(),detail.version);expect(await state(queued)).toBe('cancelled');expect(await state(sending)).toBe('sending');}finally{release();await work;}
     expect(await state(sending)).toBe('sent');await expect(send()).rejects.toThrow('INVALID_TRANSITION');await expect(mutate('transition',{target_status:'open',reason:'Synthetic'},randomUUID(),String(BigInt(detail.version)+1n))).rejects.toThrow('INVALID_TRANSITION');
-    const previous=id;id=(await inbound()).conversationId;expect(id).not.toBe(previous);expect(await ds.query("SELECT * FROM conversation WHERE status<>'closed'")).toHaveLength(1);await own();
+    const previous=id;id=(await inbound()).conversationId;expect(id).toBe(previous);expect(await ds.query("SELECT * FROM conversation WHERE status<>'closed'")).toHaveLength(1);expect((await app.read(account,tenant,id)).data.owner_revision).toBe('2');
   });
   it('assignment hook cancels queued, leaves in-flight; stale result cannot undo owner',async()=>{
     const queued=String((await send()).body.data.id),sending=String((await send()).body.data.id);await ds.query("UPDATE outbound_intent SET status='sending',dispatch_token=?,sending_at=UTC_TIMESTAMP(6) WHERE id=?",[randomUUID(),sending]);await ds.query("UPDATE message SET status='sending' WHERE outbound_intent_id=?",[sending]);await own(other);expect(await state(queued)).toBe('cancelled');expect(await state(sending)).toBe('sending');await expect(send()).rejects.toThrow('OWNER_CONFLICT');
@@ -197,6 +202,8 @@ export function conversationCases(isolated:(name:string)=>Promise<DataSource>){d
     }finally{await server.close();}
   });
   it('SRC-031 channel projection/filter/options preserve tenant, fields, history and cursor binding',async()=>{
+    // Reopen keeps the first thread; a second identity supplies genuine pagination.
+    const secondIdentity=randomUUID();await ds.query('INSERT INTO contact_identity(id,tenant_id,connection_id,contact_id,external_subject_id) VALUES (?,?,?,?,?)',[secondIdentity,tenant,connection,contact,secondIdentity]);await app.uow.run({tenantId:tenant},s=>app.receive(s,{identityId:secondIdentity,providerMessageId:randomUUID(),text:'Synthetic second thread',occurredAt:'2026-10-08T01:00:00Z',correlation:'synthetic'}));
     const detail:any=(await app.read(account,tenant,id)).data;expect(detail).toMatchObject({channel:'mock_messenger',channel_id:connection,page_id:'synthetic-page'});
     expect((await ds.query('SELECT channel,channel_id FROM conversation WHERE tenant_id=? AND record_id=?',[tenant,id]))[0]).toEqual({channel:'mock_messenger',channel_id:connection});
     await expect(ds.query("UPDATE conversation SET channel='messenger' WHERE tenant_id=? AND record_id=?",[tenant,id])).rejects.toThrow();

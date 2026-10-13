@@ -16,8 +16,9 @@ const text=(v:unknown,key:string,max=255)=>{if(typeof v!=='string'||!v.trim()||v
 const nullable=(v:unknown,key:string,max:number)=>{if(v===null)return null;if(typeof v!=='string'||v.length>max)fieldError(key);return v;};
 export const stamp=(v:any)=>v===null?null:v instanceof Date?v.toISOString():new Date(v).toISOString();
 export const standardProperty=(key:string,type:string,options:string[]|null=null):Property=>({id:`standard:${key}`,key,label:key,type,required:false,default_value:null,options,indexed:true,sensitive:false,version:'1'});
-export const standardQueries:Record<string,Property[]>={contact:['display_name','normalized_phone','normalized_email'].map(k=>standardProperty(k,'string')),company:['name','domain'].map(k=>standardProperty(k,'string')),activity:[standardProperty('kind','enum',['note','task','call']),standardProperty('subject','string'),standardProperty('due_at','datetime')],lead:[standardProperty('status','enum',['new','qualifying','qualified','handed_off','accepted','disqualified']),standardProperty('qualified_at','datetime')]};
+export const standardQueries:Record<string,Property[]>={deal:[standardProperty('title','string'),standardProperty('stage','enum',['open','qualified','proposal','won','lost']),standardProperty('closed_at','datetime')],contact:['display_name','normalized_phone','normalized_email'].map(k=>standardProperty(k,'string')),company:['name','domain'].map(k=>standardProperty(k,'string')),activity:[standardProperty('kind','enum',['note','task','call']),standardProperty('subject','string'),standardProperty('due_at','datetime')],lead:[standardProperty('status','enum',['new','qualifying','qualified','handed_off','accepted','disqualified']),standardProperty('qualified_at','datetime')]};
 export const standardFields:Record<string,Property[]>={
+  deal:standardQueries.deal!,
   contact:[...standardQueries.contact!,{...standardProperty('contact_preference','text'),indexed:false}],
   company:standardQueries.company!,
   activity:[...standardQueries.activity!,{...standardProperty('body','text'),indexed:false},{...standardProperty('related_record_id','string'),indexed:false}],

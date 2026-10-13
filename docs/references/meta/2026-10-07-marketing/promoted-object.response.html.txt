@@ -1,0 +1,99 @@
+<html><head><title>Ad Set, Promoted Object</title><meta charset="UTF-8" /><style nonce="cNk8m6WF">body { font-family: monospace; margin: 20px; }pre { white-space: pre-wrap; word-wrap: break-word; }</style></head><body><pre data-testid="developer-docs-markdown-page"># Ad Set, Promoted Object
+
+
+
+The object an ad set promotes, such as a Page  or app. The campaign&#039;s `objective` and the ad set&#039;s `promoted_object` provide intent for your ads. When you create ad sets for campaigns with the certain objectives, `promoted_object` is required. See [Ad Set, Creating](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign#Creating).
+
+### Requirements
+
+- You must have permissions for objects you promote, including `page_id`, `application_id`, and `pixel_id`
+
+- If you use `page_id`, the creative must promote that `page_id`
+
+- If you use `pixel_id`, you must provide `custom_event_type`
+
+- If you use `object_store_url`, you must include `application_id`. This option is only available in [Ads Manager](https://www.facebook.com/ads/manager).
+
+- `object_store_url` MUST be associated with that app. You can configure this under your [app settings](https://developers.facebook.com/apps).
+
+- Mobile device targeting for the ad set must match supported platforms for your specified app.
+
+- The ad creative must link to the specified `object_store_url`.
+
+### Limitations
+
+If you use `promoted_object`:
+
+- `promoted_object` is **immutable** in most cases. It is set on creation and cannot be changed. To promote a different object, create a new ad set. The exceptions are:
+
+- Adding `application_id` or `product_catalog_id` if not already given
+
+- Changing `pixel_id`, `pixel_rule` or `custom_event_type` to a new value when the following objectives and optimization goals are set:
+
+- `CONVERSIONS`, `PRODUCT_CATALOG_SALES`
+
+- `OFFSITE_CONVERSIONS`
+
+- You cannot set `promoted_object`  for existing ad sets. You must create a new ad set except for the exceptions above.
+
+- If `promoted_object` is specified, Facebook automaticallly infers `conversion_specs` for your specified objectives. You cannot manually configure `conversion_specs`; we ignore any value you pass.
+
+- You can update all ad fields for existing ads in a legacy ad set without a `promoted_object` set.
+
+## Reading
+
+Promoted Object describes the object an ad set is promoting,    such as the Page in a Page Like campaign. It is a generalized way of    specifying a broad range of objects which are related to advertising    objectives.&lt;br&gt;&lt;br&gt;    Taken together, the campaign&#039;s objective and the ad set&#039;s    promoted_object should be enough to answer the question: &quot;What is this    ad set/campaign all about?&quot;. For example, &quot;This campaign is meant to    get more page likes for my Page X&quot;, or &quot;This ad set is driving mobile    app installs for my app Y&quot;.
+
+#### Parameters
+
+This endpoint doesn&#039;t have any parameters.
+
+#### Fields
+
+| Field | Description |
+| --- | --- |
+| `application_id`&lt;br&gt;&lt;br&gt;*numeric string* | The ID of a Facebook Application. Usually related to mobile or canvas games being promoted on Facebook for installs or engagement&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `boosted_product_set_id`&lt;br&gt;&lt;br&gt;*numeric string* | Combined with “product_set_id” to promote a specific Product Set while including other products from the Product Catalog in ads. Use the All Products Product Set ID in the “product_set_id” field and the specific Product Set ID in the “boosted_product_set_id” field. This will ensure products from the set are shown more often compared to other products from the Product Catalog.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `conversion_goal_id`&lt;br&gt;&lt;br&gt;*numeric string* | The ID of conversion goal used for conversion specs and tracking specs generation&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `custom_conversion_id`&lt;br&gt;&lt;br&gt;*numeric string* | The ID of a Custom Conversion.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `custom_event_str`&lt;br&gt;&lt;br&gt;*string* | The event from an App Event of a mobile app, which is not in the standard event list.&lt;br&gt;&lt;br&gt;&lt;br&gt;**`custom_event_type = OTHER` is required**&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `custom_event_type`&lt;br&gt;&lt;br&gt;*enum &#123;AD_IMPRESSION, RATE, TUTORIAL_COMPLETION, CONTACT, CUSTOMIZE_PRODUCT, DONATE, FIND_LOCATION, SCHEDULE, START_TRIAL, SUBMIT_APPLICATION, SUBSCRIBE, ADD_TO_CART, ADD_TO_WISHLIST, INITIATED_CHECKOUT, ADD_PAYMENT_INFO, PURCHASE, LEAD, COMPLETE_REGISTRATION, CONTENT_VIEW, SEARCH, SERVICE_BOOKING_REQUEST, MESSAGING_CONVERSATION_STARTED_7D, LEVEL_ACHIEVED, ACHIEVEMENT_UNLOCKED, SPENT_CREDITS, LISTING_INTERACTION, D2_RETENTION, D7_RETENTION, OTHER&#125;* | The event from an App Event of a mobile app,&lt;br&gt;(Purchase, Lead or CompleteRegistration) event from&lt;br&gt;Offline Conversion data, or `tag` of an&lt;br&gt;[conversion pixel](https://developers.facebook.com/docs/marketing-api/offsite-pixels).&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `event_id`&lt;br&gt;&lt;br&gt;*numeric string* | The ID of a Facebook Event&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `lead_ads_custom_event_str`&lt;br&gt;&lt;br&gt;*string* | lead_ads_custom_event_str&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `lead_ads_custom_event_type`&lt;br&gt;&lt;br&gt;*enum &#123;AD_IMPRESSION, RATE, TUTORIAL_COMPLETION, CONTACT, CUSTOMIZE_PRODUCT, DONATE, FIND_LOCATION, SCHEDULE, START_TRIAL, SUBMIT_APPLICATION, SUBSCRIBE, ADD_TO_CART, ADD_TO_WISHLIST, INITIATED_CHECKOUT, ADD_PAYMENT_INFO, PURCHASE, LEAD, COMPLETE_REGISTRATION, CONTENT_VIEW, SEARCH, SERVICE_BOOKING_REQUEST, MESSAGING_CONVERSATION_STARTED_7D, LEVEL_ACHIEVED, ACHIEVEMENT_UNLOCKED, SPENT_CREDITS, LISTING_INTERACTION, D2_RETENTION, D7_RETENTION, OTHER&#125;* | lead_ads_custom_event_type&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `lead_ads_form_event_source_type`&lt;br&gt;&lt;br&gt;*enum* | lead_ads_form_event_source_type&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `lead_ads_offsite_conversion_type`&lt;br&gt;&lt;br&gt;*enum* | lead_ads_offsite_conversion_type&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `mcme_conversion_id`&lt;br&gt;&lt;br&gt;*numeric string* | mcme_conversion_id&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `object_store_url`&lt;br&gt;&lt;br&gt;*string* | The uri of the mobile / digital store where an application can be bought / downloaded. This is platform specific. When combined with the &quot;application_id&quot; this uniquely specifies an object which can be the subject of a Facebook advertising campaign.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `offer_id`&lt;br&gt;&lt;br&gt;*numeric string* | The ID of an Offer from a Facebook Page.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `offline_conversion_data_set_id`&lt;br&gt;&lt;br&gt;*numeric string* | The ID of the offline dataset.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `offsite_conversion_event_id`&lt;br&gt;&lt;br&gt;*numeric string* | offsite_conversion_event_id&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `page_id`&lt;br&gt;&lt;br&gt;*numeric string* | The ID of a Facebook Page&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `pixel_aggregation_rule`&lt;br&gt;&lt;br&gt;*string* | A JSON rule that will decide whether an action from a pixel matches this promoted object spec based on aggregated results from previous pixel fires.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `pixel_id`&lt;br&gt;&lt;br&gt;*numeric string* | The ID of a Facebook conversion pixel.  Used with offsite conversion campaigns.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `pixel_rule`&lt;br&gt;&lt;br&gt;*string* | A JSON rule that will decide whether an action from a pixel matches this promoted object spec&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `place_page_set_id`&lt;br&gt;&lt;br&gt;*numeric string* | The ID of a Place Page Set for Dynamic Local Ads.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `product_catalog_id`&lt;br&gt;&lt;br&gt;*numeric string* | The ID of a Product Catalog. Used with&lt;br&gt;[Dynamic Product Ads](https://developers.facebook.com/docs/marketing-api/dynamic-product-ads).&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `product_set_id`&lt;br&gt;&lt;br&gt;*numeric string* | The ID of a Product Set within an Ad Set level Product&lt;br&gt;Catalog. Used with&lt;br&gt;[Dynamic Product Ads](https://developers.facebook.com/docs/marketing-api/dynamic-product-ads).&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `product_set_optimization`&lt;br&gt;&lt;br&gt;*enum* | product_set_optimization&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `retention_days`&lt;br&gt;&lt;br&gt;*string* | Value for retention period for aggregation based rule for the promoted object.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `value_semantic_type`&lt;br&gt;&lt;br&gt;*enum* | The semantic of the event value to be using for optimization&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `variation`&lt;br&gt;&lt;br&gt;*enum* | variation&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `whats_app_business_phone_number_id`&lt;br&gt;&lt;br&gt;*numeric string* | The ID of the associated WhatsApp business phone number for this promoted ad. It&#039;s of type WhatsAppBusinessAccountToNumberCurrentStatus.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `whatsapp_phone_number`&lt;br&gt;&lt;br&gt;*numeric string* | The WhatsApp phone number for this promoted ad.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+
+## Creating
+
+When you create ad sets in campaigns with the certain objectives, you must provide `promoted_object`. See [Ad Set, Creating](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign#Creating).
+
+You can&#039;t perform this operation on this endpoint.
+
+## Updating
+
+You can&#039;t perform this operation on this endpoint.
+
+## Deleting
+
+You can&#039;t perform this operation on this endpoint.
+
+</pre></body></html>

@@ -77,7 +77,7 @@ export function healthcareCases(isolated:(name:string)=>Promise<DataSource>){des
   await configure(true);at('03:20:00');await start('b','03:20:30','ad-fixture-01');at('03:21:00');await receive('b',2,'không đồng ý');await chatStep();await workflows.engine.uow.run({tenantId:tenant},s=>workflows.engine.wake(s,fixtures.b!.run));await flowStep();await flowStep();
   // Re-enable the immutable qualification definition rather than mutating published versions.
   await ds.query('UPDATE workflow_definition SET enabled=(`key`=?) WHERE tenant_id=?',['qualification',tenant]);
-  at('03:50:00');await start('c','03:50:30','ad-fixture-02');at('03:51:00');await receive('c',2,'Synthetic administrative need','ad-fixture-02');await chatStep();at('03:52:00');await receive('c',3,'messenger');await chatStep();at('03:53:00');await receive('c',4,'đồng ý');await chatStep();at('04:00:00');await chatStep();await chatStep();await chatStep();at('04:01:00');await handoff('c');
+  at('03:50:00');await start('c','03:50:30','ad-fixture-02');at('03:51:00');await receive('c',2,'Synthetic administrative need');await chatStep();at('03:52:00');await receive('c',3,'messenger');await chatStep();at('03:53:00');await receive('c',4,'đồng ý');await chatStep();at('04:00:00');await chatStep();await chatStep();await chatStep();at('04:01:00');await handoff('c');
   at('04:50:00');await start('d','04:50:30');at('04:51:00');fixtures.d!.messages.push((await receive('d',2,'Synthetic administrative need')).r.message_id!);at('04:52:00');fixtures.d!.messages.push((await receive('d',3,'đồng ý')).r.message_id!);at('05:00:00');await completeHuman('d');at('05:01:00');await handoff('d');at('05:03:00');await accept('d');
   expect(await ds.query('SELECT record_id FROM conversation WHERE tenant_id=?',[tenant])).toHaveLength(4);expect(await ds.query('SELECT id FROM workflow_run WHERE tenant_id=?',[tenant])).toHaveLength(4);expect(await ds.query('SELECT record_id FROM `lead` WHERE tenant_id=?',[tenant])).toHaveLength(3);expect((await ds.query('SELECT outcome FROM chatflow_session WHERE id=?',[fixtures.b!.session]))[0].outcome).toBe('disqualified');expect((await ds.query('SELECT lifecycle FROM contact WHERE tenant_id=?',[tenant])).every((c:any)=>c.lifecycle==='prospect')).toBe(true);
  },30000);
@@ -104,5 +104,14 @@ export function healthcareCases(isolated:(name:string)=>Promise<DataSource>){des
   instant='2026-10-03T03:01:00Z';await receive('a',4,'Synthetic later follow-up','later-ad');
   expect((await metrics()).inbound_messages).toBe(12);
   await expect(metrics(tenant,to,from)).rejects.toThrow('INVALID_METRIC_WINDOW');
+ });
+ it('SRC-053 new referral fences old qualification and preserves AI outbound session membership',async()=>{
+  at('06:00:00');await start('acquisition-boundary','06:00:30','boundary-a');const f=fixtures['acquisition-boundary']!;
+  const [old]=await ds.query("SELECT id FROM conversation_acquisition_session WHERE tenant_id=? AND conversation_id=? AND status='active'",[tenant,f.conversation]);
+  const outbound=await ds.query("SELECT m.id,am.session_id FROM message m JOIN message_acquisition_membership am ON am.tenant_id=m.tenant_id AND am.message_id=m.id WHERE m.tenant_id=? AND m.conversation_id=? AND m.direction='outbound'",[tenant,f.conversation]);expect(outbound).toHaveLength(1);expect(outbound[0].session_id).toBe(old.id);
+  at('06:01:00');await receive('acquisition-boundary',2,'Synthetic next ad','boundary-b');
+  expect((await ds.query('SELECT status,error_code FROM chatflow_session WHERE tenant_id=? AND id=?',[tenant,f.session]))[0]).toMatchObject({status:'cancelled',error_code:'ACQUISITION_SESSION_CHANGED'});
+  await chatStep();expect(await ds.query('SELECT record_id FROM `lead` WHERE tenant_id=? AND qualification_session_id=?',[tenant,f.session])).toHaveLength(0);
+  expect((await ds.query('SELECT session_id FROM message_acquisition_membership WHERE tenant_id=? AND message_id=?',[tenant,outbound[0].id]))[0].session_id).toBe(old.id);
  });
 });}

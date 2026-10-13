@@ -1,0 +1,735 @@
+<html><head><title>Ad Account</title><meta charset="UTF-8" /><style nonce="FtEzr1jd">body { font-family: monospace; margin: 20px; }pre { white-space: pre-wrap; word-wrap: break-word; }</style></head><body><pre data-testid="developer-docs-markdown-page"># Ad Account
+
+
+
+Represents a business, person or other entity who creates and manages ads on Facebook. Multiple people can manage an account, and each person can have one or more levels of access to an account, see [Business Manager API](https://developers.facebook.com/docs/marketing-api/business-manager-api).
+
+**Success:** In response to Apple’s new policy, we are announcing breaking changes that will affect SDKAdNetwork, Marketing API and Ads Insights API endpoints.
+
+To learn more about how Apple’s iOS 14.5 requirements will impact Facebook advertising, visit our Business Help Center aricles and changelog:
+
+* [Facebook SDK for iOS, App Events API and Mobile Measurement Partners Updates for Apple&#039;s iOS 14 Requirements](https://www.facebook.com/business/help/2750680505215705?id=428636648170202)
+* [Facebook Pixel Updates for Apple&#039;s iOS 14 Requirements](https://www.facebook.com/business/help/721422165168355)
+* [January 19, 2021 - Breaking Changes](https://developers.facebook.com/docs/graph-api/changelog/non-versioned-changes/jan-19-2021)
+
+## Ad Volume &#123;#volume&#125;
+
+You can view the volume of ads *running or in review* for your ad accounts. These ads will count against the ads limit per page that we will enact in early 2021. Query the number of ads running or in review for a given ad account.
+
+To see the ads volume for your ad account:
+
+```
+curl -G
+  -d &quot;access_token=&lt;access_token&gt;&quot;
+  &quot;https://graph.facebook.com/&lt;API_VERSION&gt;/act_&lt;ad_account_ID&gt;/ads_volume&quot;
+```
+
+The response looks like this:
+
+```
+&#123;&quot;data&quot;:[&#123;&quot;ads_running_or_in_review_count&quot;:2&#125;]&#125;
+```
+
+For information on managing ads volume, see [About Managing Ad Volume](https://www.facebook.com/business/help/2720085414702598).
+
+### Running Or In Review
+To see if an ad is running or in review, we check `effective_status`, `configured_status`, and the ad account&#039;s status:
+
+* If an ad has `effective_status` of `1` - `active`, we consider it a *running* or *in review*.
+* If an ad has `configured_status` of `active` and `effective_status` of `9` - `pending review`, or `17` - `pending processing` we consider it a *running* or *in review*.
+* The ad can be *running* or *in review* only if the ad account status is in `1` - `active`, `8` - `pending settlement`, `9` - `in grace period`.  
+
+We also determine if an ad is running or in review based on the ad set&#039;s schedule.
+
+* If start time is before current time, and current time is before end time, then we consider the ad running or in review.
+* If start time is before current time and the ad set has no end time, we also consider it running or in review.
+
+For example, if the ad set is scheduled to run in the future, the ads are not running or in review. However if the ad set is scheduled to run from now until three months from now, we consider the ads running or in review.
+
+If you are using special ads scheduling features, such as *day-parting*, we consider the ad running or in review the *whole day*, not just for the part of the day when the ad starts running.  
+
+### Breakdown By Actors &#123;#breakdown-by-actors&#125;
+
+We’ve added the `show_breakdown_by_actor ` parameter to the `act_123/ads_volume` endpoint so you can query ad volume and ad limits-related information for each page. For more details, see [Breakdown by Actors](https://developers.facebook.com/documentation/ads-commerce/marketing-api/insights-api/ads-volume#breakdown-by-actors).
+
+### Limits &#123;#limits&#125;
+
+| Limit | Value |
+| --- | --- |
+| Maximum number of ad accounts per person | 25 |
+| Maximum number of people with access, per ad account | 25 |
+| Maximum number of ads per regular ad account | 6,000 non-archived non-deleted ads |
+| Maximum number of ads per bulk ad account | 50,000 non-archived non-deleted ads |
+| Maximum number of archived ads per ad account | 100,000 archived ads |
+| Maximum number of ad sets per regular ad account | 6,000 non-archived non-deleted ad sets |
+| Maximum number of ad sets per bulk ad account | 10,000 non-archived non-deleted ad sets |
+| Maximum number of archived ad sets per ad account | 100,000 archived ad sets |
+| Maximum number of ad campaigns per regular ad account | 6,000 non-archived non-deleted ad campaigns |
+| Maximum number of ad campaigns per bulk ad account | 10,000 non-archived non-deleted ad campaigns |
+| Maximum number of archived ad campaigns per ad account | 100,000 archived ad campaigns |
+| Maximum number of images per ad account | Unlimited |
+
+## Reading
+
+An ad account is an account used for managing ads on Facebook
+
+### Digital Services Act Saved Beneficiary/Payor Information
+
+Use the following code examples to download the beneficiary and payor information.
+
+#### Android SDK
+
+```
+GraphRequest request = GraphRequest.newGraphPathRequest(
+ accessToken,
+ &quot;/act_&lt;AD_ACCOUNT_ID&gt;&quot;,
+ new GraphRequest.Callback() &#123;
+   &#064;Override
+   public void onCompleted(GraphResponse response) &#123;
+     // Insert your code here
+   &#125;
+&#125;);
+
+Bundle parameters = new Bundle();
+parameters.putString(&quot;fields&quot;, &quot;default_dsa_payor,default_dsa_beneficiary&quot;);
+request.setParameters(parameters);
+request.executeAsync();
+iOS SDK
+FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]
+    initWithGraphPath:&#064;&quot;/act_&lt;AD_ACCOUNT_ID&gt;&quot;
+           parameters:&#064;&#123; &#064;&quot;fields&quot;: &#064;&quot;default_dsa_payor,default_dsa_beneficiary&quot;,&#125;
+           HTTPMethod:&#064;&quot;GET&quot;];
+[request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) &#123;
+    // Insert your code here
+&#125;];
+Javascript SDK:
+FB.api(
+  &#039;/act_&lt;AD_ACCOUNT_ID&gt;&#039;,
+  &#039;GET&#039;,
+  &#123;&quot;fields&quot;:&quot;default_dsa_payor,default_dsa_beneficiary&quot;&#125;,
+  function(response) &#123;
+      // Insert your code here
+  &#125;
+);
+```
+
+#### cURL
+
+```
+curl -X GET \
+&quot;https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;?fields=default_dsa_payor%2Cdefault_dsa_beneficiary&amp;access_token=&lt;ACCESS_TOKEN&gt;&quot;
+```
+
+The return value is in JSON format. For example:
+
+```
+&#123;&quot;default_dsa_payor&quot;:&quot;payor2&quot;,&quot;default_dsa_beneficiary&quot;:&quot;bene2&quot;,&quot;id&quot;:&quot;act_426197654150180&quot;&#125;
+```
+
+#### Parameters
+
+This endpoint doesn&#039;t have any parameters.
+
+#### Fields
+
+| Field | Description |
+| --- | --- |
+| `id`&lt;br&gt;&lt;br&gt;*string* | The string `act_&#123;ad_account_id&#125;`.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `account_id`&lt;br&gt;&lt;br&gt;*numeric string* | The ID of the Ad Account.&lt;br&gt;&lt;br&gt;&lt;br&gt;**[default]**&lt;br&gt; |
+| `account_status`&lt;br&gt;&lt;br&gt;*unsigned int32* | Status of the account: &lt;br&gt;`1 = ACTIVE`&lt;br&gt;`2 = DISABLED`&lt;br&gt;`3 = UNSETTLED`&lt;br&gt;`7 = PENDING_RISK_REVIEW`&lt;br&gt;`8 = PENDING_SETTLEMENT`&lt;br&gt;`9 = IN_GRACE_PERIOD`&lt;br&gt;`100 = PENDING_CLOSURE`&lt;br&gt;`101 = CLOSED`&lt;br&gt;`201 = ANY_ACTIVE`&lt;br&gt;`202 = ANY_CLOSED`&lt;br&gt; |
+| `ad_account_promotable_objects`&lt;br&gt;&lt;br&gt;*[AdAccountPromotableObjects](https://developers.facebook.com/docs/graph-api/reference/ad-account-promotable-objects)* | Ad Account creation request purchase order fields associated with this Ad Account.&lt;br&gt; |
+| `age`&lt;br&gt;&lt;br&gt;*float* | Amount of time the ad account has been open, in days.&lt;br&gt; |
+| `agency_client_declaration`&lt;br&gt;&lt;br&gt;*[AgencyClientDeclaration](https://developers.facebook.com/docs/marketing-api/reference/agency-client-declaration)* | Details of the agency advertising on behalf of this client account, if applicable. Requires Business Manager [Admin](https://www.facebook.com/business/help/442345745885606?id=180505742745347) privileges.&lt;br&gt; |
+| `amount_spent`&lt;br&gt;&lt;br&gt;*numeric string* | Current amount spent by the account with respect to `spend_cap`. Or total amount in the absence of `spend_cap`. See [why amount spent is different in ad account spending limit](https://business.facebook.com/business/help/196476577203529?id=1792465934137726) for more info.&lt;br&gt; |
+| `attribution_spec`&lt;br&gt;&lt;br&gt;*list&lt;AttributionSpec&gt;* | **Deprecated due to iOS 14 changes.** Please visit the [changelog](https://developers.facebook.com/docs/graph-api/changelog/non-versioned-changes/jan-19-2021) for more information.&lt;br&gt; |
+| `balance`&lt;br&gt;&lt;br&gt;*numeric string* | Bill amount due for this Ad Account.&lt;br&gt; |
+| `brand_safety_content_filter_levels`&lt;br&gt;&lt;br&gt;*list&lt;string&gt;* | Brand safety content filter levels set for in-content ads (Facebook in-stream videos and Ads on Facebook Reels) and Audience Network along with feed ads (Facebook Feed, Instagram feed, Facebook Reels feed and Instagram Reels feed) if applicable.&lt;br&gt;&lt;br&gt;&lt;br&gt;Refer to [Placement Targeting](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/placement-targeting#placement-targeting) for a list of supported values.&lt;br&gt; |
+| `business`&lt;br&gt;&lt;br&gt;*[Business](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/business)* | The [Business Manager](https://developers.facebook.com/docs/marketing-api/businessmanager), if this ad account is owned by one&lt;br&gt; |
+| `business_city`&lt;br&gt;&lt;br&gt;*string* | City for business address&lt;br&gt; |
+| `business_country_code`&lt;br&gt;&lt;br&gt;*string* | Country code for the business address&lt;br&gt; |
+| `business_name`&lt;br&gt;&lt;br&gt;*string* | The business name for the account&lt;br&gt; |
+| `business_state`&lt;br&gt;&lt;br&gt;*string* | State abbreviation for business address&lt;br&gt; |
+| `business_street`&lt;br&gt;&lt;br&gt;*string* | First line of the business street address for the account&lt;br&gt; |
+| `business_street2`&lt;br&gt;&lt;br&gt;*string* | Second line of the business street address for the account&lt;br&gt; |
+| `business_zip`&lt;br&gt;&lt;br&gt;*string* | Zip code for business address&lt;br&gt; |
+| `can_create_brand_lift_study`&lt;br&gt;&lt;br&gt;*bool* | If we can create a new automated brand lift study under the Ad Account.&lt;br&gt; |
+| `capabilities`&lt;br&gt;&lt;br&gt;*list&lt;string&gt;* | List of capabilities an Ad Account can have. See [capabilities](https://developers.facebook.com/docs/marketing-api/reference/ad-account/capabilities)&lt;br&gt; |
+| `created_time`&lt;br&gt;&lt;br&gt;*datetime* | The time the account was created in ISO 8601 format.&lt;br&gt; |
+| `currency`&lt;br&gt;&lt;br&gt;*string* | The currency used for the account, based on the corresponding value in the account settings. See [supported currencies](https://developers.facebook.com/documentation/ads-commerce/marketing-api/currencies)&lt;br&gt; |
+| `default_dsa_beneficiary`&lt;br&gt;&lt;br&gt;*string* | This is the default value for creating L2 object of dsa_beneficiary&lt;br&gt; |
+| `default_dsa_payor`&lt;br&gt;&lt;br&gt;*string* | This is the default value for creating L2 object of dsa_payor&lt;br&gt; |
+| `direct_deals_tos_accepted`&lt;br&gt;&lt;br&gt;*bool* | Whether DirectDeals ToS are accepted.&lt;br&gt; |
+| `disable_reason`&lt;br&gt;&lt;br&gt;*unsigned int32* | The reason why the account was disabled. Possible reasons are:&lt;br&gt;&lt;br&gt;`0 = NONE`&lt;br&gt;&lt;br&gt;`1 = ADS_INTEGRITY_POLICY`&lt;br&gt;&lt;br&gt;`2 = ADS_IP_REVIEW`&lt;br&gt;&lt;br&gt;`3 = RISK_PAYMENT`&lt;br&gt;&lt;br&gt;`4 = GRAY_ACCOUNT_SHUT_DOWN`&lt;br&gt;&lt;br&gt;`5 = ADS_AFC_REVIEW`&lt;br&gt;&lt;br&gt;`6 = BUSINESS_INTEGRITY_RAR`&lt;br&gt;&lt;br&gt;`7 = PERMANENT_CLOSE`&lt;br&gt;&lt;br&gt;`8 = UNUSED_RESELLER_ACCOUNT`&lt;br&gt;&lt;br&gt;`9 = UNUSED_ACCOUNT`&lt;br&gt;&lt;br&gt;`10 = UMBRELLA_AD_ACCOUNT`&lt;br&gt;&lt;br&gt;`11 = BUSINESS_MANAGER_INTEGRITY_POLICY`&lt;br&gt;&lt;br&gt;`12 = MISREPRESENTED_AD_ACCOUNT`&lt;br&gt;&lt;br&gt;`13 = AOAB_DESHARE_LEGAL_ENTITY`&lt;br&gt;&lt;br&gt;`14 = CTX_THREAD_REVIEW`&lt;br&gt;&lt;br&gt;`15 = COMPROMISED_AD_ACCOUNT`&lt;br&gt; |
+| `end_advertiser`&lt;br&gt;&lt;br&gt;*numeric string* | The entity the ads will target. Must be a Facebook Page Alias, Facebook Page ID or an Facebook App ID.&lt;br&gt; |
+| `end_advertiser_name`&lt;br&gt;&lt;br&gt;*string* | The name of the entity the ads will target.&lt;br&gt; |
+| `existing_customers`&lt;br&gt;&lt;br&gt;*list&lt;string&gt;* | The custom audience ids that are used by advertisers to define their existing customers. This definition is primarily used by Automated Shopping Ads.&lt;br&gt; |
+| `expired_funding_source_details`&lt;br&gt;&lt;br&gt;*[FundingSourceDetails](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account)* | `ID` = ID of the payment method&lt;br&gt;&lt;br&gt;`COUPON` = Details of the Facebook Ads Coupon from the payment method&lt;br&gt;&lt;br&gt;`COUPONS` = List of active Facebook Ads Coupon from the ad account&lt;br&gt;&lt;br&gt;`COUPON_ID` = ID of the Facebook Ads Coupon&lt;br&gt;&lt;br&gt;`AMOUNT` = Amount of Facebook Ads Coupon&lt;br&gt;&lt;br&gt;`CURRENCY` = Currency of the Facebook Ads Coupon&lt;br&gt;&lt;br&gt;`DISPLAY_AMOUNT` = How the amount of Facebook Ads Coupon is displayed&lt;br&gt;&lt;br&gt;`EXPIRATION` = When the coupon expired&lt;br&gt;&lt;br&gt;`START_DATE` = When the coupon started&lt;br&gt;&lt;br&gt;`DISPLAY_STRING` = How the payment method is shown&lt;br&gt;&lt;br&gt;`CAMPAIGN_IDS` = List of campaigns the coupon can be applied to, empty if the coupon is applied on the ad account level.&lt;br&gt;&lt;br&gt;`ORIGINAL_AMOUNT` = Amount of Facebook Ads Coupon When Issued&lt;br&gt;&lt;br&gt;`ORIGINAL_DISPLAY_AMOUNT` = How the Facebook Ads Coupon displayed When Issued&lt;br&gt;&lt;br&gt;`TYPE` = Type of the funding source&lt;br&gt;&lt;br&gt;`0 = UNSET`&lt;br&gt;&lt;br&gt;`1 = CREDIT_CARD`&lt;br&gt;&lt;br&gt;`2 = FACEBOOK_WALLET`&lt;br&gt;&lt;br&gt;`3 = FACEBOOK_PAID_CREDIT`&lt;br&gt;&lt;br&gt;`4 = FACEBOOK_EXTENDED_CREDIT`&lt;br&gt;&lt;br&gt;`5 = ORDER`&lt;br&gt;&lt;br&gt;`6 = INVOICE`&lt;br&gt;&lt;br&gt;`7 = FACEBOOK_TOKEN`&lt;br&gt;&lt;br&gt;`8 = EXTERNAL_FUNDING`&lt;br&gt;&lt;br&gt;`9 = FEE`&lt;br&gt;&lt;br&gt;`10 = FX`&lt;br&gt;&lt;br&gt;`11 = DISCOUNT`&lt;br&gt;&lt;br&gt;`12 = PAYPAL_TOKEN`&lt;br&gt;&lt;br&gt;`13 = PAYPAL_BILLING_AGREEMENT`&lt;br&gt;&lt;br&gt;`14 = FS_NULL`&lt;br&gt;&lt;br&gt;`15 = EXTERNAL_DEPOSIT`&lt;br&gt;&lt;br&gt;`16 = TAX`&lt;br&gt;&lt;br&gt;`17 = DIRECT_DEBIT`&lt;br&gt;&lt;br&gt;`18 = DUMMY`&lt;br&gt;&lt;br&gt;`19 = ALTPAY`&lt;br&gt;&lt;br&gt;`20 = STORED_BALANCE`&lt;br&gt;&lt;br&gt;&lt;br&gt;To access this field, the user making the API call must have a `MANAGE` task permission for that specific ad account. See [Ad Account, Assigned Users](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/assigned_users) for more information.&lt;br&gt; |
+| `extended_credit_invoice_group`&lt;br&gt;&lt;br&gt;*[ExtendedCreditInvoiceGroup](https://developers.facebook.com/docs/marketing-api/reference/extended-credit-invoice-group)* | The extended credit invoice group that the ad account belongs to&lt;br&gt; |
+| `failed_delivery_checks`&lt;br&gt;&lt;br&gt;*[list&lt;DeliveryCheck&gt;](https://developers.facebook.com/docs/marketing-api/adgroup/deliverychecks)* | Failed delivery checks&lt;br&gt; |
+| `fb_entity`&lt;br&gt;&lt;br&gt;*unsigned int32* | fb_entity&lt;br&gt; |
+| `funding_source`&lt;br&gt;&lt;br&gt;*numeric string* | ID of the payment method. If the account does not have a payment method it will still be possible to create ads but these ads will get no delivery. Not available if the account is disabled&lt;br&gt; |
+| `funding_source_details`&lt;br&gt;&lt;br&gt;*[FundingSourceDetails](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account)* | `ID` = ID of the payment method&lt;br&gt;&lt;br&gt;`COUPON` = Details of the Facebook Ads Coupon from the payment method&lt;br&gt;&lt;br&gt;`COUPONS` = List of active Facebook Ads Coupon from the ad account&lt;br&gt;&lt;br&gt;`COUPON_ID` = ID of the Facebook Ads Coupon&lt;br&gt;&lt;br&gt;`AMOUNT` = Amount of Facebook Ads Coupon&lt;br&gt;&lt;br&gt;`CURRENCY` = Currency of the Facebook Ads Coupon&lt;br&gt;&lt;br&gt;`DISPLAY_AMOUNT` = How the amount of Facebook Ads Coupon is displayed&lt;br&gt;&lt;br&gt;`EXPIRATION` = When the coupon will expire&lt;br&gt;&lt;br&gt;`START_DATE` = When the coupon starts&lt;br&gt;&lt;br&gt;`DISPLAY_STRING` = How the payment method is shown&lt;br&gt;&lt;br&gt;`CAMPAIGN_IDS` = List of campaigns the coupon can be applied to, empty if the coupon is applied on the ad account level.&lt;br&gt;&lt;br&gt;`ORIGINAL_AMOUNT` = Amount of Facebook Ads Coupon When Issued&lt;br&gt;&lt;br&gt;`ORIGINAL_DISPLAY_AMOUNT` = How the Facebook Ads Coupon displayed When Issued&lt;br&gt;&lt;br&gt;`TYPE` = Type of the funding source&lt;br&gt;&lt;br&gt;`0 = UNSET`&lt;br&gt;&lt;br&gt;`1 = CREDIT_CARD`&lt;br&gt;&lt;br&gt;`2 = FACEBOOK_WALLET`&lt;br&gt;&lt;br&gt;`3 = FACEBOOK_PAID_CREDIT`&lt;br&gt;&lt;br&gt;`4 = FACEBOOK_EXTENDED_CREDIT`&lt;br&gt;&lt;br&gt;`5 = ORDER`&lt;br&gt;&lt;br&gt;`6 = INVOICE`&lt;br&gt;&lt;br&gt;`7 = FACEBOOK_TOKEN`&lt;br&gt;&lt;br&gt;`8 = EXTERNAL_FUNDING`&lt;br&gt;&lt;br&gt;`9 = FEE`&lt;br&gt;&lt;br&gt;`10 = FX`&lt;br&gt;&lt;br&gt;`11 = DISCOUNT`&lt;br&gt;&lt;br&gt;`12 = PAYPAL_TOKEN`&lt;br&gt;&lt;br&gt;`13 = PAYPAL_BILLING_AGREEMENT`&lt;br&gt;&lt;br&gt;`14 = FS_NULL`&lt;br&gt;&lt;br&gt;`15 = EXTERNAL_DEPOSIT`&lt;br&gt;&lt;br&gt;`16 = TAX`&lt;br&gt;&lt;br&gt;`17 = DIRECT_DEBIT`&lt;br&gt;&lt;br&gt;`18 = DUMMY`&lt;br&gt;&lt;br&gt;`19 = ALTPAY`&lt;br&gt;&lt;br&gt;`20 = STORED_BALANCE`&lt;br&gt;&lt;br&gt;&lt;br&gt;To access this field, the user making the API call must have a `MANAGE` task permission for that specific ad account. See [Ad Account, Assigned Users](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/assigned_users) for more information.&lt;br&gt; |
+| `has_migrated_permissions`&lt;br&gt;&lt;br&gt;*bool* | Whether this account has migrated permissions&lt;br&gt; |
+| `has_page_authorized_adaccount`&lt;br&gt;&lt;br&gt;*bool* | Indicates whether a Facebook page has authorized this ad account to place ads with political content. If you try to place an ad with political content using this ad account for this page, and this page has not authorized this ad account for ads with political content, your ad will be disapproved. See [Breaking Changes, Marketing API, Ads with Political Content](https://developers.facebook.com/docs/graph-api/changelog/breaking-changes#4-23-2018) and [Facebook Advertising Policies](https://www.facebook.com/policies/ads)&lt;br&gt; |
+| `io_number`&lt;br&gt;&lt;br&gt;*numeric string* | The Insertion Order (IO) number.&lt;br&gt; |
+| `is_attribution_spec_system_default`&lt;br&gt;&lt;br&gt;*bool* | If the attribution specification of ad account is generated from system default values&lt;br&gt; |
+| `is_direct_deals_enabled`&lt;br&gt;&lt;br&gt;*bool* | Whether the account is enabled to run Direct Deals&lt;br&gt; |
+| `is_in_3ds_authorization_enabled_market`&lt;br&gt;&lt;br&gt;*bool* | If the account is in a market requiring to go through payment process going through 3DS authorization&lt;br&gt; |
+| `is_notifications_enabled`&lt;br&gt;&lt;br&gt;*bool* | Get the notifications status of the user for this ad account. This will return true or false depending if notifications are enabled or not&lt;br&gt; |
+| `is_personal`&lt;br&gt;&lt;br&gt;*unsigned int32* | Indicates if this ad account is being used for private, non-business purposes. This affects how value-added tax (VAT) is assessed. **Note:** This is not related to whether an ad account is attached to a business.&lt;br&gt; |
+| `is_prepay_account`&lt;br&gt;&lt;br&gt;*bool* | If this ad account is a prepay. Other option would be a postpay account.&lt;br&gt;&lt;br&gt;&lt;br&gt;To access this field, the user making the API call must have a `ADVERTISE` or `MANAGE` task permission for that specific ad account. See [Ad Account, Assigned Users](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/assigned_users) for more information.&lt;br&gt; |
+| `is_tax_id_required`&lt;br&gt;&lt;br&gt;*bool* | If tax id for this ad account is required or not.&lt;br&gt;&lt;br&gt;&lt;br&gt;To access this field, the user making the API call must have a `ADVERTISE` or `MANAGE` task permission for that specific ad account. See [Ad Account, Assigned Users](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/assigned_users) for more information.&lt;br&gt; |
+| `line_numbers`&lt;br&gt;&lt;br&gt;*list&lt;integer&gt;* | The line numbers&lt;br&gt; |
+| `media_agency`&lt;br&gt;&lt;br&gt;*numeric string* | The agency, this could be your own business. Must be a Facebook Page Alias, Facebook Page ID or an Facebook App ID. In absence of one, you can use `NONE` or `UNFOUND`.&lt;br&gt; |
+| `min_campaign_group_spend_cap`&lt;br&gt;&lt;br&gt;*numeric string* | The minimum required spend cap of Ad Campaign.&lt;br&gt; |
+| `min_daily_budget`&lt;br&gt;&lt;br&gt;*unsigned int32* | The minimum daily budget for this Ad Account&lt;br&gt; |
+| `name`&lt;br&gt;&lt;br&gt;*string* | Name of the account. If not set, the name of the first admin visible to the user will be returned.&lt;br&gt; |
+| `offsite_clo_signal_status`&lt;br&gt;&lt;br&gt;*int32* | offsite_clo_signal_status&lt;br&gt; |
+| `offsite_pixels_tos_accepted`&lt;br&gt;&lt;br&gt;*bool* | Indicates whether the offsite pixel Terms Of Service contract was signed. This feature can be accessible before v2.9&lt;br&gt; |
+| `opportunity_score`&lt;br&gt;&lt;br&gt;*float* | On a 0-100 point scale, this score represents how optimized the ad account&#039;s campaigns, ad sets and ads are overall.&lt;br&gt;&lt;br&gt;&lt;br&gt;See [Opportunity Score](https://web.facebook.com/business/tools/opportunity-score) to learn more.&lt;br&gt; |
+| `opportunity_score_weight`&lt;br&gt;&lt;br&gt;*integer* | This opportunity score weight represent the remaining budget for the ad account in cents, computed daily. This can be used with other ad accounts within the same business to compute the weighted opportunity score for a business.&lt;br&gt;&lt;br&gt;&lt;br&gt;See [Opportunity Score](https://web.facebook.com/business/tools/opportunity-score) to learn more about opportunity score.&lt;br&gt; |
+| `owner`&lt;br&gt;&lt;br&gt;*numeric string* | The ID of the account owner&lt;br&gt; |
+| `partner`&lt;br&gt;&lt;br&gt;*numeric string* | This could be Facebook Marketing Partner, if there is one. Must be a Facebook Page Alias, Facebook Page ID or an Facebook App ID. In absence of one, you can use `NONE` or `UNFOUND`.&lt;br&gt; |
+| `rf_spec`&lt;br&gt;&lt;br&gt;*ReachFrequencySpec* | Reach and Frequency limits configuration. [See Reach and Frequency](https://developers.facebook.com/docs/marketing-api/reachandfrequency)&lt;br&gt; |
+| `show_checkout_experience`&lt;br&gt;&lt;br&gt;*bool* | Whether or not to show the pre-paid checkout experience to an advertiser. If `true`, the advertiser is eligible for checkout, or they are already locked in to checkout and haven&#039;t graduated to postpay.&lt;br&gt; |
+| `spend_cap`&lt;br&gt;&lt;br&gt;*numeric string* | The maximum amount that can be spent by this Ad Account. When the amount is reached, all delivery stops. A value of `0` means no spending-cap. Setting a new spend cap only applies to spend **AFTER** the time at which you set it. Value specified in basic unit of the currency, for example &#039;cents&#039; for `USD`.&lt;br&gt; |
+| `tax_id`&lt;br&gt;&lt;br&gt;*string* | Tax ID&lt;br&gt; |
+| `tax_id_status`&lt;br&gt;&lt;br&gt;*unsigned int32* | VAT status code for the account.&lt;br&gt;`0`: Unknown&lt;br&gt;`1`: VAT not required- US/CA&lt;br&gt;`2`: VAT information required&lt;br&gt;`3`: VAT information submitted&lt;br&gt;`4`: Offline VAT validation failed&lt;br&gt;`5`: Account is a personal account&lt;br&gt; |
+| `tax_id_type`&lt;br&gt;&lt;br&gt;*string* | Type of Tax ID&lt;br&gt; |
+| `timezone_id`&lt;br&gt;&lt;br&gt;*unsigned int32* | The [timezone ID](https://developers.facebook.com/docs/marketing-api/reference/ad-account/timezone-ids) of this ad account&lt;br&gt; |
+| `timezone_name`&lt;br&gt;&lt;br&gt;*string* | Name for the time zone&lt;br&gt; |
+| `timezone_offset_hours_utc`&lt;br&gt;&lt;br&gt;*float* | Time zone difference from UTC (Coordinated Universal Time).&lt;br&gt; |
+| `tos_accepted`&lt;br&gt;&lt;br&gt;*map&lt;string, int32&gt;* | Checks if this specific ad account has signed the Terms of Service contracts. Returns `1`, if terms were accepted.&lt;br&gt; |
+| `user_tasks`&lt;br&gt;&lt;br&gt;*list&lt;string&gt;* | user_tasks&lt;br&gt; |
+| `user_tos_accepted`&lt;br&gt;&lt;br&gt;*map&lt;string, int32&gt;* | Checks if a user has signed the Terms of Service contracts related to the Business that contains a specific ad account. Must include user&#039;s access token to get information. This verification is not valid for [system users](https://developers.facebook.com/docs/marketing-api/businessmanager/systemuser).&lt;br&gt; |
+
+#### Edges
+
+| Edge | Description |
+| --- | --- |
+| [`account_controls`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/account_controls)&lt;br&gt;&lt;br&gt;*Edge&lt;AdAccountBusinessConstraints&gt;* | Account Controls is for Advantage+ shopping campaigns where advertisers can set audience controls for minimum age and excluded geo location.&lt;br&gt; |
+| [`activities`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/activities)&lt;br&gt;&lt;br&gt;*Edge&lt;AdActivity&gt;* | The activities of this ad account&lt;br&gt; |
+| [`adcreatives`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/adcreatives)&lt;br&gt;&lt;br&gt;*Edge&lt;AdCreative&gt;* | The ad creatives of this ad account&lt;br&gt; |
+| [`ads_reporting_mmm_reports`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/ads_reporting_mmm_reports)&lt;br&gt;&lt;br&gt;*Edge&lt;AdsReportBuilderMMMReport&gt;* | Marketing mix modeling (MMM) reports generated for this ad account.&lt;br&gt; |
+| [`ads_reporting_mmm_schedulers`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/ads_reporting_mmm_schedulers)&lt;br&gt;&lt;br&gt;*Edge&lt;AdsReportBuilderMMMReportScheduler&gt;* | Get all MMM report schedulers by this ad account&lt;br&gt; |
+| [`advertisable_applications`](https://developers.facebook.com/docs/marketing-api/reference/ad-account/advertisable_applications) This field is only accessible in v2.4 or later.&lt;br&gt;&lt;br&gt;*Edge&lt;Application&gt;* | All advertisable apps associated with this account&lt;br&gt; |
+| [`advideos`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/advideos)&lt;br&gt;&lt;br&gt;*Edge&lt;Video&gt;* | The videos associated with this account&lt;br&gt; |
+| [`applications`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/applications)&lt;br&gt;&lt;br&gt;*Edge&lt;Application&gt;* | Applications connected to the ad accounts&lt;br&gt; |
+| [`asyncadcreatives`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/asyncadcreatives)&lt;br&gt;&lt;br&gt;*Edge&lt;AdAsyncRequestSet&gt;* | The async ad creative creation requests associated with this ad account.&lt;br&gt; |
+| [`broadtargetingcategories`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/broadtargetingcategories)&lt;br&gt;&lt;br&gt;*Edge&lt;BroadTargetingCategories&gt;* | Broad targeting categories (BCTs) can be used for targeting&lt;br&gt; |
+| [`connected_instagram_accounts`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/connected_instagram_accounts)&lt;br&gt;&lt;br&gt;*Edge&lt;ShadowIGUser&gt;* | Instagram accounts connected to the ad account&lt;br&gt; |
+| [`customaudiences`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/customaudiences)&lt;br&gt;&lt;br&gt;*Edge&lt;CustomAudience&gt;* | The custom audiences owned by/shared with this ad account&lt;br&gt; |
+| [`customaudiencestos`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/customaudiencestos)&lt;br&gt;&lt;br&gt;*Edge&lt;CustomAudiencesTOS&gt;* | The custom audiences term of services available to the ad account&lt;br&gt; |
+| [`customconversions`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/customconversions)&lt;br&gt;&lt;br&gt;*Edge&lt;CustomConversion&gt;* | The custom conversions owned by/shared with this ad account&lt;br&gt; |
+| [`delivery_estimate`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/delivery_estimate)&lt;br&gt;&lt;br&gt;*Edge&lt;AdAccountDeliveryEstimate&gt;* | The delivery estimate for a given ad set configuration for this ad account&lt;br&gt; |
+| [`deprecatedtargetingadsets`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/deprecatedtargetingadsets)&lt;br&gt;&lt;br&gt;*Edge&lt;AdCampaign&gt;* | Ad sets with deprecating targeting options for this ad account&lt;br&gt; |
+| [`dsa_recommendations`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/dsa_recommendations)&lt;br&gt;&lt;br&gt;*Edge&lt;AdAccountDsaRecommendations&gt;* | dsa_recommendations&lt;br&gt; |
+| [`generatepreviews`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/generatepreviews)&lt;br&gt;&lt;br&gt;*Edge&lt;AdPreview&gt;* | Generate previews for a creative specification&lt;br&gt; |
+| [`impacting_ad_studies`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/impacting_ad_studies)&lt;br&gt;&lt;br&gt;*Edge&lt;AdStudy&gt;* | The ad studies that contain this ad account or any of its descendant ad objects&lt;br&gt; |
+| [`instagram_accounts`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/instagram_accounts)&lt;br&gt;&lt;br&gt;*Edge&lt;ShadowIGUser&gt;* | Instagram accounts connected to the ad accounts&lt;br&gt; |
+| [`mcmeconversions`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/mcmeconversions)&lt;br&gt;&lt;br&gt;*Edge&lt;AdsMcmeConversion&gt;* | mcmeconversions&lt;br&gt; |
+| [`minimum_budgets`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/minimum_budgets)&lt;br&gt;&lt;br&gt;*Edge&lt;MinimumBudget&gt;* | Returns minimum daily budget values by currency&lt;br&gt; |
+| [`promote_pages`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/promote_pages)&lt;br&gt;&lt;br&gt;*Edge&lt;Page&gt;* | All pages that have been promoted under the ad account&lt;br&gt; |
+| [`reachestimate`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/reachestimate)&lt;br&gt;&lt;br&gt;*Edge&lt;AdAccountReachEstimate&gt;* | The reach estimate of a given [targeting spec](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/advanced-targeting) for this ad                                account&lt;br&gt; |
+| [`saved_audiences`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/saved_audiences)&lt;br&gt;&lt;br&gt;*Edge&lt;SavedAudience&gt;* | Saved audiences in the account&lt;br&gt; |
+| [`targetingbrowse`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/targetingbrowse)&lt;br&gt;&lt;br&gt;*Edge&lt;AdAccountTargetingUnified&gt;* | Unified browse&lt;br&gt; |
+| [`targetingsearch`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/targetingsearch)&lt;br&gt;&lt;br&gt;*Edge&lt;AdAccountTargetingUnified&gt;* | Unified search&lt;br&gt; |
+| [`targetingsuggestions`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/targetingsuggestions)&lt;br&gt;&lt;br&gt;*Edge&lt;AdAccountTargetingUnified&gt;* | Unified suggestions&lt;br&gt; |
+| [`targetingvalidation`](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/targetingvalidation)&lt;br&gt;&lt;br&gt;*Edge&lt;AdAccountTargetingUnified&gt;* | Unified validation&lt;br&gt; |
+
+#### Error Codes
+
+| Error Code | Description |
+| --- | --- |
+| 200 | Permissions error |
+| 613 | Calls to this api have exceeded the rate limit. |
+| 100 | Invalid parameter |
+| 190 | Invalid OAuth 2.0 Access Token |
+| 80004 | There have been too many calls to this ad-account. Wait a bit and try again. For more info, please refer to /docs/graph-api/overview/rate-limiting#ads-management. |
+| 3018 | The start date of the time range cannot be beyond 37 months from the current date |
+| 2500 | Error parsing graph query |
+| 1150 | An unknown error occurred. |
+| 2635 | You are calling a deprecated version of the Ads API. Please update to the latest version. |
+| 368 | The action attempted has been deemed abusive or is otherwise disallowed |
+
+## Creating
+
+To create a new ad account for your business you must specify `name`, `currency`, `timezone_id`, `end_advertiser`, `media_agency`, and `partner`. Provide `end_advertiser`, `media_agency`, and `partner`:
+
+- They must be Facebook Page Aliases, Facebook Page ID or an Facebook app ID. For example, to provide your company as an end advertiser you specify my company or `20531316728`.
+
+- The End Advertiser ID is the Facebook primary Page ID or Facebook app ID. Further reference to this field (for formatting and acceptable values) may be found [here](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/business/adaccount).
+
+- If your ad account has no End Advertiser, Media Agency, or Partner, specify `NONE`.
+
+- If your ad account has an End Advertiser, Media Agency, or Partner, that are not represented on Facebook by Page or app, specify `UNFOUND`.
+
+**Once you set `end_advertiser` to a value other than `NONE` or `UNFOUND` you cannot change it.**
+
+Create an ad account:
+
+```
+curl \
+-F &quot;name=MyAdAccount&quot; \
+-F &quot;currency=USD&quot; \
+-F &quot;timezone_id=1&quot; \
+-F &quot;end_advertiser=&lt;END_ADVERTISER_ID&gt;&quot; \
+-F &quot;media_agency=&lt;MEDIA_AGENCY_ID&gt;&quot; \
+-F &quot;partner=NONE&quot; \
+-F &quot;access_token=&lt;ACCESS_TOKEN&gt;&quot; \
+&quot;https://graph.facebook.com/&lt;API_VERSION&gt;/&lt;BUSINESS_ID&gt;/adaccount&quot;
+```
+
+If you have an extended credity line with Facebook, you can set `invoice` to `true` and we associate your new ad account to this credit line.
+
+The response:
+
+```
+&#123;
+  &quot;id&quot;: &quot;act_&lt;ADACCOUNT_ID&gt;&quot;,
+  &quot;account_id&quot;: &quot;&lt;ADACCOUNT_ID&gt;&quot;,
+  &quot;business_id&quot;: &quot;&lt;BUSINESS_ID&gt;&quot;,
+  &quot;end_advertiser_id&quot;: &quot;&lt;END_ADVERTISER_ID&gt;&quot;,
+  &quot;media_agency_id&quot;: &quot;&lt;MEDIA_AGENCY_ID&gt;&quot;,
+  &quot;partner_id&quot;: &quot;NONE&quot;
+&#125;
+```
+
+### /act_&#123;ad_account_id&#125;/product_audiences
+You can make a POST request to *product_audiences* edge from the following paths:
+
+- [/act_&#123;ad_account_id&#125;/product_audiences](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/product_audiences)
+
+When posting to this edge, an [AdAccount](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account) will be created.
+
+#### Example
+
+### HTTP
+```
+POST /v25.0/act_&lt;AD_ACCOUNT_ID&gt;/product_audiences HTTP/1.1
+Host: graph.facebook.com
+
+name=Test+Iphone+Product+Audience&amp;product_set_id=%3CPRODUCT_SET_ID%3E&amp;inclusions=%5B%7B%22retention_seconds%22%3A86400%2C%22rule%22%3A%7B%22and%22%3A%5B%7B%22event%22%3A%7B%22eq%22%3A%22AddToCart%22%7D%7D%2C%7B%22userAgent%22%3A%7B%22i_contains%22%3A%22iPhone%22%7D%7D%5D%7D%7D%5D&amp;exclusions=%5B%7B%22retention_seconds%22%3A172800%2C%22rule%22%3A%7B%22event%22%3A%7B%22eq%22%3A%22Purchase%22%7D%7D%7D%5D
+```
+
+### PHP SDK
+```
+/* PHP SDK v5.0.0 */
+/* make the API call */
+try &#123;
+  // Returns a `Facebook\FacebookResponse` object
+  $response = $fb-&gt;post(
+    &#039;/act_&lt;AD_ACCOUNT_ID&gt;/product_audiences&#039;,
+    array (
+      &#039;name&#039; =&gt; &#039;Test Iphone Product Audience&#039;,
+      &#039;product_set_id&#039; =&gt; &#039;&lt;PRODUCT_SET_ID&gt;&#039;,
+      &#039;inclusions&#039; =&gt; &#039;[&#123;&quot;retention_seconds&quot;:86400,&quot;rule&quot;:&#123;&quot;and&quot;:[&#123;&quot;event&quot;:&#123;&quot;eq&quot;:&quot;AddToCart&quot;&#125;&#125;,&#123;&quot;userAgent&quot;:&#123;&quot;i_contains&quot;:&quot;iPhone&quot;&#125;&#125;]&#125;&#125;]&#039;,
+      &#039;exclusions&#039; =&gt; &#039;[&#123;&quot;retention_seconds&quot;:172800,&quot;rule&quot;:&#123;&quot;event&quot;:&#123;&quot;eq&quot;:&quot;Purchase&quot;&#125;&#125;&#125;]&#039;,
+    ),
+    &#039;&#123;access-token&#125;&#039;
+  );
+&#125; catch(Facebook\Exceptions\FacebookResponseException $e) &#123;
+  echo &#039;Graph returned an error: &#039; . $e-&gt;getMessage();
+  exit;
+&#125; catch(Facebook\Exceptions\FacebookSDKException $e) &#123;
+  echo &#039;Facebook SDK returned an error: &#039; . $e-&gt;getMessage();
+  exit;
+&#125;
+$graphNode = $response-&gt;getGraphNode();
+/* handle the result */
+```
+
+### JavaScript SDK
+```
+/* make the API call */
+FB.api(
+    &quot;/act_&lt;AD_ACCOUNT_ID&gt;/product_audiences&quot;,
+    &quot;POST&quot;,
+    &#123;
+        &quot;name&quot;: &quot;Test Iphone Product Audience&quot;,
+        &quot;product_set_id&quot;: &quot;&lt;PRODUCT_SET_ID&gt;&quot;,
+        &quot;inclusions&quot;: &quot;[&#123;\&quot;retention_seconds\&quot;:86400,\&quot;rule\&quot;:&#123;\&quot;and\&quot;:[&#123;\&quot;event\&quot;:&#123;\&quot;eq\&quot;:\&quot;AddToCart\&quot;&#125;&#125;,&#123;\&quot;userAgent\&quot;:&#123;\&quot;i_contains\&quot;:\&quot;iPhone\&quot;&#125;&#125;]&#125;&#125;]&quot;,
+        &quot;exclusions&quot;: &quot;[&#123;\&quot;retention_seconds\&quot;:172800,\&quot;rule\&quot;:&#123;\&quot;event\&quot;:&#123;\&quot;eq\&quot;:\&quot;Purchase\&quot;&#125;&#125;&#125;]&quot;
+    &#125;,
+    function (response) &#123;
+      if (response &amp;&amp; !response.error) &#123;
+        /* handle the result */
+      &#125;
+    &#125;
+);
+```
+
+### Android SDK
+```
+Bundle params = new Bundle();
+params.putString(&quot;name&quot;, &quot;Test Iphone Product Audience&quot;);
+params.putString(&quot;product_set_id&quot;, &quot;&lt;PRODUCT_SET_ID&gt;&quot;);
+params.putString(&quot;inclusions&quot;, &quot;[&#123;\&quot;retention_seconds\&quot;:86400,\&quot;rule\&quot;:&#123;\&quot;and\&quot;:[&#123;\&quot;event\&quot;:&#123;\&quot;eq\&quot;:\&quot;AddToCart\&quot;&#125;&#125;,&#123;\&quot;userAgent\&quot;:&#123;\&quot;i_contains\&quot;:\&quot;iPhone\&quot;&#125;&#125;]&#125;&#125;]&quot;);
+params.putString(&quot;exclusions&quot;, &quot;[&#123;\&quot;retention_seconds\&quot;:172800,\&quot;rule\&quot;:&#123;\&quot;event\&quot;:&#123;\&quot;eq\&quot;:\&quot;Purchase\&quot;&#125;&#125;&#125;]&quot;);
+/* make the API call */
+new GraphRequest(
+    AccessToken.getCurrentAccessToken(),
+    &quot;/act_&lt;AD_ACCOUNT_ID&gt;/product_audiences&quot;,
+    params,
+    HttpMethod.POST,
+    new GraphRequest.Callback() &#123;
+        public void onCompleted(GraphResponse response) &#123;
+            /* handle the result */
+        &#125;
+    &#125;
+).executeAsync();
+```
+
+### iOS SDK
+```
+NSDictionary *params = &#064;&#123;
+  &#064;&quot;name&quot;: &#064;&quot;Test Iphone Product Audience&quot;,
+  &#064;&quot;product_set_id&quot;: &#064;&quot;&lt;PRODUCT_SET_ID&gt;&quot;,
+  &#064;&quot;inclusions&quot;: &#064;&quot;[&#123;\&quot;retention_seconds\&quot;:86400,\&quot;rule\&quot;:&#123;\&quot;and\&quot;:[&#123;\&quot;event\&quot;:&#123;\&quot;eq\&quot;:\&quot;AddToCart\&quot;&#125;&#125;,&#123;\&quot;userAgent\&quot;:&#123;\&quot;i_contains\&quot;:\&quot;iPhone\&quot;&#125;&#125;]&#125;&#125;]&quot;,
+  &#064;&quot;exclusions&quot;: &#064;&quot;[&#123;\&quot;retention_seconds\&quot;:172800,\&quot;rule\&quot;:&#123;\&quot;event\&quot;:&#123;\&quot;eq\&quot;:\&quot;Purchase\&quot;&#125;&#125;&#125;]&quot;,
+&#125;;
+/* make the API call */
+FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]
+                               initWithGraphPath:&#064;&quot;/act_&lt;AD_ACCOUNT_ID&gt;/product_audiences&quot;
+                                      parameters:params
+                                      HTTPMethod:&#064;&quot;POST&quot;];
+[request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
+                                      id result,
+                                      NSError *error) &#123;
+    // Handle the result
+&#125;];
+```
+
+### cURL
+```
+curl -X POST \
+  -F &#039;name=&quot;Test Iphone Product Audience&quot;&#039; \
+  -F &#039;product_set_id=&quot;&lt;PRODUCT_SET_ID&gt;&quot;&#039; \
+  -F &#039;inclusions=[
+       &#123;
+         &quot;retention_seconds&quot;: 86400,
+         &quot;rule&quot;: &#123;
+           &quot;and&quot;: [
+             &#123;
+               &quot;event&quot;: &#123;
+                 &quot;eq&quot;: &quot;AddToCart&quot;
+               &#125;
+             &#125;,
+             &#123;
+               &quot;userAgent&quot;: &#123;
+                 &quot;i_contains&quot;: &quot;iPhone&quot;
+               &#125;
+             &#125;
+           ]
+         &#125;
+       &#125;
+     ]&#039; \
+  -F &#039;exclusions=[
+       &#123;
+         &quot;retention_seconds&quot;: 172800,
+         &quot;rule&quot;: &#123;
+           &quot;event&quot;: &#123;
+             &quot;eq&quot;: &quot;Purchase&quot;
+           &#125;
+         &#125;
+       &#125;
+     ]&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+  https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/product_audiences
+```
+
+Try it in [Graph API Explorer](https://developers.facebook.com/tools/explorer/?method=POST&amp;path=act_%3CAD_ACCOUNT_ID%3E%2Fproduct_audiences%3Fname%3DTest%2BIphone%2BProduct%2BAudience%26product_set_id%3D%253CPRODUCT_SET_ID%253E%26inclusions%3D%255B%257B%2522retention_seconds%2522%253A86400%252C%2522rule%2522%253A%257B%2522and%2522%253A%255B%257B%2522event%2522%253A%257B%2522eq%2522%253A%2522AddToCart%2522%257D%257D%252C%257B%2522userAgent%2522%253A%257B%2522i_contains%2522%253A%2522iPhone%2522%257D%257D%255D%257D%257D%255D%26exclusions%3D%255B%257B%2522retention_seconds%2522%253A172800%252C%2522rule%2522%253A%257B%2522event%2522%253A%257B%2522eq%2522%253A%2522Purchase%2522%257D%257D%257D%255D&amp;version=v25.0)
+
+If you want to learn how to use the Graph API, read our [Using Graph API guide](https://developers.facebook.com/docs/graph-api/using-graph-api)
+
+#### Parameters
+
+| Parameter | Description |
+| --- | --- |
+| `associated_audience_id`&lt;br&gt;&lt;br&gt;*int64* | SELF_EXPLANATORY&lt;br&gt; |
+| `creation_params`&lt;br&gt;&lt;br&gt;*dictionary &#123; string : &lt;string&gt; &#125;* | SELF_EXPLANATORY&lt;br&gt; |
+| `description`&lt;br&gt;&lt;br&gt;*string* | SELF_EXPLANATORY&lt;br&gt; |
+| `enable_fetch_or_create`&lt;br&gt;&lt;br&gt;*boolean* | enable_fetch_or_create&lt;br&gt; |
+| `event_sources`&lt;br&gt;&lt;br&gt;*array&lt;JSON object&gt;* | event_sources&lt;br&gt;&lt;br&gt;&lt;br&gt;`id` *int64*&lt;br&gt;id&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;&lt;br&gt;`type` *enum &#123;APP, OFFLINE_EVENTS, PAGE, PIXEL&#125;*&lt;br&gt;type&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt; |
+| `exclusions`&lt;br&gt;&lt;br&gt;*list&lt;Object&gt;* | SELF_EXPLANATORY&lt;br&gt;&lt;br&gt;&lt;br&gt;`booking_window` *Object*&lt;br&gt;&lt;br&gt;`min_seconds` *int64*&lt;br&gt;&lt;br&gt;`max_seconds` *int64*&lt;br&gt;&lt;br&gt;`count` *Object*&lt;br&gt;&lt;br&gt;`event` *string*&lt;br&gt;&lt;br&gt;`type` *enum &#123;CUSTOM, PRIMARY, WEBSITE, APP, OFFLINE_CONVERSION, CLAIM, MANAGED, PARTNER, VIDEO, LOOKALIKE, ENGAGEMENT, BAG_OF_ACCOUNTS, STUDY_RULE_AUDIENCE, FOX, MEASUREMENT, REGULATED_CATEGORIES_AUDIENCE, BIDDING, EXCLUSION, MESSENGER_SUBSCRIBER_LIST&#125;*&lt;br&gt;&lt;br&gt;`retention` *Object*&lt;br&gt;&lt;br&gt;`min_seconds` *integer*&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;&lt;br&gt;`max_seconds` *integer*&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;&lt;br&gt;`retention_days` *int64*&lt;br&gt;&lt;br&gt;`retention_seconds` *integer*&lt;br&gt;&lt;br&gt;`rule` *Object*&lt;br&gt;&lt;br&gt;`pixel_id` *int64* |
+| `inclusions`&lt;br&gt;&lt;br&gt;*list&lt;Object&gt;* | SELF_EXPLANATORY&lt;br&gt;&lt;br&gt;&lt;br&gt;`booking_window` *Object*&lt;br&gt;&lt;br&gt;`min_seconds` *int64*&lt;br&gt;&lt;br&gt;`max_seconds` *int64*&lt;br&gt;&lt;br&gt;`count` *Object*&lt;br&gt;&lt;br&gt;`event` *string*&lt;br&gt;&lt;br&gt;`type` *enum &#123;CUSTOM, PRIMARY, WEBSITE, APP, OFFLINE_CONVERSION, CLAIM, MANAGED, PARTNER, VIDEO, LOOKALIKE, ENGAGEMENT, BAG_OF_ACCOUNTS, STUDY_RULE_AUDIENCE, FOX, MEASUREMENT, REGULATED_CATEGORIES_AUDIENCE, BIDDING, EXCLUSION, MESSENGER_SUBSCRIBER_LIST&#125;*&lt;br&gt;&lt;br&gt;`retention` *Object*&lt;br&gt;&lt;br&gt;`min_seconds` *integer*&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;&lt;br&gt;`max_seconds` *integer*&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;&lt;br&gt;`retention_days` *int64*&lt;br&gt;&lt;br&gt;`retention_seconds` *integer*&lt;br&gt;&lt;br&gt;`rule` *Object*&lt;br&gt;&lt;br&gt;`pixel_id` *int64* |
+| `name`&lt;br&gt;&lt;br&gt;*string* | SELF_EXPLANATORY&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt; |
+| `opt_out_link`&lt;br&gt;&lt;br&gt;*string* | SELF_EXPLANATORY&lt;br&gt; |
+| `parent_audience_id`&lt;br&gt;&lt;br&gt;*int64* | SELF_EXPLANATORY&lt;br&gt; |
+| `product_set_id`&lt;br&gt;&lt;br&gt;*numeric string or integer* | SELF_EXPLANATORY&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt; |
+| `subtype`&lt;br&gt;&lt;br&gt;*enum &#123;CUSTOM, PRIMARY, WEBSITE, APP, OFFLINE_CONVERSION, CLAIM, MANAGED, PARTNER, VIDEO, LOOKALIKE, ENGAGEMENT, BAG_OF_ACCOUNTS, STUDY_RULE_AUDIENCE, FOX, MEASUREMENT, REGULATED_CATEGORIES_AUDIENCE, BIDDING, EXCLUSION, MESSENGER_SUBSCRIBER_LIST&#125;* | SELF_EXPLANATORY&lt;br&gt; |
+
+#### Return Type
+
+This endpoint supports [read-after-write](https://developers.facebook.com/docs/graph-api/overview#read-after-write) and will read the node represented by *id* in the return type.
+
+```
+Struct  &#123;
+id: numeric string,
+message: string,
+&#125;
+```
+
+#### Error Codes
+
+| Error Code | Description |
+| --- | --- |
+| 100 | Invalid parameter |
+| 2654 | Failed to create custom audience |
+
+### /&#123;custom_audience_id&#125;/ad_accounts
+You can make a POST request to *ad_accounts* edge from the following paths:
+
+- [/&#123;custom_audience_id&#125;/ad_accounts](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/custom-audience/ad_accounts)
+
+When posting to this edge, an [AdAccount](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account) will be created.
+
+#### Parameters
+
+| Parameter | Description |
+| --- | --- |
+| `adaccounts`&lt;br&gt;&lt;br&gt;*list&lt;numeric string&gt;* | Array of new ad account IDs to receive access to the custom audience&lt;br&gt; |
+| `permissions`&lt;br&gt;&lt;br&gt;*string* | `targeting` or `targeting_and_insights`. If `targeting` the recipient ad account can target the audience in ads.        `targeting_and_insights` also allows recipient account to view the        audience in Audience Insights tool&lt;br&gt; |
+| `relationship_type`&lt;br&gt;&lt;br&gt;*array&lt;string&gt;* | relationship_type&lt;br&gt; |
+| `replace`&lt;br&gt;&lt;br&gt;*boolean* | `true` or `false`. If `true` the list of `adaccounts`&lt;br&gt;provided in the call will replace the existing set of ad accounts&lt;br&gt;this audience is shared with.&lt;br&gt; |
+
+#### Return Type
+
+This endpoint supports [read-after-write](https://developers.facebook.com/docs/graph-api/overview#read-after-write) and will read the node to which you POSTed.
+
+```
+Struct  &#123;
+success: bool,
+sharing_data:  List  [ Struct  &#123;
+ad_acct_id: string,
+business_id: numeric string,
+audience_share_status: string,
+errors:  List  [string],
+&#125;],
+&#125;
+```
+
+#### Error Codes
+
+| Error Code | Description |
+| --- | --- |
+| 200 | Permissions error |
+
+### /&#123;business_id&#125;/adaccount
+You can make a POST request to *adaccount* edge from the following paths:
+
+- [/&#123;business_id&#125;/adaccount](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/business/adaccount)
+
+When posting to this edge, an [AdAccount](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account) will be created.
+
+#### Parameters
+
+| Parameter | Description |
+| --- | --- |
+| `ad_account_created_from_bm_flag`&lt;br&gt;&lt;br&gt;*boolean* | ad_account_created_from_bm_flag&lt;br&gt; |
+| `currency`&lt;br&gt;&lt;br&gt;*ISO 4217 Currency Code* | The currency used for the account&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt; |
+| `end_advertiser`&lt;br&gt;&lt;br&gt;** | The entity the ads will target. Must be a Facebook Page Alias, Facebook Page ID or an Facebook App ID. In absence of one, you can use `NONE` or `UNFOUND`. Note that once a value other than `NONE` or `UNFOUND` is set, it cannot be modified any more.&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt; |
+| `funding_id`&lt;br&gt;&lt;br&gt;*numeric string or integer* | ID of the [payment method](https://developers.facebook.com/docs/marketing-api/businessmanager#invoice-funding). If the account does not have a payment method it will still be possible to create ads but these ads will get no delivery.&lt;br&gt; |
+| `invoice`&lt;br&gt;&lt;br&gt;*boolean* | If business manager has Business Manager Owned Normal Credit Line on file on the FB CRM, it will attach the ad account to that credit line.&lt;br&gt; |
+| `invoice_group_id`&lt;br&gt;&lt;br&gt;*numeric string* | The ID of the invoice group this adaccount should be enrolled in&lt;br&gt; |
+| `invoicing_emails`&lt;br&gt;&lt;br&gt;*array&lt;string&gt;* | Emails addressed where invoices will be sent.&lt;br&gt; |
+| `io`&lt;br&gt;&lt;br&gt;*boolean* | If corporate channel is direct sales.&lt;br&gt; |
+| `media_agency`&lt;br&gt;&lt;br&gt;*string* | The agency, this could be your own business. Must be a Facebook Page Alias, Facebook Page ID or an Facebook App ID. In absence of one, you can use `NONE` or `UNFOUND`&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt; |
+| `name`&lt;br&gt;&lt;br&gt;*string* | The name of the ad account&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt; |
+| `partner`&lt;br&gt;&lt;br&gt;*string* | The advertising partner for this account, if there is one. Must be a Facebook Page Alias, Facebook Page ID or an Facebook App ID. In absence of one, you can use `NONE` or `UNFOUND`.&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt; |
+| `po_number`&lt;br&gt;&lt;br&gt;*string* | Purchase order number&lt;br&gt; |
+| `timezone_id`&lt;br&gt;&lt;br&gt;*unsigned int32* | ID for the timezone. See [here](https://developers.facebook.com/docs/marketing-api/reference/ad-account/timezone-ids).&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt; |
+
+#### Return Type
+
+This endpoint supports [read-after-write](https://developers.facebook.com/docs/graph-api/overview#read-after-write) and will read the node represented by *id* in the return type.
+
+```
+Struct  &#123;
+id: token with structure: AdAccount ID,
+account_id: numeric string,
+business_id: numeric string,
+end_advertiser_id: string,
+media_agency_id: string,
+partner_id: string,
+seer_ad_account_restricted_by_soft_desc_challenge: bool,
+soft_desc_challenge_credential_id: string,
+soft_desc_challenge_localized_auth_amount: int32,
+&#125;
+```
+
+#### Error Codes
+
+| Error Code | Description |
+| --- | --- |
+| 100 | Invalid parameter |
+| 3979 | You have exceeded the number of allowed ad accounts for your Business Manager at this time. |
+| 3980 | One or more of the ad accounts in your Business Manager are currently in bad standing or in review. All of your accounts must be in good standing in order to create new ad accounts. |
+| 415 | Two factor authentication required. User have to enter a code from SMS or TOTP code generator to pass 2fac. This could happen when accessing a 2fac-protected asset like a page that is owned by a 2fac-protected business manager. |
+| 3902 | There was a technical issue and your new ad account wasn&#039;t created. Please try again. |
+| 457 | The session has an invalid origin |
+| 190 | Invalid OAuth 2.0 Access Token |
+| 23007 | This credit card can&#039;t be set as your account&#039;s primary payment method, because your account is set up to be billed after your ads have delivered. This setup can&#039;t be changed. Please try a different card or payment method. |
+
+### /&#123;business_id&#125;/owned_ad_accounts
+You can make a POST request to *owned_ad_accounts* edge from the following paths:
+
+- [/&#123;business_id&#125;/owned_ad_accounts](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/business/owned_ad_accounts)
+
+When posting to this edge, an [AdAccount](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account) will be created.
+
+#### Parameters
+
+| Parameter | Description |
+| --- | --- |
+| `adaccount_id`&lt;br&gt;&lt;br&gt;*string* | Ad account ID.&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt; |
+
+#### Return Type
+
+This endpoint supports [read-after-write](https://developers.facebook.com/docs/graph-api/overview#read-after-write) and will read the node to which you POSTed.
+
+```
+Struct  &#123;
+access_status: string,
+&#125;
+```
+
+#### Error Codes
+
+| Error Code | Description |
+| --- | --- |
+| 3979 | You have exceeded the number of allowed ad accounts for your Business Manager at this time. |
+| 3994 | Personal accounts that do not have any history of activity are not eligible for migration to a business manager. Instead create an ad account inside your business manager. |
+| 100 | Invalid parameter |
+| 3980 | One or more of the ad accounts in your Business Manager are currently in bad standing or in review. All of your accounts must be in good standing in order to create new ad accounts. |
+| 415 | Two factor authentication required. User have to enter a code from SMS or TOTP code generator to pass 2fac. This could happen when accessing a 2fac-protected asset like a page that is owned by a 2fac-protected business manager. |
+| 3936 | You&#039;ve already tried to claim this ad account. You&#039;ll see a notification if your request is accepted. |
+| 368 | The action attempted has been deemed abusive or is otherwise disallowed |
+| 3944 | Your Business Manager already has access to this object. |
+
+## Updating
+
+**Notice:**
+
+* The `default_dsa_payor` and `default_dsa_beneficiary` values can be set to both of them or none of them. The API does not allow only one of them to exist in the data storage.
+* To unset the values: pass two empty strings at the same time, the values will be unset in the data storage. It does not allow you to unset only one of them.
+
+### /act_&#123;ad_account_id&#125;
+You can update an [AdAccount](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account) by making a POST request to [/act_&#123;ad_account_id&#125;](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account).
+
+#### Parameters
+
+| Parameter | Description |
+| --- | --- |
+| `agency_client_declaration`&lt;br&gt;&lt;br&gt;*dictionary &#123; string : &lt;string&gt; &#125;* | Details of the agency advertising on behalf of this client account, if applicable. Requires Business Manager [Admin](https://www.facebook.com/business/help/442345745885606?id=180505742745347) privileges.&lt;br&gt; |
+| `attribution_spec`&lt;br&gt;&lt;br&gt;*list&lt;Object&gt;* | **Deprecated due to iOS 14 changes.** Please visit the [changelog](https://developers.facebook.com/docs/graph-api/changelog/non-versioned-changes/jan-19-2021) for more information.&lt;br&gt;&lt;br&gt;&lt;br&gt;`event_type` *enum &#123;CLICK_THROUGH, VIEW_THROUGH, ENGAGED_VIDEO_VIEW&#125;*&lt;br&gt;**[required]**&lt;br&gt;&lt;br&gt;&lt;br&gt;`window_days` *int64*&lt;br&gt;**[required]**&lt;br&gt; |
+| `business_info`&lt;br&gt;&lt;br&gt;*dictionary &#123; string : &lt;string&gt; &#125;* | Business Info&lt;br&gt; |
+| `custom_audience_info`&lt;br&gt;&lt;br&gt;*JSON object* | Custom audience info for Automated Shopping Ads.&lt;br&gt;&lt;br&gt;&lt;br&gt;`new_customer_tag` *string*&lt;br&gt;Label value for new customer in Automated Shoppings Ad&#039;s custom audience type URL parameter.&lt;br&gt;&lt;br&gt;&lt;br&gt;`existing_customer_tag` *string*&lt;br&gt;Label value for existing customer in Automated Shoppings Ad&#039;s custom audience type URL parameter.&lt;br&gt;&lt;br&gt;&lt;br&gt;`audience_type_param_name` *string*&lt;br&gt;field name for audience type in Automated Shoppings Ad&#039;s custom audience type UTM parameter.&lt;br&gt; |
+| `default_dsa_beneficiary`&lt;br&gt;&lt;br&gt;*string* | This is the default value for creating L2 targeting EU&#039;s beneficiary.&lt;br&gt; |
+| `default_dsa_payor`&lt;br&gt;&lt;br&gt;*string* | This is the default value for creating L2 targeting EU&#039;s payor.&lt;br&gt; |
+| `end_advertiser`&lt;br&gt;&lt;br&gt;*string* | The entity the ads will target. Must be a Facebook Page Alias, Facebook Page ID or an Facebook App ID.&lt;br&gt; |
+| `is_notifications_enabled`&lt;br&gt;&lt;br&gt;*boolean* | If notifications are enabled or not for this account&lt;br&gt; |
+| `media_agency`&lt;br&gt;&lt;br&gt;*string* | The ID of a Facebook Page or Facebook App. Once it is set to any values other than `NONE` or `UNFOUND`, it cannot be modified any more&lt;br&gt; |
+| `name`&lt;br&gt;&lt;br&gt;*string* | The name of the ad account&lt;br&gt; |
+| `partner`&lt;br&gt;&lt;br&gt;*string* | The ID of a Facebook Page or Facebook App. Once it is set to any values other than `NONE` or `UNFOUND`, it cannot be modified any more&lt;br&gt; |
+| `spend_cap`&lt;br&gt;&lt;br&gt;*float* | The total amount that this account can spend, after which all campaigns will be paused, based on `amount_spent`. A value of 0 signifies no spending-cap and setting a new spend cap only applies to spend AFTER the time at which you set it. Value specified in standard denomination of the currency, e.g. 23.50 for USD $23.50.&lt;br&gt; |
+| `spend_cap_action`&lt;br&gt;&lt;br&gt;*string* | Setting this parameter to `reset` sets the `amount_spent` back to 0. Setting it to `delete` removes the `spend_cap` from the account.&lt;br&gt; |
+
+#### Return Type
+
+This endpoint supports [read-after-write](https://developers.facebook.com/docs/graph-api/overview#read-after-write) and will read the node to which you POSTed.
+
+```
+Struct  &#123;
+success: bool,
+&#125;
+```
+
+#### Error Codes
+
+| Error Code | Description |
+| --- | --- |
+| 100 | Invalid parameter |
+| 200 | Permissions error |
+| 368 | The action attempted has been deemed abusive or is otherwise disallowed |
+| 190 | Invalid OAuth 2.0 Access Token |
+| 80004 | There have been too many calls to this ad-account. Wait a bit and try again. For more info, please refer to /docs/graph-api/overview/rate-limiting#ads-management. |
+
+### /act_&#123;ad_account_id&#125;/assigned_users
+You can update an [AdAccount](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account) by making a POST request to [/act_&#123;ad_account_id&#125;/assigned_users](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account/assigned_users).
+
+#### Parameters
+
+| Parameter | Description |
+| --- | --- |
+| `tasks`&lt;br&gt;&lt;br&gt;*array&lt;enum &#123;MANAGE, ADVERTISE, ANALYZE, DRAFT, AA_ANALYZE&#125;&gt;* | AdAccount permission tasks to assign this user&lt;br&gt; |
+| `user`&lt;br&gt;&lt;br&gt;*UID* | Business user id or system user id&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt; |
+
+#### Return Type
+
+This endpoint supports [read-after-write](https://developers.facebook.com/docs/graph-api/overview#read-after-write) and will read the node to which you POSTed.
+
+```
+Struct  &#123;
+success: bool,
+&#125;
+```
+
+#### Error Codes
+
+| Error Code | Description |
+| --- | --- |
+| 100 | Invalid parameter |
+| 200 | Permissions error |
+| 2620 | Invalid call to update account permissions |
+
+## Deleting
+
+### /&#123;ads_pixel_id&#125;/shared_accounts
+You can dissociate an [AdAccount](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account) from an [AdsPixel](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ads-pixel) by making a DELETE request to [/&#123;ads_pixel_id&#125;/shared_accounts](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ads-pixel/shared_accounts).
+
+#### Parameters
+
+| Parameter | Description |
+| --- | --- |
+| `account_id`&lt;br&gt;&lt;br&gt;*numeric string* | SELF_EXPLANATORY&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt; |
+| `business`&lt;br&gt;&lt;br&gt;*numeric string or integer* | SELF_EXPLANATORY&lt;br&gt;&lt;br&gt;**[required]**&lt;br&gt; |
+
+#### Return Type
+
+```
+Struct  &#123;
+success: bool,
+&#125;
+```
+
+#### Error Codes
+
+| Error Code | Description |
+| --- | --- |
+| 100 | Invalid parameter |
+
+### /&#123;custom_audience_id&#125;/ad_accounts
+You can dissociate an [AdAccount](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-account) from a [CustomAudience](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/custom-audience) by making a DELETE request to [/&#123;custom_audience_id&#125;/ad_accounts](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/custom-audience/ad_accounts).
+
+#### Parameters
+
+| Parameter | Description |
+| --- | --- |
+| `adaccounts`&lt;br&gt;&lt;br&gt;*list&lt;numeric string&gt;* | Array of ad account IDs to revoke access to the custom audience&lt;br&gt; |
+
+#### Return Type
+
+```
+Struct  &#123;
+success: bool,
+&#125;
+```
+
+#### Error Codes
+
+| Error Code | Description |
+| --- | --- |
+| 100 | Invalid parameter |
+
+</pre></body></html>

@@ -1,0 +1,520 @@
+<html><head><title>Basic Targeting</title><meta charset="UTF-8" /><style nonce="TaeBgxep">body { font-family: monospace; margin: 20px; }pre { white-space: pre-wrap; word-wrap: break-word; }</style></head><body><pre data-testid="developer-docs-markdown-page"># Basic Targeting
+
+
+
+Basic targeting includes:
+
+* [Demographics and Events](#demographics)
+* [Location](#location)
+* [Interests](#interests)
+* [Behaviors](#behaviors)
+
+**Note:** Advertisers running [housing, employment, credit ads, issues, election, or political ads](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/special-ad-category) who are based in the United States or running ads targeted to the United States have different sets of restrictions.
+
+## Demographics and events &#123;#demographics&#125;
+
+Get basic [demographic](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-search#demo) and location-based targeting data to define targeting from [Targeting Search](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-search), then specify options in the `targeting` spec, which contains [ad set](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/ad-campaign) attributes defining who should see the ad.
+
+**Note:** You must specify at least one country in targeting, unless you use a [Custom Audience](https://developers.facebook.com/documentation/ads-commerce/marketing-api/reference/custom-audience).
+
+### Targeting by demographic
+
+```html
+curl -X POST \
+  -F &#039;name=My AdSet&#039; \
+  -F &#039;optimization_goal=REACH&#039; \
+  -F &#039;billing_event=IMPRESSIONS&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=&lt;CAMPAIGN_ID&gt;&#039; \
+  -F &#039;targeting=&#123;
+      &quot;geo_locations&quot;: &#123;&quot;countries&quot;:[&quot;US&quot;]&#125;,
+      &quot;industries&quot;: [&#123;&quot;id&quot;:6009003307783,&quot;name&quot;:&quot;Accounting and finance&quot;&#125;],
+      &quot;life_events&quot;: [&#123;&quot;id&quot;:6003054185372,&quot;name&quot;:&quot;Recently Moved&quot;&#125;],
+      &quot;relationship_statuses&quot;: [2,4]
+  &#125;&#039; \
+  -F &#039;status=ACTIVE&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+#### Fields
+
+| Name | Description |
+| --- | --- |
+| `genders`&lt;br&gt;&lt;br&gt;array | Genders to target. Defaults to all. `1` targets males, `2` targets females. |
+| `age_min`  &lt;br&gt;&lt;br&gt;int | Minimum age. Defaults to 18. If used, must be 13 or higher. If the app has custom settings for age restrictions, the app&#039;s age restrictions will be used for ads with APP_INSTALL goals. For example, if you set `age_min` to 13 but your app&#039;s age minimum is set to 18, 18 will be used in ads targeting. |
+| `age_max`&lt;br&gt;&lt;br&gt;int | Maximum age. If used, must be 65 or lower. |
+| `user_age_unknown`&lt;br&gt;&lt;br&gt;boolean | Includes people on WhatsApp whose age is unknown.&lt;br&gt;&lt;br&gt;Applies only to the WhatsApp Status placement&lt;br&gt;&lt;br&gt;Starting May 2026, if the WhatsApp Status placement is included and this field is not set, it defaults to true.&lt;br&gt;&lt;br&gt;Setting it to false allows businesses to exclude [people on WhatsApp whose age is unknown](https://www.facebook.com/business/help/717368264947302?id=176276233019487). Businesses will be able to opt out of including people on WhatsApp whose age is unknown at any time. |
+
+## Location &#123;#location&#125;
+
+Search and retrieve values for location targeting with [Targeting Search](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-search). This targeting has two parameters: `geo_locations` to target locations, and optionally, `excluded_geo_locations` to exclude areas.
+
+Use `country_groups` for `geo_locations` to target broader geographic regions such as Europe or North America.
+
+**Warning:** Using `radius` can cause an error, code: 100, subcode 1815946, when targeting multiple locations. We recommend creating an ad for each location or not using `radius` in your call.
+
+### Fields
+
+| Name | Description |
+| --- | --- |
+| `countries`&lt;br&gt;&lt;br&gt;array | Country targeting. Requires array of country codes, see [Targeting Search, Countries](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-search#countries).  &lt;br&gt;**Example**: `&#039;countries&#039;: [&#039;US&#039;]` |
+| `regions`&lt;br&gt;&lt;br&gt;array | State, province, or region. Available values, see [Targeting Search, Regions](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-search#regions). Limit: 200.  &lt;br&gt;**Example**: `&#039;regions&#039;: [&#123;&#039;key&#039;:&#039;3847&#039;&#125;]` |
+| `cities`&lt;br&gt;&lt;br&gt;array | Specify `key`, `radius`, and `distance_unit`. For `key`, see [Targeting Search, Cities](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-search#cities). `radius` is a distance around cities, from 10 to 50 miles or 17 to 80 kilometers. `distance_unit` is mile or kilometer. Limit: 250.  &lt;br&gt;**Example**: `&#039;cities&#039;: [&#123;&#039;key&#039;:&#039;2430536&#039;, &#039;radius&#039;:12, &#039;distance_unit&#039;:&#039;mile&#039;&#125;]` |
+| `zips`&lt;br&gt;&lt;br&gt;array | Target Zip Code, See [targeting search API](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-search#zipcode). Limit: 50,000 (formerly 2,500). If you provide more than 2,500, the system creates an array known as `location_cluster` which represents a set of zip codes.  &lt;br&gt;**Example**: `&#039;zips&#039;:[&#123;&#039;key&#039;:&#039;US:94304&#039;&#125;,&#123;&#039;key&#039;:&#039;US:00501&#039;&#125;]`&lt;br&gt;&lt;br&gt;To read a `location_cluster` and see the locations targeted: `GET /location_cluster_ID` |
+| `places`&lt;br&gt;&lt;br&gt;array | Provide a specific [place](https://developers.facebook.com/docs/graph-api/reference/place). Limit: 200.  &lt;br&gt;**Example:** `&quot;places&quot;:[&#123;&quot;key&quot;:129672430416115,&quot;name&quot;:&quot;SFO&quot;, &quot;radius&quot;:10, &quot;distance_unit&quot;:&quot;mile&quot;&#125;]` |
+| `custom_locations`&lt;br&gt;&lt;br&gt;array | Available for all objectives. Provide exact location in latitude and longitude or address as the center of an area. Also specify radius for your location from .63 to 50 miles, or 1 to 80 kilometers. `distance_unit` is miles or kilometers; default is mile. Limit: 200. PO Box alone is not supported in `address_string`. You must provide at minimum, a street address.  &lt;br&gt;**Example:** `&#039;custom_locations&#039;:[&#123;&#039;address_string&#039;: &#039;1601 Willow Road, Menlo Park, CA&#039;, &#039;radius&#039;: 5&#125;,&#123;&#039;latitude&#039;: 36, &#039;longitude&#039;: -121.0, &#039;radius&#039;: 5, &#039;distance_unit&#039;: &#039;kilometer&#039;&#125;,]` |
+| `custom_locations.latitude`&lt;br&gt;&lt;br&gt;float | Latitude of location |
+| `custom_locations.longitude`&lt;br&gt;&lt;br&gt;float | Longitude of location |
+| `custom_locations.name`&lt;br&gt;&lt;br&gt;string | Name for address. You can use with `latitude` and `longitude` values for geo location targeting without providing `address_string` |
+| `custom_locations.radius`&lt;br&gt;&lt;br&gt;float | Radius around latitude/longitude, in miles unless otherwise in `distance_unit`. From 0.63 to 50 miles, or 1 to 80 kilometers. |
+| `custom_locations.distance_unit`&lt;br&gt;&lt;br&gt;string | **Optional.**&lt;br&gt;&lt;br&gt;`kilometer` or `mile`; default `mile` |
+| `custom_locations.address_string`&lt;br&gt;&lt;br&gt;string | Address at latitude/longitude, such as 1601 Willow Rd, Menlo Park, CA. Suggested format: street number street name, city, state/province, country. Exclude postal codes. |
+| `geo_markets`&lt;br&gt;&lt;br&gt;array | Geomarkets using Comscore Markets. Limit: 2500.  &lt;br&gt;**Example:** `&#039;geo_markets&#039;:[&#123;&#039;key&#039;: &#039;COMSCORE_MARKET:2001&#039;, &#039;name&#039;: &#039;New York, NY&#039;&#125;, &#123;&#039;key&#039;: &#039;COMSCORE_MARKET:2051&#039;, &#039;name&#039;: &#039;New Orleans, LA&#039;&#125;,]` |
+| `electoral_district`&lt;br&gt;&lt;br&gt;array | Key for electoral districts. Get districts at [Targeting Search, Electoral](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-search#electoral).  &lt;br&gt;**Example**: `&#039;electoral_districts&#039;:[&#123;&#039;key&#039;:&#039;US:AK00&#039;&#125;,&#123;&#039;key&#039;:&#039;US:CA01&#039;&#125;,&#123;&#039;key&#039;:&#039;US:NY14&#039;&#125;]` |
+| `location_types`&lt;br&gt;&lt;br&gt;array | The array `[&#039;home&#039;, &#039;recent&#039;]` is the only option available. If no `location_types` array is provided, it will default to `[&#039;home&#039;, &#039;recent&#039;]`.&lt;br&gt;&lt;br&gt;* `recent`: People whose recent location is in a selected area, as determined from mobile device data. Not available to exclude locations.&lt;br&gt;* `home`: People whose stated location in their Facebook profile &quot;current city&quot; is in an area. Facebook validates this by IP and information from their friends&#039; profile locations. |
+| `country_groups`&lt;br&gt;&lt;br&gt;array | Global geographical regions and free trade areas. See [Targeting Search, Country Groups](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-search#country_group).&lt;br&gt;&lt;br&gt;Provide array of country group codes:&lt;br&gt;&lt;br&gt;* `worldwide`: Worldwide.&lt;br&gt;* `africa`: Africa.&lt;br&gt;* `afta`: ASEAN Free Trade Area.&lt;br&gt;* `android_app_store`: paid apps supporting countries in Android app store.&lt;br&gt;* `android_free_store`: free apps supporting countries in Android app store.&lt;br&gt;* `apec`: Asia-Pacific Economic Cooperation.&lt;br&gt;* `asia`: Asia&lt;br&gt;* `caribbean`: Caribbean.&lt;br&gt;* `central_america`: Central America.&lt;br&gt;* `cisfta`: Commonwealth of Independent States Free Trade Area.&lt;br&gt;* `eea`: European Economic Area.&lt;br&gt;* `emerging_markets`: countries in Emerging Markets&lt;br&gt;* `europe`: Europe.&lt;br&gt;* `gcc`: Gulf Cooperation Council.&lt;br&gt;* `itunes_app_store`: supported countries for iTunes app store.&lt;br&gt;* `mercosur`: MERCOSUR.&lt;br&gt;* `nafta`: North American Free Trade Agreement.&lt;br&gt;* `north_america`: North America.&lt;br&gt;* `oceania`: Oceania.&lt;br&gt;* `south_america`: South America.&lt;br&gt;&lt;br&gt;**Example**: `&#039;country_groups&#039;: [&#039;asia&#039;,&#039;mercosur&#039;]` |
+
+### Examples
+
+#### Target by countries
+
+```html
+curl -X POST \
+  -F &#039;name=&quot;My Reach Ad Set&quot;&#039; \
+  -F &#039;optimization_goal=&quot;REACH&quot;&#039; \
+  -F &#039;billing_event=&quot;IMPRESSIONS&quot;&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=&quot;&lt;AD_CAMPAIGN_ID&gt;&quot;&#039; \
+  -F &#039;targeting=&#123;
+       &quot;geo_locations&quot;: &#123;
+         &quot;countries&quot;: [
+           &quot;US&quot;
+         ]
+       &#125;,
+       &quot;facebook_positions&quot;: [
+         &quot;feed&quot;
+       ]
+     &#125;&#039; \
+  -F &#039;status=&quot;PAUSED&quot;&#039; \
+  -F &#039;promoted_object=&#123;
+       &quot;page_id&quot;: &quot;&lt;PAGE_ID&gt;&quot;
+     &#125;&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v24.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+#### Location targeting with exclusions &#123;#locations&#125;
+
+```html
+curl -X POST \
+  -F &#039;name=&quot;My Reach Ad Set&quot;&#039; \
+  -F &#039;optimization_goal=&quot;REACH&quot;&#039; \
+  -F &#039;billing_event=&quot;IMPRESSIONS&quot;&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=&quot;&lt;AD_CAMPAIGN_ID&gt;&quot;&#039; \
+  -F &#039;targeting=&#123;
+       &quot;excluded_geo_locations&quot;: &#123;
+         &quot;regions&quot;: [
+           &#123;
+             &quot;key&quot;: &quot;3847&quot;
+           &#125;
+         ]
+       &#125;,
+       &quot;geo_locations&quot;: &#123;
+         &quot;countries&quot;: [
+           &quot;US&quot;
+         ]
+       &#125;,
+       &quot;facebook_positions&quot;: [
+         &quot;feed&quot;
+       ]
+     &#125;&#039; \
+  -F &#039;status=&quot;PAUSED&quot;&#039; \
+  -F &#039;promoted_object=&#123;
+       &quot;page_id&quot;: &quot;&lt;PAGE_ID&gt;&quot;
+     &#125;&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+#### Target by zip codes
+
+```html
+curl -X POST \
+  -F &#039;name=My AdSet&#039; \
+  -F &#039;optimization_goal=REACH&#039; \
+  -F &#039;billing_event=IMPRESSIONS&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=&lt;CAMPAIGN_ID&gt;&#039; \
+  -F &#039;targeting=&#123;
+      &quot;geo_locations&quot;:&#123;
+          &quot;zips&quot;:[&#123;&quot;key&quot;:&quot;US:94304&quot;&#125;,&#123;&quot;key&quot;:&quot;US:00501&quot;&#125;]&#125;
+  &#125;&#039; \
+  -F &#039;status=ACTIVE&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+#### Target by custom locations, geomarkets, and location types
+
+The following code sets up targeting for:
+
+- 5 miles around 1601 Willow Road, Menlo Park, CA
+- 5 kilometers around latitude: 36, longitude: -121.0
+- COMSCORE_MARKETS 2001 and 2051
+
+```html
+curl -X POST \
+  -F &#039;name=My AdSet&#039; \
+  -F &#039;optimization_goal=REACH&#039; \
+  -F &#039;billing_event=IMPRESSIONS&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=&lt;CAMPAIGN_ID&gt;&#039; \
+  -F &#039;targeting=&#123;
+    &quot;geo_locations&quot;: &#123;
+      &quot;custom_locations&quot;: [
+        &#123;&quot;address_string&quot;:&quot;1601 Willow Road, Menlo Park, CA&quot;,&quot;radius&quot;:&quot;5&quot;&#125;,
+        &#123;
+          &quot;latitude&quot;: &quot;36&quot;,
+          &quot;longitude&quot;: &quot;-121.0&quot;,
+          &quot;radius&quot;: &quot;5&quot;,
+          &quot;distance_unit&quot;: &quot;kilometer&quot;
+        &#125;
+      ],
+      &quot;geo_markets&quot;: [
+        &#123;&quot;key&quot;:&quot;COMSCORE_MARKET:2001&quot;,&quot;name&quot;:&quot;New York, NY&quot;&#125;,
+        &#123;&quot;key&quot;:&quot;COMSCORE_MARKET:2051&quot;,&quot;name&quot;:&quot;New Orleans, LA&quot;&#125;
+      ],
+      &quot;location_types&quot;: [&quot;recent&quot;,&quot;home&quot;]
+    &#125;
+  &#125;&#039; \
+  -F &#039;status=ACTIVE&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+#### Search and targeting
+
+To target males age 20-24 within 10 miles of Menlo Park, CA, or living in Texas or in Japan:
+
+##### Step 1
+
+First, get Japan&#039;s country code:
+
+```html
+curl -G \
+  -d &#039;location_types=[&quot;country&quot;]&#039; \
+  -d &#039;type=adgeolocation&#039; \
+  -d &#039;q=japan&#039; \
+  -d &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/search
+```
+
+##### Step 2
+Get Texas&#039;s region code:
+
+```html
+curl -G \
+  -d &#039;location_types=[&quot;region&quot;]&#039; \
+  -d &#039;type=adgeolocation&#039; \
+  -d &#039;q=texas&#039; \
+  -d &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/search
+```
+
+##### Step 3
+Search Menlo Park, CA city code:
+
+```html
+curl -G \
+  -d &#039;location_types=[&quot;city&quot;]&#039; \
+  -d &#039;type=adgeolocation&#039; \
+  -d &#039;q=menlo&#039; \
+  -d &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/search
+```
+
+##### Step 4
+Provide `genders` and age as `age_min` and `age_max`.
+
+##### Step 5
+The targeting spec is ready with country, region, and city codes:
+
+```html
+curl \
+  -F &#039;name=My First AdSet&#039; \
+  -F &#039;daily_budget=10000&#039; \
+  -F &#039;bid_amount=300&#039; \
+  -F &#039;billing_event=IMPRESSIONS&#039; \
+  -F &#039;optimization_goal=REACH&#039; \
+  -F &#039;campaign_id=&lt;CAMPAIGN_ID&gt;&#039; \
+  -F &#039;promoted_object=&#123;&quot;page_id&quot;:&quot;&lt;PAGE_ID&gt;&quot;&#125;&#039; \
+  -F &#039;targeting=&#123;
+    &quot;age_max&quot;: 24,
+    &quot;age_min&quot;: 20,
+    &quot;device_platforms&quot;: [&quot;mobile&quot;],
+    &quot;genders&quot;: [1],
+    &quot;geo_locations&quot;: &#123;
+      &quot;countries&quot;: [&quot;JP&quot;],
+      &quot;regions&quot;: [&#123;&quot;key&quot;:&quot;3886&quot;&#125;],
+      &quot;cities&quot;: [
+        &#123;
+          &quot;key&quot;: &quot;2420605&quot;,
+          &quot;radius&quot;: 10,
+          &quot;distance_unit&quot;: &quot;mile&quot;
+        &#125;
+      ]
+    &#125;,
+    &quot;publisher_platforms&quot;: [&quot;facebook&quot;,&quot;audience_network&quot;]
+  &#125;&#039; \
+  -F &#039;status=PAUSED&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+#### Target multiple cities
+
+Set `custom_type` to `multi_city` and define either `country` or `country_group` as described before.
+
+```html
+curl \
+  -F &#039;name=My AdSet&#039; \
+  -F &#039;optimization_goal=REACH&#039; \
+  -F &#039;billing_event=IMPRESSIONS&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=&lt;CAMPAIGN_ID&gt;&#039; \
+  -F &#039;targeting=&#123;
+    &quot;geo_locations&quot;: &#123;
+      &quot;custom_locations&quot;: [
+        &#123;
+          &quot;custom_type&quot;: &quot;multi_city&quot;,
+          &quot;min_population&quot;: 500000,
+          &quot;max_population&quot;: 1000000,
+          &quot;country&quot;: &quot;BR&quot;
+        &#125;,
+        &#123;&quot;custom_type&quot;:&quot;multi_city&quot;,&quot;country_group&quot;:&quot;Europe&quot;&#125;
+      ],
+      &quot;location_types&quot;: [&quot;recent&quot;,&quot;home&quot;]
+    &#125;
+  &#125;&#039; \
+  -F &#039;status=ACTIVE&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+##### Parameters
+
+| Name | Description |
+| --- | --- |
+| `min_population`&lt;br&gt;&lt;br&gt;int | The minimum population threshold on which the cities are chosen for targeting. |
+| `max_population`&lt;br&gt;&lt;br&gt;int | The maximum population threshold on which the cities are chosen for targeting. |
+
+## Interest targeting &#123;#interests&#125;
+
+Target based on interests from someone&#039;s timeline, from Pages liked or from keywords associated with Pages or apps someone uses. See [Targeting Search, Interests](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-search#interests).
+
+To target people interested in soccer, first query:
+
+```html
+curl -G \
+  -d &#039;type=adinterest&#039; \
+  -d &#039;q=soccer&#039; \
+  -d &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/search
+```
+
+Add this interest by `name` and `id` to a targeting spec, where `path` is the path of this interest in ads tools.
+
+```html
+curl -X POST \
+  -F &#039;name=&quot;My First AdSet&quot;&#039; \
+  -F &#039;daily_budget=10000&#039; \
+  -F &#039;bid_amount=300&#039; \
+  -F &#039;billing_event=&quot;IMPRESSIONS&quot;&#039; \
+  -F &#039;optimization_goal=&quot;REACH&quot;&#039; \
+  -F &#039;campaign_id=&quot;&lt;CAMPAIGN_ID&gt;&quot;&#039; \
+  -F &#039;promoted_object=&#123;
+       &quot;page_id&quot;: &quot;&lt;PAGE_ID&gt;&quot;
+     &#125;&#039; \
+  -F &#039;targeting=&#123;
+       &quot;facebook_positions&quot;: [
+         &quot;feed&quot;
+       ],
+       &quot;geo_locations&quot;: &#123;
+         &quot;countries&quot;: [
+           &quot;US&quot;
+         ],
+         &quot;regions&quot;: [
+           &#123;
+             &quot;key&quot;: &quot;4081&quot;
+           &#125;
+         ],
+         &quot;cities&quot;: [
+           &#123;
+             &quot;key&quot;: 777934,
+             &quot;radius&quot;: 10,
+             &quot;distance_unit&quot;: &quot;mile&quot;
+           &#125;
+         ]
+       &#125;,
+       &quot;genders&quot;: [
+         1
+       ],
+       &quot;age_max&quot;: 24,
+       &quot;age_min&quot;: 20,
+       &quot;publisher_platforms&quot;: [
+         &quot;facebook&quot;,
+         &quot;audience_network&quot;
+       ],
+       &quot;device_platforms&quot;: [
+         &quot;mobile&quot;
+       ],
+       &quot;flexible_spec&quot;: [
+         &#123;
+           &quot;interests&quot;: [
+             &#123;
+               &quot;id&quot;: &quot;&lt;INTEREST_ID&gt;&quot;,
+               &quot;name&quot;: &quot;&lt;INTEREST_NAME&gt;&quot;
+             &#125;
+           ]
+         &#125;
+       ]
+     &#125;&#039; \
+  -F &#039;status=&quot;PAUSED&quot;&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+Here&#039;s another example:
+
+```html
+curl \
+  -F &#039;name=My AdSet&#039; \
+  -F &#039;optimization_goal=REACH&#039; \
+  -F &#039;billing_event=IMPRESSIONS&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=&lt;CAMPAIGN_ID&gt;&#039; \
+  -F &#039;targeting=&#123;
+    &quot;geo_locations&quot;: &#123;&quot;countries&quot;:[&quot;US&quot;]&#125;,
+    &quot;interests&quot;: [
+      &#123;&quot;id&quot;:6003139266461,&quot;name&quot;:&quot;Movies&quot;&#125;,
+      &#123;&quot;id&quot;:6003397425735,&quot;name&quot;:&quot;Tennis&quot;&#125;,
+      &#123;&quot;id&quot;:6003659420716,&quot;name&quot;:&quot;Cooking&quot;&#125;
+    ]
+  &#125;&#039; \
+  -F &#039;status=ACTIVE&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+### Fields
+
+| Name | Description |
+| --- | --- |
+| `interests`&lt;br&gt;&lt;br&gt;array | Array  with `id` and optional `name` fields:  &lt;br&gt;`&#039;interests&#039;:[&#123;id: 6003139266461,&lt;br&gt;&#039;name&#039;: &#039;Movies&#039;&#125;, &#123;id: 6003139266462&#125;, 6003139266463]` |
+
+## Behavioral targeting &#123;#behaviors&#125;
+Target based on digital activities, devices people use, past or intended purchases, and travel. View options at `Browse` such as Frequent Travelers. See [Targeting Search API](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-search#behaviors).
+
+```html
+curl -G \
+  -d &#039;type=adTargetingCategory&#039; \
+  -d &#039;class=behaviors&#039; \
+  -d &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/search
+```
+
+Add the behavior to `targeting` spec:
+
+```html
+curl \
+  -F &#039;name=My First AdSet&#039; \
+  -F &#039;daily_budget=10000&#039; \
+  -F &#039;bid_amount=300&#039; \
+  -F &#039;billing_event=IMPRESSIONS&#039; \
+  -F &#039;optimization_goal=REACH&#039; \
+  -F &#039;campaign_id=&lt;CAMPAIGN_ID&gt;&#039; \
+  -F &#039;promoted_object=&#123;&quot;page_id&quot;:&quot;&lt;PAGE_ID&gt;&quot;&#125;&#039; \
+  -F &#039;targeting=&#123;
+    &quot;age_max&quot;: 24,
+    &quot;age_min&quot;: 20,
+    &quot;behaviors&quot;: [&#123;&quot;id&quot;:6002714895372,&quot;name&quot;:&quot;All frequent travelers&quot;&#125;],
+    &quot;device_platforms&quot;: [&quot;mobile&quot;],
+    &quot;genders&quot;: [1],
+    &quot;geo_locations&quot;: &#123;
+      &quot;countries&quot;: [&quot;JP&quot;],
+      &quot;regions&quot;: [&#123;&quot;key&quot;:&quot;3886&quot;&#125;],
+      &quot;cities&quot;: [
+        &#123;
+          &quot;key&quot;: &quot;2420605&quot;,
+          &quot;radius&quot;: 10,
+          &quot;distance_unit&quot;: &quot;mile&quot;
+        &#125;
+      ]
+    &#125;,
+    &quot;interests&quot;: [&#123;&quot;id&quot;:6003107902433,&quot;name&quot;:&quot;Association football (Soccer)&quot;&#125;],
+    &quot;publisher_platforms&quot;: [&quot;facebook&quot;,&quot;audience_network&quot;]
+  &#125;&#039; \
+  -F &#039;status=PAUSED&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+Another example:
+
+```html
+curl -X POST \
+  -F &#039;name=&quot;My AdSet&quot;&#039; \
+  -F &#039;optimization_goal=&quot;REACH&quot;&#039; \
+  -F &#039;billing_event=&quot;IMPRESSIONS&quot;&#039; \
+  -F &#039;bid_amount=2&#039; \
+  -F &#039;daily_budget=1000&#039; \
+  -F &#039;campaign_id=&quot;&lt;CAMPAIGN_ID&gt;&quot;&#039; \
+  -F &#039;targeting=&#123;
+       &quot;facebook_positions&quot;: [
+         &quot;feed&quot;
+       ],
+       &quot;geo_locations&quot;: &#123;
+         &quot;countries&quot;: [
+           &quot;US&quot;
+         ]
+       &#125;,
+       &quot;behaviors&quot;: [
+         &#123;
+           &quot;id&quot;: 6007101597783,
+           &quot;name&quot;: &quot;Business Travelers&quot;
+         &#125;,
+         &#123;
+           &quot;id&quot;: 6004386044572,
+           &quot;name&quot;: &quot;Android Owners (All)&quot;
+         &#125;
+       ]
+     &#125;&#039; \
+  -F &#039;access_token=&lt;ACCESS_TOKEN&gt;&#039; \
+https://graph.facebook.com/v25.0/act_&lt;AD_ACCOUNT_ID&gt;/adsets
+```
+
+## Fields
+
+| Name | Description |
+| --- | --- |
+| `behaviors`&lt;br&gt;&lt;br&gt;array | Array  with `id` and optional `name` fields:  &lt;br&gt;`&#039;behaviors&#039;:[&#123;id: 6004386044572,&lt;br&gt;&#039;name&#039;: &#039;Android Owners (All)&#039;&#125;, &#123;id: 6004386044573&#125;, 6004386044574]` |
+
+## Learn more
+
+- [Search Targeting](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/reference/targeting-search) - Query for Facebook&#039;s native ads targeting options.
+- [Audience Targeting](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/guides/custom-audiences)
+- [Special Ad Category](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/special-ad-category)  
+
+Other targeting:
+
+- [Audience Network](https://developers.facebook.com/documentation/ads-commerce/marketing-api/audience-network) - Run ads on Audience Network and extend the reach of your link or app ads
+</pre></body></html>

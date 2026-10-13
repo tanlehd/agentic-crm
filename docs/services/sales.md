@@ -51,3 +51,7 @@ Rollback/cutover tuân [migration plan](../planning/microservices-migration.md):
 ## Acceptance trước service Ready
 
 Own DB credentials không đọc được DB khác; API/consumer schemas và tenant ACL negative tests; duplicate/out-of-order/lost ACK; crash sau remote effect; permission/owner revoked; broker/downstream outage; poison event/DLQ replay; migrate/restore và compatibility với client/run phiên bản cũ. Thêm domain cases ở module hiện hữu; với Draft module phải chốt domain AC trước code. Chưa test service phân tán, tất cả gates này NOT_RUN.
+
+## CRM base follow-up — PLAN-010
+
+[Plan](../planning/crm-base-outcomes.md) schedules manual/from-Conversation Lead, manual/from-Lead Deal, immutable source lineage and Deal-linked collection evidence before automation frameworks. [Attribution](../contracts/crm-source-attribution.md) separates immutable system channel/Page/ad from editable declared source. Sales remains authority; exact model/API/events and revenue evidence scope require PLAN-011 Ready. Current service extraction status unchanged; source tasks SRC-045/046/048 are TODO.

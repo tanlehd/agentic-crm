@@ -1,5 +1,14 @@
 # Data dictionary
 
+Reporting SRC-059 forward003 adds owner-scoped report_query_run and immutable report_query_run_event in own crm_reporting v3. Exact columns/keys/retention/permissions in [filled run table dictionary](../contracts/reporting-runs.md); no cross-service FK/source ownership change. Native Identity remains owner authority; no admission token stored.
+
+**SRC-058 / 2026-10-12:** [Projection table dictionary](../contracts/reporting-projections.md) adds5 tables in crm_reporting v2: source binding, generation/checkpoint, page receipt, immutable typed observation ledger, activation audit. [Mock source runbook](../development/reporting-projections.md):25objects/120fields, descriptor types and full catalog/coverage pinned in every manifest; no connected-source completeness claim.
+
+**SRC-057 / 2026-10-12:** Reporting physical dictionary and all six filled table designs are in [private draft persistence](../contracts/reporting-persistence.md). Independent crm_reporting v1 owns report_definition, report_version, report_catalog_version, report_command_receipt, report_audit_entry, report_outbox_event and system schema_migration. No source business facts or cross-service FK; unvalidated draft JSON is metadata only.
+
+**Current priority CHG-20261007-14:** Lead/Deal → organic Conversation→Lead→Deal won with value → organic Page report/release (SRC-045/046/052/050); then Marketing sync/campaign reports (SRC-051/049). Ticket/receipts follow separately. Phase1 revenue means won Deal value, not cash collected. Exact scoped design: [organic Sales base](../contracts/organic-sales-base.md).
+
+
 **ADR-021 target dictionary:** [native Identity fields](../contracts/native-auth.md), [scope/key standard](database-guidelines.md), [schema placement](schema-catalog.md) và [inventory](table-placement-inventory.md) supersede ngoại lệ account/tenant/journal bên dưới cho thiết kế mới. Các bảng M1–M2 dưới đây là physical baseline còn chạy; SRC-038 migration23 đã triển khai tenant columns và native tables trong monolith; [physical detail](../contracts/native-auth-implementation.md).
 
 > Baseline monolith hiện có, không phải physical schema của các microservice đích. Xem [data ownership ADR-017](service-ownership.md); FK/UoW cross-module dưới đây chỉ áp dụng trong DB hiện tại. Extraction không sửa applied migrations1–18.
@@ -107,6 +116,8 @@ SRC-014 physical v9 triển khai `channel_connection.provider=mock_messenger`, s
 
 M1 có thể tạo hai custom object healthcare để kiểm tra generic persistence/association, nhưng không triển khai engine lịch hẹn hoặc doanh thu trước M4.
 
+PLAN-022A Reporting logical model được cụ thể hóa trong [semantic dictionary](reporting-semantic-model.md): source bindings, object/model/field/relation/metric descriptors, report/template/dashboard versions, run/export/checkpoint và typed fact/dimension/bridge projections. [Persistence inventory và gate](../planning/report-builder.md) thuộc crm_reporting; chưa thêm/sửa bảng, exact filled table templates/DDL/index/retention còn PLAN-022. Custom attributes dùng stable CRM property IDs + typed indexing, không ALTER TABLE theo tenant.
+
 Quy tắc physical type/default/index/FK/migration bổ sung ở [physical schema](physical-schema.md).
 
 ## Infrastructure control plane — SRC-004
@@ -180,3 +191,34 @@ Existing contact_identity remains canonical CRM-owned identity mapping in schema
 ## Native Identity — migration23
 
 Physical fields/defaults/CHECK/index/FK theo [exact implementation contract](../contracts/native-auth-implementation.md). account_credential lưu Argon2 PHC/version/changed_at; auth_session lưu token_hash, account_id, security_revision và created/last_seen/absolute expiry/revoked epoch ms; auth_challenge lưu token_hash/browser_hash/expires_at; auth_token lưu one-use purpose/security_revision/expiry/consumed; auth_attempt lưu hashed bucket/window/count; system_audit_entry append-only action/account/time. Cả sáu bảng thuộc logical crm_identity, explicit system tenant; không chứa business tenant payload. tenant root tenant_id=id, kind business/system. Journal có explicit system tenant_id, không đổi checksum migration cũ.
+
+## CRM base logical additions — PLAN-010, physical design pending
+
+[Product source rules](../contracts/crm-source-attribution.md) và [plan](../planning/crm-base-outcomes.md) bổ sung logical model: Lead system origin/source snapshot (channel, page_id, ad_id, evidenced campaign/adset, basis/version/time/unknown reason), independent editable declared source, Deal primary lineage và Deal-linked receipt/refund/reversal evidence. System source bất biến; enrichment có provenance/version riêng, không overwrite. Lead/Deal/revenue authority ở Sales, source evidence ở Chat/Connector, report ở Reporting. Đây chưa là bảng/column đã tồn tại hoặc DDL Ready. PLAN-011 phải đọc schema catalog/guidelines và điền table template trước mọi schema implementation; tất cả application tables có tenant_id NOT NULL, forward migration và evidence-only legacy backfill. Giữ source_touchpoint_id compatibility; không giả dữ liệu thiếu.
+
+## Marketing hierarchy refinement — PLAN-012
+
+[Marketing](../services/marketing.md) owns logical ad account/campaign/ad set/ad replicas, parent relationships/history and sync checkpoints in crm_marketing. Facebook Marketing API is upstream. Reporting resolves immutable Lead ad_id against this hierarchy through API/events and can reconcile late sync without changing Lead origin. PLAN-011 must complete physical table templates/tenant keys/grants and versioned sync contracts before SRC-051; no tables created by this design.
+## Marketing field merge — PLAN-014
+
+[Operational dictionary](marketing-field-mapping.md) and [103 selected provider fields](marketing-field-selection.json) merge official Meta objects: Account/Campaign/Ad Set/Ad/Creative, targeting/audience references, provider observation history and separate Insights observations. [24-source dossier](../references/meta/marketing-dossier.md). Marketing owns provider replicas/history, Reporting owns projections, Sales source remains immutable. Logical selection only; exact physical table templates/contracts remain PLAN-011. No migration applied.
+
+PLAN-016: [Page/Instagram ERD](marketing-erd.md) adds Marketing metadata refs for Facebook Page, Instagram Account, Facebook Post and Instagram Media, plus observed Page–Instagram links. Creative references content and actor identities; it is not the same entity as a post. Existing Channels/Connector credentials/webhooks remain under their owner; no cross-service SQL/FK. Exact schemas and hydration permissions stay PLAN-011.
+
+PLAN-018: [Conversation acquisition session](../contracts/conversation-acquisition-session.md) adds Chat-owned logical conversation_session/message membership and session source evidence. Core Contact anchors Conversation/Session; Sales Lead gets separate conversation_session_id and Deal inherits origin session/source. Existing qualification_session_id remains Chatflow-related. No physical columns yet; forward migration and evidence-only legacy coverage required in SRC-053.
+
+## SRC-053 acquisition sessions — forward26
+
+Chat owns conversation_acquisition_session and message_acquisition_membership; tenant_id is mandatory on both. Session source is immutable, one active session per Conversation; membership is assigned or explicitly unresolved_late/unresolved_legacy. Sales Lead adds conversation_session_id and source_conversation_session_id; Deal copies source_conversation_session_id. These are logical Chat references, distinct from qualification_session_id. Exact columns, indexes, constraints, nullability and table templates: [Ready implementation contract](../contracts/acquisition-session-implementation.md). Existing source snapshots and historical message memberships are not rewritten.
+
+PLAN-021: [Marketing source catalog](marketing-source-catalog.md) defines fetch/store/field-description scope; Reporting owns semantic data-source/link/metric definitions and templates. Base/breakdown provider metrics stay Marketing-owned; CRM outcomes stay at their producers. No physical table or runtime change.
+
+PLAN-011C adds the [105-field storage dictionary](marketing-storage-dictionary.md), [machine-readable descriptors](marketing-storage-dictionary.json) and [storage/sync profiles](marketing-storage-design.md). These specify provider path → proposed table/column/type/unit/meaning, common keys, age/region datasets and coverage; not applied DDL or live capability evidence. Broader auth/API/table-template gates remain PLAN-011.
+
+PLAN-023 / CHG-20261008-09: [Shared account and Page tenant admission](../contracts/marketing-tenant-admission.md). All tables retain tenant_id NOT NULL. The same external Ad Account may have independent tenant-local replicas/bindings. Ads/related metadata/Insights are admitted only when Creative Page resolves to the sync tenant; foreign Ads skip, unresolved defer. Parent configuration can be shared; children and ad-level Insights remain tenant-filtered. No cross-tenant payload/history persistence or campaign/account aggregate metric substitution.
+
+Marketing database v1 / SRC-054: [352-column physical dictionary](marketing-physical-dictionary.md), [105 provider-field meanings](marketing-storage-dictionary.md), [filled templates](../contracts/marketing-database.md). Shared accounts use tenant-local replicas; all tables tenant-bound; Page ownership remains remote authority.
+
+PLAN-011E: [metadata manifest](marketing-metadata-profile.json) maps88 selected provider fields to six read profiles; [forward control-table templates](../contracts/marketing-sync-tables.md) are design only. Actual v1 physical dictionary remains unchanged until source migrations.
+
+SRC-056 local authority implemented/schema27: [runbook](../development/marketing-authority.md), [evidence](../tracking/details/SRC-056.md). Native credential setup and private Graph/Page/admission ports exist; separate credential DB role. Live Meta remains unconfigured; periodic worker is SRC-051.

@@ -8,6 +8,11 @@ import { RecordRegistry,type RegistryRecord } from './registry.js';
 // Sales has validated the command's state/team/CAS. CRM owns registry/share SQL.
 export class SalesCrmPort {
  private readonly registry=new RecordRegistry();private readonly commands=new DurableCommands();
+ async markCustomer(s:TransactionScope,a:Access,id:string,correlation:string){
+  const r=await this.contact(s,id);this.registry.read(a,r);
+  const result=await s.query("UPDATE contact SET lifecycle='customer',customer_since=UTC_TIMESTAMP(6) WHERE tenant_id=? AND record_id=? AND lifecycle='prospect'",[s.context.tenantId,id]);
+  if(result.affectedRows){await this.registry.bump(s,r,r.version);await this.commands.audit(s,a.principalId,correlation,'contact',id,'first_deal_won',['lifecycle','customer_since']);}
+ }
  async contact(s:TransactionScope,id:string){const r=await this.registry.get(s,id,true);if(r.objectKey!=='contact'||r.archived)throw new CommandError(409,'CONTACT_UNAVAILABLE');return r;}
  async shareContact(s:TransactionScope,id:string,team:string){await this.contact(s,id);await s.query('INSERT INTO record_team_access(tenant_id,record_id,team_id) VALUES (?,?,?) ON DUPLICATE KEY UPDATE team_id=VALUES(team_id)',[s.context.tenantId,id,team]);}
  async ownership(s:TransactionScope,a:Access,r:RegistryRecord,version:string,owner:string|null,team:string,correlation:string,kind:'human'|'service',action:'handoff'|'accept'){

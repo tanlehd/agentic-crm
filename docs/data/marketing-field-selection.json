@@ -1,0 +1,1042 @@
+{
+  "status": "logical-selection-not-DDL-or-runtime",
+  "owner": "Marketing",
+  "target_schema": "crm_marketing",
+  "documentation_snapshot": "2026-10-07-marketing",
+  "semantics": "marketing-field-mapping.md",
+  "default_write_policy": "provider-read-only; adapter writes authorized tenant replica",
+  "fields": [
+    {
+      "entity": "marketing_account",
+      "provider_field": "id",
+      "crm_field": "provider_node_id",
+      "provider_type": "string",
+      "source_file": "ad-account.md.txt",
+      "source_line": 137,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_account",
+      "provider_field": "account_id",
+      "crm_field": "external_account_id",
+      "provider_type": "numeric string",
+      "source_file": "ad-account.md.txt",
+      "source_line": 138,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_account",
+      "provider_field": "name",
+      "crm_field": "name",
+      "provider_type": "string",
+      "source_file": "ad-account.md.txt",
+      "source_line": 186,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_account",
+      "provider_field": "account_status",
+      "crm_field": "account_status_code",
+      "provider_type": "unsigned int32",
+      "source_file": "ad-account.md.txt",
+      "source_line": 139,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_account",
+      "provider_field": "disable_reason",
+      "crm_field": "disable_reason_code",
+      "provider_type": "unsigned int32",
+      "source_file": "ad-account.md.txt",
+      "source_line": 162,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_account",
+      "provider_field": "currency",
+      "crm_field": "currency",
+      "provider_type": "string",
+      "source_file": "ad-account.md.txt",
+      "source_line": 158,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_account",
+      "provider_field": "timezone_id",
+      "crm_field": "provider_timezone_id",
+      "provider_type": "unsigned int32",
+      "source_file": "ad-account.md.txt",
+      "source_line": 199,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_account",
+      "provider_field": "timezone_name",
+      "crm_field": "timezone_name",
+      "provider_type": "string",
+      "source_file": "ad-account.md.txt",
+      "source_line": 200,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_account",
+      "provider_field": "timezone_offset_hours_utc",
+      "crm_field": "observed_utc_offset_hours",
+      "provider_type": "float",
+      "source_file": "ad-account.md.txt",
+      "source_line": 201,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_account",
+      "provider_field": "business",
+      "selected_child": "id",
+      "crm_field": "business_id",
+      "provider_type": "Business",
+      "source_file": "ad-account.md.txt",
+      "source_line": 147,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_account",
+      "provider_field": "spend_cap",
+      "crm_field": "spend_cap_raw",
+      "provider_type": "numeric string",
+      "source_file": "ad-account.md.txt",
+      "source_line": 195,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_campaign",
+      "provider_field": "id",
+      "crm_field": "external_campaign_id",
+      "provider_type": "numeric string",
+      "source_file": "campaign.md.txt",
+      "source_line": 117,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_campaign",
+      "provider_field": "account_id",
+      "crm_field": "external_account_id",
+      "provider_type": "numeric string",
+      "source_file": "campaign.md.txt",
+      "source_line": 118,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_campaign",
+      "provider_field": "name",
+      "crm_field": "name",
+      "provider_type": "string",
+      "source_file": "campaign.md.txt",
+      "source_line": 141,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_campaign",
+      "provider_field": "objective",
+      "crm_field": "objective",
+      "provider_type": "string",
+      "source_file": "campaign.md.txt",
+      "source_line": 142,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_campaign",
+      "provider_field": "buying_type",
+      "crm_field": "buying_type",
+      "provider_type": "string",
+      "source_file": "campaign.md.txt",
+      "source_line": 125,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_campaign",
+      "provider_field": "status",
+      "crm_field": "configured_status",
+      "provider_type": "enum {ACTIVE, PAUSED, DELETED, ARCHIVED}",
+      "source_file": "campaign.md.txt",
+      "source_line": 154,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_campaign",
+      "provider_field": "effective_status",
+      "crm_field": "effective_status",
+      "provider_type": "enum {ACTIVE, PAUSED, DELETED, ARCHIVED, IN_PROCESS, WITH_ISSUES}",
+      "source_file": "campaign.md.txt",
+      "source_line": 132,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_campaign",
+      "provider_field": "daily_budget",
+      "crm_field": "daily_budget_raw",
+      "provider_type": "numeric string",
+      "source_file": "campaign.md.txt",
+      "source_line": 131,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_campaign",
+      "provider_field": "lifetime_budget",
+      "crm_field": "lifetime_budget_raw",
+      "provider_type": "numeric string",
+      "source_file": "campaign.md.txt",
+      "source_line": 140,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_campaign",
+      "provider_field": "budget_remaining",
+      "crm_field": "budget_remaining_raw",
+      "provider_type": "numeric string",
+      "source_file": "campaign.md.txt",
+      "source_line": 124,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_campaign",
+      "provider_field": "bid_strategy",
+      "crm_field": "bid_strategy",
+      "provider_type": "enum {LOWEST_COST_WITHOUT_CAP, LOWEST_COST_WITH_BID_CAP, COST_CAP, LOWEST_COST_WITH_MIN_ROAS}",
+      "source_file": "campaign.md.txt",
+      "source_line": 120,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_campaign",
+      "provider_field": "special_ad_categories",
+      "crm_field": "special_ad_categories",
+      "provider_type": "list<enum>",
+      "source_file": "campaign.md.txt",
+      "source_line": 149,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_campaign",
+      "provider_field": "special_ad_category_country",
+      "crm_field": "special_ad_category_country",
+      "provider_type": "list<enum>",
+      "source_file": "campaign.md.txt",
+      "source_line": 151,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_campaign",
+      "provider_field": "is_adset_budget_sharing_enabled",
+      "crm_field": "is_adset_budget_sharing_enabled",
+      "provider_type": "bool",
+      "source_file": "campaign.md.txt",
+      "source_line": 134,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_campaign",
+      "provider_field": "start_time",
+      "crm_field": "start_time",
+      "provider_type": "datetime",
+      "source_file": "campaign.md.txt",
+      "source_line": 153,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_campaign",
+      "provider_field": "stop_time",
+      "crm_field": "stop_time",
+      "provider_type": "datetime",
+      "source_file": "campaign.md.txt",
+      "source_line": 155,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_campaign",
+      "provider_field": "created_time",
+      "crm_field": "provider_created_at",
+      "provider_type": "datetime",
+      "source_file": "campaign.md.txt",
+      "source_line": 130,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_campaign",
+      "provider_field": "updated_time",
+      "crm_field": "provider_updated_at",
+      "provider_type": "datetime",
+      "source_file": "campaign.md.txt",
+      "source_line": 157,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "id",
+      "crm_field": "external_adset_id",
+      "provider_type": "numeric string",
+      "source_file": "ad-set.md.txt",
+      "source_line": 352,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "account_id",
+      "crm_field": "external_account_id",
+      "provider_type": "numeric string",
+      "source_file": "ad-set.md.txt",
+      "source_line": 353,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "campaign_id",
+      "crm_field": "external_campaign_id",
+      "provider_type": "numeric string",
+      "source_file": "ad-set.md.txt",
+      "source_line": 369,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "name",
+      "crm_field": "name",
+      "provider_type": "string",
+      "source_file": "ad-set.md.txt",
+      "source_line": 394,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "status",
+      "crm_field": "configured_status",
+      "provider_type": "enum {ACTIVE, PAUSED, DELETED, ARCHIVED}",
+      "source_file": "ad-set.md.txt",
+      "source_line": 408,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "effective_status",
+      "crm_field": "effective_status",
+      "provider_type": "enum {ACTIVE, PAUSED, DELETED, CAMPAIGN_PAUSED, ARCHIVED, IN_PROCESS, WITH_ISSUES}",
+      "source_file": "ad-set.md.txt",
+      "source_line": 380,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "destination_type",
+      "crm_field": "destination_type",
+      "provider_type": "string",
+      "source_file": "ad-set.md.txt",
+      "source_line": 377,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "optimization_goal",
+      "crm_field": "optimization_goal",
+      "provider_type": "enum {NONE, APP_INSTALLS, AD_RECALL_LIFT, ENGAGED_USERS, EVENT_RESPONSES, IMPRESSIONS, LEAD_GENERATION, QUALITY_LEAD, LINK_CLICKS, OFFSITE_CONVERSIONS, PAGE_LIKES, POST_ENGAGEMENT, QUALITY_CALL, REACH, LANDING_PAGE_VIEWS, VISIT_INSTAGRAM_PROFILE, ENGAGED_PAGE_VIEWS, VALUE, THRUPLAY, DERIVED_EVENTS, APP_INSTALLS_AND_OFFSITE_CONVERSIONS, CONVERSATIONS, IN_APP_VALUE, MESSAGING_PURCHASE_CONVERSION, MESSAGING_DEEP_CONVERSATION_AND_FOLLOW, SUBSCRIBERS, REMINDERS_SET, MEANINGFUL_CALL_ATTEMPT, PROFILE_VISIT, PROFILE_AND_PAGE_ENGAGEMENT, ADVERTISER_SILOED_VALUE, AUTOMATIC_OBJECTIVE, MESSAGING_APPOINTMENT_CONVERSION}",
+      "source_file": "ad-set.md.txt",
+      "source_line": 395,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "billing_event",
+      "crm_field": "billing_event",
+      "provider_type": "enum {APP_INSTALLS, CLICKS, IMPRESSIONS, LINK_CLICKS, NONE, OFFER_CLAIMS, PAGE_LIKES, POST_ENGAGEMENT, THRUPLAY, PURCHASE, LISTING_INTERACTION}",
+      "source_file": "ad-set.md.txt",
+      "source_line": 363,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "bid_strategy",
+      "crm_field": "bid_strategy",
+      "provider_type": "enum {LOWEST_COST_WITHOUT_CAP, LOWEST_COST_WITH_BID_CAP, COST_CAP, LOWEST_COST_WITH_MIN_ROAS}",
+      "source_file": "ad-set.md.txt",
+      "source_line": 362,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "bid_amount",
+      "crm_field": "bid_amount_raw",
+      "provider_type": "unsigned int32",
+      "source_file": "ad-set.md.txt",
+      "source_line": 359,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "daily_budget",
+      "crm_field": "daily_budget_raw",
+      "provider_type": "numeric string",
+      "source_file": "ad-set.md.txt",
+      "source_line": 374,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "lifetime_budget",
+      "crm_field": "lifetime_budget_raw",
+      "provider_type": "numeric string",
+      "source_file": "ad-set.md.txt",
+      "source_line": 388,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "budget_remaining",
+      "crm_field": "budget_remaining_raw",
+      "provider_type": "numeric string",
+      "source_file": "ad-set.md.txt",
+      "source_line": 365,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "start_time",
+      "crm_field": "start_time",
+      "provider_type": "datetime",
+      "source_file": "ad-set.md.txt",
+      "source_line": 407,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "end_time",
+      "crm_field": "end_time",
+      "provider_type": "datetime",
+      "source_file": "ad-set.md.txt",
+      "source_line": 381,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "adset_schedule",
+      "crm_field": "adset_schedule",
+      "provider_type": "list<DayPart>",
+      "source_file": "ad-set.md.txt",
+      "source_line": 355,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "is_dynamic_creative",
+      "crm_field": "is_dynamic_creative",
+      "provider_type": "bool",
+      "source_file": "ad-set.md.txt",
+      "source_line": 384,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "attribution_spec",
+      "crm_field": "attribution_spec",
+      "provider_type": "list<AttributionSpec>",
+      "source_file": "ad-set.md.txt",
+      "source_line": 357,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "promoted_object",
+      "crm_field": "promoted_object",
+      "provider_type": "AdPromotedObject",
+      "source_file": "ad-set.md.txt",
+      "source_line": 398,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "targeting",
+      "crm_field": "targeting",
+      "provider_type": "Targeting",
+      "source_file": "ad-set.md.txt",
+      "source_line": 409,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "learning_stage_info",
+      "crm_field": "learning_stage_info",
+      "provider_type": "AdCampaignLearningStageInfo",
+      "source_file": "ad-set.md.txt",
+      "source_line": 387,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "issues_info",
+      "crm_field": "issues_info",
+      "provider_type": "list<AdCampaignIssuesInfo>",
+      "source_file": "ad-set.md.txt",
+      "source_line": 386,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "created_time",
+      "crm_field": "provider_created_at",
+      "provider_type": "datetime",
+      "source_file": "ad-set.md.txt",
+      "source_line": 372,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad_set",
+      "provider_field": "updated_time",
+      "crm_field": "provider_updated_at",
+      "provider_type": "datetime",
+      "source_file": "ad-set.md.txt",
+      "source_line": 413,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad",
+      "provider_field": "id",
+      "crm_field": "external_ad_id",
+      "provider_type": "numeric string",
+      "source_file": "ad.md.txt",
+      "source_line": 272,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad",
+      "provider_field": "account_id",
+      "crm_field": "external_account_id",
+      "provider_type": "numeric string",
+      "source_file": "ad.md.txt",
+      "source_line": 273,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad",
+      "provider_field": "campaign_id",
+      "crm_field": "external_campaign_id",
+      "provider_type": "numeric string",
+      "source_file": "ad.md.txt",
+      "source_line": 285,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad",
+      "provider_field": "adset_id",
+      "crm_field": "external_adset_id",
+      "provider_type": "numeric string",
+      "source_file": "ad.md.txt",
+      "source_line": 280,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad",
+      "provider_field": "name",
+      "crm_field": "name",
+      "provider_type": "string",
+      "source_file": "ad.md.txt",
+      "source_line": 300,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad",
+      "provider_field": "creative",
+      "selected_child": "id",
+      "crm_field": "external_creative_id",
+      "provider_type": "AdCreative",
+      "source_file": "ad.md.txt",
+      "source_line": 290,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad",
+      "provider_field": "status",
+      "crm_field": "configured_status",
+      "provider_type": "enum {ACTIVE, PAUSED, DELETED, ARCHIVED}",
+      "source_file": "ad.md.txt",
+      "source_line": 307,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad",
+      "provider_field": "effective_status",
+      "crm_field": "effective_status",
+      "provider_type": "enum {ACTIVE, PAUSED, DELETED, PENDING_REVIEW, DISAPPROVED, PREAPPROVED, PENDING_BILLING_INFO, CAMPAIGN_PAUSED, ARCHIVED, ADSET_PAUSED, IN_PROCESS, WITH_ISSUES}",
+      "source_file": "ad.md.txt",
+      "source_line": 294,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad",
+      "provider_field": "issues_info",
+      "crm_field": "issues_info",
+      "provider_type": "list<AdgroupIssuesInfo>",
+      "source_file": "ad.md.txt",
+      "source_line": 298,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad",
+      "provider_field": "created_time",
+      "crm_field": "provider_created_at",
+      "provider_type": "datetime",
+      "source_file": "ad.md.txt",
+      "source_line": 289,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_ad",
+      "provider_field": "updated_time",
+      "crm_field": "provider_updated_at",
+      "provider_type": "datetime",
+      "source_file": "ad.md.txt",
+      "source_line": 311,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_creative",
+      "provider_field": "id",
+      "crm_field": "external_creative_id",
+      "provider_type": "numeric string",
+      "source_file": "creative.md.txt",
+      "source_line": 248,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_creative",
+      "provider_field": "account_id",
+      "crm_field": "external_account_id",
+      "provider_type": "numeric string",
+      "source_file": "creative.md.txt",
+      "source_line": 249,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_creative",
+      "provider_field": "name",
+      "crm_field": "name",
+      "provider_type": "string",
+      "source_file": "creative.md.txt",
+      "source_line": 291,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_creative",
+      "provider_field": "actor_id",
+      "crm_field": "actor_id",
+      "provider_type": "numeric string",
+      "source_file": "creative.md.txt",
+      "source_line": 250,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_creative",
+      "provider_field": "object_story_spec",
+      "crm_field": "object_story_spec",
+      "provider_type": "AdCreativeObjectStorySpec",
+      "source_file": "creative.md.txt",
+      "source_line": 295,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_creative",
+      "provider_field": "instagram_user_id",
+      "crm_field": "instagram_user_id",
+      "provider_type": "numeric string",
+      "source_file": "creative.md.txt",
+      "source_line": 283,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_creative",
+      "provider_field": "object_story_id",
+      "crm_field": "object_story_id",
+      "provider_type": "token with structure: Post ID",
+      "source_file": "creative.md.txt",
+      "source_line": 294,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_creative",
+      "provider_field": "effective_object_story_id",
+      "crm_field": "effective_object_story_id",
+      "provider_type": "token with structure: Post ID",
+      "source_file": "creative.md.txt",
+      "source_line": 272,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_creative",
+      "provider_field": "effective_instagram_media_id",
+      "crm_field": "effective_instagram_media_id",
+      "provider_type": "numeric string",
+      "source_file": "creative.md.txt",
+      "source_line": 271,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_creative",
+      "provider_field": "body",
+      "crm_field": "provider_body",
+      "provider_type": "string",
+      "source_file": "creative.md.txt",
+      "source_line": 256,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_creative",
+      "provider_field": "title",
+      "crm_field": "provider_title",
+      "provider_type": "string",
+      "source_file": "creative.md.txt",
+      "source_line": 318,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_creative",
+      "provider_field": "asset_feed_spec",
+      "crm_field": "asset_feed",
+      "provider_type": "AdAssetFeedSpec",
+      "source_file": "creative.md.txt",
+      "source_line": 254,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_creative",
+      "provider_field": "image_hash",
+      "crm_field": "image_hash",
+      "provider_type": "string",
+      "source_file": "creative.md.txt",
+      "source_line": 280,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_creative",
+      "provider_field": "video_id",
+      "crm_field": "video_id",
+      "provider_type": "numeric string",
+      "source_file": "creative.md.txt",
+      "source_line": 321,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_creative",
+      "provider_field": "thumbnail_url",
+      "crm_field": "thumbnail_url",
+      "provider_type": "string",
+      "source_file": "creative.md.txt",
+      "source_line": 317,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_creative",
+      "provider_field": "call_to_action_type",
+      "crm_field": "call_to_action_type",
+      "provider_type": "enum {OPEN_LINK, LIKE_PAGE, SHOP_NOW, PLAY_GAME, INSTALL_APP, USE_APP, CALL, CALL_ME, VIDEO_CALL, INSTALL_MOBILE_APP, USE_MOBILE_APP, MOBILE_DOWNLOAD, BOOK_TRAVEL, LISTEN_MUSIC, WATCH_VIDEO, LEARN_MORE, SIGN_UP, DOWNLOAD, WATCH_MORE, NO_BUTTON, VISIT_PAGES_FEED, CALL_NOW, APPLY_NOW, CONTACT, BUY_NOW, GET_OFFER, GET_OFFER_VIEW, BUY_TICKETS, UPDATE_APP, GET_DIRECTIONS, BUY, SEND_UPDATES, MESSAGE_PAGE, DONATE, SUBSCRIBE, SAY_THANKS, SELL_NOW, SHARE, DONATE_NOW, GET_QUOTE, CONTACT_US, ORDER_NOW, START_ORDER, ADD_TO_CART, VIEW_CART, VIEW_IN_CART, VIDEO_ANNOTATION, RECORD_NOW, INQUIRE_NOW, CONFIRM, REFER_FRIENDS, REQUEST_TIME, GET_SHOWTIMES, LISTEN_NOW, TRY_DEMO, WOODHENGE_SUPPORT, SOTTO_SUBSCRIBE, FOLLOW_USER, RAISE_MONEY, SEE_SHOP, GET_DETAILS, FIND_OUT_MORE, VISIT_WEBSITE, BROWSE_SHOP, EVENT_RSVP, WHATSAPP_MESSAGE, FOLLOW_NEWS_STORYLINE, SEE_MORE, BOOK_NOW, FIND_A_GROUP, FIND_YOUR_GROUPS, PAY_TO_ACCESS, PURCHASE_GIFT_CARDS, FOLLOW_PAGE, SEND_A_GIFT, SWIPE_UP_SHOP, SWIPE_UP_PRODUCT, SEND_GIFT_MONEY, PLAY_GAME_ON_FACEBOOK, GET_STARTED, OPEN_INSTANT_APP, AUDIO_CALL, GET_PROMOTIONS, JOIN_CHANNEL, MAKE_AN_APPOINTMENT, ASK_ABOUT_SERVICES, BOOK_A_CONSULTATION, GET_A_QUOTE, BUY_VIA_MESSAGE, ASK_FOR_MORE_INFO, CHAT_WITH_US, VIEW_PRODUCT, VIEW_CHANNEL, GET_IN_TOUCH, ASK_A_QUESTION, START_A_CHAT, CHAT_NOW, ASK_US, WATCH_LIVE_VIDEO, JOIN_LIVE_VIDEO, SHOP_WITH_AI, TRY_ON_WITH_AI}",
+      "source_file": "creative.md.txt",
+      "source_line": 261,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_creative",
+      "provider_field": "url_tags",
+      "crm_field": "provider_url_tags",
+      "provider_type": "string",
+      "source_file": "creative.md.txt",
+      "source_line": 319,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_creative",
+      "provider_field": "degrees_of_freedom_spec",
+      "crm_field": "creative_transformation_spec",
+      "provider_type": "AdCreativeDegreesOfFreedomSpec",
+      "source_file": "creative.md.txt",
+      "source_line": 267,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_audience_reference",
+      "provider_field": "id",
+      "crm_field": "external_audience_id",
+      "provider_type": "numeric string",
+      "source_file": "custom-audience.md.txt",
+      "source_line": 132,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_audience_reference",
+      "provider_field": "account_id",
+      "crm_field": "external_account_id",
+      "provider_type": "numeric string",
+      "source_file": "custom-audience.md.txt",
+      "source_line": 133,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_audience_reference",
+      "provider_field": "name",
+      "crm_field": "name",
+      "provider_type": "string",
+      "source_file": "custom-audience.md.txt",
+      "source_line": 145,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_audience_reference",
+      "provider_field": "subtype",
+      "crm_field": "subtype",
+      "provider_type": "string",
+      "source_file": "custom-audience.md.txt",
+      "source_line": 154,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_audience_reference",
+      "provider_field": "lookalike_spec",
+      "crm_field": "lookalike_spec",
+      "provider_type": "LookalikeSpec",
+      "source_file": "custom-audience.md.txt",
+      "source_line": 144,
+      "stage": "metadata-sync",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_insight_observation",
+      "provider_field": "account_id",
+      "crm_field": "external_account_id",
+      "provider_type": "numeric string",
+      "source_file": "account-insights.md.txt",
+      "source_line": 171,
+      "stage": "separate-insights-scope",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_insight_observation",
+      "provider_field": "campaign_id",
+      "crm_field": "external_campaign_id",
+      "provider_type": "numeric string",
+      "source_file": "account-insights.md.txt",
+      "source_line": 201,
+      "stage": "separate-insights-scope",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_insight_observation",
+      "provider_field": "adset_id",
+      "crm_field": "external_adset_id",
+      "provider_type": "numeric string",
+      "source_file": "account-insights.md.txt",
+      "source_line": 185,
+      "stage": "separate-insights-scope",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_insight_observation",
+      "provider_field": "ad_id",
+      "crm_field": "external_ad_id",
+      "provider_type": "numeric string",
+      "source_file": "account-insights.md.txt",
+      "source_line": 180,
+      "stage": "separate-insights-scope",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_insight_observation",
+      "provider_field": "account_currency",
+      "crm_field": "account_currency",
+      "provider_type": "string",
+      "source_file": "account-insights.md.txt",
+      "source_line": 170,
+      "stage": "separate-insights-scope",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_insight_observation",
+      "provider_field": "date_start",
+      "crm_field": "date_start",
+      "provider_type": "string",
+      "source_file": "account-insights.md.txt",
+      "source_line": 293,
+      "stage": "separate-insights-scope",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_insight_observation",
+      "provider_field": "date_stop",
+      "crm_field": "date_stop",
+      "provider_type": "string",
+      "source_file": "account-insights.md.txt",
+      "source_line": 294,
+      "stage": "separate-insights-scope",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_insight_observation",
+      "provider_field": "impressions",
+      "crm_field": "impressions",
+      "provider_type": "numeric string",
+      "source_file": "account-insights.md.txt",
+      "source_line": 325,
+      "stage": "separate-insights-scope",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_insight_observation",
+      "provider_field": "clicks",
+      "crm_field": "clicks",
+      "provider_type": "numeric string",
+      "source_file": "account-insights.md.txt",
+      "source_line": 214,
+      "stage": "separate-insights-scope",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_insight_observation",
+      "provider_field": "inline_link_clicks",
+      "crm_field": "inline_link_clicks",
+      "provider_type": "numeric string",
+      "source_file": "account-insights.md.txt",
+      "source_line": 329,
+      "stage": "separate-insights-scope",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_insight_observation",
+      "provider_field": "reach",
+      "crm_field": "reach",
+      "provider_type": "numeric string",
+      "source_file": "account-insights.md.txt",
+      "source_line": 393,
+      "stage": "separate-insights-scope",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_insight_observation",
+      "provider_field": "spend",
+      "crm_field": "spend",
+      "provider_type": "numeric string",
+      "source_file": "account-insights.md.txt",
+      "source_line": 409,
+      "stage": "separate-insights-scope",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_insight_observation",
+      "provider_field": "actions",
+      "crm_field": "actions",
+      "provider_type": "list<AdsActionStats>",
+      "source_file": "account-insights.md.txt",
+      "source_line": 174,
+      "stage": "separate-insights-scope",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_insight_observation",
+      "provider_field": "action_values",
+      "crm_field": "action_values",
+      "provider_type": "list<AdsActionStats>",
+      "source_file": "account-insights.md.txt",
+      "source_line": 173,
+      "stage": "separate-insights-scope",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    },
+    {
+      "entity": "marketing_insight_observation",
+      "provider_field": "attribution_setting",
+      "crm_field": "attribution_setting",
+      "provider_type": "string",
+      "source_file": "account-insights.md.txt",
+      "source_line": 193,
+      "stage": "separate-insights-scope",
+      "verification": "official-documentation-only; live field coverage NOT_RUN"
+    }
+  ]
+}

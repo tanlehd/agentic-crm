@@ -7,6 +7,7 @@ import { spawn } from 'node:child_process';
 export const root = fileURLToPath(new URL('../', import.meta.url));
 export const infra = ['mysql', 'redis'];
 export const units = {
+  reporting: { cwd: 'services/reporting', args: ['dist/main.js'], health: '/internal/v1/reporting/health/ready' },
   api: { cwd: 'apps/backend', args: ['--import', 'tsx', 'src/main.ts'], health: '/api/v1/health/ready' },
   worker: { cwd: 'apps/backend', args: ['--import', 'tsx', 'src/worker.ts'], health: '/api/v1/health/ready' },
   web: { cwd: 'apps/web', args: ['node_modules/next/dist/bin/next', 'dev', '--hostname', '127.0.0.1'], health: '/' },

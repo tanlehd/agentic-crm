@@ -1,5 +1,7 @@
 # Domain events và delivery semantics
 
+SRC-057 Reporting stores own immutable event facts `report.definition.create.v1`, `report.definition.update.v1`, `report.definition.archive.v1` atomically with draft mutations. Physical payload is tenant/id/report_id/event_type/aggregate_revision/created_at only; archive includes restore commands under the same operation type. This is a local outbox fact, not an activated distributed envelope/relay. Consumer/rebuild/relay contracts must be reviewed before publication; see [storage contract](reporting-persistence.md).
+
 > Microservices target ADR-017 dùng [cross-service rules](service-boundaries.md). APIs/UoW trong tài liệu này là baseline implementation hiện tại; exact remote contracts và sagas cần PLAN-006 trước extraction.
 Status: Ready for implementation — M1–M2.
 
@@ -80,3 +82,11 @@ For new versioned chat.message.received/sent/updated and chat.send.requested pay
 ## UX-002 — Workspace event families (scoped source status in tracker)
 
 [Workspace event catalog](agent-chat-workspace.md) thêm chat.read_marker.updated, chat.snooze.changed, chat.conversation_tag.changed, chat.inbox.changed, chat.snippet.changed, chat.tag_definition.changed, automation.conversation_activity.v1 và crm.conversation_note.changed. Producer sở hữu aggregate, state+outbox cùng local transaction, consumer dedup source revision/tenant; payload chỉ refs/enums/revisions, không body/reason tự do. Legacy events không bị sửa; Chat activity là projection, không authority run/CRM note. Machine schemas/emission/consumption và runtime tests thuộc SRC-032…034.
+
+## Organic Sales base schema1 events
+
+deal.created and deal.won: aggregate_type deal; payload deal_id,contact_id,lead_id(nullable), IDs only; event envelope has tenant, aggregate version, timestamp, correlation and Human actor. Created emitted once with new Deal; won emitted with successful terminal transition in same registry/audit/receipt/Customer transaction. Report reads Sales authority via application port, not a new consumer trigger.
+
+## Acquisition session events — schema1 / SRC-053
+
+`acquisition_session.opened` and `acquisition_session.closed` use aggregate_type `acquisition_session`, tenant-bound ID and monotonic version. Payload: session_id, conversation_id, status, source_classification, source_ad_id (nullable), sequence (decimal string). Written atomically with inbound/session close; no transcript. Existing message.received schema1 unchanged. Consumers must tolerate these additional event types. Exact lifecycle and compatibility: [implementation contract](acquisition-session-implementation.md).

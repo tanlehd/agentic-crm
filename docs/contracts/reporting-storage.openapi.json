@@ -1,0 +1,1381 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Reporting private draft storage — native BFF",
+    "version": "1.0.0",
+    "description": "SRC-057. Saving metadata does not authorize source data, publish or execute queries. Native Identity read/design own/all grants; no team sharing. Private transport operation/admission schemas included for service verification only."
+  },
+  "security": [
+    {
+      "nativeSession": []
+    }
+  ],
+  "paths": {
+    "/api/v1/reporting/definitions": {
+      "get": {
+        "operationId": "listReportingDefinitions",
+        "summary": "List visible private drafts",
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            },
+            "description": "Tenant selection; requires active native membership."
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized result. Drafts are unvalidated and nonexecutable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/list"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Native session required or admission expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Membership, seat, role or CSRF denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Report/version not visible",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Version or idempotency conflict; archived report",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Dependency unavailable; retry same command key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createReportingDefinition",
+        "summary": "Create private draft",
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            },
+            "description": "Tenant selection; requires active native membership."
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Must match configured APP_ORIGIN."
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bound to the native session."
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            },
+            "description": "Stable UUID for retries; changed payload conflicts."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/draft"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized result. Drafts are unvalidated and nonexecutable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Current aggregate revision, including historical reads."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/report"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Native session required or admission expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Membership, seat, role or CSRF denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Report/version not visible",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Version or idempotency conflict; archived report",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Dependency unavailable; retry same command key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reporting/definitions/{id}": {
+      "get": {
+        "operationId": "getReportingDefinition",
+        "summary": "Get latest draft",
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            },
+            "description": "Tenant selection; requires active native membership."
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized result. Drafts are unvalidated and nonexecutable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Current aggregate revision, including historical reads."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/report"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Native session required or admission expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Membership, seat, role or CSRF denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Report/version not visible",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Version or idempotency conflict; archived report",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Dependency unavailable; retry same command key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateReportingDefinition",
+        "summary": "Replace entire draft",
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            },
+            "description": "Tenant selection; requires active native membership."
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Must match configured APP_ORIGIN."
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bound to the native session."
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            },
+            "description": "Stable UUID for retries; changed payload conflicts."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]{0,15}\"$"
+            },
+            "description": "Strong current revision ETag; required for edit/archive."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/draft"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized result. Drafts are unvalidated and nonexecutable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Current aggregate revision, including historical reads."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/report"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Native session required or admission expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Membership, seat, role or CSRF denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Report/version not visible",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Version or idempotency conflict; archived report",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Dependency unavailable; retry same command key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reporting/definitions/{id}/archive": {
+      "post": {
+        "operationId": "archiveReportingDefinition",
+        "summary": "Archive or restore draft",
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            },
+            "description": "Tenant selection; requires active native membership."
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Must match configured APP_ORIGIN."
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bound to the native session."
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            },
+            "description": "Stable UUID for retries; changed payload conflicts."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]{0,15}\"$"
+            },
+            "description": "Strong current revision ETag; required for edit/archive."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/archive"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized result. Drafts are unvalidated and nonexecutable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Current aggregate revision, including historical reads."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/report"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Native session required or admission expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Membership, seat, role or CSRF denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Report/version not visible",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Version or idempotency conflict; archived report",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Dependency unavailable; retry same command key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reporting/definitions/{id}/versions/{version}": {
+      "get": {
+        "operationId": "getReportingVersion",
+        "summary": "Get immutable edit version with current ACL",
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            },
+            "description": "Tenant selection; requires active native membership."
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/uuid"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/version"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized result. Drafts are unvalidated and nonexecutable.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Current aggregate revision, including historical reads."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/report"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Native session required or admission expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Membership, seat, role or CSRF denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Report/version not visible",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Version or idempotency conflict; archived report",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "If-Match required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Dependency unavailable; retry same command key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "nativeSession": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "crm_session"
+      }
+    },
+    "schemas": {
+      "uuid": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+      },
+      "version": {
+        "type": "string",
+        "pattern": "^[1-9][0-9]{0,15}$"
+      },
+      "draft": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "definition"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "definition": {
+            "type": "object"
+          }
+        }
+      },
+      "archive": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "archived"
+        ],
+        "properties": {
+          "archived": {
+            "type": "boolean"
+          }
+        }
+      },
+      "operation": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "body",
+              "key"
+            ],
+            "properties": {
+              "kind": {
+                "const": "create"
+              },
+              "body": {
+                "$ref": "#/components/schemas/draft"
+              },
+              "key": {
+                "$ref": "#/components/schemas/uuid"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "id",
+              "body",
+              "key",
+              "expectedRevision"
+            ],
+            "properties": {
+              "kind": {
+                "const": "update"
+              },
+              "id": {
+                "$ref": "#/components/schemas/uuid"
+              },
+              "body": {
+                "$ref": "#/components/schemas/draft"
+              },
+              "key": {
+                "$ref": "#/components/schemas/uuid"
+              },
+              "expectedRevision": {
+                "$ref": "#/components/schemas/version"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "id",
+              "body",
+              "key",
+              "expectedRevision"
+            ],
+            "properties": {
+              "kind": {
+                "const": "archive"
+              },
+              "id": {
+                "$ref": "#/components/schemas/uuid"
+              },
+              "body": {
+                "$ref": "#/components/schemas/archive"
+              },
+              "key": {
+                "$ref": "#/components/schemas/uuid"
+              },
+              "expectedRevision": {
+                "$ref": "#/components/schemas/version"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "id"
+            ],
+            "properties": {
+              "kind": {
+                "const": "get"
+              },
+              "id": {
+                "$ref": "#/components/schemas/uuid"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "id",
+              "version"
+            ],
+            "properties": {
+              "kind": {
+                "const": "version"
+              },
+              "id": {
+                "$ref": "#/components/schemas/uuid"
+              },
+              "version": {
+                "$ref": "#/components/schemas/version"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "const": "list"
+              },
+              "after": {
+                "$ref": "#/components/schemas/uuid"
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              }
+            }
+          }
+        ]
+      },
+      "admission": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "audience",
+          "tenantId",
+          "principalId",
+          "authRevision",
+          "readScope",
+          "designScope",
+          "bodyHash",
+          "issuedAt",
+          "expiresAt"
+        ],
+        "properties": {
+          "audience": {
+            "const": "reporting-definition-v1"
+          },
+          "tenantId": {
+            "$ref": "#/components/schemas/uuid"
+          },
+          "principalId": {
+            "$ref": "#/components/schemas/uuid"
+          },
+          "authRevision": {
+            "$ref": "#/components/schemas/version"
+          },
+          "readScope": {
+            "enum": [
+              "none",
+              "own",
+              "all"
+            ]
+          },
+          "designScope": {
+            "enum": [
+              "none",
+              "own",
+              "all"
+            ]
+          },
+          "bodyHash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "issuedAt": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "expiresAt": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "report": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "owner_principal_id",
+          "name",
+          "revision",
+          "latest_version",
+          "version",
+          "archived",
+          "definition",
+          "catalog_hash",
+          "validation_state",
+          "execution_enabled"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/uuid"
+          },
+          "owner_principal_id": {
+            "$ref": "#/components/schemas/uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/version"
+          },
+          "latest_version": {
+            "$ref": "#/components/schemas/version"
+          },
+          "version": {
+            "$ref": "#/components/schemas/version"
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "definition": {
+            "type": "object"
+          },
+          "catalog_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "validation_state": {
+            "const": "unvalidated"
+          },
+          "execution_enabled": {
+            "const": false
+          }
+        }
+      },
+      "list": {
+        "type": "object",
+        "required": [
+          "items",
+          "next_after"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "owner_principal_id",
+                "name",
+                "revision",
+                "latest_version",
+                "archived"
+              ],
+              "properties": {
+                "id": {
+                  "$ref": "#/components/schemas/uuid"
+                },
+                "owner_principal_id": {
+                  "$ref": "#/components/schemas/uuid"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "revision": {
+                  "$ref": "#/components/schemas/version"
+                },
+                "latest_version": {
+                  "$ref": "#/components/schemas/version"
+                },
+                "archived": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "next_after": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "meta": {
+        "type": "object",
+        "required": [
+          "correlation_id"
+        ],
+        "properties": {
+          "correlation_id": {
+            "$ref": "#/components/schemas/uuid"
+          }
+        }
+      },
+      "error": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": [
+              "code",
+              "retryable"
+            ],
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "retryable": {
+                "type": "boolean"
+              }
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/meta"
+          }
+        }
+      }
+    }
+  }
+}

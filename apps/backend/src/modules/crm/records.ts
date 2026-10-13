@@ -17,7 +17,7 @@ export interface RecordDomain {
   updateAction?:string;
   adapter:SubtypeAdapter;
   read(scope:TransactionScope,record:RegistryRecord):Promise<Record<string,unknown>>;
-  update(scope:TransactionScope,record:RegistryRecord,fields:Record<string,unknown>,access:Access):Promise<void>;
+  update(scope:TransactionScope,record:RegistryRecord,fields:Record<string,unknown>,access:Access,correlation:string):Promise<void>;
   archive(scope:TransactionScope,record:RegistryRecord):Promise<void>;
 }
 export type RecordRoute={object:string;kind:'properties'|'forms'|'views'|'records'|'archive';id?:string};
@@ -63,6 +63,7 @@ export class CrmRecords {
   }
   async mutate(account:string,tenant:string,route:RecordRoute,input:unknown,key:string,version:string|undefined,correlation:string,domainCreate=false){
     if(!key||key.length>128||!/^[\x21-\x7e]+$/.test(key)||version!==undefined&&!/^[1-9][0-9]{0,19}$/.test(version))throw new CommandError(400,'INVALID_REQUEST');
+    if(route.object==='deal'&&!domainCreate&&['records','archive'].includes(route.kind))throw new CommandError(422,'OBJECT_NOT_IMPLEMENTED');
     const body=object(input);let actor:string|undefined;
     const method=route.kind==='forms'||route.kind==='views'?'PUT':route.id&&route.kind!=='archive'?'PATCH':'POST';
     try{return await this.uow.run({tenantId:tenant},async scope=>{
@@ -70,7 +71,7 @@ export class CrmRecords {
       const type=await this.type(scope,route.object),defs=await properties(scope,type.id);
       if(route.kind!=='records'&&route.kind!=='archive')this.authorizeSchema(access,true);
       const queryDefs=[...(standardFields[route.object]??[]),...defs];
-      const command={actorId:access.principalId,correlationId:correlation,route:domainCreate?'POST /api/v1/leads':`${method} /api/v1/${route.kind==='records'||route.kind==='archive'?'objects':'object-types'}/${route.object}/${route.kind==='archive'?'records':route.kind}${route.id?'/'+route.id:''}${route.kind==='archive'?'/archive':''}`,key,body,version};
+      const command={actorId:access.principalId,correlationId:correlation,route:domainCreate?`${method} /api/v1/${route.object}s${route.id?'/'+route.id:''}`:`${method} /api/v1/${route.kind==='records'||route.kind==='archive'?'objects':'object-types'}/${route.object}/${route.kind==='archive'?'records':route.kind}${route.id?'/'+route.id:''}${route.kind==='archive'?'/archive':''}`,key,body,version};
       const replay=await this.commands.replay(scope,command,async response=>{
         if(route.kind==='records'||route.kind==='archive'){
           await this.record(scope,access,route.object,String(response.body.data.id));
@@ -92,7 +93,7 @@ export class CrmRecords {
           const result=await scope.query('UPDATE property_definition SET label=?,version=version+1,updated_at=UTC_TIMESTAMP(6) WHERE tenant_id=? AND id=? AND version=?',[b.label,tenant,p.id,version]);if(result.affectedRows!==1)throw new CommandError(409,'VERSION_CONFLICT');
           data={...p,label:b.label,version:String(BigInt(p.version)+1n)};
         }else{
-          const p=propertyInput(body);checkField(access,route.object,p.key,'write');checkField(access,route.object,p.key,'read');
+          const p=propertyInput(body);if(p.key.startsWith('source_')||['declared_source','conversation_id','conversation_session_id','contact_id','lead_id'].includes(p.key)||queryDefs.some(d=>d.key===p.key))throw new CommandError(422,'RESERVED_PROPERTY');checkField(access,route.object,p.key,'write');checkField(access,route.object,p.key,'read');
           if(String(type.version)!==version)throw new CommandError(409,'VERSION_CONFLICT');
           if(p.required&&(await scope.query('SELECT id FROM crm_record WHERE tenant_id=? AND object_type_id=? LIMIT 1',[tenant,type.id])).length)throw new CommandError(422,'REQUIRED_PROPERTY_REQUIRES_EMPTY_OBJECT');
           const id=registryId();await scope.query('INSERT INTO property_definition(id,tenant_id,object_type_id,`key`,label,type,required,default_value,options,indexed,`sensitive`,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))',[id,tenant,type.id,p.key,p.label,p.type,p.required,p.default_value===null?null:JSON.stringify(p.default_value),p.options===null?null:JSON.stringify(p.options),p.indexed,p.sensitive]);
@@ -141,7 +142,7 @@ export class CrmRecords {
             const [row]=await scope.query('SELECT custom_values FROM crm_record WHERE tenant_id=? AND id=?',[tenant,record.id]);const values=mergeValues(defs,json(row.custom_values),b.custom_values??{},access,route.object);
             await registry.update(scope,access,record.id,version!,async s=>{
               if(type.kind==='custom'&&Object.keys(fields).length)throw new CommandError(422,'VALIDATION_FAILED');
-              if(type.kind!=='custom')await this.domains.get(route.object)!.update(s,record,fields,access);
+              if(type.kind!=='custom')await this.domains.get(route.object)!.update(s,record,fields,access,correlation);
               await s.query('UPDATE crm_record SET custom_values=? WHERE tenant_id=? AND id=?',[JSON.stringify(values),tenant,record.id]);await project(s,record.id,defs,values);
             },action);
           }
