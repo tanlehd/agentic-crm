@@ -1,0 +1,913 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Object Platform R1",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/crm/object-catalog": {
+      "get": {
+        "operationId": "objectPlatformCatalog",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "data": {
+                      "title": "ObjectPlatformCatalog",
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "schema_version",
+                        "tenant_id",
+                        "principal_id",
+                        "authorization_revision",
+                        "revision",
+                        "objects",
+                        "relations"
+                      ],
+                      "properties": {
+                        "schema_version": {
+                          "const": 1
+                        },
+                        "tenant_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "principal_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "authorization_revision": {
+                          "type": "string",
+                          "pattern": "^[1-9][0-9]{0,19}$"
+                        },
+                        "revision": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "objects": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": [
+                              "id",
+                              "key",
+                              "label",
+                              "kind",
+                              "version",
+                              "schema_version",
+                              "owner_service",
+                              "properties",
+                              "capabilities",
+                              "workspace",
+                              "extensions_supported"
+                            ],
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "key": {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                              },
+                              "label": {
+                                "type": "string",
+                                "maxLength": 255,
+                                "minLength": 1
+                              },
+                              "kind": {
+                                "enum": [
+                                  "standard",
+                                  "custom"
+                                ]
+                              },
+                              "version": {
+                                "type": "string",
+                                "pattern": "^[1-9][0-9]{0,19}$"
+                              },
+                              "schema_version": {
+                                "type": "string",
+                                "pattern": "^[1-9][0-9]{0,19}$"
+                              },
+                              "owner_service": {
+                                "enum": [
+                                  "crm",
+                                  "sales",
+                                  "chat",
+                                  "ticket"
+                                ]
+                              },
+                              "properties": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "additionalProperties": false,
+                                  "required": [
+                                    "id",
+                                    "key",
+                                    "label",
+                                    "type",
+                                    "required",
+                                    "nullable",
+                                    "options",
+                                    "indexed",
+                                    "readable",
+                                    "writable",
+                                    "filter_operators",
+                                    "version"
+                                  ],
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "pattern": "^(standard:[a-z][a-z0-9_]{0,63}|[a-fA-F0-9-]{36})$"
+                                    },
+                                    "key": {
+                                      "type": "string",
+                                      "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                                    },
+                                    "label": {
+                                      "type": "string",
+                                      "maxLength": 255,
+                                      "minLength": 1
+                                    },
+                                    "type": {
+                                      "enum": [
+                                        "string",
+                                        "text",
+                                        "integer",
+                                        "decimal",
+                                        "boolean",
+                                        "date",
+                                        "datetime",
+                                        "enum",
+                                        "reference",
+                                        "opaque"
+                                      ]
+                                    },
+                                    "required": {
+                                      "type": "boolean"
+                                    },
+                                    "nullable": {
+                                      "type": "boolean"
+                                    },
+                                    "options": {
+                                      "anyOf": [
+                                        {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string",
+                                            "maxLength": 255,
+                                            "minLength": 1
+                                          },
+                                          "maxItems": 100,
+                                          "minItems": 0
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "indexed": {
+                                      "type": "boolean"
+                                    },
+                                    "readable": {
+                                      "const": true
+                                    },
+                                    "writable": {
+                                      "type": "boolean"
+                                    },
+                                    "filter_operators": {
+                                      "type": "array",
+                                      "items": {
+                                        "enum": [
+                                          "eq",
+                                          "in",
+                                          "gte",
+                                          "lte"
+                                        ]
+                                      },
+                                      "maxItems": 4,
+                                      "minItems": 0
+                                    },
+                                    "version": {
+                                      "type": "string",
+                                      "pattern": "^[1-9][0-9]{0,19}$"
+                                    }
+                                  }
+                                },
+                                "maxItems": 200,
+                                "minItems": 0
+                              },
+                              "capabilities": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "required": [
+                                  "record_read",
+                                  "record_query",
+                                  "record_update",
+                                  "workflow_actions",
+                                  "object_change_events",
+                                  "change_images",
+                                  "relation_traversal"
+                                ],
+                                "properties": {
+                                  "record_read": {
+                                    "type": "boolean"
+                                  },
+                                  "record_query": {
+                                    "type": "boolean"
+                                  },
+                                  "record_update": {
+                                    "type": "boolean"
+                                  },
+                                  "workflow_actions": {
+                                    "const": false
+                                  },
+                                  "object_change_events": {
+                                    "const": false
+                                  },
+                                  "change_images": {
+                                    "const": false
+                                  },
+                                  "relation_traversal": {
+                                    "const": false
+                                  }
+                                }
+                              },
+                              "workspace": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "required": [
+                                  "plural_label",
+                                  "description",
+                                  "display_property_key",
+                                  "enabled",
+                                  "position"
+                                ],
+                                "properties": {
+                                  "plural_label": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 255
+                                  },
+                                  "description": {
+                                    "type": "string",
+                                    "maxLength": 1000
+                                  },
+                                  "display_property_key": {
+                                    "anyOf": [
+                                      {
+                                        "type": "null"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                                      }
+                                    ]
+                                  },
+                                  "enabled": {
+                                    "type": "boolean"
+                                  },
+                                  "position": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 999
+                                  }
+                                }
+                              },
+                              "extensions_supported": {
+                                "type": "boolean"
+                              }
+                            }
+                          },
+                          "maxItems": 100,
+                          "minItems": 0
+                        },
+                        "relations": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": [
+                              "id",
+                              "key",
+                              "label",
+                              "version",
+                              "source_object_type_id",
+                              "target_object_type_id",
+                              "cardinality"
+                            ],
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "key": {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                              },
+                              "label": {
+                                "type": "string",
+                                "maxLength": 255,
+                                "minLength": 1
+                              },
+                              "version": {
+                                "type": "string",
+                                "pattern": "^[1-9][0-9]{0,19}$"
+                              },
+                              "source_object_type_id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "target_object_type_id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "cardinality": {
+                                "enum": [
+                                  "one_to_one",
+                                  "one_to_many",
+                                  "many_to_many"
+                                ]
+                              }
+                            }
+                          },
+                          "maxItems": 500,
+                          "minItems": 0
+                        }
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "correlation_id"
+                      ],
+                      "properties": {
+                        "correlation_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized CRM error"
+          },
+          "401": {
+            "description": "Sanitized CRM error"
+          },
+          "403": {
+            "description": "Sanitized CRM error"
+          },
+          "404": {
+            "description": "Sanitized CRM error"
+          },
+          "409": {
+            "description": "Sanitized CRM error"
+          },
+          "422": {
+            "description": "Sanitized CRM error"
+          },
+          "428": {
+            "description": "Sanitized CRM error"
+          },
+          "503": {
+            "description": "Sanitized CRM error"
+          }
+        }
+      }
+    },
+    "/api/v1/crm/workspace-objects": {
+      "get": {
+        "operationId": "workspaceObjects",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "maxItems": 100,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "id",
+                          "key",
+                          "label",
+                          "kind",
+                          "version",
+                          "display_property_key",
+                          "position"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "key": {
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          },
+                          "kind": {
+                            "const": "custom"
+                          },
+                          "version": {
+                            "type": "string",
+                            "pattern": "^[1-9][0-9]*$"
+                          },
+                          "display_property_key": {
+                            "anyOf": [
+                              {
+                                "type": "null"
+                              },
+                              {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                              }
+                            ]
+                          },
+                          "position": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 999
+                          }
+                        }
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "correlation_id"
+                      ],
+                      "properties": {
+                        "correlation_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized CRM error"
+          },
+          "401": {
+            "description": "Sanitized CRM error"
+          },
+          "403": {
+            "description": "Sanitized CRM error"
+          },
+          "404": {
+            "description": "Sanitized CRM error"
+          },
+          "409": {
+            "description": "Sanitized CRM error"
+          },
+          "422": {
+            "description": "Sanitized CRM error"
+          },
+          "428": {
+            "description": "Sanitized CRM error"
+          },
+          "503": {
+            "description": "Sanitized CRM error"
+          }
+        }
+      }
+    },
+    "/api/v1/crm/association-catalog": {
+      "get": {
+        "operationId": "associationCatalog",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "id",
+                          "key",
+                          "label",
+                          "version",
+                          "source_object_type_id",
+                          "target_object_type_id",
+                          "cardinality"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "key": {
+                            "type": "string",
+                            "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                          },
+                          "label": {
+                            "type": "string",
+                            "maxLength": 255,
+                            "minLength": 1
+                          },
+                          "version": {
+                            "type": "string",
+                            "pattern": "^[1-9][0-9]{0,19}$"
+                          },
+                          "source_object_type_id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "target_object_type_id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "cardinality": {
+                            "enum": [
+                              "one_to_one",
+                              "one_to_many",
+                              "many_to_many"
+                            ]
+                          }
+                        }
+                      },
+                      "maxItems": 500,
+                      "minItems": 0
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "correlation_id"
+                      ],
+                      "properties": {
+                        "correlation_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized CRM error"
+          },
+          "401": {
+            "description": "Sanitized CRM error"
+          },
+          "403": {
+            "description": "Sanitized CRM error"
+          },
+          "404": {
+            "description": "Sanitized CRM error"
+          },
+          "409": {
+            "description": "Sanitized CRM error"
+          },
+          "422": {
+            "description": "Sanitized CRM error"
+          },
+          "428": {
+            "description": "Sanitized CRM error"
+          },
+          "503": {
+            "description": "Sanitized CRM error"
+          }
+        }
+      }
+    },
+    "/api/v1/object-types/{key}/workspace": {
+      "put": {
+        "operationId": "saveObjectWorkspace",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]{0,63}$"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "ObjectWorkspaceInput",
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "plural_label",
+                  "description",
+                  "display_property_key",
+                  "enabled",
+                  "position",
+                  "label"
+                ],
+                "properties": {
+                  "plural_label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 1000
+                  },
+                  "display_property_key": {
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                      }
+                    ]
+                  },
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "position": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 999
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "object_type_id",
+                        "version",
+                        "workspace"
+                      ],
+                      "properties": {
+                        "object_type_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "version": {
+                          "type": "string",
+                          "pattern": "^[1-9][0-9]*$"
+                        },
+                        "workspace": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "plural_label",
+                            "description",
+                            "display_property_key",
+                            "enabled",
+                            "position"
+                          ],
+                          "properties": {
+                            "plural_label": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 255
+                            },
+                            "description": {
+                              "type": "string",
+                              "maxLength": 1000
+                            },
+                            "display_property_key": {
+                              "anyOf": [
+                                {
+                                  "type": "null"
+                                },
+                                {
+                                  "type": "string",
+                                  "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                                }
+                              ]
+                            },
+                            "enabled": {
+                              "type": "boolean"
+                            },
+                            "position": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 999
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "correlation_id"
+                      ],
+                      "properties": {
+                        "correlation_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized CRM error"
+          },
+          "401": {
+            "description": "Sanitized CRM error"
+          },
+          "403": {
+            "description": "Sanitized CRM error"
+          },
+          "404": {
+            "description": "Sanitized CRM error"
+          },
+          "409": {
+            "description": "Sanitized CRM error"
+          },
+          "422": {
+            "description": "Sanitized CRM error"
+          },
+          "428": {
+            "description": "Sanitized CRM error"
+          },
+          "503": {
+            "description": "Sanitized CRM error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "sessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "crm_session"
+      }
+    }
+  }
+}

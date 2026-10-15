@@ -1,0 +1,21 @@
+# Salesforce reference — Object Platform và Flow
+
+Research ngày 2026-10-15 bằng official Salesforce Trailhead/Help pages. Đây là tham chiếu sản phẩm; quyết định áp dụng vào CRM là thiết kế của PLAN-028, không claim feature parity, license entitlement hoặc physical storage của Salesforce. Không quote dài, không sao chép limits/edition thành yêu cầu CRM.
+
+| Official source | Nội dung kiểm được | Áp dụng / điều chỉnh trong CRM |
+|---|---|---|
+| [Standard and Custom Objects](https://trailhead.salesforce.com/content/learn/modules/data_modeling/objects_intro) | Objects/records/fields, Object Manager, custom fields trên standard/custom objects, tab cho custom object | Object & Properties + Agent Workspace placement; giữ canonical IDs và owner capability hiện có |
+| [Object Relationships](https://trailhead.salesforce.com/content/learn/modules/data_modeling/object_relationships) | Lookup và master-detail relationships | Simple association trước; master-detail ownership/cascade không bật mặc định |
+| [Many-to-Many Object Relationship](https://help.salesforce.com/s/articleView?id=sf.relationships_manytomany.htm&language=en_US&release=244.8.0&type=5) | Custom junction object nối hai master objects | Custom junction object khi link có business data, nhưng CRM không kế thừa cascade/sharing/master-detail semantics |
+| [Schema Builder](https://trailhead.salesforce.com/content/learn/modules/data_modeling/schema_builder) | Visualize objects, fields và relationships; visual schema authoring | R1 ERD để hiểu quan hệ và mở settings; chưa drag-edit schema trên canvas |
+| [Custom Report Types](https://help.salesforce.com/s/articleView?id=reports_report_type_objects.htm&language=en_US&type=0) | Primary/related objects quyết định record và field report có thể dùng | Versioned Reporting model compile từ shared entity model, tách quyền/schema/source readiness |
+| [Enhanced Custom Report Type Builder](https://help.salesforce.com/s/articleView?id=sf.reports_enhanced_defining_report_types.htm&language=en_US&type=5) | Chọn primary object và yêu cầu parent có child | Explicit root + related paths + optional/exists semantics, không tự join theo label |
+| [WITH or WITHOUT filter considerations](https://help.salesforce.com/s/articleView?id=000384956&language=en_US&type=1) | Filter child có thể vẫn giữ parent với child values trống | UI phải phân biệt filter matching children với require matching child; golden fan-out fixture |
+| [Get Started with Triggered Flows](https://trailhead.salesforce.com/content/learn/modules/record-triggered-flows/get-started-with-triggered-flows) | Record change trigger, before-save fast update, after-save related actions, scheduled paths | Trigger/criteria/action model; CRM first release dùng post-commit async, không đồng nhất với Salesforce transaction semantics |
+| [Build a Record-Triggered Flow](https://trailhead.salesforce.com/content/learn/modules/record-triggered-flows/build-a-record-triggered-flow) | Start criteria, action, save/debug và kích hoạt | Draft/validate/publish/enable riêng, debug dry-run và current authority checks |
+| [Flow Trigger Explorer](https://trailhead.salesforce.com/content/learn/modules/record-triggered-flows/meet-flow-trigger-explorer) | Quan sát flows theo object và thời điểm chạy | Object Usage tab có workflows và trigger readiness; runtime ordering phải contract/test riêng |
+| [Schedule a Flow](https://trailhead.salesforce.com/content/learn/modules/autolaunched-scheduled-flows/schedule-a-flow) | Scheduled path từ record trigger khác schedule-triggered batch | R3 durable delay theo record; periodic batch flow là backlog riêng |
+
+Evidence method: objects/relationships/schema-builder/triggered-flows được mở nội dung trực tiếp; các trang Help và Flow bổ sung qua official search extracts. Đây không phải thao tác trong Salesforce org, không kiểm UI/edition thực tế. Nguồn bổ sung cho [Workflow research hiện có](workflow-platform.md).
+
+Các quyết định riêng của CRM: tenant_id isolation; native Identity/seat/role/field rights; Human/AI ownership; service-owned MySQL; typed JSON/index reuse; no cross-service SQL; post-commit Kafka/outbox; reports current-viewer authority. Salesforce chỉ gợi ý trải nghiệm và mô hình khái niệm, không thay các invariants này.

@@ -1,3 +1,33 @@
+# Object Platform foundation implemented — 2026-10-15
+
+Git publication S-20261015-Object-Platform: user explicitly requested “Push git” after implementation. Authorized commit/push of the reviewed54source/contract/design/tracking files to origin/main; no feature status change. Fresh fetch confirms base5ab70a6 matches origin/main; docs/generated-contract/whitespace checks PASS. This checkpoint is included in the publication commit; actual commit hash and verified push outcome are recorded in ignored artifacts/object-platform/git-publication.json and the user-facing result. Prior no-commit notes below describe implementation before this authorization.
+
+User requested Code after PLAN-028. PLAN-028A/SRC-073/SRC-074 DONE for bounded catalog/config/Object & Properties/ERD/Agent Workspace. [Evidence](details/SRC-074.md) · [Runbook](../development/object-platform.md) · [Exact contract/table](../contracts/object-platform-r1.md). CHG-20261015-03. No active implementation task. Full requested no-code platform remains incomplete: PLAN-028E lifecycle/unlink/dependency/backfill; PLAN-028B/SRC-075 connected Reporting requires SRC-059; PLAN-028C/SRC-076 custom-object Flow requires distributed runtime gates.
+
+Runtime: standard/custom settings, fields, association types, forms/views, persisted custom menu/display property and native record/link CRUD. Canonical catalog reused from Workflow; consumers explicitly unavailable until delivered. New agent relation discovery uses current endpoint grants without schema access. Fixed tenant-super-admin custom-link listing and legacy CSS hiding mobile object selector. Standard extension writes only custom/Contact/Company/Activity/Lead. IDs/key/type baseline guards remain.
+
+PASS365unit/50files,9retained native/MySQL groups,11actual Alpha browser groups; backend/contracts/web types and isolated Next build. Local migration30 applied1/repeat0 from29 preserves95old tables; private backup retained. Native temporary rights restored; no Alpha grant changes. Screenshots reviewed desktop/mobile; browser tests configuration, record/link, stale409 draft/reload and widths768/390/320. Full a11y/race/restore/capacity/integrated release not claimed. Static check results in execution log and artifacts/object-platform/final-check.json.
+
+Working tree main/base5ab70a6 dirty with prior PLAN-028 docs plus source. No commit/push/remote deploy/reset/subagent/schedule. Local monitor3020-owned API reloaded after final fix; web18080/API3001/worker3002/Reporting3004 ready, MySQL13306/Redis16379 healthy; Connector unconfigured. Retained DEMO object nocode_service_request_demo, title/request_status fields, request, Contact and link. Private artifacts/credentials remain ignored.
+
+**Next action:** claim PLAN-028E to finish exact remaining R1 lifecycle gate; connected Reporting proceeds under PLAN-028B and required SRC-059 completion. No unresolved user approval; remaining items are design/source dependencies.
+
+## Historical checkpoint — PLAN-028 design
+
+# No-code Object Platform planning completed — 2026-10-15
+
+PLAN-028 DONE design-only, CHG-20261015-02. User yêu cầu kế hoạch custom object/custom fields làm nền no-code CRM, admin Object & Properties + ERD/associations → Agent Workspace → shared model cho Reporting/Dashboard và Workflow, tham chiếu Salesforce. [Plan](../planning/no-code-object-platform.md) · [UX](../ux/object-properties-workspace.md) · [logical model](../data/no-code-entity-model.md) · [contract direction](../contracts/no-code-object-platform.md) · [19 acceptance scenarios](../quality/no-code-object-platform-acceptance.md) · [evidence](details/PLAN-028.md).
+
+Tái sử dụng M1 registry/typed index/CRUD/association và SRC-065 canonical catalog. Chia R1 model/workspace, R2 connected Reporting, R3 custom-object business Flow. Backlog PLAN-028A…D/SRC-073…077 TODO; SRC-059 và PLAN-024B…E/runtime source prerequisites giữ gate. Standard owner capabilities rõ; shared entity model không shared service SQL/database; source mock không tự thành connected integration. Không active source task.
+
+Windows/pinned Node24.21.0: document/local links/JSON/Mermaid header/source DAG checks PASS, scoped whitespace/UTF-8/new-file and full dependency review logs tại artifacts/no-code-object-plan. Mermaid chưa render; runtime/MySQL/browser/migration/build/OP scenarios NOT_RUN, no implementation claim. Sáu tài liệu thiết kế mới + evidence; README/index/build plan/roadmap/modules/services/data/acceptance/tracker/log đồng bộ.
+
+Workspace bắt đầu clean main tại5ab70a6; hiện dirty với docs-only changes của phiên này, chưa commit/push/deploy. Không đổi source/config/schema/data/roles, không service restart/reset/subagent/schedule. Services không freshly probed; historical prior checkpoint ghi web18080/API3001/worker3002/Reporting3004 ready, Connector unconfigured. Không unresolved user decision/blocker cho plan; exact wire/physical/capacity questions được giao design gates.
+
+**One next action:** claim PLAN-028A và chốt executable metadata/association/placement contracts + standard-owner capability matrix + filled table designs nếu cần, trước khi claim SRC-073.
+
+## Historical checkpoint — publication
+
 # Publication scope completed — 2026-10-15
 
 Publication approval resolved: user replied “Oke” to the explicit confirmation of all232reviewed files, including prior-session work, to origin/main. Commit/push now authorized for that exact scope. Completed code/status/evidence unchanged; final Git refs and push outcome are recorded in ignored artifacts/git-publication and the user-facing result. Prior rejected attempts performed no Git mutations.

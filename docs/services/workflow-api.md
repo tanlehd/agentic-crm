@@ -1,5 +1,7 @@
 # Workflow API — authoring và CMS control
 
+PLAN-028C target: [custom-object bindings/usage/publish](../contracts/no-code-object-platform.md) pin canonical schema manifests, explicit re-entry/criteria/actions và dependency impact. No metadata master fork; PLAN-024C/E activation/versioning gates vẫn bắt buộc. Design-only.
+
 SRC-066 exposes [additive native M2 CMS routes](../contracts/workflow-cms-m2.md) in the baseline backend (discovery, validation, definition read/pagination); existing version/publish/enable commands reused. Independent Workflow API/schema extraction below is still proposed.
 
 PLAN-024 / ADR-022, 2026-10-13. Architecture Ready; exact OpenAPI/auth/table templates thuộc PLAN-024C. Proposed deploy unit `workflow-api`, NestJS/TypeScript; target schema `crm_workflow` chỉ cho definition/control data. Baseline monolith chưa extraction.

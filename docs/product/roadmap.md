@@ -1,5 +1,7 @@
 # Roadmap và backlog
 
+**Ưu tiên tiếp theo2026-10-15 / CHG-20261015-02:** [No-code Object Platform](../planning/no-code-object-platform.md), R1 Object & Properties/ERD/Agent Workspace, R2 connected Reporting, R3 custom-object Flow. Đây là lát cắt M5 dựa M1 đã có; source chỉ bắt đầu sau exact gates, không tự promote module Draft khác. Status chi tiết ở tracker; các ghi chú ưu tiên cũ bên dưới là lịch sử.
+
 **2026-10-12 / CHG-20261012-06:** User accepted early API-backed UI. [PLAN-022H](../contracts/reporting-authoring.md) scopes source/model/fields/axes/flat filters/chart/pivot/private draft/CSV over delivered APIs. SRC-064 is the sole active source task; SRC-059 requeued READY, incomplete scope/evidence preserved. Full SRC-060 follows SRC-059 and SRC-064; no publish/dashboard/drilldown completion claim. No database changes.
 
 CHG-20261010-02: triển khai Reporting từng phần, bắt đầu PLAN-022B/SRC-063 semantic kernel; SRC-051 requeue READY và giữ nguyên progress. Tiếp theo exact PLAN-022 persistence/native API gate → SRC-057, rồi chuỗi mock builder đã định nghĩa. Không cần hoàn thành Marketing ingestion để xây kernel mock.

@@ -1,5 +1,7 @@
 # Acceptance và traceability
 
+PLAN-0282026-10-15: [OP-01…19](no-code-object-platform-acceptance.md) bổ sung AC-04/M5 và AC-11 cho Object & Properties/ERD/Workspace/shared model/connected Reporting/custom Flow. Test plan only, tất cả runtime scenarios NOT_RUN; source gates và evidence theo tracker.
+
 PLAN-0272026-10-14 adds [DW-AC01…14](dashboard-workspace-acceptance.md) for separate Dashboard/Reports navigation, templates, saved-report refs, layout, current authority, replay/CAS, legacy preservation and native UI. All runtime scenarios NOT_RUN; documents only for user review. Existing SRC-070 evidence and broader RB-MOCK gates unchanged.
 
 CHG-20261013-09 second review adds scenarios9–13 in [Chat/Sales ERD](../data/chat-sales-erd.md): inherited origin versus create context, two needs in one session, manual stage versus evidence, close/inbound races and correction/as_of. NOT_RUN; these are proposed exact-contract gates, not completed feature acceptance.

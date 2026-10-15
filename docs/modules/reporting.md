@@ -1,5 +1,7 @@
 # MOD-10 — Reporting & Dashboard
 
+PLAN-028: [Connected custom-object Reporting contract direction](../contracts/no-code-object-platform.md) thiết kế dynamic source/model từ canonical CRM objects/properties/relations, current ACL và grain-safe aggregation. Exact PLAN-028B/SRC-075; mock bindings và dashboard report refs giữ nguyên, không claim connected adapter đã chạy.
+
 **Current 2026-10-14 / CHG-20261014-05:** User authorized implementation after PLAN-027 review. Dashboard/Reports local slice is implemented: Reporting-owned schema4 (six new tenant-scoped tables;13 prior business tables preserved), native APIs, atomic templates and separate UI. [Runbook](../development/dashboard-workspace.md) · [Backend evidence](../tracking/details/SRC-071.md) · [UI evidence](../tracking/details/SRC-072.md). Earlier design-only/phase statements below are historical; broad Reporting milestones remain in tracker.
 
 **PLAN-027 / CHG-20261014-04 (design review, 2026-10-14):** [Dashboard workspace](../planning/dashboard-workspace.md) defines Report as reusable analysis, Dashboard as layout of saved report-version refs and Template as immutable creation blueprint. Separate menus/home/gallery/picker/library/viewer; [data](../data/dashboard-workspace.md) and [API](../contracts/dashboard-workspace.md) define own-service aggregates/ACL/atomic template create. No code/migration in this review-only phase; SRC-070 legacy inline dashboards remain runtime baseline, generic SRC-061 not completed. Alpha activation is DONE under SRC-070; older pending statements below are historical.

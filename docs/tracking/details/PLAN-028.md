@@ -1,0 +1,15 @@
+# PLAN-028 — No-code Object Platform plan
+
+Codex · 2026-10-15 · DONE design-only, CHG-20261015-02. Dependencies SRC-010/011/013/065/072 DONE trước claim; IN_PROGRESS đã ghi trước authoring. Workspace bắt đầu clean trên main, HEAD `5ab70a6`; kết quả phiên này là uncommitted working-tree docs, không commit/push/deploy.
+
+Deliverables: [plan/inventory/phases](../../planning/no-code-object-platform.md), [Object & Properties/ERD/Workspace UX](../../ux/object-properties-workspace.md), [shared logical entity model](../../data/no-code-entity-model.md), [integration direction](../../contracts/no-code-object-platform.md), [19 acceptance scenarios](../../quality/no-code-object-platform-acceptance.md), [11 official Salesforce references](../../references/salesforce-object-platform.md). Existing source inventory đọc metadata.tsx và workflow-catalog.ts cùng SRC-011/013/065 contracts/evidence; không suy fresh runtime PASS từ source hoặc evidence cũ.
+
+Design decisions: reuse canonical IDs/metadata/typed index; owner-specific capabilities; simple associations và junction objects; separate workspace placement/current rights; connected Reporting mode riêng, grain-safe totals; post-commit Flow/re-entry/receipts/version pin. Standard protected fields không generic bypass. Schema lifecycle/metadata manifests/placement là logical proposed state, không physical table changes; full templates trước DDL tại PLAN-028A/B/C. Formula/master-detail/before-save/loop/screen-flow deferred.
+
+Tracker thêm PLAN-028A…D và SRC-073…077 TODO, không active source. Reporting giữ SRC-059 prerequisite; Workflow giữ PLAN-024B…E và runtime source inventory gate trước SRC-076 READY. Scope/source readiness không được suy từ PLAN-028 DONE.
+
+Validation environment: Windows PowerShell, repository pinned `.local/node-v24.21.0-win-x64/node.exe` v24.21.0; host `node` v18.15.0 không dùng cho checks. `scripts/check-docs.mjs` PASS; logs tại `artifacts/no-code-object-plan/docs-check.txt` (final rerun cập nhật cùng file). `git -c core.whitespace=blank-at-eol,blank-at-eof diff --check` và scoped UTF-8/new-file/PLAN+SRC dependency checks ghi tại `artifacts/no-code-object-plan/review.json`. Document-only checks; runtime/MySQL/browser/build/migration/capacity OP-01…19 NOT_RUN. Mermaid fences/headers kiểm, chưa render diagrams.
+
+Initial shell inventory thử tên crm-base.md không tồn tại; đã tìm đúng docs/modules/crm.md và docs/services/crm.md. Windows rg wildcard path không expand ở một inventory command; đã dùng file paths/rg --files; không ảnh hưởng checks/deliverables. Official research junction source được chỉnh sang Salesforce Help sau Trailhead page không có nội dung junction.
+
+Source/config/database/roles không đổi; không reset, restart, schedule hoặc subagent. Services không freshly probed ở phiên docs-only; checkpoint trước ghi web18080/API3001/worker3002/Reporting3004 ready, đây chỉ là trạng thái lịch sử. Không unresolved user decision/blocker cho plan. **Next:** claim PLAN-028A để chốt executable R1 contracts/capability matrix/physical design trước SRC-073.

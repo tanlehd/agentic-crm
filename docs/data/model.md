@@ -1,5 +1,7 @@
 # Data model và ERD
 
+PLAN-0282026-10-15: [No-code logical entity model và ERD](no-code-entity-model.md) bổ sung canonical metadata/association/consumer bindings, lifecycle và ownership direction. Physical baseline không đổi; exact table templates/migrations thuộc PLAN-028A/B/C. Generic standard writes vẫn bị owner capability giới hạn.
+
 PLAN-0272026-10-14: [Dashboard/Report ERD and dictionary](dashboard-workspace.md) proposes dedicated Dashboard aggregate with report-version refs, snapshot pins, immutable layout and template lineage. Six own-schema tables designed for review; not migrated. Existing SRC-070 inline documents remain compatible through explicit future conversion, not automatic backfill.
 
 Current SRC-068 / CHG-20261013-10: [Customer360/session contract](../contracts/customer-360-session.md) is authoritative for inbox_v2 and forward28: new Ad retains the open session, actual create/follow-up/closing context is separate from immutable origin, direct Deal is supported, duplicate Lead consolidation preserves original history. Prior v1 splitting descriptions below are historical. Stage/milestone configuration and connected funnel reporting remain outside this implemented slice.

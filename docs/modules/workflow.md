@@ -1,5 +1,7 @@
 # MOD-08 — Workflow
 
+PLAN-028: [Custom-object business flow](../contracts/no-code-object-platform.md) reuse canonical metadata, post-commit create/update triggers, related reads/owner commands, Decision/Delay và fault/replay semantics. PLAN-028C phụ thuộc PLAN-024B…E cùng source runtime prerequisites; before-save/loops/screen flows deferred. Existing M2 và SRC-065 capabilities không được tự nâng thành generic execution.
+
 SRC-066 adds [M2 Workflow CMS](../development/workflow-cms.md) on local: menu, seven-node list editor, immutable saved versions, review/publish, enable/disable and scoped discovery/validation APIs. Target distributed CMS/Kafka remains pending.
 
 SRC-065 adds native shared CRM catalog and pure typed authoring kernel for the new architecture, [runbook](../development/workflow-foundation.md). Metadata/validation only; M2 runtime below remains unchanged. Independent Kafka/execution/CMS not yet implemented.

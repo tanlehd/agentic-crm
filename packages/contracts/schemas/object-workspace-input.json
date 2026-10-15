@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "object-workspace-input.json",
+  "title": "ObjectWorkspaceInput",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "plural_label",
+    "description",
+    "display_property_key",
+    "enabled",
+    "position",
+    "label"
+  ],
+  "properties": {
+    "plural_label": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "display_property_key": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
+        }
+      ]
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "position": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 999
+    },
+    "label": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    }
+  }
+}

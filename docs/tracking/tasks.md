@@ -12,6 +12,24 @@ Git sync S-20261013-01: user explicitly requested commit/push of the accumulated
 
 Git sync S-20261015-01: user authorized commit/push of all accumulated source/docs on main. Fresh pre-commit validation in [execution log](log.md); no feature status change or new implementation task.
 
+## No-code Object Platform — 2026-10-15
+
+Git publication S-20261015-Object-Platform: user requested commit/push of the completed Object Platform foundation and its plan/contracts/evidence. No implementation task/status change; remaining PLAN-028E and connected consumer gates retained. See execution log and checkpoint.
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-028 | Object & Properties, ERD, association, Agent Workspace và shared entity model cho Reporting/Workflow; Salesforce reference và staged delivery | SRC-010; SRC-011; SRC-013; SRC-065; SRC-072 | DONE | Codex 2026-10-15 | [Evidence](details/PLAN-028.md); inventory/UX/logical model/contracts/19AC/Salesforce references; docs/dependency checks, design-only; chưa claim implementation |
+| PLAN-028A | Exact metadata/lifecycle/capabilities/association/placement contracts và filled table designs nếu cần | PLAN-028 | DONE | Codex 2026-10-15 | [Scoped Ready contract/table template](../contracts/object-platform-r1.md); docs283/2468links PASS; lifecycle beyond immutable baseline remains follow-up |
+| SRC-073 | Object Platform catalog/capability backend và persisted workspace configuration | PLAN-028A; SRC-011; SRC-065 | DONE | Codex 2026-10-15 | [Evidence](details/SRC-073.md);9 focused unit,8 native/MySQL groups,build/schema PASS; scoped OP-01/02/03/08, immutable baseline; lifecycle/unlink remains PLAN-028E |
+| SRC-074 | Object & Properties, ERD và dynamic Agent Workspace | SRC-073; SRC-013; SRC-039 | DONE | Codex 2026-10-15 | [Evidence](details/SRC-074.md);365unit/9native/11browser/builds, local30 preserved95tables; bounded config/CRUD/link UI; broader lifecycle remains PLAN-028E |
+| PLAN-028E | Remaining metadata lifecycle/unlink/reverse labels/dependency-index/backfill exact gate | SRC-074 | TODO | unassigned | Preserves incomplete R1 scope; no archive/deprecation or unlink implementation inferred from SRC-073/074 |
+| PLAN-028B | Exact connected CRM producer/projection/ACL/dynamic report model contract | SRC-074; SRC-058; SRC-063 | TODO | unassigned | Root/related grain, watermark/change coverage, physical design và SRC-049 overlap boundary |
+| SRC-075 | Connected custom-object Report Builder và Dashboard report integration | PLAN-028B; SRC-074; SRC-058; SRC-059; SRC-072 | TODO | unassigned | OP-08…13; mock bindings preserved; SRC-059 remaining scope prerequisite |
+| PLAN-028C | Exact custom-object Flow triggers/actions và distributed runtime source dependency inventory | SRC-075; PLAN-024E | TODO | unassigned | Phải liệt kê runtime source prerequisites trước SRC-076 READY |
+| SRC-076 | Custom-object business Flow activation và durable execution | PLAN-028C; SRC-075; SRC-065; SRC-067 | TODO | unassigned | OP-08/13…17; thêm runtime prerequisite tasks từ PLAN-028C trước promote READY; không suy runtime từ design DONE |
+| PLAN-028D | Exact bounded release/capacity/restore/compatibility matrix | SRC-076 | TODO | unassigned | Limits/retention và retained synthetic fixtures |
+| SRC-077 | No-code platform retained-data E2E/recovery/upgrade release | PLAN-028D; SRC-076 | TODO | unassigned | OP-18/19 và integrated R1→R2→R3; runtime evidence required |
+
 ## Customer 360 — 2026-10-13
 
 | ID | Deliverable | Deps | Status | Owner | Gate / evidence |

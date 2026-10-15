@@ -1,5 +1,7 @@
 # Bản đồ tài liệu
 
+[No-code Object Platform PLAN-028](planning/no-code-object-platform.md) — [UX](ux/object-properties-workspace.md), [entity model](data/no-code-entity-model.md), [contract direction](contracts/no-code-object-platform.md), [acceptance](quality/no-code-object-platform-acceptance.md), [Salesforce research](references/salesforce-object-platform.md). Product plan2026-10-15; bounded SRC-073/074 đã có [runtime hướng dẫn](development/object-platform.md) và [evidence](tracking/details/SRC-074.md), lifecycle/connected consumers còn gate.
+
 [Dashboard/Reports redesign PLAN-027](planning/dashboard-workspace.md) — feature/flow, [component và screen](ux/dashboard-workspace.md), [data/table design](data/dashboard-workspace.md), [API](contracts/dashboard-workspace.md), [acceptance](quality/dashboard-workspace-acceptance.md). 2026-10-14: design for review only; user explicitly requests review before code. Không thay runtime hoặc đóng generic Reporting gates.
 
 [ERD cuối Chat → Session → Stage/Touchpoint → Lead/Deal](data/chat-sales-erd.md), CHG-20261013-08: logical design accepted2026-10-13; exact DDL/API/runtime replacement chưa Ready/implemented.

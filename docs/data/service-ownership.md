@@ -1,5 +1,7 @@
 # Data ownership — monolith to service databases
 
+PLAN-028: [No-code entity ownership](no-code-entity-model.md) — CRM owns canonical schema/custom records/associations và proposed workspace placement; Reporting owns semantic projections/models; Workflow owns artifacts/runs. Owner APIs/events đưa dữ liệu tới consumer, không shared SQL/UoW hoặc transfer Sales/Chat/Ticket authority. Broader model remains logical design; SRC-073 adds CRM-owned object_workspace_config via forward30 in baseline monolith, see [filled physical contract](../contracts/object-platform-r1.md).
+
 **Current 2026-10-14 / CHG-20261014-05:** User authorized implementation after PLAN-027 review. Dashboard/Reports local slice is implemented: Reporting-owned schema4 (six new tenant-scoped tables;13 prior business tables preserved), native APIs, atomic templates and separate UI. [Runbook](../development/dashboard-workspace.md) · [Backend evidence](../tracking/details/SRC-071.md) · [UI evidence](../tracking/details/SRC-072.md). Earlier design-only/phase statements below are historical; broad Reporting milestones remain in tracker.
 
 PLAN-027 review proposal: Reporting owns [Dashboard heads/versions/widget references and lifecycle ledgers](dashboard-workspace.md), along with existing report definitions/versions. Template materialization may use one Reporting-local UoW for reports + dashboard, never cross-service UoW. Identity still owns permissions; source owners retain business facts; no source writes when creating dashboards. Design-only2026-10-14, no physical changes.

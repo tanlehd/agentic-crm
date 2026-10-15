@@ -1,5 +1,7 @@
 # CRM Core & Metadata
 
+PLAN-028: [Shared entity model](../data/no-code-entity-model.md) giữ CRM canonical metadata/custom record/link authority; proposed workspace placement và dependency manifests. Standard Sales/Chat/Ticket fields do owner công bố, không generic remote write. [Contract direction](../contracts/no-code-object-platform.md) có exact gates; SRC-073/074 thêm CRM-owned object_workspace_config ở baseline schema30 và additive APIs theo [implemented contract](../contracts/object-platform-r1.md), không đổi service extraction status.
+
 SRC-065 now serves GET /api/v1/automation/catalog from canonical CRM metadata with current native tenant/object/field rights. [Exact contract](../contracts/workflow-catalog.md), [evidence](../tracking/details/SRC-065.md). No new persistence; immutable change images, generic Kafka events and relationship query remain gated.
 
 Status: Target architecture accepted direction — PLAN-005 / ADR-017. Service extraction/API/physical schema chưa Ready; không đồng nghĩa deployed. [Module hiện tại](../modules/crm.md) · [Catalog](README.md) · [Cross-service rules](../contracts/service-boundaries.md).

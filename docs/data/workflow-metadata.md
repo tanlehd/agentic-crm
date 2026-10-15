@@ -1,5 +1,7 @@
 # Shared CRM Base metadata cho Workflow
 
+PLAN-028 bổ sung [shared entity lifecycle/consumer bindings](no-code-entity-model.md) và [report/workflow integration direction](../contracts/no-code-object-platform.md). Canonical IDs/owner giữ nguyên, structural manifests và authorized catalog views tách ở contract mới; v1 combined revision không bị diễn giải lại. No runtime changes.
+
 PLAN-024A/SRC-065: [exact catalog/binding contract](../contracts/workflow-catalog.md) and native discovery now implemented. Existing CRM object/property/association data only; no new tables. [Evidence](../tracking/details/SRC-065.md). Owner query/execution capabilities remain explicit and change-image/Kafka unavailable until following gates.
 
 PLAN-024 · 2026-10-13. Ready về ownership/semantic direction; exact API/schema và physical tables thuộc PLAN-024A/C. Không thêm/sửa bảng hoặc migration trong tài liệu này. [Architecture](../system/workflow-architecture.md) · [existing registry](../contracts/registry.md) · [record types](../contracts/crm-records.md).

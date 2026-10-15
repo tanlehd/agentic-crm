@@ -70,6 +70,7 @@ export class CrmRecords {
     try{return await this.uow.run({tenantId:tenant},async scope=>{
       const access=await withFieldPolicies(scope,await this.authorization.loadHuman(scope,account,undefined,true));actor=access.principalId;
       const type=await this.type(scope,route.object),defs=await properties(scope,type.id);
+      if(route.kind==='properties'&&type.kind!=='custom'&&!['contact','company','activity','lead'].includes(route.object))throw new CommandError(422,'OBJECT_NOT_IMPLEMENTED');
       if(route.kind!=='records'&&route.kind!=='archive')this.authorizeSchema(access,true);
       const queryDefs=[...(standardFields[route.object]??[]),...defs];
       const command={actorId:access.principalId,correlationId:correlation,route:domainCreate?`${method} /api/v1/${route.object}s${route.id?'/'+route.id:''}`:`${method} /api/v1/${route.kind==='records'||route.kind==='archive'?'objects':'object-types'}/${route.object}/${route.kind==='archive'?'records':route.kind}${route.id?'/'+route.id:''}${route.kind==='archive'?'/archive':''}`,key,body,version};

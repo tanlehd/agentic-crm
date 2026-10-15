@@ -1,5 +1,7 @@
 # Reporting & Analytics
 
+PLAN-028: Reporting compile canonical CRM refs thành own versioned models/projections theo [contract direction](../contracts/no-code-object-platform.md); connected source distinct from mock, producer qua authorized API/events, no cross-schema reads. PLAN-028B chốt physical tables/refresh/ACL/grain trước SRC-075; không đổi delivered scope.
+
 **Current 2026-10-14 / CHG-20261014-05:** User authorized implementation after PLAN-027 review. Dashboard/Reports local slice is implemented: Reporting-owned schema4 (six new tenant-scoped tables;13 prior business tables preserved), native APIs, atomic templates and separate UI. [Runbook](../development/dashboard-workspace.md) · [Backend evidence](../tracking/details/SRC-071.md) · [UI evidence](../tracking/details/SRC-072.md). Earlier design-only/phase statements below are historical; broad Reporting milestones remain in tracker.
 
 **PLAN-027 design proposal, 2026-10-14:** Reporting remains sole writer of the [dashboard aggregate and six proposed tables](../data/dashboard-workspace.md). [API](../contracts/dashboard-workspace.md) serves dashboard/report libraries, immutable template catalog, atomic creation of report drafts + dashboard, current-viewer widget execution and explicit legacy conversion. Report versions remain existing storage; no frontend/other-service SQL. Review-only at user request; schemas/endpoints not implemented. Current source status is tracker, not historical phase entries below.

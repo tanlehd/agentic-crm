@@ -14,6 +14,7 @@ import { uuid } from '../identity/admin.js';
 import { databaseSource } from '../../kernel/database/data-source.js';
 import { CommandError } from '../../kernel/reliability/commands.js';
 import { CrmUi } from './ui.js';
+import { ObjectPlatform } from './object-platform.js';
 import { WorkflowCatalogService } from './workflow-catalog.js';
 import { coreDomains,contactReferences } from './core.js';
 import { leadDomain,leadArchiveGuard,LeadService } from '../sales/leads.js';
@@ -113,6 +114,22 @@ export class CrmController {
       const result=await this.runtime.deals.mutate(session.account_id,tenant,req.params.id,req.body,key,typeof match==='string'?match.slice(1,-1):undefined,correlation);
       res.statusCode=result.status;res.setHeader('ETag',`"${result.body.data.version}"`);res.end(JSON.stringify(result.body));
     }catch(error){const failure=error instanceof CommandError||error instanceof AuthError?error:error instanceof AccessError?new CommandError(403,error.code):new CommandError(503,'TEMPORARILY_UNAVAILABLE');res.statusCode=failure.status;res.end(JSON.stringify({error:{code:failure.code,message:'Không thể hoàn tất yêu cầu.',fields:error instanceof FieldError?[{path:error.field,code:error.code}]:[],retryable:failure.status===503},meta:{correlation_id:correlation}}));}
+  }
+  @Get('crm/object-catalog') objectCatalog(@Req() q:Request,@Res() s:ServerResponse){return this.objectPlatformResponse(q,s,'catalog');}
+  @Get('crm/workspace-objects') workspaceObjects(@Req() q:Request,@Res() s:ServerResponse){return this.objectPlatformResponse(q,s,'workspace');}
+  @Get('crm/association-catalog') associationCatalog(@Req() q:Request,@Res() s:ServerResponse){return this.objectPlatformResponse(q,s,'associations');}
+  @Put('object-types/:key/workspace') workspaceSave(@Req() q:Request,@Res() s:ServerResponse){return this.objectPlatformResponse(q,s,'save');}
+  private async objectPlatformResponse(req:Request,res:ServerResponse,action:'catalog'|'workspace'|'associations'|'save'){
+    const correlation=randomUUID();res.setHeader('Content-Type','application/json');res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');
+    try{
+      const session=action==='save'?await this.auth.service.requireMutation(cookie(req,'crm_session'),req.headers.origin,req.headers['x-csrf-token']):await this.auth.service.session(cookie(req,'crm_session'),true);
+      const tenant=req.headers['x-tenant-id'];if(!uuid(tenant)||Object.keys(req.query).length)throw new CommandError(400,'INVALID_REQUEST');await this.runtime.ready();const platform=new ObjectPlatform(this.runtime.records);
+      if(action!=='save'){const data=action==='catalog'?await platform.catalog(session.account_id,tenant):action==='associations'?await platform.associations(session.account_id,tenant):await platform.workspace(session.account_id,tenant);res.end(JSON.stringify({data,meta:{correlation_id:correlation}}));return;}
+      const key=req.headers['idempotency-key'],match=req.headers['if-match'];
+      if(typeof key!=='string'||!/^application\/json(?:;|$)/i.test(req.headers['content-type']??'')||match!==undefined&&(typeof match!=='string'||!/^"[1-9][0-9]{0,19}"$/.test(match)))throw new CommandError(400,'INVALID_REQUEST');
+      const result=await platform.save(session.account_id,tenant,req.params.key!,req.body,key,typeof match==='string'?match.slice(1,-1):undefined,correlation);
+      res.statusCode=result.status;res.setHeader('ETag',`"${result.body.data.version}"`);res.end(JSON.stringify(result.body));
+    }catch(error){const failure=error instanceof CommandError||error instanceof AuthError?error:new CommandError(error instanceof AccessError?403:503,error instanceof AccessError?'FORBIDDEN':'TEMPORARILY_UNAVAILABLE');res.statusCode=failure.status;res.end(JSON.stringify({error:{code:failure.code,message:'Không thể cập nhật cấu hình đối tượng.',fields:error instanceof FieldError?[{path:error.field,code:error.code}]:[],retryable:failure.status===503},meta:{correlation_id:correlation}}));}
   }
   private async uiResponse(req:Request,res:ServerResponse,descriptor:boolean|'workflow-catalog'=false){
     const correlation=randomUUID();res.setHeader('Content-Type','application/json');res.setHeader('Cache-Control','no-store');

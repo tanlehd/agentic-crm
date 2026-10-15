@@ -103,7 +103,8 @@ export class CrmPlatform {
     if(update&&!allows(access,source.objectKey,'update',source))throw new CommandError(403,'FORBIDDEN');
     return [source,target] as const;
   }
-  associations(account:string,tenant:string,id:string,query:PageQuery){return this.authorization.runHuman(account,tenant,async(scope,access)=>{
+  associations(account:string,tenant:string,id:string,query:PageQuery){return this.authorization.runHuman(account,tenant,async(scope,raw)=>{
+    const access=await withFieldPolicies(scope,raw);
     if(!allows(access,'association','read'))throw new CommandError(403,'FORBIDDEN');
     this.registry.read(access,await this.registry.get(scope,id));
     const p=page(query,{account,tenant,route:'associations',id},this.secret),visible:any[]=[];let position=p.position;

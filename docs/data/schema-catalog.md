@@ -1,5 +1,7 @@
 # Schema catalog — nơi đặt bảng mới
 
+PLAN-028A/SRC-073: [object_workspace_config](../contracts/object-platform-r1.md), CRM Core owner/target crm_core, physical monolith until extraction. Forward30 adds only tenant-bound object presentation/placement; no per-object table or cross-service schema access.
+
 **Current 2026-10-14 / CHG-20261014-05:** User authorized implementation after PLAN-027 review. Dashboard/Reports local slice is implemented: Reporting-owned schema4 (six new tenant-scoped tables;13 prior business tables preserved), native APIs, atomic templates and separate UI. [Runbook](../development/dashboard-workspace.md) · [Backend evidence](../tracking/details/SRC-071.md) · [UI evidence](../tracking/details/SRC-072.md). Earlier design-only/phase statements below are historical; broad Reporting milestones remain in tracker.
 
 PLAN-027 proposes six [Dashboard tables](dashboard-workspace.md) owned only by crm_reporting: dashboard_definition, dashboard_version, dashboard_widget, dashboard_command_receipt, dashboard_audit_entry, dashboard_outbox_event. All business tenant_id NOT NULL; same-schema report/version/generation FKs. Template catalog initially release artifacts, not system DB rows. Review-only2026-10-14; current schema3 unchanged, forward DDL gate PLAN-027A before source.

@@ -1,5 +1,7 @@
 # Agentic CRM
 
+**Kế hoạch tiếp theo 2026-10-15:** [No-code Object Platform — PLAN-028](docs/planning/no-code-object-platform.md): Object & Properties, custom fields/associations, ERD, Agent Workspace và shared entity model cho connected Reporting/Workflow; có Salesforce references. Nền catalog/config và Object & Properties/ERD/Agent Workspace đã triển khai trong SRC-073/074. [Mở local](http://localhost:18080/?screen=schema) · [Hướng dẫn](docs/development/object-platform.md) · [Evidence](docs/tracking/details/SRC-074.md). Connected Reporting/custom-object Workflow và lifecycle nâng cao còn các gate tiếp theo.
+
 **Dashboard/Reports (2026-10-14):** Đã triển khai từ [đặc tả PLAN-027](docs/planning/dashboard-workspace.md): hai menu riêng, dashboard home, tạo từ template, widget chọn saved report, Report Library/viewer/editor. [Mở Dashboard](http://localhost:18080/?dashboards=1) · [Runbook](docs/development/dashboard-workspace.md) · [Evidence](docs/tracking/details/SRC-072.md). Native Alpha/Reporting schema4; dữ liệu DEMO giữ nguyên, không live integration. Các bản ghi phía dưới là lịch sử theo slice.
 
 **2026-10-14:** alpha_admin now has tenant-super-admin access through its existing admin seat + tenant_admin role. [Report Builder](http://localhost:18080/?reporting=1) → Báo cáo đã lưu contains the two 50-inbox demo dashboards (30 accepted /20 queued). Actual native login/save/run/CSV and desktop/mobile verified. Timing/capacity/spend are explicitly synthetic. [Evidence](docs/tracking/details/SRC-070.md).

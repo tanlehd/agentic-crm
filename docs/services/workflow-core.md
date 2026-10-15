@@ -1,5 +1,7 @@
 # Workflow Core — execution engine
 
+PLAN-028C target: [custom record triggers và actions](../contracts/no-code-object-platform.md) cần immutable change images, per-record sequence, current authority, anti-cycle và action receipts. PLAN-024B…E + source runtime prerequisite tasks phải hoàn tất trước SRC-076; pure kernel không được gọi là executable runtime.
+
 SRC-065 implements [pure authoring kernel](../../services/workflow-core/README.md) and typed node catalog; [evidence](../tracking/details/SRC-065.md). No runtime/server/database entrypoint yet; valid drafts always executable=false. Architecture below remains target for future execution slices.
 
 PLAN-024 / ADR-022, 2026-10-13. Architecture Ready; exact Kafka/runtime/action/DDL contracts thuộc PLAN-024B/C/D. Proposed deploy unit `workflow-core`, NestJS/TypeScript; private schema `crm_workflow_core`, API/consumer/scheduler/worker entrypoints của cùng service. Chưa có service độc lập deployed.

@@ -1,5 +1,7 @@
 # Reporting semantic catalog — objects, links, attributes và metrics
 
+PLAN-028: [Connected custom-object extension](../contracts/no-code-object-platform.md) compile stable CRM object/property/association refs thành Reporting model versions; explicit root/collection/optional/exists grain, current ACL và source watermark. PLAN-028B/SRC-075 chưa implemented; existing synthetic catalog giữ nguyên, không auto-upgrade mock reports.
+
 PLAN-0272026-10-14 refines [Dashboard/Report/Template data](dashboard-workspace.md) for design review: widget references an immutable saved edit version plus source generation, template recipes materialize ordinary reports, no duplicate metric engine or per-widget embedded query. Published/shared/parameterized target below stays broader future scope. Current schema/source unchanged; exact new artifacts gated by PLAN-027A.
 
 PLAN-022A · 2026-10-10 · Ready semantic/product design; wire schema, physical table templates và producer coverage còn PLAN-022. [Module plan](../planning/report-builder.md) · [Source ownership](service-ownership.md) · [Marketing dictionary](marketing-storage-dictionary.md) · [Session implementation](../contracts/acquisition-session-implementation.md).

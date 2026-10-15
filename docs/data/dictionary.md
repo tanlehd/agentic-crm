@@ -1,5 +1,9 @@
 # Data dictionary
 
+PLAN-028A: [Filled object_workspace_config design](../contracts/object-platform-r1.md) is Ready for forward30, CRM-owned in baseline monolith. No schema version claim until actual migration evidence; stable object version is config CAS. Other proposed PLAN-028 lifecycle tables remain unimplemented.
+
+PLAN-0282026-10-15: [Logical Object/Property/Association, placement và consumer-binding dictionary](no-code-entity-model.md) bổ sung phạm vi thiết kế no-code. Không thêm/sửa persisted fields/bảng ở phiên này; per-table designs/schema ownership/backfill thuộc PLAN-028A/B/C trước DDL. Existing runtime dictionary bên dưới giữ nguyên.
+
 **Current 2026-10-14 / CHG-20261014-05:** User authorized implementation after PLAN-027 review. Dashboard/Reports local slice is implemented: Reporting-owned schema4 (six new tenant-scoped tables;13 prior business tables preserved), native APIs, atomic templates and separate UI. [Runbook](../development/dashboard-workspace.md) · [Backend evidence](../tracking/details/SRC-071.md) · [UI evidence](../tracking/details/SRC-072.md). Earlier design-only/phase statements below are historical; broad Reporting milestones remain in tracker.
 
 **Proposed PLAN-027 (2026-10-14):** [Dashboard dictionary and filled table designs](dashboard-workspace.md) define dashboard_definition/version/widget/command_receipt/audit_entry/outbox_event in Reporting's own schema, typed saved-report version/source generation refs, immutable layout and template lineage. Design for user review; none of these six tables exists from this task, no migration/version change. Existing private report storage and legacy dashboard JSON remain unchanged.
