@@ -1,5 +1,7 @@
 # Enterprise service catalog
 
+SRC-065: [Workflow Core](workflow-core.md) now has a pure typed authoring kernel and [native canonical CRM discovery](../development/workflow-foundation.md). No separate runtime/server/database yet; Workflow Web/API remain target. Source readiness and delivery evidence are distinct from service architecture rows.
+
 SRC-057/058 scoped additions: [Reporting](reporting.md) has independent private draft HTTP/MySQL/native BFF and typed internal mock snapshot projections, verified locally. Query/connected producers/worker/production deployment remain pending; [draft runbook](../development/reporting-storage.md), [mock runbook](../development/reporting-projections.md).
 
 Chuẩn placement bổ sung ADR-021: [schema catalog](../data/schema-catalog.md) / [DB guideline](../data/database-guidelines.md). Mỗi service descriptor phải dùng schema owner này khi thiết kế bảng mới. Identity đích tự quản auth/quyền trong MySQL; Keycloak chỉ là runtime legacy chờ native cutover.
@@ -15,7 +17,9 @@ PLAN-005 / ADR-017. Target microservices accepted by user2026-10-06; business so
 | [Sales](sales.md) | `sales` | Lead/draft/qualification, handoff/acceptance; Deal/Customer transitions thuộc future M4 |
 | [AI Runtime Platform](ai-runtime.md) | `ai-runtime` | AI platform lifecycle/execution authority |
 | [Routing & Allocation](routing.md) | `routing` | Eligibility/capability matching, round-robin/capacity reservation, assignment proposals và attention queues |
-| [Workflow Orchestrator](workflow.md) | `workflow` | Versioned durable business graphs, run/step/wait/timer, saga coordination và action receipts |
+| [Workflow Web](workflow-web.md) | `workflow-web` | CMS canvas/configuration và run UI; stateless, target PLAN-024 |
+| [Workflow API](workflow-api.md) | `workflow-api` | Definition/draft/version/publish/control saga trong crm_workflow; target PLAN-024 |
+| [Workflow Core](workflow-core.md) | `workflow-core` | Kafka enrollment, versioned durable execution/run/step/wait/receipts trong crm_workflow_core; target PLAN-024 |
 | [Chatflow Orchestrator](chatflow.md) | `chatflow` | Versioned conversational graphs, session/turn, collected variables/drafts/provenance, Human pause/complete và Runtime coordination |
 | [Media & Content Processing](media.md) | `media` | Private media references/binary lifecycle, authorized download/preview, scan/transcode và OCR/transcription adapters |
 | [Ticket / Service Desk](ticket.md) | `ticket` | Ticket intake/state/SLA/assignment/escalation và service resolution |

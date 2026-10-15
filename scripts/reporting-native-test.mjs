@@ -58,6 +58,52 @@ try{
  await test('post-dispatch auth revision change prevents response release',async()=>{
   const racing=new ReportingBridge(ds,bridgeConfig,async(...args)=>{const response=await fetch(...args);await changeIdentity('admin',[]);return response;});await assert.rejects(racing.dispatch(fixture.account,fixture.tenant,{kind:'get',id:report.id}),e=>e.code==='STALE_AUTHORIZATION');await changeIdentity();
  });
+ await test('tenant super admin: intrinsic Reporting all scope, CRM fields, live revocation and last-admin invariant',async()=>{
+  const {IdentityAdmin}=await import('../apps/backend/dist/modules/identity/admin.js');
+  const {IdentityAuthorization}=await import('../apps/backend/dist/modules/identity/authorization.js');
+  const {RoutingIdentityPort}=await import('../apps/backend/dist/modules/identity/routing-port.js');
+  const {UnitOfWork}=await import('../apps/backend/dist/kernel/tenancy/unit-of-work.js');
+  const {withFieldPolicies,allows}=await import('../apps/backend/dist/modules/crm/access.js');
+  const {fieldAllowed}=await import('../apps/backend/dist/modules/identity/domain/authorization.js');
+  const admin=new IdentityAdmin(ds,'synthetic-super-admin-cursor'),authorization=new IdentityAuthorization(new UnitOfWork(ds));
+  const [existing]=await ds.query('SELECT id FROM `role` WHERE tenant_id=? AND `key`=?',[fixture.tenant,'tenant_admin']);
+  const role=existing?.id??randomUUID();
+  if(!existing)await ds.query('INSERT INTO `role`(id,tenant_id,`key`,name,permissions,created_at,updated_at) VALUES (?,?,?,?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))',[role,fixture.tenant,'tenant_admin','Synthetic super admin','[]']);
+  const originallyAssigned=(await ds.query('SELECT role_id FROM principal_role WHERE tenant_id=? AND principal_id=? AND role_id=?',[fixture.tenant,fixture.principal,role])).length>0;
+  const setState=async({assigned=true,seat='admin',status='active'}={})=>ds.transaction(async m=>{
+    await m.query('SELECT id FROM tenant WHERE id=? FOR UPDATE',[fixture.tenant]);
+    if(assigned)await m.query('INSERT IGNORE INTO principal_role(tenant_id,principal_id,role_id) VALUES (?,?,?)',[fixture.tenant,fixture.principal,role]);
+    else await m.query('DELETE FROM principal_role WHERE tenant_id=? AND principal_id=? AND role_id=?',[fixture.tenant,fixture.principal,role]);
+    await m.query('UPDATE membership SET seat_code=?,status=? WHERE tenant_id=? AND id=?',[seat,status,fixture.tenant,fixture.member]);
+    await m.query('UPDATE principal SET auth_revision=auth_revision+1 WHERE tenant_id=? AND id=?',[fixture.tenant,fixture.principal]);
+  });
+  try{
+    await changeIdentity('admin',[]);await setState();
+    assert.equal((await request()).status,200);assert.equal((await request('','POST',{name:'Intrinsic admin draft',definition:{}})).status,200);
+    assert.equal((await request('','GET',undefined,{'x-tenant-id':fixture.foreignTenant})).status,403);
+    const op={kind:'create',key:randomUUID(),body:{name:'Other owner for super admin',definition:{}}}, {hash}=await import('../services/reporting/dist/storage-security.js');
+    const other=await store.execute({audience:'reporting-definition-v1',tenantId:fixture.tenant,principalId:randomUUID(),authRevision:'1',readScope:'own',designScope:'own',issuedAt:Date.now(),expiresAt:Date.now()+5000,bodyHash:hash(JSON.stringify(op))},op);
+    assert.equal((await request('/'+other.id)).status,200);
+    assert.equal((await request('/'+other.id,'PATCH',{name:'Super admin edit',definition:{}},{'if-match':'"1"'})).status,200);
+    const {CrmPlatform}=await import('../apps/backend/dist/modules/crm/platform.js');
+    if(!(await ds.query('SELECT id FROM object_type WHERE tenant_id=? AND `key`=?',[fixture.tenant,'super_admin_case'])).length)await new CrmPlatform(ds,'synthetic').mutate(fixture.account,fixture.tenant,'object-types',{key:'super_admin_case',label:'Synthetic super-admin case'},randomUUID(),undefined,randomUUID());
+    const before=await authorization.runHuman(fixture.account,fixture.tenant,async(scope,a)=>{
+      assert.equal(a.superAdmin,true);assert.equal((await new RoutingIdentityPort().principal(scope,fixture.principal)).access.superAdmin,true);
+      const crm=await withFieldPolicies(scope,{...a,fieldDenies:[{resource:'super_admin_case',field:'secret',actions:['read','write']}]});
+      assert(allows(crm,'super_admin_case','update',{tenantId:fixture.tenant,ownerPrincipalId:randomUUID(),teamId:null,sharedTeamIds:[]}));
+      assert(!allows(crm,'super_admin_case','read',{tenantId:fixture.foreignTenant,ownerPrincipalId:null,teamId:null,sharedTeamIds:[]}));
+      for(const action of ['read','write','filter','export'])assert(fieldAllowed(crm,'super_admin_case','secret',action));return a;
+    });
+    const [member]=await ds.query('SELECT version FROM membership WHERE tenant_id=? AND id=?',[fixture.tenant,fixture.member]);
+    for(const body of [{seat_code:'viewer'},{status:'suspended'},{role_ids:[fixture.role]}])await assert.rejects(admin.mutate(fixture.account,fixture.tenant,'memberships',fixture.member,body,randomUUID(),String(member.version),randomUUID()),e=>e.code==='LAST_ADMIN_REQUIRED');
+    const [r]=await ds.query('SELECT version FROM `role` WHERE tenant_id=? AND id=?',[fixture.tenant,role]);
+    await admin.mutate(fixture.account,fixture.tenant,'roles',role,{permissions:[]},randomUUID(),String(r.version),randomUUID());assert.equal((await request()).status,200);
+    await assert.rejects(authorization.runHuman(fixture.account,fixture.tenant,async()=>{},before),e=>e.code==='STALE_AUTHORIZATION');
+    for(const state of [{assigned:false},{seat:'viewer'},{status:'suspended'}]){await setState(state);assert.equal((await request()).status,403);await setState();}
+    const racing=new ReportingBridge(ds,bridgeConfig,async(...args)=>{const response=await fetch(...args);await setState({assigned:false});return response;});
+    await assert.rejects(racing.dispatch(fixture.account,fixture.tenant,{kind:'get',id:report.id}),e=>e.code==='STALE_AUTHORIZATION');
+  }finally{await setState({assigned:originallyAssigned});await changeIdentity();}
+ });
  await test('revoked native session rejects subsequent reads',async()=>{await auth.logout(sid,config.origin,csrf);assert.equal((await request()).status,401);});
  await mkdir('artifacts/reporting-storage',{recursive:true});await writeFile('artifacts/reporting-storage/native.json',JSON.stringify({at:new Date().toISOString(),database:env.MYSQL_DATABASE,groups,passed:groups.length},null,2));console.log(JSON.stringify({passed:groups.length}));
 }finally{await changeIdentity();await publicApp?.close();await privateApp?.close();await store.close();await pool.end();await ds.destroy();}

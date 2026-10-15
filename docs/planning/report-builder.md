@@ -1,5 +1,7 @@
 # Report Builder — kế hoạch module và dashboard động
 
+**Current design proposal 2026-10-14:** [PLAN-027](dashboard-workspace.md) replaces the mixed builder/dashboard entry with separate Dashboard and Reports menus, home/template/picker flows and dedicated dashboard aggregate. User requests documents for review before code. New API/DDL gate PLAN-027A and SRC-071/072 are proposed TODO; broad SRC-061 global filters/comparison/sharing remain open. Historical implementation entries below are not current task status; consult tracker.
+
 **2026-10-12 / CHG-20261012-06:** User accepted early API-backed UI. [PLAN-022H](../contracts/reporting-authoring.md) scopes source/model/fields/axes/flat filters/chart/pivot/private draft/CSV over delivered APIs. SRC-064 is the sole active source task; SRC-059 requeued READY, incomplete scope/evidence preserved. Full SRC-060 follows SRC-059 and SRC-064; no publish/dashboard/drilldown completion claim. No database changes.
 
 **Lifecycle phase2026-10-12 / CHG-20261012-05:** PLAN-022G [durable mock runs](../contracts/reporting-runs.md) implemented with native caller-driven execution/cancel/pinned results and own schema3. SRC-059 still IN_PROGRESS for authorized drilldown/remaining KPI semantics and acceptance; no autonomous worker/UI claim. [Evidence](../tracking/details/SRC-059.md).

@@ -1,5 +1,10 @@
 # Organic Sales base — scoped exact design PLAN-011A
 
+Current SRC-068 / CHG-20261013-10: [Customer360/session contract](../contracts/customer-360-session.md) is authoritative for inbox_v2 and forward28: new Ad retains the open session, actual create/follow-up/closing context is separate from immutable origin, direct Deal is supported, duplicate Lead consolidation preserves original history. Prior v1 splitting descriptions below are historical. Stage/milestone configuration and connected funnel reporting remain outside this implemented slice.
+
+
+**Current attribution override, review 2026-10-13:** SRC-053 đã cutover theo [acquisition implementation](acquisition-session-implementation.md). Lead pin nguồn từ session được chọn (có thể closed); conversation_id-only dùng active session, hoặc fallback legacy nếu thread chưa có session nào. Nếu đã có sessions nhưng không active phải chọn rõ session. Các đoạn first-touch/active Conversation và future cutover bên dưới mô tả baseline trước SRC-053; Deal base và organic won-value rules vẫn áp dụng.
+
 Status: Ready for scoped implementation2026-10-07. CHG-20261007-14 user prioritizes Lead/Deal → organic Conversation conversion → won value per Page before Marketing integration. Ticket, receipts and full PLAN-011 remain separate. Physical baseline monolith via existing application ports, target Sales schema crm_sales. No service extraction implied.
 
 ## Lead create and source

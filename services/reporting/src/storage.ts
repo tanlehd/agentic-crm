@@ -40,7 +40,7 @@ export class ReportingStore {
   }catch(e){await c.rollback();if(e instanceof StorageError)throw e;const code=(e as {code?:string}).code;if(code==='ER_DUP_ENTRY')throw new StorageError(409,'IDEMPOTENCY_CONFLICT');throw new StorageError(503,'STORAGE_UNAVAILABLE');}
   finally{c.release();}
  }
- private async mutate(c:PoolConnection,a:Admission,op:Operation){
+ async mutate(c:PoolConnection,a:Admission,op:Operation){
   const id=op.kind==='create'?commandId(a,op.key!):op.id!,requestHash=hash(canonical(op));
   if(op.kind==='create')await c.execute('INSERT INTO report_definition (tenant_id,id,owner_principal_id,name,created_at,updated_at) VALUES (?,?,?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6)) ON DUPLICATE KEY UPDATE id=id',[a.tenantId,id,a.principalId,op.body!.name!]);
   const head=await this.head(c,a,id,true);this.permission(a,head,true);this.permission(a,head);

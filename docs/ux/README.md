@@ -24,6 +24,7 @@ UX-004, 2026-10-07: bỏ tab bar dưới header, thay thiết kế work tabs UX-
 | MKT-01/02 | Ads / Campaigns | Chưa đặc tả / chưa mock | Draft; nav chỉ là IA đích |
 | WF-01 | Workflow | Chưa đặc tả redesign | Run/definition read-only có baseline; builder Draft |
 | RPT-01…04 | Report library, builder, dashboard, catalog | [Specification](report-builder.md) | PLAN-022A product UX; wireframe only, interactive mock/visual review và exact contracts còn PLAN-022 |
+| DW-01…05 / RPT-05…06 | Dashboard home, gallery/preview, canvas, report picker, library/viewer/editor | [Screen/component specification](dashboard-workspace.md) | PLAN-027 design for review; text wireframes, no runtime/visual QA; user requests documents before code |
 | MORE-01 | More | Quy tắc menu trong app-shell.md | Link tới công cụ có quyền/đã triển khai |
 
 Chỉ Inbox được thiết kế đầy đủ trong phiên này. Khi thêm màn hình: claim task → đọc domain/contract → viết spec theo template → mock default + failure + responsive → review → acceptance/evidence/log. Không đánh dấu màn khác Ready từ một dòng navigation.

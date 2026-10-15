@@ -1,5 +1,13 @@
 # Acceptance và traceability
 
+PLAN-0272026-10-14 adds [DW-AC01…14](dashboard-workspace-acceptance.md) for separate Dashboard/Reports navigation, templates, saved-report refs, layout, current authority, replay/CAS, legacy preservation and native UI. All runtime scenarios NOT_RUN; documents only for user review. Existing SRC-070 evidence and broader RB-MOCK gates unchanged.
+
+CHG-20261013-09 second review adds scenarios9–13 in [Chat/Sales ERD](../data/chat-sales-erd.md): inherited origin versus create context, two needs in one session, manual stage versus evidence, close/inbound races and correction/as_of. NOT_RUN; these are proposed exact-contract gates, not completed feature acceptance.
+
+CHG-20261013-08: [final Chat/Sales ERD acceptance](../data/chat-sales-erd.md) defines eight next-scope scenarios for session-preserving Ad touches, stage/milestone evidence/version/history, primary-origin/follow-up, direct Deal and cohort/no-fan-out/tenant ACL. All NOT_RUN; historical SRC-053/CRM-BASE-10 remains scoped acquisition_v1 evidence and does not certify the redesign.
+
+PLAN-024 / 2026-10-13: [WF-01…15](workflow-platform-acceptance.md) cho shared CRM metadata, Workflow CMS/API/Core, Kafka enrollment, related-record actions, communication, delay/branch, fault/isolation/cutover. Scenario design only; toàn bộ runtime acceptance mới NOT_RUN. Evidence M2 dưới đây không đóng distributed Workflow gates.
+
 Status: Ready for implementation như thiết kế test. Source có foundation/kernel tests; acceptance nghiệp vụ vẫn chờ task tương ứng. SRC-004 chỉ kiểm AC-01 tầng repository/composite FK/transaction, chưa đóng toàn AC-01; xem [evidence](../tracking/details/SRC-004.md).
 
 SRC-005 kiểm AC-14 phần automated local links/fences/JSON/task dependency; Mermaid chỉ kiểm header, chưa render; không đóng toàn AC-14 hoặc business gate. [Evidence SRC-005](../tracking/details/SRC-005.md).
@@ -258,3 +266,10 @@ PLAN-023 / CHG-20261008-09: [Shared account and Page tenant admission](../contra
 MKT-DATA-01 / SRC-054: own database v1, all23 tables tenant_id NOT NULL,105 selected provider fields, shared tenant-local accounts/parents, same-tenant/account FK isolation, required Ad/Page evidence, separate query/breakdown grains and metric revisions, exact decimals, history grants, idempotent migration and persistent fixture preservation. [Evidence](../tracking/details/SRC-054.md). This is storage acceptance only: actual Page authority skip/defer, schedule/reconciliation/Meta API and report builder remain NOT_RUN.
 
 MKT-SYNC-01/02/03 design now Ready under [PLAN-011E contract](../contracts/marketing-metadata-sync.md). Source acceptance still NOT_RUN: SRC-056 authority/credential/revoke-race first; SRC-051 metadata/scheduling/history/lookup/change-stream next.20 request-schema examples validate design shape only, not deployed auth or worker behavior. Live Meta remains independent.
+
+SRC-0682026-10-13: [Ready Customer360/session contract](../contracts/customer-360-session.md) defines forward28 session_touchpoint (Chat), sales_session_context and lead_merge (Sales), immutable origin versus actual context, active-session referral continuity and separate duplicate consolidation. Implemented and verified in SRC-068: 333unit,11 persistent MySQL,6 focused healthcare and8 native/browser groups; no stage/milestone/report completion claim. Existing physical monolith retains application ports; no external FK.
+
+PLAN-025 / SRC-069: [Ready session progress contract](../contracts/session-progress.md) defines six Chat-owned tables in forward29, pinned process/stage, need-scoped manual evidence/corrections and a connected behavioral session funnel. Current monolith application producer + pure Reporting reducer; no cross-service SQL or mock-builder permission activation. SP-01…07 implemented and verified in SRC-069 (345unit,13persistent MySQL,8native/browser,6healthcare); see task evidence.
+
+
+PLAN-026 / SRC-070: [50-inbox demo acceptance](../contracts/inbox-demo-dashboards.md). ID-01 native 50 sessions / 30 assigned / 20 queued / 10 Leads and stable rerun PASS. ID-02 query-engine counts/rates/latency/capacity/spend PASS. ID-03/04 private dashboard save/reopen/edit, desktop/mobile, partial errors and authorization purge PASS in retained isolated Reporting fixture. ID-05 actual Alpha Reporting login remains pending explicit role approval; prepared snapshot is not activation evidence. [Execution evidence](../tracking/details/SRC-070.md).

@@ -14,6 +14,8 @@ import {RunAdmissionVerifier} from './runs-security.js';
 import {ReportingRunStore} from './runs-store.js';
 import {ReportingRunService} from './runs-service.js';
 import {discoverAuthoring} from './authoring.js';
+import {DashboardVerifier} from './dashboard-security.js';
+import {DashboardService} from './dashboards.js';
 interface Request extends IncomingMessage {body:unknown;rawBodyText:string}
 export class ReportingRuntime implements OnModuleDestroy {
  readonly store=new ReportingStore(process.env);readonly verifier=new AdmissionVerifier(process.env.REPORTING_ADMISSION_KEY??'');
@@ -21,11 +23,17 @@ export class ReportingRuntime implements OnModuleDestroy {
  readonly queries=new ReportingQueryService(new ProjectionStore(this.store.pool));
  readonly runVerifier=new RunAdmissionVerifier(process.env.REPORTING_ADMISSION_KEY??'');
  readonly runs=new ReportingRunService(new ReportingRunStore(this.store.pool),new ProjectionStore(this.store.pool),this.queries);
+ readonly dashboardVerifier=new DashboardVerifier(process.env.REPORTING_ADMISSION_KEY??'');
+ readonly dashboards=new DashboardService(this.store,this.dashboardVerifier,this.queries);
  async onModuleDestroy(){await this.store.close();}
 }
 @Controller('internal/v1/reporting')
 export class ReportingController {
  constructor(@Inject(ReportingRuntime)private readonly runtime:ReportingRuntime){}
+ @Post('dashboards') async dashboard(@Req()req:Request,@Res()res:ServerResponse){
+  const correlation_id=randomUUID();res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json');res.setHeader('X-Content-Type-Options','nosniff');
+  try{if(['cookie','origin','x-tenant-id'].some(k=>req.headers[k]!==undefined)||req.url?.includes('?'))throw new StorageError(403,'PRIVATE_TRANSPORT_REQUIRED');const a=this.runtime.dashboardVerifier.verify(req.headers['x-reporting-admission'],req.rawBodyText),data=await this.runtime.dashboards.execute(a,req.body,req.rawBodyText);res.statusCode=200;res.end(JSON.stringify({data,meta:{correlation_id}}));}catch(e){const error=queryHttpError(e);res.statusCode=error.status;res.end(JSON.stringify({error:{code:error.code,retryable:error.status>=500},meta:{correlation_id}}));}
+ }
  @Get('health/ready') async health(@Res()res:ServerResponse){res.setHeader('Cache-Control','no-store');try{await this.runtime.store.pool.query('SELECT 1');res.statusCode=200;res.end('{"ready":true}');}catch{res.statusCode=503;res.end('{"ready":false}');}}
  @Post('authoring') async authoring(@Req()req:Request,@Res()res:ServerResponse){
   const correlation_id=randomUUID();res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json');res.setHeader('X-Content-Type-Options','nosniff');

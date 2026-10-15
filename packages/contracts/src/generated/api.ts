@@ -335,6 +335,118 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/sales/records/{id}/session-context": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["customer360-get-sales-records-id-session-context"];
+        put?: never;
+        post: operations["customer360-post-sales-records-id-session-context"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/leads/{id}/merge-preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["customer360-post-leads-id-merge-preview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/leads/{id}/merge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["customer360-post-leads-id-merge"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/leads/{id}/merges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["customer360-get-leads-id-merges"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/session-process": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["session-progress-get-session-process"];
+        put?: never;
+        post: operations["session-progress-post-session-process"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversations/{conversation}/sessions/{session}/progress": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["session-progress-get-conversations-conversation-sessions-session-progress"];
+        put?: never;
+        post: operations["session-progress-post-conversations-conversation-sessions-session-progress"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/session-funnel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["session-progress-get-session-funnel"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/crm/context": {
         parameters: {
             query?: never;
@@ -935,13 +1047,45 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        get: operations["workflow-get-workflows-id"];
         put?: never;
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
         patch: operations["workflow-patch-workflows-id"];
+        trace?: never;
+    };
+    "/api/v1/workflows/authoring": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["workflow-get-workflows-authoring"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workflows/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["workflow-post-workflows-validate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/v1/workflows/{id}/versions": {
@@ -2354,6 +2498,10 @@ export interface components {
             title: string;
             amount: string;
             currency: string;
+            /** Format: uuid */
+            conversation_id?: string;
+            /** Format: uuid */
+            conversation_session_id?: string;
         };
         "crm-deal-patch": {
             title?: string;
@@ -2361,6 +2509,343 @@ export interface components {
             currency?: string;
             /** @enum {unknown} */
             stage?: "open" | "qualified" | "proposal" | "won" | "lost";
+            /** Format: uuid */
+            conversation_id?: string;
+            /** Format: uuid */
+            conversation_session_id?: string;
+        };
+        "sales-session-input": {
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: uuid */
+            conversation_session_id: string;
+        };
+        "sales-session-response": {
+            data: {
+                /** Format: uuid */
+                id: string;
+                version: string;
+                /** Format: uuid */
+                context_id: string;
+                /** Format: uuid */
+                conversation_id: string;
+                /** Format: uuid */
+                session_id: string;
+                /** @constant */
+                kind: "follow_up";
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "sales-session-list": {
+            data: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                record_id: string;
+                /** Format: uuid */
+                conversation_id: string;
+                /** Format: uuid */
+                session_id: string;
+                /** @enum {unknown} */
+                kind: "created" | "follow_up" | "closing";
+                /** Format: date-time */
+                recorded_at: string;
+            }[];
+            /** Format: uuid */
+            next_before_id: string | null;
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "lead-merge-preview-input": {
+            /** Format: uuid */
+            target_id: string;
+        };
+        "lead-merge-input": {
+            /** Format: uuid */
+            target_id: string;
+            target_version: string;
+            reason: string;
+        };
+        "lead-merge-preview": {
+            data: {
+                source: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    tenant_id: string;
+                    object_key: string;
+                    version: string;
+                    owner_revision: string;
+                    owner_principal_id: string | null;
+                    team_id: string | null;
+                    archived: boolean;
+                    fields: {
+                        [key: string]: unknown;
+                    };
+                    custom_values: {
+                        [key: string]: unknown;
+                    };
+                };
+                target: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    tenant_id: string;
+                    object_key: string;
+                    version: string;
+                    owner_revision: string;
+                    owner_principal_id: string | null;
+                    team_id: string | null;
+                    archived: boolean;
+                    fields: {
+                        [key: string]: unknown;
+                    };
+                    custom_values: {
+                        [key: string]: unknown;
+                    };
+                };
+                /** @constant */
+                policy: "retain_target_and_preserve_source_history";
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "lead-merge-response": {
+            data: {
+                /** Format: uuid */
+                id: string;
+                version: string;
+                /** Format: uuid */
+                target_id: string;
+                target_version: string;
+                /** @constant */
+                archived: true;
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "lead-merge-history": {
+            data: {
+                /** Format: uuid */
+                source_id: string;
+                /** Format: uuid */
+                target_id: string;
+                /** Format: date-time */
+                recorded_at: string;
+            }[];
+            has_more: boolean;
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "session-process-input": {
+            stages: {
+                key: string;
+                label: string;
+            }[];
+            milestones: {
+                key: string;
+                label: string;
+            }[];
+        };
+        "session-process-response": {
+            data: {
+                version: string;
+                current_version: string;
+                definition: {
+                    stages: {
+                        key: string;
+                        label: string;
+                    }[];
+                    milestones: {
+                        key: string;
+                        label: string;
+                    }[];
+                };
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "session-progress-input": {
+            /** @constant */
+            action: "enroll";
+        } | {
+            /** @constant */
+            action: "stage";
+            stage_key: string;
+            reason: string;
+        } | {
+            /** @constant */
+            action: "need";
+            label: string;
+        } | {
+            /** @constant */
+            action: "record";
+            /** Format: uuid */
+            need_id: string;
+            milestone_key: string;
+            /** Format: date-time */
+            occurred_at: string;
+            reason: string;
+            /** Format: uuid */
+            message_id?: string;
+        } | {
+            /** @constant */
+            action: "replace";
+            /** Format: uuid */
+            supersedes_id: string;
+            /** Format: date-time */
+            occurred_at: string;
+            reason: string;
+            /** Format: uuid */
+            message_id?: string;
+        } | {
+            /** @constant */
+            action: "retract";
+            /** Format: uuid */
+            supersedes_id: string;
+            reason: string;
+        };
+        "session-progress-response": {
+            data: {
+                /** Format: uuid */
+                session_id: string;
+                can_edit: boolean;
+                /** @enum {unknown} */
+                status: "active" | "closed";
+                /** @enum {unknown} */
+                coverage: "full" | "partial" | "none";
+                version: string;
+                process: {
+                    version: string;
+                    current_version: string;
+                    definition: {
+                        stages: {
+                            key: string;
+                            label: string;
+                        }[];
+                        milestones: {
+                            key: string;
+                            label: string;
+                        }[];
+                    };
+                } | null;
+                needs: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    session_id: string;
+                    label: string;
+                    /** Format: date-time */
+                    created_at: string;
+                    /** Format: uuid */
+                    actor_id: string;
+                }[];
+                history: ({
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    session_id: string;
+                    /** Format: uuid */
+                    need_id: string;
+                    revision: string;
+                    milestone_key: string;
+                    /** @enum {unknown} */
+                    kind: "record" | "replace" | "retract";
+                    supersedes_id: string | null;
+                    message_id: string | null;
+                    reason: string;
+                    /** Format: date-time */
+                    occurred_at: string;
+                    /** Format: date-time */
+                    recorded_at: string;
+                    /** Format: uuid */
+                    actor_id: string;
+                    corrected_by: string | null;
+                    /** @constant */
+                    type: "milestone";
+                } | {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    session_id: string;
+                    revision: string;
+                    from_stage: string;
+                    to_stage: string;
+                    reason: string;
+                    /** Format: uuid */
+                    actor_id: string;
+                    /** Format: date-time */
+                    recorded_at: string;
+                    /** @constant */
+                    type: "stage";
+                })[];
+                next_before_revision: string | null;
+                process_version?: string;
+                stage_key?: string;
+                /** Format: date-time */
+                created_at?: string;
+                /** Format: date-time */
+                updated_at?: string;
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "session-progress-result": {
+            data: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                session_id: string;
+                version: string;
+                /** @enum {unknown} */
+                action: "enroll" | "stage" | "need" | "record" | "replace" | "retract";
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "session-funnel-response": {
+            data: {
+                sessions: number;
+                denominator: number;
+                coverage: {
+                    full: number;
+                    partial: number;
+                    none: number;
+                    other_version: number;
+                };
+                steps: {
+                    key: string;
+                    label: string;
+                    sessions: number;
+                    cohort_rate: number | null;
+                    previous_rate: number | null;
+                }[];
+                /** Format: date-time */
+                from: string;
+                /** Format: date-time */
+                to: string;
+                /** Format: date-time */
+                as_of: string;
+                process_version: string;
+                /** @constant */
+                timezone: "UTC";
+                /** @constant */
+                scope: "current_authorized_conversations";
+                /** @constant */
+                mode: "same_need_ordered";
+            };
+            meta: {
+                correlation_id: string;
+            };
         };
         "organic-page-report": {
             data: {
@@ -2689,8 +3174,8 @@ export interface components {
                 source_campaign_id: string | null;
                 source_connection_id: string | null;
                 source_touchpoint_id: string | null;
-                /** @constant */
-                policy_version: "acquisition_v1";
+                /** @enum {unknown} */
+                policy_version: "acquisition_v1" | "inbox_v2";
             }[];
             next_before_sequence: string | null;
             meta: {
@@ -3127,6 +3612,7 @@ export interface components {
             meta: {
                 correlation_id: string;
             };
+            next_cursor?: string | null;
         };
         "workflow-versions": {
             data: {
@@ -3170,6 +3656,69 @@ export interface components {
                     status: string;
                     resume_at: string;
                 }[];
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "workflow-definition": {
+            data: {
+                /** Format: uuid */
+                id: string;
+                key: string;
+                name: string;
+                /** Format: uuid */
+                service_actor_id: string;
+                active_version_id: string | null;
+                enabled: boolean;
+                version: string;
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "workflow-authoring-options": {
+            data: {
+                actors: {
+                    /** Format: uuid */
+                    id: string;
+                    key: string;
+                    /** Format: uuid */
+                    role_id: string;
+                    role_name: string;
+                }[];
+                teams: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                    purpose: string;
+                }[];
+                connections: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                    /** @constant */
+                    provider: "mock_messenger";
+                }[];
+                chatflows: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                    number: number;
+                }[];
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "workflow-validate-input": {
+            graph: components["schemas"]["workflow-graph"];
+        };
+        "workflow-validation": {
+            data: {
+                /** @constant */
+                valid: true;
+                node_count: number;
             };
             meta: {
                 correlation_id: string;
@@ -7049,6 +7598,851 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["AuthErrorResponse"];
                 };
+            };
+        };
+    };
+    "customer360-get-sales-records-id-session-context": {
+        parameters: {
+            query?: {
+                before_id?: string;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["sales-session-list"];
+                };
+            };
+            /** @description Sanitized failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "customer360-post-sales-records-id-session-context": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["sales-session-input"];
+            };
+        };
+        responses: {
+            /** @description Authorized result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["sales-session-response"];
+                };
+            };
+            /** @description Sanitized failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "customer360-post-leads-id-merge-preview": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["lead-merge-preview-input"];
+            };
+        };
+        responses: {
+            /** @description Authorized result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["lead-merge-preview"];
+                };
+            };
+            /** @description Sanitized failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "customer360-post-leads-id-merge": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["lead-merge-input"];
+            };
+        };
+        responses: {
+            /** @description Authorized result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["lead-merge-response"];
+                };
+            };
+            /** @description Sanitized failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "customer360-get-leads-id-merges": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["lead-merge-history"];
+                };
+            };
+            /** @description Sanitized failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "session-progress-get-session-process": {
+        parameters: {
+            query?: {
+                version?: string;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Native authorized session result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["session-process-response"];
+                };
+            };
+            /** @description Sanitized failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "session-progress-post-session-process": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["session-process-input"];
+            };
+        };
+        responses: {
+            /** @description Native authorized session result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["session-process-response"];
+                };
+            };
+            /** @description Sanitized failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "session-progress-get-conversations-conversation-sessions-session-progress": {
+        parameters: {
+            query?: {
+                before_revision?: string;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                conversation: string;
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Native authorized session result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["session-progress-response"];
+                };
+            };
+            /** @description Sanitized failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "session-progress-post-conversations-conversation-sessions-session-progress": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                conversation: string;
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["session-progress-input"];
+            };
+        };
+        responses: {
+            /** @description Native authorized session result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["session-progress-result"];
+                };
+            };
+            /** @description Sanitized failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "session-progress-get-session-funnel": {
+        parameters: {
+            query: {
+                from: string;
+                to: string;
+                as_of?: string;
+                process_version: string;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Native authorized session result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["session-funnel-response"];
+                };
+            };
+            /** @description Sanitized failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -11704,6 +13098,7 @@ export interface operations {
         parameters: {
             query?: {
                 limit?: number;
+                after?: string;
             };
             header: {
                 "X-Tenant-Id": string;
@@ -11897,6 +13292,102 @@ export interface operations {
             };
         };
     };
+    "workflow-get-workflows-id": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized workflow result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["workflow-definition"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
     "workflow-patch-workflows-id": {
         parameters: {
             query?: never;
@@ -11925,6 +13416,200 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["workflow-mutation"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "workflow-get-workflows-authoring": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized workflow result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["workflow-authoring-options"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
+    "workflow-post-workflows-validate": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["workflow-validate-input"];
+            };
+        };
+        responses: {
+            /** @description Authorized workflow result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["workflow-validation"];
                 };
             };
             /** @description Sanitized identity failure */

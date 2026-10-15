@@ -1,5 +1,9 @@
 # Bản đồ tài liệu
 
+[Dashboard/Reports redesign PLAN-027](planning/dashboard-workspace.md) — feature/flow, [component và screen](ux/dashboard-workspace.md), [data/table design](data/dashboard-workspace.md), [API](contracts/dashboard-workspace.md), [acceptance](quality/dashboard-workspace-acceptance.md). 2026-10-14: design for review only; user explicitly requests review before code. Không thay runtime hoặc đóng generic Reporting gates.
+
+[ERD cuối Chat → Session → Stage/Touchpoint → Lead/Deal](data/chat-sales-erd.md), CHG-20261013-08: logical design accepted2026-10-13; exact DDL/API/runtime replacement chưa Ready/implemented.
+
 Chuẩn thiết kế mới ADR-021: [schema catalog](data/schema-catalog.md), [database guideline](data/database-guidelines.md), [table placement inventory](data/table-placement-inventory.md), [table design template](templates/database-table.md), [native auth](contracts/native-auth.md), [transition plan](planning/native-identity-data-plan.md), [research](references/crm-database-patterns.md). Các mục OIDC/Keycloak implemented bên dưới mô tả baseline, không phải target được tiếp tục mở rộng.
 
 
@@ -49,7 +53,7 @@ Ngày baseline: 2026-10-02. Trạng thái phản ánh độ sâu thiết kế, k
 | MOD-05 | [Lead/Opportunity & Sale Workspace](modules/sales.md) | Lead core/draft/qualification implemented SRC-012/013; queue/handoff/accept M2 implemented SRC-021/022; Deal/customer production Draft |
 | MOD-06 | [Ticket System](modules/ticket.md) | Draft: blueprint M4 |
 | MOD-07 | [Agent & Routing](modules/agents.md) | Routing/assignment/takeover implemented SRC-017; private mock runtime SRC-018 implemented; session integration SRC-020 |
-| MOD-08 | [Workflow](modules/workflow.md) | Primitive graph/version/run/wait engine + API implemented SRC-019; child Chatflow/Sales integration SRC-020/021; visual builder Draft |
+| MOD-08 | [Workflow](modules/workflow.md) | Primitive M2 implemented SRC-019/020/021; [native metadata + Core validator](development/workflow-foundation.md) SRC-065 delivered; [Web/API/Core/Kafka plan](planning/workflow-platform.md) runtime/persistence/CMS gates remain |
 | MOD-09 | [Chatflow](modules/chatflow.md) | SRC-020 DONE: qualification flow M2; visual builder Draft |
 | MOD-10 | [Reporting & Dashboard](modules/reporting.md) | Semantic kernel/private drafts + [typed mock projections](development/reporting-projections.md) implemented SRC-063/057/058; [plan](planning/report-builder.md); remaining query/ACL/publish/UI gate PLAN-022 TODO |
 | MOD-11 | [Audit & Operations](modules/operations.md) | Outbox/inbox, audit, replay foundation implemented SRC-008; operations M2 UI implemented SRC-022 |
@@ -69,3 +73,8 @@ SRC-022 Sales/Operations UI DONE: [workspace contract](contracts/workspaces-m2.m
 [Provider plan](planning/m3-provider-plan.md) · [message envelope Draft](contracts/messaging-platforms.md) · [Meta docs dossier](references/meta/README.md). Định hướng provider/connector được user chấp thuận; contract production chưa Ready. PLAN-003 đã có [capability/source gap matrix](references/meta/capability-matrix.md); PLAN-004 tiếp tục exact contracts và source backlog, giữ live routing/tool gates còn mở. M2 đã PASS theo tracker; các mô tả theo từng task cũ không là trạng thái hiện hành.
 
 ADR-019 / PLAN-006B: [Contact resolution, Connector cache and required Chat contact context](contracts/contact-resolution.md), accepted responsibility design; exact source gate pending.
+
+- [Customer360 / session implementation](contracts/customer-360-session.md) · [Runbook](development/customer360.md) · [SRC-068 evidence](tracking/details/SRC-068.md).
+- [Session stages, scoped evidence and connected funnel](contracts/session-progress.md) · [Runbook](development/session-progress.md) · [SRC-069 evidence](tracking/details/SRC-069.md).
+
+- [50-inbox operations and advertising dashboards](contracts/inbox-demo-dashboards.md) · [Runbook](development/inbox-demo-dashboards.md) · [SRC-070 evidence](tracking/details/SRC-070.md) — Alpha Reporting activation pending.

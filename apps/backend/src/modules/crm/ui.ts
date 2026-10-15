@@ -1,5 +1,5 @@
 import { CommandError } from '../../kernel/reliability/commands.js';
-import { fieldAllowed } from '../identity/domain/authorization.js';
+import { fieldAllowed, superAdminObjectGrants } from '../identity/domain/authorization.js';
 import { withFieldPolicies,allows } from './access.js';
 import { properties,json } from './properties.js';
 import { standardQueries } from './core.js';
@@ -14,7 +14,7 @@ export class CrmUi {
   constructor(private readonly records:CrmRecords){}
   context(account:string,tenant:string){return this.records.authorization.runHuman(account,tenant,async(scope,access)=>{
     const objects=await scope.query('SELECT id,`key`,label,kind,version FROM object_type WHERE tenant_id=? AND archived_at IS NULL ORDER BY kind DESC,label,id',[tenant]);
-    return {principal_id:access.principalId,capabilities:access.capabilities,grants:access.grants,objects:objects.filter((o:any)=>allows(access,'schema','read')||access.capabilities.includes('read')&&access.grants.some(g=>g.resource===o.key&&g.action==='read')).map((o:any)=>({...o,version:String(o.version)}))};
+    return {principal_id:access.principalId,capabilities:access.capabilities,grants:access.superAdmin?[...access.grants,...superAdminObjectGrants(objects.map((o:{key:string})=>o.key))]:access.grants,objects:objects.filter((o:any)=>allows(access,'schema','read')||access.capabilities.includes('read')&&access.grants.some(g=>g.resource===o.key&&g.action==='read')).map((o:any)=>({...o,version:String(o.version)}))};
   });}
   descriptor(account:string,tenant:string,key:string){return this.records.authorization.runHuman(account,tenant,async(scope,raw)=>{
     const access=await withFieldPolicies(scope,raw),type=await this.records.type(scope,key);

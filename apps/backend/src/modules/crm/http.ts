@@ -1,4 +1,6 @@
 import { OrganicSalesReport } from '../sales/organic-report.js';
+import { SalesSessionContext } from '../sales/session-context.js';
+import { LeadMerge } from '../sales/lead-merge.js';
 import { DealService,dealDomain,dealArchiveGuard } from '../sales/deals.js';
 import { SalesHandoffs } from '../sales/handoff.js';
 import { conversationArchiveGuard } from '../conversation/domain.js';
@@ -12,6 +14,7 @@ import { uuid } from '../identity/admin.js';
 import { databaseSource } from '../../kernel/database/data-source.js';
 import { CommandError } from '../../kernel/reliability/commands.js';
 import { CrmUi } from './ui.js';
+import { WorkflowCatalogService } from './workflow-catalog.js';
 import { coreDomains,contactReferences } from './core.js';
 import { leadDomain,leadArchiveGuard,LeadService } from '../sales/leads.js';
 import { CrmRecords,type RecordRoute } from './records.js';
@@ -27,6 +30,26 @@ export class CrmRuntime implements OnModuleDestroy {
 @Controller()
 export class CrmController {
   constructor(@Inject(AuthRuntime) private readonly auth:AuthRuntime,@Inject(CrmRuntime) private readonly runtime:CrmRuntime){}
+  private async salesContextResponse(req:Request,res:ServerResponse,action:'contexts'|'link'|'preview'|'merge'|'merge-history'){
+    const correlation=randomUUID();res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json');res.setHeader('X-Content-Type-Options','nosniff');
+    try{
+      const mutation=!['contexts','merge-history'].includes(action),session=mutation?await this.auth.service.requireMutation(cookie(req,'crm_session'),req.headers.origin,req.headers['x-csrf-token']):await this.auth.service.session(cookie(req,'crm_session'),true);
+      const tenant=req.headers['x-tenant-id'],id=req.params.id;if(!uuid(tenant)||!uuid(id)||action!=='contexts'&&Object.keys(req.query).length)throw new CommandError(400,'INVALID_REQUEST');await this.runtime.ready();
+      const context=new SalesSessionContext(this.runtime.records),merge=new LeadMerge(this.runtime.records);
+      if(!mutation){const result=action==='contexts'?await context.read(session.account_id,tenant,id,req.query):await merge.history(session.account_id,tenant,id);res.end(JSON.stringify({...result,meta:{correlation_id:correlation}}));return;}
+      if(!/^application\/json(?:;|$)/i.test(req.headers['content-type']??''))throw new CommandError(400,'INVALID_REQUEST');
+      if(action==='preview'){res.end(JSON.stringify({...await merge.preview(session.account_id,tenant,id,req.body),meta:{correlation_id:correlation}}));return;}
+      const key=req.headers['idempotency-key'],match=req.headers['if-match'];if(typeof key!=='string'||match!==undefined&&(typeof match!=='string'||!/^"[1-9][0-9]{0,19}"$/.test(match)))throw new CommandError(400,'INVALID_REQUEST');
+      const version=typeof match==='string'?match.slice(1,-1):undefined;
+      const result=action==='link'?await context.link(session.account_id,tenant,id,req.body,key,version,correlation):await merge.merge(session.account_id,tenant,id,req.body,key,version,correlation);
+      res.statusCode=result.status;res.setHeader('ETag',`"${result.body.data.version}"`);res.end(JSON.stringify(result.body));
+    }catch(error){const failure=error instanceof CommandError||error instanceof AuthError?error:error instanceof AccessError?new CommandError(403,error.code):new CommandError(503,'TEMPORARILY_UNAVAILABLE');res.statusCode=failure.status;res.end(JSON.stringify({error:{code:failure.code,message:'Không thể hoàn tất yêu cầu.',fields:error instanceof FieldError?[{path:error.field,code:error.code}]:[],retryable:failure.status===503},meta:{correlation_id:correlation}}));}
+  }
+  @Get('sales/records/:id/session-context') salesContexts(@Req() q:Request,@Res() s:ServerResponse){return this.salesContextResponse(q,s,'contexts');}
+  @Post('sales/records/:id/session-context') salesLink(@Req() q:Request,@Res() s:ServerResponse){return this.salesContextResponse(q,s,'link');}
+  @Post('leads/:id/merge-preview') mergePreview(@Req() q:Request,@Res() s:ServerResponse){return this.salesContextResponse(q,s,'preview');}
+  @Post('leads/:id/merge') mergeLead(@Req() q:Request,@Res() s:ServerResponse){return this.salesContextResponse(q,s,'merge');}
+  @Get('leads/:id/merges') leadMerges(@Req() q:Request,@Res() s:ServerResponse){return this.salesContextResponse(q,s,'merge-history');}
   private async respond(req:Request,res:ServerResponse,route:MetadataRoute|'associations',mutation:boolean){
     const correlation=randomUUID();res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json');res.setHeader('X-Content-Type-Options','nosniff');
     try{
@@ -91,9 +114,9 @@ export class CrmController {
       res.statusCode=result.status;res.setHeader('ETag',`"${result.body.data.version}"`);res.end(JSON.stringify(result.body));
     }catch(error){const failure=error instanceof CommandError||error instanceof AuthError?error:error instanceof AccessError?new CommandError(403,error.code):new CommandError(503,'TEMPORARILY_UNAVAILABLE');res.statusCode=failure.status;res.end(JSON.stringify({error:{code:failure.code,message:'Không thể hoàn tất yêu cầu.',fields:error instanceof FieldError?[{path:error.field,code:error.code}]:[],retryable:failure.status===503},meta:{correlation_id:correlation}}));}
   }
-  private async uiResponse(req:Request,res:ServerResponse,descriptor=false){
+  private async uiResponse(req:Request,res:ServerResponse,descriptor:boolean|'workflow-catalog'=false){
     const correlation=randomUUID();res.setHeader('Content-Type','application/json');res.setHeader('Cache-Control','no-store');
-    try{const session=await this.auth.service.session(cookie(req,'crm_session'),true),tenant=req.headers['x-tenant-id'];if(!uuid(tenant)||Object.keys(req.query).length)throw new CommandError(400,'INVALID_REQUEST');await this.runtime.ready();const data=descriptor?await this.runtime.ui.descriptor(session.account_id,tenant,req.params.key!):await this.runtime.ui.context(session.account_id,tenant);res.end(JSON.stringify({data,meta:{correlation_id:correlation}}));}
+    try{const session=await this.auth.service.session(cookie(req,'crm_session'),true),tenant=req.headers['x-tenant-id'];if(!uuid(tenant)||Object.keys(req.query).length)throw new CommandError(400,'INVALID_REQUEST');await this.runtime.ready();const data=descriptor==='workflow-catalog'?await new WorkflowCatalogService(this.runtime.records).read(session.account_id,tenant):descriptor?await this.runtime.ui.descriptor(session.account_id,tenant,req.params.key!):await this.runtime.ui.context(session.account_id,tenant);res.end(JSON.stringify({data,meta:{correlation_id:correlation}}));}
     catch(error){const failure=error instanceof CommandError||error instanceof AuthError?error:new CommandError(error instanceof AccessError?403:503,error instanceof AccessError?'FORBIDDEN':'TEMPORARILY_UNAVAILABLE');res.statusCode=failure.status;res.end(JSON.stringify({error:{code:failure.code,message:'Không thể tải workspace.',fields:[],retryable:failure.status===503},meta:{correlation_id:correlation}}));}
   }
   @Get('sales/reports/organic-pages') async organicReport(@Req() req:Request,@Res() res:ServerResponse){
@@ -107,6 +130,7 @@ export class CrmController {
   @Patch('deals/:id') dealUpdate(@Req() q:Request,@Res() s:ServerResponse){return this.dealResponse(q,s,'update');}
   @Get('crm/context') context(@Req() q:Request,@Res() s:ServerResponse){return this.uiResponse(q,s);}
   @Get('objects/:key/descriptor') descriptor(@Req() q:Request,@Res() s:ServerResponse){return this.uiResponse(q,s,true);}
+  @Get('automation/catalog') workflowCatalog(@Req() q:Request,@Res() s:ServerResponse){return this.uiResponse(q,s,'workflow-catalog');}
   @Get('leads/:id/handoffs') handoffs(@Req() q:Request,@Res() s:ServerResponse){return this.leadResponse(q,s,'handoffs');}
   @Post('leads/:id/handoffs') handoff(@Req() q:Request,@Res() s:ServerResponse){return this.leadResponse(q,s,'handoff');}
   @Post('leads/:id/handoffs/:handoffId/accept') accept(@Req() q:Request,@Res() s:ServerResponse){return this.leadResponse(q,s,'accept');}

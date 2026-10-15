@@ -1,3 +1,5 @@
+import { sessionProgressMigration } from './session-progress-migration.js';
+import { customer360Migration } from './customer360-migration.js';
 import { marketingAuthorityMigration } from './marketing-authority-migration.js';
 import { acquisitionSessionMigration } from './acquisition-session-migration.js';
 import { dealMigration } from './deal-migration.js';
@@ -37,5 +39,5 @@ export const migrations: readonly Migration[] = [{
   version: 4, name: 'outbox_positive_versions', statements: [
     'ALTER TABLE outbox_event ADD CONSTRAINT ck_outbox_schema_version CHECK (schema_version >= 1), ADD CONSTRAINT ck_outbox_aggregate_version CHECK (aggregate_version >= 1)',
   ],
-}, deliveryMigration, registryMigration, propertiesMigration, crmCoreMigration, conversationMigration, intakeMigration, routingMigration, agentRuntimeMigration, workflowMigration, chatflowMigration, chatflowBindingMigration, chatflowProposalMigration, salesHandoffMigration, messageContentMigration, facebookMigration, workspaceMigration, workspaceCatalogMigration, workspaceActivityMigration, nativeAuthMigration, leadSourceMigration, dealMigration, acquisitionSessionMigration, marketingAuthorityMigration];
+}, deliveryMigration, registryMigration, propertiesMigration, crmCoreMigration, conversationMigration, intakeMigration, routingMigration, agentRuntimeMigration, workflowMigration, chatflowMigration, chatflowBindingMigration, chatflowProposalMigration, salesHandoffMigration, messageContentMigration, facebookMigration, workspaceMigration, workspaceCatalogMigration, workspaceActivityMigration, nativeAuthMigration, leadSourceMigration, dealMigration, acquisitionSessionMigration, marketingAuthorityMigration, customer360Migration, sessionProgressMigration];
 export const checksum = (m: Migration) => createHash('sha256').update(JSON.stringify([m.version, m.name, m.statements])).digest('hex');

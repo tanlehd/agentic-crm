@@ -1,5 +1,11 @@
 # Conversation Session — acquisition và CRM lineage
 
+**Current SRC-068:** [Customer360/session contract](customer-360-session.md) implements session-preserving Ad touches, actual Lead/Deal context and duplicate consolidation in forward28. [Final ERD](../data/chat-sales-erd.md) remains the target for configurable stage/history and milestone evidence, which are not included in this slice. Historical rules below do not override the SRC-068 writer.
+
+**Accepted direction CHG-20261013-07,2026-10-13:** Ad mới trong một session chưa close không mở session mới. SRC-068 now implements this; connected funnel/attribution reporting remains separate.
+
+**Historical SRC-053 baseline:** [v1 implementation contract](acquisition-session-implementation.md) records the original lifecycle/API/DDL. Physical names remain status, source_classification, source_touchpoint_id, policy_version and source_conversation_session_id on Deal. Session Contact resolves through Conversation. SRC-068 keeps one active session/thread, explicit close with no timeout, and qualifying inbound reopens the same thread; it removes referral-driven splitting. Late reconciliation and full cohort reporting remain pending.
+
 PLAN-018 / CHG-20261008-03, 2026-10-08. Product model accepted theo người dùng; exact segmentation/API/DDL/migration còn PLAN-011. Supersedes Conversation-level attribution as the target for subsequent acquisition reporting; runtime organic baseline remains as implemented until SRC-053 cutover.
 
 ## Quan hệ và ownership

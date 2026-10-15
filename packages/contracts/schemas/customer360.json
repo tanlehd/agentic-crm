@@ -1,0 +1,479 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "customer360",
+  "title": "Customer360",
+  "definitions": {
+    "sales-session-input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "conversation_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "conversation_session_id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "conversation_id",
+        "conversation_session_id"
+      ]
+    },
+    "sales-session-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "version": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}$"
+            },
+            "context_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "conversation_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "session_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "kind": {
+              "const": "follow_up"
+            }
+          },
+          "required": [
+            "id",
+            "version",
+            "context_id",
+            "conversation_id",
+            "session_id",
+            "kind"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "sales-session-list": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "record_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "conversation_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "session_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "kind": {
+                "enum": [
+                  "created",
+                  "follow_up",
+                  "closing"
+                ]
+              },
+              "recorded_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": [
+              "id",
+              "record_id",
+              "conversation_id",
+              "session_id",
+              "kind",
+              "recorded_at"
+            ]
+          }
+        },
+        "next_before_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "next_before_id",
+        "meta"
+      ]
+    },
+    "lead-merge-preview-input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target_id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "target_id"
+      ]
+    },
+    "lead-merge-input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "target_version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "target_id",
+        "target_version",
+        "reason"
+      ]
+    },
+    "lead-merge-preview": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "tenant_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "object_key": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                },
+                "version": {
+                  "type": "string",
+                  "pattern": "^[1-9][0-9]{0,19}$"
+                },
+                "owner_revision": {
+                  "type": "string",
+                  "pattern": "^[1-9][0-9]{0,19}$"
+                },
+                "owner_principal_id": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "team_id": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "archived": {
+                  "type": "boolean"
+                },
+                "fields": {
+                  "type": "object",
+                  "additionalProperties": true
+                },
+                "custom_values": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              },
+              "required": [
+                "id",
+                "tenant_id",
+                "object_key",
+                "version",
+                "owner_revision",
+                "owner_principal_id",
+                "team_id",
+                "archived",
+                "fields",
+                "custom_values"
+              ]
+            },
+            "target": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "tenant_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "object_key": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                },
+                "version": {
+                  "type": "string",
+                  "pattern": "^[1-9][0-9]{0,19}$"
+                },
+                "owner_revision": {
+                  "type": "string",
+                  "pattern": "^[1-9][0-9]{0,19}$"
+                },
+                "owner_principal_id": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "team_id": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "archived": {
+                  "type": "boolean"
+                },
+                "fields": {
+                  "type": "object",
+                  "additionalProperties": true
+                },
+                "custom_values": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              },
+              "required": [
+                "id",
+                "tenant_id",
+                "object_key",
+                "version",
+                "owner_revision",
+                "owner_principal_id",
+                "team_id",
+                "archived",
+                "fields",
+                "custom_values"
+              ]
+            },
+            "policy": {
+              "const": "retain_target_and_preserve_source_history"
+            }
+          },
+          "required": [
+            "source",
+            "target",
+            "policy"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "lead-merge-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "version": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}$"
+            },
+            "target_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "target_version": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}$"
+            },
+            "archived": {
+              "const": true
+            }
+          },
+          "required": [
+            "id",
+            "version",
+            "target_id",
+            "target_version",
+            "archived"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "lead-merge-history": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "source_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "target_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "recorded_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": [
+              "source_id",
+              "target_id",
+              "recorded_at"
+            ]
+          }
+        },
+        "has_more": {
+          "type": "boolean"
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "has_more",
+        "meta"
+      ]
+    }
+  }
+}

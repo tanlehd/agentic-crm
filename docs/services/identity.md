@@ -1,5 +1,7 @@
 # Identity & Access
 
+**Current policy CHG-20261014-03:** [Tenant super admin](../contracts/tenant-super-admin.md) supersedes explicit-grant and field-deny rules below only for active Humans with admin seat + tenant_admin role. Full access stays tenant-bound; ordinary admin-seat users, AI and services remain explicitly authorized. No schema change.
+
 Status: Target architecture accepted direction — PLAN-005 / ADR-017. Service extraction/API/physical schema chưa Ready; không đồng nghĩa deployed. [Module hiện tại](../modules/identity.md) · [Catalog](README.md) · [Cross-service rules](../contracts/service-boundaries.md).
 
 ## Phạm vi và trách nhiệm

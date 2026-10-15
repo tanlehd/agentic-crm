@@ -13,6 +13,8 @@ export interface Access {
   teamIds: readonly string[];
   fieldDenies: readonly FieldDeny[];
   roleIds?: readonly string[];
+  // Identity-derived, internal only; never accepted from an HTTP caller.
+  superAdmin?: boolean;
 }
 export interface RecordAccess {
   tenantId: string;
@@ -42,6 +44,24 @@ const matrix: Record<string, Partial<Record<string, Capability>>> = {
   integration: {read:'configure',retry:'configure',configure:'configure'},
   conversation: {read:'read',reply:'chat',note:'chat',update:'chat',assign:'chat',takeover:'chat'},
 };
+const crmActions = ['read','create','update','assign','archive'] as const;
+export function superAdminObjectGrants(keys: readonly string[]): Grant[] {
+  return keys.flatMap(resource => crmActions.map(action => ({resource,action,scope:'all' as const})));
+}
+export function principalPermissions(kind:string, seat:string, roles:readonly {key:string;permissions:unknown}[], active=true):Pick<Access,'superAdmin'|'grants'> {
+  const superAdmin=active&&kind==='human'&&seat==='admin'&&roles.some(r=>r.key==='tenant_admin');
+  const grants=roles.flatMap(r=>parseGrants(r.permissions));
+  if(!superAdmin)return {superAdmin:false,grants};
+  const intrinsic:Grant[]=[
+    ...Object.entries(matrix).flatMap(([resource,actions])=>Object.keys(actions).map(action=>({resource,action,scope:'all' as const}))),
+    ...superAdminObjectGrants(['contact','company','activity','lead','deal','ticket','conversation']),
+    ...['read','create','update'].map(action=>({resource:'schema',action,scope:'all' as const})),
+    ...['read','create'].map(action=>({resource:'association',action,scope:'all' as const})),
+    ...['qualify','handoff','accept'].map(action=>({resource:'lead',action,scope:'all' as const})),
+    {resource:'report',action:'read',scope:'all'},
+  ];
+  return {superAdmin:true,grants:[...grants,...intrinsic].filter((g,i,all)=>all.findIndex(x=>x.resource===g.resource&&x.action===g.action&&x.scope===g.scope)===i)};
+}
 export function permits(access: Access, resource: string, action: string, record?: RecordAccess): boolean {
   const capability = Object.hasOwn(matrix,resource) ? matrix[resource]?.[action] : undefined;
   if (!capability || !access.capabilities.includes(capability)) return false;
@@ -55,6 +75,7 @@ export function permits(access: Access, resource: string, action: string, record
   });
 }
 export function fieldAllowed(access: Access, resource: string, field: string, action: FieldAction): boolean {
+  if(access.superAdmin)return true;
   return !access.fieldDenies.some(deny => deny.resource === resource && deny.field === field &&
     (deny.actions.includes(action) || (action === 'filter' || action === 'export') && deny.actions.includes('read')));
 }

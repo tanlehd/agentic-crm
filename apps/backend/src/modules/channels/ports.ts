@@ -3,6 +3,9 @@ import { CommandError } from '../../kernel/reliability/commands.js';
 export interface ChannelIdentity { id:string;contactId:string;connectionId:string;teamId:string }
 // Channels owns connection/identity tables. Caller already holds tenant lock.
 export class ChannelReferences {
+  async workflowOptions(s:TransactionScope){
+    return s.query("SELECT c.id,COALESCE(p.name,c.external_account_id) name,c.provider FROM channel_connection c LEFT JOIN facebook_page p ON p.tenant_id=c.tenant_id AND p.connection_id=c.id WHERE c.tenant_id=? AND c.status='active' AND c.provider='mock_messenger' ORDER BY c.id LIMIT 201",[s.context.tenantId]);
+  }
   async lockIdentity(s:TransactionScope,id:string):Promise<ChannelIdentity>{
     const [row]=await s.query('SELECT * FROM contact_identity WHERE tenant_id=? AND id=? FOR UPDATE',[s.context.tenantId,id]);
     if(!row)throw new CommandError(404,'NOT_FOUND');

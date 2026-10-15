@@ -23,10 +23,10 @@ CREATE USER IF NOT EXISTS '${env.REPORTING_OPERATOR_USER}'@'%' IDENTIFIED BY '${
 CREATE USER IF NOT EXISTS '${env.REPORTING_RUNTIME_USER}'@'%' IDENTIFIED BY '${env.REPORTING_RUNTIME_PASSWORD}';
 GRANT ALL ON ${db}.* TO '${env.REPORTING_OPERATOR_USER}'@'%';`);
 const c=await connect(env);
-async function fingerprint(){const [tables]=await c.query("SELECT TABLE_NAME name FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_TYPE='BASE TABLE' AND TABLE_NAME<>'schema_migration'");const result={};for(const {name}of tables){if(!/^report_[a-z_]+$/.test(name))throw new Error('UNKNOWN_TABLE');const [rows]=await c.query('SELECT * FROM `'+name+'`');result[name]=digest(JSON.stringify(rows.map(r=>JSON.stringify(r)).sort()));}return result;}
+async function fingerprint(){const [tables]=await c.query("SELECT TABLE_NAME name FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_TYPE='BASE TABLE' AND TABLE_NAME<>'schema_migration'");const result={};for(const {name}of tables){if(!/^(report|dashboard)_[a-z_]+$/.test(name))throw new Error('UNKNOWN_TABLE');const [rows]=await c.query('SELECT * FROM `'+name+'`');result[name]=digest(JSON.stringify(rows.map(r=>JSON.stringify(r)).sort()));}return result;}
 try{
  const before=await fingerprint(),result=await migrate(c),after=await fingerprint();for(const [name,value]of Object.entries(before))if(after[name]!==value)throw new Error('PRESERVATION_FAILED');
- sql(Object.keys(after).map(name=>`GRANT ${['report_definition','report_source_binding','report_projection_generation','report_query_run'].includes(name)?'SELECT,INSERT,UPDATE':'SELECT,INSERT'} ON ${db}.${name} TO '${env.REPORTING_RUNTIME_USER}'@'%';`).join('\n'));
+ sql(Object.keys(after).map(name=>`GRANT ${['dashboard_definition','report_definition','report_source_binding','report_projection_generation','report_query_run'].includes(name)?'SELECT,INSERT,UPDATE':'SELECT,INSERT'} ON ${db}.${name} TO '${env.REPORTING_RUNTIME_USER}'@'%';`).join('\n'));
  const crmAfter=sql('SELECT MAX(version) FROM agentic_crm.schema_migration;').trim();if(crmBefore!==crmAfter)throw new Error('CRM_SCHEMA_CHANGED');
  const evidence={database:db,...result,repeat:await migrate(c),businessTables:Object.keys(after).length,preservedTables:Object.keys(before).length,crmBefore,crmAfter,backup};
  await writeFile(`artifacts/reporting-database/${db}-${stamp}.json`,JSON.stringify(evidence,null,2));console.log(JSON.stringify(evidence));

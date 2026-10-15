@@ -53,10 +53,10 @@ export function identityAdminCases(create:()=>Promise<DataSource>){
     expect(await source.query('SELECT id FROM membership WHERE tenant_id=? AND account_id=?',[f.tenant,doomed])).toEqual([]);
     expect(await source.query('SELECT id FROM idempotency_record WHERE tenant_id=? AND `key`=?',[f.tenant,'rollback-key'])).toEqual([]);
   });
-  it('last admin guards seat, status, assignments and role definition; two self-demotions race',async()=>{
+  it('last admin guards seat, status and assignments; intrinsic role privileges survive permission edits; two self-demotions race',async()=>{
     const f=await fixture();
     for(const body of [{seat_code:'viewer'},{status:'suspended'},{role_ids:[]}])await expect(f.command('memberships',f.member,body,'1')).rejects.toThrow('LAST_ADMIN_REQUIRED');
-    await expect(f.command('roles',f.role,{permissions:[]},'1')).rejects.toThrow('LAST_ADMIN_REQUIRED');
+    await expect(f.command('roles',f.role,{permissions:[]},'1')).resolves.toMatchObject({status:200});
     const secondAccount=await newAccount();
     const second=await f.command('memberships',undefined,{account_id:secondAccount,seat_code:'admin',role_ids:[f.role],team_ids:[]});
     const results=await Promise.allSettled([
@@ -66,7 +66,7 @@ export function identityAdminCases(create:()=>Promise<DataSource>){
     expect(results.filter(r=>r.status==='fulfilled')).toHaveLength(1);
     expect(results.filter(r=>r.status==='rejected')).toHaveLength(1);
     expect((await source.query("SELECT COUNT(*) n FROM membership WHERE tenant_id=? AND seat_code='admin' AND status='active'",[f.tenant]))[0].n).toBe('1');
-    expect((await source.query("SELECT COUNT(*) n FROM audit_entry WHERE tenant_id=? AND outcome='denied'",[f.tenant]))[0].n).toBe('5');
+    expect((await source.query("SELECT COUNT(*) n FROM audit_entry WHERE tenant_id=? AND outcome='denied'",[f.tenant]))[0].n).toBe('4');
   });
   it('role/team revisions invalidate Human and service access; foreign references rollback; AI policy atomic',async()=>{
     const f=await fixture();const team=await f.command('teams',undefined,{name:'Team',purpose:'chat'});

@@ -43,6 +43,8 @@ Sai type/enum/required trả 422 với field path; unknown key reject. Stale ver
 
 ## Mở rộng còn Draft
 
+PLAN-024A/B thiết kế [shared metadata/capability](../data/workflow-metadata.md) và Kafka object-change producers cho Workflow. Relationship traversal và generic change-image/enrollment giữ implementation gate; không sửa giới hạn M1 dưới đây thành tính năng đã chạy.
+
 Formula field, computed property, unique custom field, multiselect, relationship traversal query, schema migration UI, bulk import/merge và drag-and-drop page layout.
 
 ## SRC-010 implementation boundary

@@ -1,5 +1,12 @@
 # Sales
 
+Current SRC-068 / CHG-20261013-10: [Customer360/session contract](../contracts/customer-360-session.md) is authoritative for inbox_v2 and forward28: new Ad retains the open session, actual create/follow-up/closing context is separate from immutable origin, direct Deal is supported, duplicate Lead consolidation preserves original history. Prior v1 splitting descriptions below are historical. Stage/milestone configuration and connected funnel reporting remain outside this implemented slice.
+
+
+CHG-20261013-08 [logical ERD](../data/chat-sales-erd.md) separates primary Lead/Deal origin from authorized follow-up/closing context across inbox sessions, with optional qualification before direct Deal. Sales remains outcome/money authority; no duplicate session won field. Exact replacement commands/physical mapping not Ready; current implementation unchanged.
+
+**Current baseline override, review 2026-10-13:** SRC-045/046/053 DONE scoped: manual/session Lead, manual/from-Lead Deal, immutable session/source lineage, terminal won/lost và Customer transition đã triển khai trong monolith. [Exact Sales contract](../contracts/organic-sales-base.md) · [Session contract](../contracts/acquisition-session-implementation.md). Các ghi chú future M4/TODO bên dưới là blueprint lịch sử; configurable pipeline, receipts và service extraction vẫn chưa hoàn tất. Một acquisition session có nhiều Leads; one Lead/session trong bảng dưới chỉ nói qualification_session_id của Chatflow.
+
 Status: Target architecture accepted direction — PLAN-005 / ADR-017. Service extraction/API/physical schema chưa Ready; không đồng nghĩa deployed. [Module hiện tại](../modules/sales.md) · [Catalog](README.md) · [Cross-service rules](../contracts/service-boundaries.md).
 
 ## Phạm vi và trách nhiệm
@@ -55,3 +62,5 @@ Own DB credentials không đọc được DB khác; API/consumer schemas và ten
 ## CRM base follow-up — PLAN-010
 
 [Plan](../planning/crm-base-outcomes.md) schedules manual/from-Conversation Lead, manual/from-Lead Deal, immutable source lineage and Deal-linked collection evidence before automation frameworks. [Attribution](../contracts/crm-source-attribution.md) separates immutable system channel/Page/ad from editable declared source. Sales remains authority; exact model/API/events and revenue evidence scope require PLAN-011 Ready. Current service extraction status unchanged; source tasks SRC-045/046/048 are TODO.
+
+SRC-0682026-10-13: [Ready Customer360/session contract](../contracts/customer-360-session.md) defines forward28 session_touchpoint (Chat), sales_session_context and lead_merge (Sales), immutable origin versus actual context, active-session referral continuity and separate duplicate consolidation. Implemented and verified in SRC-068: 333unit,11 persistent MySQL,6 focused healthcare and8 native/browser groups; no stage/milestone/report completion claim. Existing physical monolith retains application ports; no external FK.

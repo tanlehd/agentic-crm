@@ -1,5 +1,7 @@
 # MOD-04 — Conversation & Chat Workspace
 
+CHG-20261013-08 accepted [logical ERD](../data/chat-sales-erd.md): session is one inbox episode, new Ad during open session adds evidence without split/reset/cancellation solely due to referral. Configurable process version/current stage, transition history and evidence-backed milestone history are independent of open/closed processing status and Sales outcomes. SRC-068 implements the session/source/context subset through the exact Customer360 contract; stage/milestone configuration remains a separate design gate.
+
 > Kiến trúc đích microservice theo ADR-017: [Chat / Conversation Server](../services/chat.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.
 Status: Ready for implementation text inbox M2. Requirements: REQ-05, REQ-06, REQ-09.
 
@@ -84,4 +86,8 @@ SRC-034 adds schema22 snooze commands/deadline scanning, transactional wake/acti
 
 Target clarification CHG-20261008-03: [acquisition sessions](../contracts/conversation-acquisition-session.md) introduce long-lived Conversation → interaction Sessions under Page/channel identity. This supersedes the legacy closed→new Conversation behavior for the target only; current runtime is unchanged until SRC-053. Chat owns session boundaries/message membership; acquisition sessions are distinct from Chatflow sessions. Exact close/reopen/referral/timeout migration gate is PLAN-011.
 
-SRC-053 implementation follows [acquisition session contract](../contracts/acquisition-session-implementation.md): canonical thread reopens after close; organic joins active session until agent closes, new CTM referral opens a new session. Legacy first-touch attribution remains thread-level; Lead creation resolves a selected acquisition session. Runtime verification tracked separately in SRC-053, not inferred from design.
+Historical SRC-053 implementation followed [acquisition session contract](../contracts/acquisition-session-implementation.md): canonical thread reopens after close; organic joins active session until agent closes, new CTM referral opens a new session. Legacy first-touch attribution remains thread-level; Lead creation resolves a selected acquisition session. Runtime verification tracked separately in SRC-053, not inferred from design.
+
+SRC-0682026-10-13: [Ready Customer360/session contract](../contracts/customer-360-session.md) defines forward28 session_touchpoint (Chat), sales_session_context and lead_merge (Sales), immutable origin versus actual context, active-session referral continuity and separate duplicate consolidation. Implemented and verified in SRC-068: 333unit,11 persistent MySQL,6 focused healthcare and8 native/browser groups; no stage/milestone/report completion claim. Existing physical monolith retains application ports; no external FK.
+
+PLAN-025 / SRC-069: [Ready session progress contract](../contracts/session-progress.md) defines six Chat-owned tables in forward29, pinned process/stage, need-scoped manual evidence/corrections and a connected behavioral session funnel. Current monolith application producer + pure Reporting reducer; no cross-service SQL or mock-builder permission activation. SP-01…07 implemented and verified in SRC-069 (345unit,13persistent MySQL,8native/browser,6healthcare); see task evidence.

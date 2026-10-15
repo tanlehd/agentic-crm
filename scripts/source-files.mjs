@@ -5,7 +5,7 @@ const skip = new Set(['node_modules', '.git', '.next', 'dist', '.cache', '.local
 export async function sourceFiles(dir = '.') {
   const paths = [];
   for (const item of await readdir(dir, { withFileTypes: true })) {
-    if (skip.has(item.name) || item.isSymbolicLink()) continue;
+    if (skip.has(item.name) || item.isDirectory() && item.name.startsWith('.next-') || item.isSymbolicLink()) continue;
     const path = join(dir, item.name);
     if (item.isDirectory()) paths.push(...await sourceFiles(path));
     else paths.push(path);

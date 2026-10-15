@@ -1,5 +1,14 @@
 # MOD-05 — Lead/Opportunity & Sale Workspace
 
+Current SRC-068 / CHG-20261013-10: [Customer360/session contract](../contracts/customer-360-session.md) is authoritative for inbox_v2 and forward28: new Ad retains the open session, actual create/follow-up/closing context is separate from immutable origin, direct Deal is supported, duplicate Lead consolidation preserves original history. Prior v1 splitting descriptions below are historical. Stage/milestone configuration and connected funnel reporting remain outside this implemented slice.
+
+
+Review CHG-20261013-09: inherited Deal primary origin may differ from the session where Deal was actually created. [ERD metric clarification](../data/chat-sales-erd.md) distinguishes acquisition-lineage reporting from create activity; exact create-context evidence and placement remain gated, existing source unchanged.
+
+CHG-20261013-08 accepted [logical ERD](../data/chat-sales-erd.md): Lead qualification is optional before Deal; primary origin session is distinct from subsequent session context links. Target permits direct Deal with validated session origin. Won/stage/amount remain Sales authority, not editable session conversion fields. Existing source commands unchanged; exact API/DDL/compatibility gate remains before implementation.
+
+**Current baseline override, review 2026-10-13:** SRC-045/046/053 đã triển khai Lead manual/from-session và Deal manual/from-Lead trong monolith. POST Deal, won amount/currency và Customer transition đã có; phần mô tả M2 không POST Deal bên dưới chỉ là phạm vi lịch sử. Nhiều Leads/session và Deals/Lead được phép; Lead→Deal không bắt buộc accepted, nhưng phải cùng Contact và không disqualified. Nguồn session chốt bất biến theo [implementation contract](../contracts/acquisition-session-implementation.md).
+
 **Current priority CHG-20261007-14:** Lead/Deal → organic Conversation→Lead→Deal won with value → organic Page report/release (SRC-045/046/052/050); then Marketing sync/campaign reports (SRC-051/049). Ticket/receipts follow separately. Phase1 revenue means won Deal value, not cash collected. Exact scoped design: [organic Sales base](../contracts/organic-sales-base.md).
 
 
@@ -55,3 +64,5 @@ SRC-022 Sales workspace projection, source/team/owner filters and explicit accep
 ## CRM base priority — PLAN-010
 
 [CRM base plan](../planning/crm-base-outcomes.md) ưu tiên manual Lead/Deal và Conversation→Lead trước framework automation. [Source attribution rules](../contracts/crm-source-attribution.md): system channel/Page/ad và origin refs do backend snapshot một lần, không editable; declared source agent được chọn/sửa riêng có audit. Deal từ Lead pin lineage tới receipts/refunds và marketing report. Manual Deal không Lead hợp lệ, không fabricated attribution. Lead qualification/consent/handoff hiện có giữ nguyên; Deal pipeline/won/lost/reopen, collection evidence và exact permissions/API/DDL/UI chờ PLAN-011 Ready. SRC-045/046/048 là source follow-up, không claim runtime từ product rules này.
+
+SRC-0682026-10-13: [Ready Customer360/session contract](../contracts/customer-360-session.md) defines forward28 session_touchpoint (Chat), sales_session_context and lead_merge (Sales), immutable origin versus actual context, active-session referral continuity and separate duplicate consolidation. Implemented and verified in SRC-068: 333unit,11 persistent MySQL,6 focused healthcare and8 native/browser groups; no stage/milestone/report completion claim. Existing physical monolith retains application ports; no external FK.

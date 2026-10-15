@@ -1,5 +1,12 @@
 # Data model và ERD
 
+PLAN-0272026-10-14: [Dashboard/Report ERD and dictionary](dashboard-workspace.md) proposes dedicated Dashboard aggregate with report-version refs, snapshot pins, immutable layout and template lineage. Six own-schema tables designed for review; not migrated. Existing SRC-070 inline documents remain compatible through explicit future conversion, not automatic backfill.
+
+Current SRC-068 / CHG-20261013-10: [Customer360/session contract](../contracts/customer-360-session.md) is authoritative for inbox_v2 and forward28: new Ad retains the open session, actual create/follow-up/closing context is separate from immutable origin, direct Deal is supported, duplicate Lead consolidation preserves original history. Prior v1 splitting descriptions below are historical. Stage/milestone configuration and connected funnel reporting remain outside this implemented slice.
+
+
+**Chat/Sales logical target CHG-20261013-08:** [ERD cuối](chat-sales-erd.md) là chuẩn quan hệ mới cho Conversation/session, configurable stage/history/milestone, multiple touches và Lead/Deal origin/follow-up. Sơ đồ baseline dưới đây giữ để đối chiếu implementation; chưa có replacement DDL/API/runtime.
+
 **ADR-021 target override:** mọi application table có tenant_id NOT NULL, kể cả account/tenant/journal; system scope có explicit registered tenant, không wildcard. [Guideline](database-guidelines.md) và [schema catalog](schema-catalog.md) là chuẩn bảng mới. ERD/physical references bên dưới giữ baseline migration để đối chiếu, không cho phép copy ngoại lệ cũ.
 
 > Baseline monolith hiện có, không phải physical schema của các microservice đích. Xem [data ownership ADR-017](service-ownership.md); FK/UoW cross-module dưới đây chỉ áp dụng trong DB hiện tại. Extraction không sửa applied migrations1–18.
@@ -15,6 +22,8 @@ Status: Ready for implementation cho M1–M2. Deal/Ticket/report authoring là m
 - API field dùng snake_case; timestamp RFC3339 UTC; tiền dùng decimal string + currency, không float.
 
 ## ERD nền móng
+
+**Current scoped override (review 2026-10-13):** Deal base SRC-046 và acquisition sessions SRC-053 đã triển khai; các ghi chú M1–M2/Draft bên dưới là baseline lịch sử. Conversation đóng rồi có inbound mới sẽ mở lại canonical thread và tạo session mới, không mặc định tạo Conversation mới. Nguồn Lead mới lấy session được chọn; first-touch thread chỉ là fallback legacy chưa có session. [Exact contract](../contracts/acquisition-session-implementation.md) · [ERD tổng thể](marketing-erd.md).
 
 ```mermaid
 erDiagram
@@ -46,7 +55,11 @@ erDiagram
   CONTACT ||--o{ LEAD : requests
   CONTACT ||--o{ CONVERSATION : participates
   CONVERSATION ||--o{ MESSAGE : contains
-  CONVERSATION ||--o{ LEAD : originates
+  CONVERSATION o|--o{ LEAD : context
+  CONVERSATION ||--o{ CONVERSATION_ACQUISITION_SESSION : episodes
+  CONVERSATION_ACQUISITION_SESSION o|..o{ LEAD : origin
+  CONVERSATION_ACQUISITION_SESSION o|..o{ DEAL : pinned_origin
+  CONTACT ||--o{ DEAL : opportunities
   LEAD ||--o{ LEAD_HANDOFF : hands_off
   LEAD o|--o{ DEAL : qualifies
   CRM_RECORD ||--o{ OWNERSHIP_HISTORY : changes

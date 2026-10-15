@@ -6,4 +6,6 @@ export interface CrmDealCreate {
   title: string;
   amount: string;
   currency: string;
+  conversation_id?: string;
+  conversation_session_id?: string;
 }

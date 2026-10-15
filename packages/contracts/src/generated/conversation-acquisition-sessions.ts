@@ -19,7 +19,7 @@ export interface ConversationAcquisitionSessions {
     source_campaign_id: string | null;
     source_connection_id: string | null;
     source_touchpoint_id: string | null;
-    policy_version: "acquisition_v1";
+    policy_version: "acquisition_v1" | "inbox_v2";
   }[];
   next_before_sequence: string | null;
   meta: {

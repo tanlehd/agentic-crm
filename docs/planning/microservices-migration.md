@@ -7,7 +7,7 @@ PLAN-005 direction accepted; SRC-028 independent HTTP ingress prerequisite imple
 | Gate | Dependency | Deliverable / exit criteria | Readiness |
 |---|---|---|---|
 | PLAN-005 | SRC-027 | Catalog, authority boundaries, cross-service rules and roadmap | This doc-only task; status tracker |
-| PLAN-006 | PLAN-005 | Exact first-slice RPC/event schemas; Identity delegation/revoke, Chat owner/dispatch fence; ingestion saga; local record decomposition; JetStream retention/HA/deadlines/DLQ; per-service schema/migration/grants and test plan | Design can start after005; extraction code not Ready |
+| PLAN-006 | PLAN-005 | Exact first-slice RPC/event schemas; Identity delegation/revoke, Chat owner/dispatch fence; ingestion saga; local record decomposition; broker retention/HA/deadlines/DLQ (Workflow Kafka scoped to PLAN-024B); per-service schema/migration/grants and test plan | Design can start after005; extraction code not Ready |
 | MS foundation source task (ID assigned after006) | PLAN-006 exact scopes Ready | Service workspace/build boundaries, contract CI, isolated DB/users, authenticated transport, broker outbox/inbox/receipts, tracing and fault harness | TODO, no empty service scaffold counted as features |
 | Connector extraction | Foundation + ingestion contracts + binding auth | Independent Connector mock ingress/API/worker → compatibility Chat/CRM API adapter in monolith; lost ACK/dedup/backlog/tenant cases; no shared database access from new service | TODO; Facebook real adapter separate gate |
 | Chat extraction | Connector + registry/owner/dispatch gate | Own Chat DB/ownership/intent, APIs read/send/takeover, refs to CRM/Identity, migrated message history, clients compatibility | TODO; hard gate anti-double-send/revocation |

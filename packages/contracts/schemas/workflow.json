@@ -647,6 +647,12 @@
           "required": [
             "correlation_id"
           ]
+        },
+        "next_cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
         }
       },
       "required": [
@@ -832,6 +838,262 @@
             "cancel_pending",
             "steps",
             "waits"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "workflow-definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "key": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "service_actor_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "active_version_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "version": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}$"
+            }
+          },
+          "required": [
+            "id",
+            "key",
+            "name",
+            "service_actor_id",
+            "active_version_id",
+            "enabled",
+            "version"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "workflow-authoring-options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "actors": {
+              "type": "array",
+              "maxItems": 200,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "key": {
+                    "type": "string"
+                  },
+                  "role_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "role_name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "key",
+                  "role_id",
+                  "role_name"
+                ]
+              }
+            },
+            "teams": {
+              "type": "array",
+              "maxItems": 200,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "purpose": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "name",
+                  "purpose"
+                ]
+              }
+            },
+            "connections": {
+              "type": "array",
+              "maxItems": 200,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "provider": {
+                    "const": "mock_messenger"
+                  }
+                },
+                "required": [
+                  "id",
+                  "name",
+                  "provider"
+                ]
+              }
+            },
+            "chatflows": {
+              "type": "array",
+              "maxItems": 200,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "number": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": [
+                  "id",
+                  "name",
+                  "number"
+                ]
+              }
+            }
+          },
+          "required": [
+            "actors",
+            "teams",
+            "connections",
+            "chatflows"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "workflow-validate-input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "graph": {
+          "$ref": "#/definitions/workflow-graph"
+        }
+      },
+      "required": [
+        "graph"
+      ]
+    },
+    "workflow-validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "valid": {
+              "const": true
+            },
+            "node_count": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          },
+          "required": [
+            "valid",
+            "node_count"
           ]
         },
         "meta": {

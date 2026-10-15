@@ -1,5 +1,10 @@
 # Chat / Conversation Server
 
+Current SRC-068 / CHG-20261013-10: [Customer360/session contract](../contracts/customer-360-session.md) is authoritative for inbox_v2 and forward28: new Ad retains the open session, actual create/follow-up/closing context is separate from immutable origin, direct Deal is supported, duplicate Lead consolidation preserves original history. Prior v1 splitting descriptions below are historical. Stage/milestone configuration and connected funnel reporting remain outside this implemented slice.
+
+
+CHG-20261013-08 [logical ERD](../data/chat-sales-erd.md) assigns Chat authority for inbox-session process versions, stage/milestone rules/history and canonical session-touchpoint bindings. Connector retains raw evidence; Sales/Reporting retain outcomes/projections. Logical acceptance only, no new schema/API/extraction capability.
+
 Status: Target architecture accepted direction — PLAN-005 / ADR-017. Service extraction/API/physical schema chưa Ready; không đồng nghĩa deployed. [Module hiện tại](../modules/conversation.md) · [Catalog](README.md) · [Cross-service rules](../contracts/service-boundaries.md).
 
 ## Phạm vi và trách nhiệm
@@ -72,3 +77,7 @@ Chat ingress caches confirmed CRM mappings after commit, checks active Contact s
 ## SRC-034 implementation
 
 SRC-034 source adds durable snooze/activity inside the current monolith, using source application ports and outbox/inbox notifications. No service extraction or live-provider deployment is implied. Verification status and limitations: [task evidence](../tracking/details/SRC-034.md).
+
+SRC-0682026-10-13: [Ready Customer360/session contract](../contracts/customer-360-session.md) defines forward28 session_touchpoint (Chat), sales_session_context and lead_merge (Sales), immutable origin versus actual context, active-session referral continuity and separate duplicate consolidation. Implemented and verified in SRC-068: 333unit,11 persistent MySQL,6 focused healthcare and8 native/browser groups; no stage/milestone/report completion claim. Existing physical monolith retains application ports; no external FK.
+
+PLAN-025 / SRC-069: [Ready session progress contract](../contracts/session-progress.md) defines six Chat-owned tables in forward29, pinned process/stage, need-scoped manual evidence/corrections and a connected behavioral session funnel. Current monolith application producer + pure Reporting reducer; no cross-service SQL or mock-builder permission activation. SP-01…07 implemented and verified in SRC-069 (345unit,13persistent MySQL,8native/browser,6healthcare); see task evidence.

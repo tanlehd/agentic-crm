@@ -5,7 +5,7 @@ import { identitySchema } from '@agentic-crm/contracts';
 import { UnitOfWork, type TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
 import { CommandError, DurableCommands, canonical } from '../../kernel/reliability/commands.js';
 import { IdentityAuthorization } from './authorization.js';
-import { parseGrants, permits, seatCapabilities } from './domain/authorization.js';
+import { parseGrants, permits } from './domain/authorization.js';
 const ajv=new Ajv({strict:true});
 ajv.addFormat('uuid',/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
 ajv.addSchema(identitySchema,'identity');
@@ -110,11 +110,7 @@ export class IdentityAdmin {
   }
   private async lastAdmin(scope:TransactionScope){
     const candidates=await scope.query(`SELECT DISTINCT p.id FROM membership m JOIN principal p ON p.tenant_id=m.tenant_id AND p.membership_id=m.id JOIN principal_role pr ON pr.tenant_id=p.tenant_id AND pr.principal_id=p.id JOIN \`role\` r ON r.tenant_id=pr.tenant_id AND r.id=pr.role_id WHERE m.tenant_id=? AND m.status='active' AND m.seat_code='admin' AND p.status='active' AND p.kind='human' AND r.\`key\`='tenant_admin'`,[scope.context.tenantId]);
-    for(const candidate of candidates){
-      const rows=await scope.query('SELECT r.permissions FROM principal_role pr JOIN `role` r ON r.tenant_id=pr.tenant_id AND r.id=pr.role_id WHERE pr.tenant_id=? AND pr.principal_id=?',[scope.context.tenantId,candidate.id]);
-      const access={tenantId:scope.context.tenantId,principalId:candidate.id,revision:'1',capabilities:seatCapabilities('admin'),grants:rows.flatMap((r:any)=>parseGrants(r.permissions)),teamIds:[],fieldDenies:[]};
-      if(['membership','role','team','agent'].every(r=>['read','create','update'].every(a=>permits(access,r,a)))) return;
-    }
+    if(candidates.length)return;
     throw new CommandError(409,'LAST_ADMIN_REQUIRED');
   }
   async mutate(accountId:string,tenantId:string,route:Resource,id:string|undefined,input:unknown,key:string,version:string|undefined,correlationId:string){

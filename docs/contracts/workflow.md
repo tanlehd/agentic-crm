@@ -1,7 +1,11 @@
 # Workflow primitive contract — SRC-019
 
+SRC-066 additive [CMS contract](workflow-cms-m2.md): GET authoring options and definition by ID, POST graph validation, optional after/next_cursor on definitions. Existing graph/version mutation semantics unchanged; schemas and generated OpenAPI updated.
+
 > Microservices target ADR-017 dùng [cross-service rules](service-boundaries.md). APIs/UoW trong tài liệu này là baseline implementation hiện tại; exact remote contracts và sagas cần PLAN-006 trước extraction.
 Status: Ready for implementation M2. CHG-20261005-05.
+
+PLAN-024 / ADR-022 bổ sung [target Web/API/Core](../system/workflow-architecture.md), shared metadata và Kafka object changes. Đây là versioned extension tương lai; wire/graph/UoW bên dưới giữ nguyên cho M2. Exact new schemas/auth/control APIs và compatibility thuộc PLAN-024A…E; không tự đổi strict graph enum hoặc public routes từ architecture document.
 
 All routes use session, X-Tenant-Id; mutations require Origin/CSRF and Idempotency-Key. Definition PATCH and publish require If-Match definition version. POST /workflows accepts {key,name,service_actor_id}; starts disabled. POST /workflows/{id}/versions accepts {graph,execution_role_id}; creates immutable draft snapshot with increasing number. POST /workflows/{id}/versions/{version}/publish accepts {}; version path is number; validates graph and references, pins role, sets active version. PATCH /workflows/{id} accepts {enabled:boolean}. GET /workflows and GET /workflows/{id}/versions return bounded collections (limit1..100, default50). GET /workflow-runs/{id} returns sanitized run/steps/waits, no inputs/context. POST /workflow-runs/{id}/cancel accepts {reason:"operator_cancelled"}. Cancel terminal is idempotent; does not reverse committed actions. No arbitrary execute endpoint.
 

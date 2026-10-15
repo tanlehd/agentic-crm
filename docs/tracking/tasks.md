@@ -10,7 +10,65 @@ Git sync S-20261004-03: initial commit `7c05518` đã push lên `origin/main` th
 
 Git sync S-20261013-01: user explicitly requested commit/push of the accumulated workspace on main. Pre-commit checks recorded in [execution log](log.md); feature statuses and acceptance scope unchanged (SRC-064 IN_PROGRESS, SRC-059/SRC-051 READY). No implementation task claimed for this Git-only session.
 
+Git sync S-20261015-01: user authorized commit/push of all accumulated source/docs on main. Fresh pre-commit validation in [execution log](log.md); no feature status change or new implementation task.
+
+## Customer 360 — 2026-10-13
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| SRC-068 | Session continuity, Customer360 Lead/Deal context and duplicate consolidation | SRC-053; SRC-046; SRC-038 | DONE | Codex 2026-10-13 | [Evidence](details/SRC-068.md);333unit/11persistent MySQL/6healthcare/8native-browser; forward28 preserves86 tables; stage/milestones not included |
+
+| PLAN-025 | Exact versioned session process/stage and subject-scoped milestone evidence/correction contract | SRC-068 | DONE | Codex 2026-10-14 | [Ready contract](../contracts/session-progress.md); exact API/coverage/correction/metric and six filled table designs reviewed |
+| SRC-069 | Configurable pinned session stages, scoped milestone corrections and connected behavioral funnel | PLAN-025; SRC-068 | DONE | Codex 2026-10-14 | [Evidence](details/SRC-069.md); forward29 preserves89tables;345unit/13MySQL/11acquisition/6healthcare/8browser, builds/types PASS |
+
+## Inbox demo dashboards — 2026-10-14
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-026 | Exact50-inbox scenario metrics and bounded private dashboard contract | SRC-069; SRC-057; SRC-058; SRC-063 | DONE | Codex 2026-10-14 | [Ready design](../contracts/inbox-demo-dashboards.md); user confirmed30accepted/20queued |
+| SRC-070 | Seed50inbox case and saved operations/marketing dashboards in Report Builder | PLAN-026; SRC-069; SRC-057; SRC-058; SRC-063 | DONE | Codex 2026-10-14 | [Evidence](details/SRC-070.md); ID-01…05 verified; tenant super admin; actual Alpha 2 dashboards/11 widgets/CSV; 356unit,22native,5Alpha browser groups PASS |
+
+## Dashboard / Reports redesign — 2026-10-14
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-027 | Dashboard home/menu, template creation, saved-report widgets: feature/component/data specification | PLAN-026; SRC-070 | DONE | Codex 2026-10-14 | [Evidence](details/PLAN-027.md); 10features/15components/data/API/14AC; docs/links/JSON/DAG/whitespace PASS; design-only for user review, no implementation claimed |
+| PLAN-027A | Finalize executable Dashboard API/JSON schemas, DDL, template manifests after design review | PLAN-027 | DONE | Codex 2026-10-14 | [Ready gate](../contracts/dashboard-implementation.md); generator drift/strict Ajv PASS; forward004 designed, runtime evidence follows |
+| SRC-071 | Dashboard own-service persistence/API, atomic templates and legacy conversion | PLAN-027A; SRC-057; SRC-058; SRC-063; SRC-070 | DONE | Codex 2026-10-14 | [Evidence](details/SRC-071.md);11native groups/4unit/builds PASS; forward004 local/test preserves13tables; capacity/release separate |
+| SRC-072 | Separate Dashboard/Reports UI, home/gallery/canvas/saved-report picker/library/editor | SRC-071 | DONE | Codex 2026-10-15 | [Evidence](details/SRC-072.md); publication review362unit/12native/15browser, builds/types PASS; future-shape and stale-modal fixes; broader Reporting/a11y audit separate |
+
 ## Công việc chuẩn bị
+
+Final ERD second review 2026-10-13 · Codex · DONE (design review only), CHG-20261013-09. [ERD section7](../data/chat-sales-erd.md) records five findings and scenarios9–13; core model retained, origin/create wording corrected. Docs254/2146 links/whitespace PASS, Mermaid not rendered, runtime NOT_RUN. Exact subject/context/evidence/lifecycle gates remain; no replacement implementation or business-policy approval inferred.
+
+Final Chat/Sales ERD 2026-10-13 · Codex · DONE (logical design only), CHG-20261013-08. [Canonical ERD](../data/chat-sales-erd.md): session-preserving Ad touches, versioned stage/milestone history, Lead/Deal origin and follow-up links. Docs254/2140 links and whitespace PASS; Mermaid headers checked, not rendered. No physical schema/runtime change, next-scope scenarios NOT_RUN; exact replacement contract not Ready.
+
+Inbox-session clarification 2026-10-13 · Codex · DONE (design clarification only), CHG-20261013-07. User accepts keeping an open session on a new ad touch and requires conversion measurement by inbox episode. Accepted rule and proposed metric semantics recorded; docs253/2121 links/whitespace PASS, runtime NOT_RUN/unchanged, replacement exact contract not Ready.
+
+Chat/Sales model critique 2026-10-13 · Codex · DONE (review only), CHG-20261013-06. [Findings](../data/chat-sales-model-review.md) compare current SRC-045/046/053 with official CRM/inbox docs; docs253/2116 links and whitespace PASS, runtime scenarios NOT_RUN. Recommendations remain proposed, no source implementation or business-policy change.
+
+ERD review 2026-10-13 · Codex · DONE (documentation only), CHG-20261013-05. Đối chiếu Conversation → acquisition session → Lead → Deal với SRC-045/046/053 DONE, sửa mô tả/tên trường cũ; docs252/2104 links và scoped whitespace PASS, Mermaid chưa render. Runtime tests NOT_RUN; không claim source task hoặc thay đổi nghiệp vụ. Evidence trong execution log.
+
+### Workflow CMS / execution architecture — 2026-10-13
+
+SRC-067 DONE scoped · Codex 2026-10-13 · dependency SRC-066 DONE. Real visual builder requested by user; [evidence](details/SRC-067.md), CHG-20261013-04. No active source task; distributed Kafka gates retained.
+
+Operations2026-10-13 14:07 Asia/Saigon: Codex completed user-requested local service restart and Alpha Workflow smoke. No source task/status change. Runtime evidence in artifacts/workflow-visual-builder/services-start.json; see execution log/checkpoint.
+
+CHG-20261013-02: user yêu cầu triển khai Workflow tuần tự. SRC-064 requeued READY, giữ mọi evidence và Alpha activation gate; không task source song song. PLAN-024A được claim để chốt scope trước source.
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| SRC-067 | Visual Workflow canvas, ports, palette, inspector, layout/history | SRC-066 | DONE | Codex 2026-10-13 | [Evidence](details/SRC-067.md);332unit/42files,8native groups/11browser checks,workspace types/Next build; screenshots desktop/mobile inspected; layout device-local |
+| PLAN-024 | Kiểm kê Workflow hiện hữu; kiến trúc Web/API/Core, Kafka object changes, shared CRM metadata, node/action catalog và kế hoạch thiết kế | PLAN-005; SRC-019; SRC-050 | DONE | Codex 2026-10-13 | [Evidence](details/PLAN-024.md); design-only, docs/link/DAG/lint/whitespace PASS; runtime mới NOT_RUN |
+| PLAN-024A | Exact shared CRM metadata/binding/query và producer capability catalog | PLAN-024 | DONE | Codex 2026-10-13 | [Scoped contract](../contracts/workflow-catalog.md); document review and docs check PASS; producer capability gaps explicit, no source/runtime completion claim |
+| PLAN-024B | Exact Kafka object-change/change-image/enrollment/replay/security | PLAN-024A | READY | unassigned | Ready to design after native catalog slice; producer coverage/schema/topic/sequence/activation boundary/retention và anti-cycle before source |
+| PLAN-024C | Exact Workflow API/Core control/auth/table templates/migrations | PLAN-024B | TODO | unassigned | OpenAPI, native scopes, publish saga, two private schemas, per-table filled templates và compatibility |
+| PLAN-024D | Exact node/action execution, related records và communication adapters | PLAN-024C | TODO | unassigned | Typed inputs/outputs, CAS/partial receipts, routing, delay/branch/wait, provider authority/reconcile |
+| PLAN-024E | CMS UX, scoped source backlog và distributed release/cutover | PLAN-024D | TODO | unassigned | API-backed screens, keyboard/mobile, persistent synthetic fault tests, single starter/drain/restore |
+| SRC-065 | Native shared CRM Workflow catalog và typed Core authoring validator | PLAN-024A; SRC-038; SRC-019; SRC-053 | DONE | Codex 2026-10-13 | [Evidence](details/SRC-065.md);325 unit,8 native HTTP/MySQL groups, builds/types/schema/drift PASS; WF-01/02/07/13 metadata/validator only, runtime/Kafka/CMS still pending |
+| PLAN-024F | Scoped M2 Workflow CMS, native discovery/validation and local activation design | SRC-019; SRC-020; SRC-021; SRC-038 | DONE | Codex 2026-10-13 | [Ready contract](../contracts/workflow-cms-m2.md); CHG-20261013-03, existing storage/graph retained; distributed gates unchanged |
+| SRC-066 | Workflow menu, node editor, saved versions/publish/enable and local UI release | PLAN-024F; SRC-019; SRC-020; SRC-021; SRC-038; SRC-039 | DONE | Codex 2026-10-13 | [Evidence](details/SRC-066.md);328unit,8native/browser groups,backend/Next build,workspace types/schema/drift PASS; local menu/API live, user-approved Alpha Workflow Admin; distributed scope remains PLAN-024B…E |
 
 | ID | Công việc | Status | Owner | Evidence |
 |---|---|---|---|---|
@@ -240,8 +298,8 @@ User-prioritized sequence; [framework plan](../planning/automation-frameworks.md
 
 | ID | Deliverable | Deps | Status | Owner | Gate / evidence |
 |---|---|---|---|---|---|
-| PLAN-009 | Baseline gap review and exact Workflow/Chatflow/AI Agent framework scopes | UX-006; SRC-018; SRC-019; SRC-020; SRC-050 | TODO | unassigned | CRM base release first per CHG-20261007-12; definitions/config/UI/auth/runtime acceptance Ready before source |
-| SRC-042 | Workflow framework on existing engine | PLAN-009; SRC-019 | TODO | unassigned | Exact PLAN-009 scope; definition/action/trigger/binding/auth/run tests |
+| PLAN-009 | Baseline gap review and exact Workflow/Chatflow/AI Agent framework scopes | UX-006; SRC-018; SRC-019; SRC-020; SRC-050 | TODO | unassigned | PLAN-024 supplies Workflow architecture/gap review only; exact PLAN-024A…E and remaining Chatflow/AI scopes still required; no SRC-042 readiness claim |
+| SRC-042 | Workflow framework on existing engine | PLAN-009; SRC-019; SRC-065 | TODO | unassigned | SRC-065 metadata/validator foundation delivered; remaining exact PLAN-024B…E/PLAN-009 scopes and definition/action/trigger/auth/runtime tests still required |
 | SRC-043 | Chatflow framework on Workflow foundation | SRC-042; SRC-020 | TODO | unassigned | Exact PLAN-009 scope; session/node/context/action lifecycle tests |
 | SRC-044 | AI Agent definition/skill/permission/execution framework | SRC-043; SRC-018 | TODO | unassigned | Exact PLAN-009 scope; structured results and suggestion-only Assist guard tests |
 
@@ -314,4 +372,4 @@ CHG-20261007-12 supersedes immediate framework-first priority. [CRM base plan](.
 | SRC-061 | Dynamic dashboards, versioned widgets, filters/comparison/cross-filter and library | SRC-060 | TODO | unassigned | RB-13; per-widget snapshot/freshness/filter scope and viewer permission; browser evidence |
 | SRC-062 | RB-MOCK local release, catalog extension proof and preservation/capacity verification | SRC-061 | TODO | unassigned | RB-14…16 and full RB-MOCK; MySQL/browser/restart/warm upgrade, golden KPI and extension fixtures; no live Meta claim |
 | SRC-063 | Reporting semantic catalog and strict definition/ACL/grain/visualization validator | PLAN-022B; SRC-038 | DONE | Codex 2026-10-10 | [Evidence](details/SRC-063.md):19 objects/85 fields/26 metrics/4 models,49 kernel+109 existing unit PASS,build/workspace types/static checks; no DB/API/UI execution claim |
-| SRC-064 | Early API-backed mock report builder: discover/configure/preview/chart/pivot/private draft/CSV | PLAN-022H; SRC-057; SRC-058; SRC-063; PLAN-022F; PLAN-022G | IN_PROGRESS | Codex 2026-10-12 | [Evidence](details/SRC-064.md); Field/formula picker +10visual types/quick-start presets implemented;293unit/13native/16browser top-level groups PASS (14visual +9measure subgroups); screenshots/mobile verified; local Alpha role approval pending; SRC-059 progress retained |
+| SRC-064 | Early API-backed mock report builder: discover/configure/preview/chart/pivot/private draft/CSV | PLAN-022H; SRC-057; SRC-058; SRC-063; PLAN-022F; PLAN-022G | DONE | Codex 2026-10-15 | [Evidence](details/SRC-064.md); Alpha gate fulfilled in SRC-070; current SRC-072 native/browser regression; scoped authoring complete, advanced SRC-059/060 gates remain |

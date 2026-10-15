@@ -5,7 +5,7 @@ import {hash} from '../src/storage-security.js';
 import {ReportingQueryService} from '../src/query-service.js';
 import {snapshot,context,acquisition} from './query-fixture.js';
 const s=await snapshot(),key='ab'.repeat(32),body={definition:acquisition()},raw=JSON.stringify(body);
-const admission=(overrides:Partial<QueryAdmission>={}):QueryAdmission=>({audience:'reporting-query-v1',tenantId:context.tenantId,principalId:'01900000-0000-7000-8000-000000000041',authRevision:'1',mockSource:'all',canExport:true,bodyHash:hash(raw),issuedAt:Date.now(),expiresAt:Date.now()+5000,...overrides});
+const admission=(overrides:Partial<QueryAdmission>={}):QueryAdmission=>{const now=Date.now();return ({audience:'reporting-query-v1',tenantId:context.tenantId,principalId:'01900000-0000-7000-8000-000000000041',authRevision:'1',mockSource:'all',canExport:true,bodyHash:hash(raw),issuedAt:now,expiresAt:now+5000,...overrides});};
 const signed=(a:unknown)=>{const p=Buffer.from(JSON.stringify(a)).toString('base64url');return p+'.'+createHmac('sha256',Buffer.from(key,'hex')).update(p).digest('hex');};
 describe('query admission and request boundary',()=>{
  it('accepts signed query only for its exact body and audience',()=>{const v=new QueryAdmissionVerifier(key),a=admission();expect(v.verify(signed(a),raw)).toEqual(a);expect(()=>v.verify(signed(a),raw+' ')).toThrow('REQUEST_BINDING_MISMATCH');expect(()=>v.verify(signed({...a,audience:'reporting-definition-v1'}),raw)).toThrow('ADMISSION_EXPIRED_OR_INVALID');});

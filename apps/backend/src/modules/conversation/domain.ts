@@ -1,4 +1,4 @@
-import { activeAcquisition,acquisitionInbound,acquisitionOutbound,closeAcquisition,lateAcquisitionMessage,listAcquisitions,type AcquisitionReferral } from './acquisition-storage.js';
+import { acquisitionInbound,acquisitionOutbound,closeAcquisition,closedBoundary,listAcquisitions,type AcquisitionReferral } from './acquisition-storage.js';
 import { messageContent,legacyContentText } from './content.js';
 import { lifecycleActivity,prepareActivity } from './activity-storage.js';
 import { needResponse,prepareWorkspace,workspaceInbound,workspaceOutbound,workspaceClosed } from './workspace-storage.js';
@@ -46,14 +46,12 @@ export class Conversations {
     if(existing){const [stored]=await s.query('SELECT content FROM message_content WHERE tenant_id=? AND message_id=?',[tenant,existing.id]);if(canonical(stored?(typeof stored.content==='string'?JSON.parse(stored.content):stored.content):null)!==canonical(content??null))throw new CommandError(409,'MESSAGE_PAYLOAD_CONFLICT');if(existing.direction!=='inbound'||existing.contact_identity_id!==identity.id||existing.text!==input.text||stamp(existing.occurred_at)!==new Date(input.occurredAt).toISOString())throw new CommandError(409,'MESSAGE_PAYLOAD_CONFLICT');return {conversationId:existing.conversation_id,messageId:existing.id,duplicate:true};}
     const [active]=await s.query('SELECT c.record_id FROM conversation c JOIN crm_record r ON r.tenant_id=c.tenant_id AND r.id=c.record_id WHERE c.tenant_id=? AND c.contact_identity_id=? AND r.archived_at IS NULL ORDER BY (c.active_identity_key IS NOT NULL) DESC,c.opened_at DESC,c.record_id DESC LIMIT 1',[tenant,identity.id]);
     let id:string,version:string;
-    if(active){id=active.record_id;const c=await conversation(s,id,true);await prepareActivity(s,id);await this.registry.bump(s,c.record,c.record.version);version=String(BigInt(c.record.version)+1n);await s.query("UPDATE conversation SET status='open',closed_at=NULL WHERE tenant_id=? AND record_id=?",[tenant,id]);await lifecycleActivity(s,id,c.row.status,'open',input.actor);}
+    if(active){id=active.record_id;const c=await conversation(s,id,true);await prepareActivity(s,id);await this.registry.bump(s,c.record,c.record.version);version=String(BigInt(c.record.version)+1n);if(!await closedBoundary(s,id,input.occurredAt)){await s.query("UPDATE conversation SET status='open',closed_at=NULL WHERE tenant_id=? AND record_id=?",[tenant,id]);await lifecycleActivity(s,id,c.row.status,'open',input.actor);}}
     else {id=await this.crm.createUnassigned(s,identity.teamId,input.correlation,input.actor);version='1';await s.query("INSERT INTO conversation(tenant_id,record_id,contact_id,contact_identity_id,connection_id,opened_at) VALUES (?,?,?,?,?,UTC_TIMESTAMP(6))",[tenant,id,identity.contactId,identity.id,identity.connectionId]);await this.commands.conversationEvent(s,input.correlation,'conversation.created',id,version,{contact_id:identity.contactId,connection_id:identity.connectionId},input.actor);}
     await prepareWorkspace(s,id);
     const messageId=randomUUID();await s.query("INSERT INTO message(id,tenant_id,conversation_id,connection_id,provider_message_id,direction,text,occurred_at,received_at,status) VALUES (?,?,?,?,?,'inbound',?,?,UTC_TIMESTAMP(6),'received')",[messageId,tenant,id,identity.connectionId,input.providerMessageId,input.text,new Date(input.occurredAt)]);
-    const acquisition=await activeAcquisition(s,id);
-    if(input.referral&&acquisition&&!lateAcquisitionMessage(input.occurredAt,acquisition.opening_occurred_at)){await cancelQueued(s,id);await cancelAgentExecutions(s,id);await stopSessions(s,id,true,'ACQUISITION_SESSION_CHANGED');}
-    await acquisitionInbound(s,{conversation:id,message:messageId,connection:identity.connectionId,occurredAt:input.occurredAt,correlation:input.correlation,actor:input.actor,referral:input.referral});
-    await workspaceInbound(s,id,messageId);
+    const assigned=await acquisitionInbound(s,{conversation:id,message:messageId,connection:identity.connectionId,occurredAt:input.occurredAt,correlation:input.correlation,actor:input.actor,referral:input.referral});
+    if(assigned)await workspaceInbound(s,id,messageId);
     if(content)await s.query('INSERT INTO message_content(tenant_id,message_id,content) VALUES (?,?,?)',[tenant,messageId,JSON.stringify(content)]);
     await this.commands.systemAudit(s,input.correlation,'conversation',id,'message.receive',['message_id'],input.actor);
     await this.commands.conversationEvent(s,input.correlation,'message.received',id,version,{conversation_id:id,message_id:messageId,connection_id:identity.connectionId},input.actor);
@@ -172,7 +170,7 @@ export class Conversations {
         if(typeof b.reason!=='string'||!b.reason.trim()||b.reason.length>1000||!['open','pending','closed'].includes(b.target_status))throw new CommandError(422,'VALIDATION_FAILED');
         if(c.status==='closed'||c.status===b.target_status)throw new CommandError(409,'INVALID_TRANSITION');
         await prepareActivity(s,id);await this.registry.bump(s,r,version);await s.query('UPDATE conversation SET status=?,closed_at=IF(?=\'closed\',UTC_TIMESTAMP(6),NULL) WHERE tenant_id=? AND record_id=?',[b.target_status,b.target_status,tenant,id]);await lifecycleActivity(s,id,c.status,b.target_status,{kind:'human',id:a.principalId});
-        if(b.target_status==='closed'){await closeAcquisition(s,id,'agent_closed',correlation,{kind:'human',id:a.principalId});await workspaceClosed(s,id);await cancelQueued(s,id);await cancelAgentExecutions(s,id);await stopSessions(s,id,true);await this.onClose(s,id);}data=await this.output(s,a,id);
+        if(b.target_status==='closed'){const closedAt=await closeAcquisition(s,id,'agent_closed',correlation,{kind:'human',id:a.principalId});if(closedAt)await s.query('UPDATE conversation SET closed_at=? WHERE tenant_id=? AND record_id=?',[closedAt,tenant,id]);await workspaceClosed(s,id);await cancelQueued(s,id);await cancelAgentExecutions(s,id);await stopSessions(s,id,true);await this.onClose(s,id);}data=await this.output(s,a,id);
       }
       await this.commands.audit(s,a.principalId,correlation,'conversation',id,kind,Object.keys(b));const response={status,body:{data,meta:{correlation_id:correlation}}};await this.commands.complete(s,command,response);return response;
     });}catch(e){if(actor&&e instanceof CommandError&&[403,409].includes(e.status))await this.uow.run({tenantId:tenant},s=>this.commands.audit(s,actor!,correlation,'conversation',id,kind,[],'denied',e.code));throw e;}

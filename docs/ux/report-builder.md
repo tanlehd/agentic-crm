@@ -1,5 +1,7 @@
 # RPT-01…04 — Report Builder và Dashboard
 
+PLAN-0272026-10-14: [New Dashboard/Reports screen and component specification](dashboard-workspace.md) refines the navigation/home/template/saved-report-widget/viewer/editor flows for user review. It supersedes the mixed builder/dashboard entry in the proposed redesign; no runtime code changes. Global parameter mapping/comparison/cross-filter/sharing below remain broader future scope, not part of this bounded redesign.
+
 **2026-10-12 / CHG-20261012-06:** User accepted early API-backed UI. [PLAN-022H](../contracts/reporting-authoring.md) scopes source/model/fields/axes/flat filters/chart/pivot/private draft/CSV over delivered APIs. SRC-064 is the sole active source task; SRC-059 requeued READY, incomplete scope/evidence preserved. Full SRC-060 follows SRC-059 and SRC-064; no publish/dashboard/drilldown completion claim. No database changes.
 
 PLAN-022A · CHG-20261010-01 · Codex · 2026-10-10 · v1. **Product UX specification; chưa mock/browser review, chưa Ready implementation.** [Module plan](../planning/report-builder.md), [semantic catalog](../data/reporting-semantic-model.md), [acceptance](../quality/report-builder-acceptance.md). Theo [screen template](../templates/ux-screen.md); dùng [app shell](app-shell.md) và [guidelines](guidelines.md).

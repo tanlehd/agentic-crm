@@ -1,5 +1,9 @@
 # Acquisition sessions — scoped implementation contract
 
+**Current cutover SRC-068 / CHG-20261013-10:** [Customer360/session contract](customer-360-session.md) supersedes the v1 lifecycle below. Active sessions now survive new referrals; forward28 records touchpoint membership and actual Sales context. Existing v1 rows and source snapshots remain historical facts. Stage/milestone tables/API from the [final ERD](../data/chat-sales-erd.md) remain a separate scope, not implemented here.
+
+**Historical clarification CHG-20261013-07:** người dùng xác nhận referral/Ad mới khi session đang open phải giữ session đó. SRC-068 implements that replacement; acquisition_v1 lifecycle and evidence below describe the historical release, not the current writer.
+
 PLAN-011B, CHG-20261008-04. Ready contract, implemented and locally verified in [SRC-053](../tracking/details/SRC-053.md). User confirmed organic segmentation: agent closes session; next inbound opens another; no idle timeout. Product parent: [session model](conversation-acquisition-session.md).
 
 ## Lifecycle and ordering v1

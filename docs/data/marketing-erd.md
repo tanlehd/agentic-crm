@@ -1,10 +1,25 @@
 # Marketing ERD — bản review
 
+Current SRC-068 / CHG-20261013-10: [Customer360/session contract](../contracts/customer-360-session.md) is authoritative for inbox_v2 and forward28: new Ad retains the open session, actual create/follow-up/closing context is separate from immutable origin, direct Deal is supported, duplicate Lead consolidation preserves original history. Prior v1 splitting descriptions below are historical. Stage/milestone configuration and connected funnel reporting remain outside this implemented slice.
+
+
+**Nguồn chuẩn Chat/Sales đích đã chốt, CHG-20261013-08:** [ERD cuối Conversation–Session–Stage–Touchpoint–Lead–Deal](chat-sales-erd.md). Giữ session theo lượt inbox, nhiều touches/session, stage và milestone history độc lập status, origin tách follow-up links. Phần Chat/Sales trong sơ đồ kết hợp bên dưới là baseline trước quyết định mới để đối chiếu; không dùng đường Ad→Session cũ như giới hạn một Ad cho cả lượt. Marketing hierarchy vẫn giữ nguyên. Logical design accepted, chưa là replacement DDL/API Ready hoặc runtime mới.
+
+**Next behavior CHG-20261013-07:** Ad mới khi session còn open phải giữ session (user accepted); session đo lượt inbox, có thể chứa nhiều ad touchpoints theo [clarification](chat-sales-model-review.md). ERD/source fields bên dưới vẫn phản ánh acquisition_v1 một opening source/session; exact relationship/API/DDL thay thế chưa Ready, runtime chưa đổi.
+
+**Model critique 2026-10-13:** [Chat/Sales review](chat-sales-model-review.md) chỉ ra rủi ro coupling referral với chat lifecycle, conversion denominator theo agent close, và thiếu sales-context/attribution semantics cho nhiều lượt chat trên cùng Deal. Recommendations là proposed, không thay contract hoặc nguồn hiện tại; CHG-20261013-06.
+
+**Review Conversation → Lead → Deal, 2026-10-13:** SRC-045/046/053 DONE scoped trong baseline monolith; acquisition sessions đã có ở migration26. Phần Chat/Sales bên dưới dùng tên trường hiện tại khi có thể, nhưng vẫn là ERD logical, không thay DDL. Chuẩn physical/API: [acquisition implementation](../contracts/acquisition-session-implementation.md) và [organic Sales base](../contracts/organic-sales-base.md). Marketing SRC-051 hiện READY với phần đã làm được giữ lại; producer/API/worker còn pending theo tracker.
+
+Conversation có 0..N acquisition sessions (legacy có thể chưa có), tối đa một phiên active. Session có 0..N Leads; Lead có 0..N Deals. Mỗi Lead/Deal bắt buộc một Contact; Lead manual không cần Conversation/session, Deal manual không cần Lead. Deal từ Lead phải cùng Contact và Lead không disqualified; không yêu cầu accepted và không tự chuyển trạng thái Lead. Deal giữ bản chụp nguồn bất biến từ Lead, gồm source_conversation_session_id; won không đóng session và không chứng minh tiền đã thu.
+
+Message thuộc Conversation; bảng message_acquisition_membership nối message tới tối đa một session, hoặc ghi unresolved_late/unresolved_legacy. Acquisition session khác chatflow_session; uniqueness qualification_session_id chỉ chống tạo trùng Lead từ Chatflow. Session không có cột Contact riêng trong physical schema26: Contact được xác định qua Conversation.
+
 **Current implementation — SRC-054/SRC-051, 2026-10-08:** independent `crm_marketing` is at schema3 (26 business tables + system journal, 400 columns, 105 provider fields). SRC-051 scheduler/change-store foundation is tested; complete provider ingestion/API/worker remains IN_PROGRESS. [Database contract](../contracts/marketing-database.md) and [physical dictionary](../data/marketing-physical-dictionary.md) supersede the earlier proposed-DDL status below. Periodic backend/Meta ingestion is deferred to SRC-051/SRC-055; Reporting remains separate.
 
 PLAN-015…017, 2026-10-08. PLAN-017 gộp hai ERD core và Page/Instagram thành một sơ đồ tổng thể; giữ nguyên quan hệ đã review. Logical ERD đề xuất từ [field mapping](marketing-field-mapping.md) và [Meta dossier](../references/meta/marketing-dossier.md). Tên entity/kiểu dưới đây phục vụ review quan hệ, chưa là DDL hoặc bảng đã triển khai. Schema owner: `crm_marketing`; exact table templates/keys/indexes/API ở PLAN-011.
 
-## 1. ERD tổng thể — quảng cáo, Page/Instagram, nội dung và targeting
+## 1. ERD Marketing tổng thể — kèm baseline Chat/Sales trước CHG-20261013-08
 
 PLAN-018 / CHG-20261008-03 bổ sung [Conversation Session → CRM](../contracts/conversation-acquisition-session.md). Sơ đồ giờ bao gồm cả Chat, CRM Core và Sales; các đường `..` là quan hệ nghiệp vụ/reference qua API/events, không cross-service FK. Các entity Marketing còn giữ owner `crm_marketing`. Page/Instagram REF trong Marketing biểu diễn cùng external identity của channel owner.
 
@@ -28,6 +43,7 @@ erDiagram
     AD o|..o{ CONVERSATION_SESSION : ctm_source
     CONVERSATION o|..o{ SALES_LEAD : conversation_context
     CONVERSATION_SESSION o|..o{ SALES_LEAD : primary_origin
+    CONVERSATION_SESSION o|..o{ SALES_DEAL : pinned_origin
     CRM_CONTACT ||..o{ SALES_LEAD : needs
     CRM_CONTACT ||..o{ SALES_DEAL : opportunities
     SALES_LEAD o|--o{ SALES_DEAL : converts
@@ -52,15 +68,16 @@ erDiagram
         uuid tenant_id PK
         uuid id PK
         uuid conversation_id FK
-        uuid crm_contact_id "Core reference"
         int sequence
         datetime opened_at
         datetime closed_at "nullable"
-        string state
-        string source_kind "paid organic unknown"
+        string status "active closed"
+        string source_classification "paid organic unknown"
+        string source_channel
+        string source_page_id "nullable"
         string source_ad_id "nullable Marketing reference"
-        string source_referral_id "nullable Connector reference"
-        string segmentation_policy_version
+        string source_touchpoint_id "nullable Connector reference"
+        string policy_version
     }
     CRM_CONTACT {
         uuid tenant_id PK
@@ -73,6 +90,8 @@ erDiagram
         uuid contact_id "Core reference"
         uuid conversation_id "nullable Chat reference"
         uuid conversation_session_id "nullable Chat reference"
+        uuid source_conversation_session_id "immutable Chat reference"
+        uuid qualification_session_id "nullable Chatflow reference"
         string source_ad_id "immutable snapshot"
         string status
     }
@@ -80,10 +99,10 @@ erDiagram
         uuid tenant_id PK
         uuid id PK
         uuid contact_id "Core reference"
-        uuid lead_id FK "nullable manual path"
-        uuid origin_conversation_session_id "nullable Chat reference"
+        uuid lead_id "nullable Sales reference validated by application"
+        uuid source_conversation_session_id "nullable immutable Chat reference"
         string stage
-        decimal value
+        decimal amount
         string currency
     }
     AD_ACCOUNT {
@@ -248,7 +267,7 @@ erDiagram
 
 **Cách đọc:** Campaign trả lời chiến lược/mục tiêu; Ad Set là cấu hình tệp và tối ưu phân phối; Ad là đơn vị nối với nguồn Lead; Creative chứa nội dung/CTA và các biến thể.
 
-Page có nhiều Conversations, mỗi Conversation có nhiều Sessions. Với Facebook channel, Page là business parent; với Instagram DM dùng Instagram Account tương ứng, không bắt buộc cả hai. Session CTM mang nguồn Ad của chính lượt tương tác đó và nối vào Lead/Deal; Conversation giữ context dài hạn. Contact là CRM Core anchor; Lead/Deal thuộc Sales. Đường optional source giữ manual/organic/unknown cases. Session không đồng nghĩa Chatflow session. Ranh giới và cutover theo contract liên kết ở trên, chưa triển khai.
+Page có nhiều Conversations, mỗi Conversation có nhiều Sessions. Với Facebook channel, Page là business parent; với Instagram DM dùng Instagram Account tương ứng trong target, không bắt buộc cả hai. Session CTM mang nguồn Ad của chính lượt tương tác đó và nối vào Lead/Deal; Conversation giữ context dài hạn. Contact là CRM Core anchor; Lead/Deal thuộc Sales. Đường optional source giữ manual/organic/unknown cases. Session không đồng nghĩa Chatflow session. Ranh giới và cutover đã triển khai scoped local tại SRC-053; live provider/Marketing integration và service extraction giữ gate riêng. Lead→Deal là quan hệ nghiệp vụ; migration25 không tạo FK deal.lead_id.
 
 - Một Creative dùng ở nhiều Ads. AD_CREATIVE_BINDING giữ lịch sử quan sát để Ad đổi creative không làm mất context cũ. Mỗi Ad có tối đa một binding hiện hành đã biết; metadata chưa resolve vẫn giữ external ID.
 - Một Creative revision có nhiều text/image/video/CTA variants. Không coi toàn bộ variants đều đã được hiển thị hoặc đều tạo ra cùng một Deal.

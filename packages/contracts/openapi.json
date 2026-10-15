@@ -3388,6 +3388,901 @@
         }
       }
     },
+    "/api/v1/sales/records/{id}/session-context": {
+      "post": {
+        "operationId": "customer360-post-sales-records-id-session-context",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/sales-session-input"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sales-session-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized failure"
+          },
+          "401": {
+            "description": "Sanitized failure"
+          },
+          "403": {
+            "description": "Sanitized failure"
+          },
+          "404": {
+            "description": "Sanitized failure"
+          },
+          "409": {
+            "description": "Sanitized failure"
+          },
+          "422": {
+            "description": "Sanitized failure"
+          },
+          "428": {
+            "description": "Sanitized failure"
+          },
+          "503": {
+            "description": "Sanitized failure"
+          }
+        }
+      },
+      "get": {
+        "operationId": "customer360-get-sales-records-id-session-context",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "before_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sales-session-list"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized failure"
+          },
+          "401": {
+            "description": "Sanitized failure"
+          },
+          "403": {
+            "description": "Sanitized failure"
+          },
+          "404": {
+            "description": "Sanitized failure"
+          },
+          "409": {
+            "description": "Sanitized failure"
+          },
+          "422": {
+            "description": "Sanitized failure"
+          },
+          "428": {
+            "description": "Sanitized failure"
+          },
+          "503": {
+            "description": "Sanitized failure"
+          }
+        }
+      }
+    },
+    "/api/v1/leads/{id}/merge-preview": {
+      "post": {
+        "operationId": "customer360-post-leads-id-merge-preview",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/lead-merge-preview-input"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/lead-merge-preview"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized failure"
+          },
+          "401": {
+            "description": "Sanitized failure"
+          },
+          "403": {
+            "description": "Sanitized failure"
+          },
+          "404": {
+            "description": "Sanitized failure"
+          },
+          "409": {
+            "description": "Sanitized failure"
+          },
+          "422": {
+            "description": "Sanitized failure"
+          },
+          "428": {
+            "description": "Sanitized failure"
+          },
+          "503": {
+            "description": "Sanitized failure"
+          }
+        }
+      }
+    },
+    "/api/v1/leads/{id}/merge": {
+      "post": {
+        "operationId": "customer360-post-leads-id-merge",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/lead-merge-input"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/lead-merge-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized failure"
+          },
+          "401": {
+            "description": "Sanitized failure"
+          },
+          "403": {
+            "description": "Sanitized failure"
+          },
+          "404": {
+            "description": "Sanitized failure"
+          },
+          "409": {
+            "description": "Sanitized failure"
+          },
+          "422": {
+            "description": "Sanitized failure"
+          },
+          "428": {
+            "description": "Sanitized failure"
+          },
+          "503": {
+            "description": "Sanitized failure"
+          }
+        }
+      }
+    },
+    "/api/v1/leads/{id}/merges": {
+      "get": {
+        "operationId": "customer360-get-leads-id-merges",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/lead-merge-history"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized failure"
+          },
+          "401": {
+            "description": "Sanitized failure"
+          },
+          "403": {
+            "description": "Sanitized failure"
+          },
+          "404": {
+            "description": "Sanitized failure"
+          },
+          "409": {
+            "description": "Sanitized failure"
+          },
+          "422": {
+            "description": "Sanitized failure"
+          },
+          "428": {
+            "description": "Sanitized failure"
+          },
+          "503": {
+            "description": "Sanitized failure"
+          }
+        }
+      }
+    },
+    "/api/v1/session-process": {
+      "get": {
+        "operationId": "session-progress-get-session-process",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Native authorized session result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/session-process-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized failure"
+          },
+          "401": {
+            "description": "Sanitized failure"
+          },
+          "403": {
+            "description": "Sanitized failure"
+          },
+          "404": {
+            "description": "Sanitized failure"
+          },
+          "409": {
+            "description": "Sanitized failure"
+          },
+          "422": {
+            "description": "Sanitized failure"
+          },
+          "428": {
+            "description": "Sanitized failure"
+          },
+          "503": {
+            "description": "Sanitized failure"
+          }
+        }
+      },
+      "post": {
+        "operationId": "session-progress-post-session-process",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/session-process-input"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Native authorized session result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/session-process-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized failure"
+          },
+          "401": {
+            "description": "Sanitized failure"
+          },
+          "403": {
+            "description": "Sanitized failure"
+          },
+          "404": {
+            "description": "Sanitized failure"
+          },
+          "409": {
+            "description": "Sanitized failure"
+          },
+          "422": {
+            "description": "Sanitized failure"
+          },
+          "428": {
+            "description": "Sanitized failure"
+          },
+          "503": {
+            "description": "Sanitized failure"
+          }
+        }
+      }
+    },
+    "/api/v1/conversations/{conversation}/sessions/{session}/progress": {
+      "get": {
+        "operationId": "session-progress-get-conversations-conversation-sessions-session-progress",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "conversation",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "session",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "before_revision",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Native authorized session result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/session-progress-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized failure"
+          },
+          "401": {
+            "description": "Sanitized failure"
+          },
+          "403": {
+            "description": "Sanitized failure"
+          },
+          "404": {
+            "description": "Sanitized failure"
+          },
+          "409": {
+            "description": "Sanitized failure"
+          },
+          "422": {
+            "description": "Sanitized failure"
+          },
+          "428": {
+            "description": "Sanitized failure"
+          },
+          "503": {
+            "description": "Sanitized failure"
+          }
+        }
+      },
+      "post": {
+        "operationId": "session-progress-post-conversations-conversation-sessions-session-progress",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "conversation",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "session",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/session-progress-input"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Native authorized session result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/session-progress-result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized failure"
+          },
+          "401": {
+            "description": "Sanitized failure"
+          },
+          "403": {
+            "description": "Sanitized failure"
+          },
+          "404": {
+            "description": "Sanitized failure"
+          },
+          "409": {
+            "description": "Sanitized failure"
+          },
+          "422": {
+            "description": "Sanitized failure"
+          },
+          "428": {
+            "description": "Sanitized failure"
+          },
+          "503": {
+            "description": "Sanitized failure"
+          }
+        }
+      }
+    },
+    "/api/v1/session-funnel": {
+      "get": {
+        "operationId": "session-progress-get-session-funnel",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "as_of",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "process_version",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Native authorized session result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/session-funnel-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized failure"
+          },
+          "401": {
+            "description": "Sanitized failure"
+          },
+          "403": {
+            "description": "Sanitized failure"
+          },
+          "404": {
+            "description": "Sanitized failure"
+          },
+          "409": {
+            "description": "Sanitized failure"
+          },
+          "422": {
+            "description": "Sanitized failure"
+          },
+          "428": {
+            "description": "Sanitized failure"
+          },
+          "503": {
+            "description": "Sanitized failure"
+          }
+        }
+      }
+    },
     "/api/v1/crm/context": {
       "get": {
         "operationId": "crm-get-crm-context",
@@ -10109,6 +11004,14 @@
               "maximum": 100,
               "default": 50
             }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -10351,6 +11254,126 @@
       }
     },
     "/api/v1/workflows/{id}": {
+      "get": {
+        "operationId": "workflow-get-workflows-id",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized workflow result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/workflow-definition"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
       "patch": {
         "operationId": "workflow-patch-workflows-id",
         "security": [
@@ -10427,6 +11450,258 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/workflow-mutation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workflows/authoring": {
+      "get": {
+        "operationId": "workflow-get-workflows-authoring",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized workflow result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/workflow-authoring-options"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized identity failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workflows/validate": {
+      "post": {
+        "operationId": "workflow-post-workflows-validate",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/workflow-validate-input"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized workflow result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/workflow-validation"
                 }
               }
             }
@@ -21903,6 +23178,14 @@
           "currency": {
             "type": "string",
             "pattern": "^[A-Z]{3}$"
+          },
+          "conversation_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "conversation_session_id": {
+            "type": "string",
+            "format": "uuid"
           }
         },
         "required": [
@@ -21938,8 +23221,1481 @@
               "won",
               "lost"
             ]
+          },
+          "conversation_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "conversation_session_id": {
+            "type": "string",
+            "format": "uuid"
           }
         }
+      },
+      "sales-session-input": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "conversation_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "conversation_session_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "conversation_id",
+          "conversation_session_id"
+        ]
+      },
+      "sales-session-response": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "version": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$"
+              },
+              "context_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "conversation_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "session_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "kind": {
+                "const": "follow_up"
+              }
+            },
+            "required": [
+              "id",
+              "version",
+              "context_id",
+              "conversation_id",
+              "session_id",
+              "kind"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "sales-session-list": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "record_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "conversation_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "session_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "kind": {
+                  "enum": [
+                    "created",
+                    "follow_up",
+                    "closing"
+                  ]
+                },
+                "recorded_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "id",
+                "record_id",
+                "conversation_id",
+                "session_id",
+                "kind",
+                "recorded_at"
+              ]
+            }
+          },
+          "next_before_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "next_before_id",
+          "meta"
+        ]
+      },
+      "lead-merge-preview-input": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "target_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "target_id"
+        ]
+      },
+      "lead-merge-input": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "target_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "target_version": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "target_id",
+          "target_version",
+          "reason"
+        ]
+      },
+      "lead-merge-preview": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "source": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "tenant_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "object_key": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                  },
+                  "version": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "owner_revision": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "owner_principal_id": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "team_id": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "archived": {
+                    "type": "boolean"
+                  },
+                  "fields": {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  "custom_values": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "required": [
+                  "id",
+                  "tenant_id",
+                  "object_key",
+                  "version",
+                  "owner_revision",
+                  "owner_principal_id",
+                  "team_id",
+                  "archived",
+                  "fields",
+                  "custom_values"
+                ]
+              },
+              "target": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "tenant_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "object_key": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                  },
+                  "version": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "owner_revision": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "owner_principal_id": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "team_id": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "archived": {
+                    "type": "boolean"
+                  },
+                  "fields": {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  "custom_values": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "required": [
+                  "id",
+                  "tenant_id",
+                  "object_key",
+                  "version",
+                  "owner_revision",
+                  "owner_principal_id",
+                  "team_id",
+                  "archived",
+                  "fields",
+                  "custom_values"
+                ]
+              },
+              "policy": {
+                "const": "retain_target_and_preserve_source_history"
+              }
+            },
+            "required": [
+              "source",
+              "target",
+              "policy"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "lead-merge-response": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "version": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$"
+              },
+              "target_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "target_version": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$"
+              },
+              "archived": {
+                "const": true
+              }
+            },
+            "required": [
+              "id",
+              "version",
+              "target_id",
+              "target_version",
+              "archived"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "lead-merge-history": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "source_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "target_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "recorded_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "source_id",
+                "target_id",
+                "recorded_at"
+              ]
+            }
+          },
+          "has_more": {
+            "type": "boolean"
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "has_more",
+          "meta"
+        ]
+      },
+      "session-process-input": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "stages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                  "not": {
+                    "enum": [
+                      "won",
+                      "lost",
+                      "revenue",
+                      "consent"
+                    ]
+                  }
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120
+                }
+              },
+              "required": [
+                "key",
+                "label"
+              ]
+            },
+            "maxItems": 20,
+            "minItems": 1
+          },
+          "milestones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                  "not": {
+                    "enum": [
+                      "won",
+                      "lost",
+                      "revenue",
+                      "consent"
+                    ]
+                  }
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120
+                }
+              },
+              "required": [
+                "key",
+                "label"
+              ]
+            },
+            "maxItems": 12,
+            "minItems": 1
+          }
+        },
+        "required": [
+          "stages",
+          "milestones"
+        ]
+      },
+      "session-process-response": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "version": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$"
+              },
+              "current_version": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$"
+              },
+              "definition": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "stages": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                          "not": {
+                            "enum": [
+                              "won",
+                              "lost",
+                              "revenue",
+                              "consent"
+                            ]
+                          }
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120
+                        }
+                      },
+                      "required": [
+                        "key",
+                        "label"
+                      ]
+                    },
+                    "maxItems": 20,
+                    "minItems": 1
+                  },
+                  "milestones": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                          "not": {
+                            "enum": [
+                              "won",
+                              "lost",
+                              "revenue",
+                              "consent"
+                            ]
+                          }
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120
+                        }
+                      },
+                      "required": [
+                        "key",
+                        "label"
+                      ]
+                    },
+                    "maxItems": 12,
+                    "minItems": 1
+                  }
+                },
+                "required": [
+                  "stages",
+                  "milestones"
+                ]
+              }
+            },
+            "required": [
+              "version",
+              "current_version",
+              "definition"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "session-progress-input": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "const": "enroll"
+              }
+            },
+            "required": [
+              "action"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "const": "stage"
+              },
+              "stage_key": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                "not": {
+                  "enum": [
+                    "won",
+                    "lost",
+                    "revenue",
+                    "consent"
+                  ]
+                }
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              }
+            },
+            "required": [
+              "action",
+              "stage_key",
+              "reason"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "const": "need"
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "action",
+              "label"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "const": "record"
+              },
+              "need_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "milestone_key": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                "not": {
+                  "enum": [
+                    "won",
+                    "lost",
+                    "revenue",
+                    "consent"
+                  ]
+                }
+              },
+              "occurred_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              "message_id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "required": [
+              "action",
+              "need_id",
+              "milestone_key",
+              "occurred_at",
+              "reason"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "const": "replace"
+              },
+              "supersedes_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "occurred_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              "message_id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "required": [
+              "action",
+              "supersedes_id",
+              "occurred_at",
+              "reason"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "const": "retract"
+              },
+              "supersedes_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              }
+            },
+            "required": [
+              "action",
+              "supersedes_id",
+              "reason"
+            ]
+          }
+        ]
+      },
+      "session-progress-response": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "session_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "can_edit": {
+                "type": "boolean"
+              },
+              "status": {
+                "enum": [
+                  "active",
+                  "closed"
+                ]
+              },
+              "coverage": {
+                "enum": [
+                  "full",
+                  "partial",
+                  "none"
+                ]
+              },
+              "version": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,19})$"
+              },
+              "process": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "version": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]{0,19}$"
+                      },
+                      "current_version": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]{0,19}$"
+                      },
+                      "definition": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "stages": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "key": {
+                                  "type": "string",
+                                  "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                                  "not": {
+                                    "enum": [
+                                      "won",
+                                      "lost",
+                                      "revenue",
+                                      "consent"
+                                    ]
+                                  }
+                                },
+                                "label": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 120
+                                }
+                              },
+                              "required": [
+                                "key",
+                                "label"
+                              ]
+                            },
+                            "maxItems": 20,
+                            "minItems": 1
+                          },
+                          "milestones": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "key": {
+                                  "type": "string",
+                                  "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                                  "not": {
+                                    "enum": [
+                                      "won",
+                                      "lost",
+                                      "revenue",
+                                      "consent"
+                                    ]
+                                  }
+                                },
+                                "label": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 120
+                                }
+                              },
+                              "required": [
+                                "key",
+                                "label"
+                              ]
+                            },
+                            "maxItems": 12,
+                            "minItems": 1
+                          }
+                        },
+                        "required": [
+                          "stages",
+                          "milestones"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "version",
+                      "current_version",
+                      "definition"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "needs": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "session_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "actor_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "session_id",
+                    "label",
+                    "created_at",
+                    "actor_id"
+                  ]
+                },
+                "maxItems": 100
+              },
+              "history": {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "session_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "need_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "revision": {
+                          "type": "string",
+                          "pattern": "^[1-9][0-9]{0,19}$"
+                        },
+                        "milestone_key": {
+                          "type": "string",
+                          "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                          "not": {
+                            "enum": [
+                              "won",
+                              "lost",
+                              "revenue",
+                              "consent"
+                            ]
+                          }
+                        },
+                        "kind": {
+                          "enum": [
+                            "record",
+                            "replace",
+                            "retract"
+                          ]
+                        },
+                        "supersedes_id": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "message_id": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "reason": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 500
+                        },
+                        "occurred_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "recorded_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "actor_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "corrected_by": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "type": {
+                          "const": "milestone"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "session_id",
+                        "need_id",
+                        "revision",
+                        "milestone_key",
+                        "kind",
+                        "supersedes_id",
+                        "message_id",
+                        "reason",
+                        "occurred_at",
+                        "recorded_at",
+                        "actor_id",
+                        "corrected_by",
+                        "type"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "session_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "revision": {
+                          "type": "string",
+                          "pattern": "^[1-9][0-9]{0,19}$"
+                        },
+                        "from_stage": {
+                          "type": "string",
+                          "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                          "not": {
+                            "enum": [
+                              "won",
+                              "lost",
+                              "revenue",
+                              "consent"
+                            ]
+                          }
+                        },
+                        "to_stage": {
+                          "type": "string",
+                          "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                          "not": {
+                            "enum": [
+                              "won",
+                              "lost",
+                              "revenue",
+                              "consent"
+                            ]
+                          }
+                        },
+                        "reason": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 500
+                        },
+                        "actor_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "recorded_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "type": {
+                          "const": "stage"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "session_id",
+                        "revision",
+                        "from_stage",
+                        "to_stage",
+                        "reason",
+                        "actor_id",
+                        "recorded_at",
+                        "type"
+                      ]
+                    }
+                  ]
+                },
+                "maxItems": 50
+              },
+              "next_before_revision": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "process_version": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$"
+              },
+              "stage_key": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                "not": {
+                  "enum": [
+                    "won",
+                    "lost",
+                    "revenue",
+                    "consent"
+                  ]
+                }
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": [
+              "session_id",
+              "can_edit",
+              "status",
+              "coverage",
+              "version",
+              "process",
+              "needs",
+              "history",
+              "next_before_revision"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "session-progress-result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "session_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "version": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$"
+              },
+              "action": {
+                "enum": [
+                  "enroll",
+                  "stage",
+                  "need",
+                  "record",
+                  "replace",
+                  "retract"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "session_id",
+              "version",
+              "action"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "session-funnel-response": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "sessions": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "denominator": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "coverage": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "full": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "partial": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "none": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "other_version": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "full",
+                  "partial",
+                  "none",
+                  "other_version"
+                ]
+              },
+              "steps": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "key": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                      "not": {
+                        "enum": [
+                          "won",
+                          "lost",
+                          "revenue",
+                          "consent"
+                        ]
+                      }
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "sessions": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "cohort_rate": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "previous_rate": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "key",
+                    "label",
+                    "sessions",
+                    "cohort_rate",
+                    "previous_rate"
+                  ]
+                },
+                "maxItems": 12
+              },
+              "from": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "to": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "as_of": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "process_version": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$"
+              },
+              "timezone": {
+                "const": "UTC"
+              },
+              "scope": {
+                "const": "current_authorized_conversations"
+              },
+              "mode": {
+                "const": "same_need_ordered"
+              }
+            },
+            "required": [
+              "sessions",
+              "denominator",
+              "coverage",
+              "steps",
+              "from",
+              "to",
+              "as_of",
+              "process_version",
+              "timezone",
+              "scope",
+              "mode"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
       },
       "organic-page-report": {
         "type": "object",
@@ -23447,7 +26203,10 @@
                   ]
                 },
                 "policy_version": {
-                  "const": "acquisition_v1"
+                  "enum": [
+                    "acquisition_v1",
+                    "inbox_v2"
+                  ]
                 }
               }
             }
@@ -25480,6 +28239,12 @@
             "required": [
               "correlation_id"
             ]
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "required": [
@@ -25665,6 +28430,262 @@
               "cancel_pending",
               "steps",
               "waits"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "workflow-definition": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "key": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "service_actor_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "active_version_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "enabled": {
+                "type": "boolean"
+              },
+              "version": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$"
+              }
+            },
+            "required": [
+              "id",
+              "key",
+              "name",
+              "service_actor_id",
+              "active_version_id",
+              "enabled",
+              "version"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "workflow-authoring-options": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "actors": {
+                "type": "array",
+                "maxItems": 200,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "key": {
+                      "type": "string"
+                    },
+                    "role_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "role_name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "key",
+                    "role_id",
+                    "role_name"
+                  ]
+                }
+              },
+              "teams": {
+                "type": "array",
+                "maxItems": 200,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "purpose": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "purpose"
+                  ]
+                }
+              },
+              "connections": {
+                "type": "array",
+                "maxItems": 200,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "provider": {
+                      "const": "mock_messenger"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "provider"
+                  ]
+                }
+              },
+              "chatflows": {
+                "type": "array",
+                "maxItems": 200,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "number": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "number"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "actors",
+              "teams",
+              "connections",
+              "chatflows"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "workflow-validate-input": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "graph": {
+            "$ref": "#/components/schemas/workflow-graph"
+          }
+        },
+        "required": [
+          "graph"
+        ]
+      },
+      "workflow-validation": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "valid": {
+                "const": true
+              },
+              "node_count": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 50
+              }
+            },
+            "required": [
+              "valid",
+              "node_count"
             ]
           },
           "meta": {

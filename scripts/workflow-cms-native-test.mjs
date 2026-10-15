@@ -1,0 +1,57 @@
+import assert from 'node:assert/strict';
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {parseEnv} from 'node:util';
+import {randomUUID} from 'node:crypto';
+import {createRequire} from 'node:module';
+import {databaseSource} from '../apps/backend/dist/kernel/database/data-source.js';
+import {NativeAuthService} from '../apps/backend/dist/modules/identity/auth/native-service.js';
+import {nativeConfig} from '../apps/backend/dist/modules/identity/auth/native-config.js';
+import {AuthRuntime} from '../apps/backend/dist/modules/identity/auth/http.js';
+import {WorkflowController,WorkflowRuntime} from '../apps/backend/dist/modules/workflow/http.js';
+import {Workflows} from '../apps/backend/dist/modules/workflow/application.js';
+import {workflowChildren} from '../apps/backend/dist/modules/workflow/children.js';
+import {CrmController,CrmRuntime} from '../apps/backend/dist/modules/crm/http.js';
+import {CrmRecords} from '../apps/backend/dist/modules/crm/records.js';
+import {CrmUi} from '../apps/backend/dist/modules/crm/ui.js';
+import {coreDomains} from '../apps/backend/dist/modules/crm/core.js';
+import {safeJsonBody} from '../apps/backend/dist/kernel/http/json-body.js';
+import {testWorkflowBrowser} from './lib/workflow-cms-browser.mjs';
+const require=createRequire(new URL('../apps/backend/package.json',import.meta.url));
+const {Module}=require('@nestjs/common'),{NestFactory}=require('@nestjs/core'),{createPool}=require('mysql2/promise');
+const Ajv=require('ajv'),formats=require('ajv-formats'),ajv=new Ajv({strict:true});formats(ajv);const schema=JSON.parse(await readFile('packages/contracts/schemas/workflow.json','utf8'));ajv.addSchema(schema);
+const env=parseEnv(await readFile('.local/native-auth-test.env','utf8'));assert.equal(env.APP_ENV,'test');assert.equal(env.MYSQL_DATABASE,'native_identity_test');assert.equal(env.MYSQL_HOST,'127.0.0.1');assert.equal(env.MYSQL_PORT,'13306');Object.assign(process.env,env);
+const f=JSON.parse(await readFile('.local/reporting-native-fixture.json','utf8')),path='.local/workflow-cms-fixture.json';let fixture;
+try{fixture=JSON.parse(await readFile(path,'utf8'));}catch(e){if(e.code!=='ENOENT')throw e;fixture={tenant:f.tenant,actor:randomUUID(),team:randomUUID(),connection:randomUUID()};await writeFile(path,JSON.stringify(fixture),{flag:'wx'});}assert.equal(fixture.tenant,f.tenant);
+const ds=databaseSource(true);await ds.initialize();const pool=createPool({host:env.MYSQL_HOST,port:Number(env.MYSQL_PORT),database:env.MYSQL_DATABASE,user:env.MYSQL_MIGRATION_USER,password:env.MYSQL_MIGRATION_PASSWORD});
+const [[original]]=await pool.query('SELECT m.seat_code,r.permissions FROM membership m JOIN `role` r ON r.tenant_id=m.tenant_id WHERE m.tenant_id=? AND m.id=? AND r.id=?',[f.tenant,f.member,f.role]);assert(original);
+const grants=[...['design','publish','read','operate'].map(action=>({resource:'automation',action,scope:'all'})),...['read','assign'].map(action=>({resource:'conversation',action,scope:'all'}))];
+async function rights(permissions=grants,seat='admin'){await ds.transaction(async m=>{await m.query('SELECT id FROM tenant WHERE id=? FOR UPDATE',[f.tenant]);await m.query('UPDATE membership SET seat_code=? WHERE tenant_id=? AND id=?',[seat,f.tenant,f.member]);await m.query('UPDATE `role` SET permissions=? WHERE tenant_id=? AND id=?',[typeof permissions==='string'?permissions:JSON.stringify(permissions),f.tenant,f.role]);await m.query('UPDATE principal SET auth_revision=auth_revision+1 WHERE tenant_id=? AND id=?',[f.tenant,f.principal]);});}
+const config=nativeConfig({APP_ENV:'test',APP_ORIGIN:'http://localhost:18080',SESSION_ENCRYPTION_KEY:f.sessionKey}),auth=new NativeAuthService(config,pool),workflows=new Workflows(ds,workflowChildren(ds));
+const groups=[],test=async(name,fn)=>{await fn();groups.push(name);console.log('PASS '+name);};let sid,csrf,app;
+try{
+ await rights();
+ for(const [table,id,sql,params] of [
+  ['service_actor',fixture.actor,"INSERT INTO service_actor(id,tenant_id,`key`,role_id,created_at,updated_at) VALUES (?,?,'workflow_cms_fixture',?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[fixture.actor,f.tenant,f.role]],
+  ['team',fixture.team,"INSERT INTO team(id,tenant_id,name,purpose,created_at,updated_at) VALUES (?,?,'Workflow CMS fixture','chat',UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[fixture.team,f.tenant]],
+  ['channel_connection',fixture.connection,"INSERT INTO channel_connection(id,tenant_id,provider,external_account_id,team_id) VALUES (?,?,'mock_messenger','workflow_cms_fixture',?)",[fixture.connection,f.tenant,fixture.team]],
+ ])if(!(await ds.query(`SELECT id FROM ${table} WHERE tenant_id=? AND id=?`,[f.tenant,id])).length)await ds.query(sql,params);
+ const challenge=await auth.challenge(randomUUID());sid=await auth.login(f.login,f.password,challenge.token,challenge.browser,config.origin,randomUUID());csrf=await auth.csrf(sid);
+ const records=new CrmRecords(ds,f.sessionKey,coreDomains());class TestModule{}Module({controllers:[WorkflowController,CrmController],providers:[{provide:AuthRuntime,useValue:{service:auth}},{provide:WorkflowRuntime,useValue:{ready:async()=>{},workflows}},{provide:CrmRuntime,useValue:{ready:async()=>{},records,ui:new CrmUi(records)}}]})(TestModule);
+ app=await NestFactory.create(TestModule,{logger:false,bodyParser:false});safeJsonBody(app);app.setGlobalPrefix('api/v1');await app.listen(0,'127.0.0.1');const url=await app.getUrl();
+ const call=async(path,body,method=body===undefined?'GET':'POST',headers={})=>{const r=await fetch(url+'/api/v1/'+path,{method,headers:{cookie:'crm_session='+sid,'X-Tenant-Id':f.tenant,Origin:config.origin,'X-CSRF-Token':csrf,'Content-Type':'application/json','Idempotency-Key':randomUUID(),...headers},...(body===undefined?{}:{body:JSON.stringify(body)})});return {status:r.status,body:await r.json()};};
+ const checked=async(path,body,status=200,method,headers)=>{const r=await call(path,body,method,headers);assert.equal(r.status,status,JSON.stringify(r.body));return r.body.data;};
+ const graph={trigger:{event_type:'conversation.created',connection_id:fixture.connection},entry_node:'delay',nodes:[{key:'delay',type:'wait_timer',config:{duration_seconds:60},next:'branch'},{key:'branch',type:'condition',config:{left:{ref:'trigger.contact_id'},op:'exists',on_true:'route',on_false:'end'}},{key:'route',type:'assign_owner',config:{record_id:{ref:'trigger.aggregate_id'},team_id:fixture.team,capability:'chat',preference:'human'},next:'end'},{key:'end',type:'end',config:{outcome:'done'}}]};
+ await test('native designer discovery uses scoped owner labels and strict schema',async()=>{const r=await call('workflows/authoring');assert.equal(r.status,200);const validate=ajv.getSchema('workflow#/definitions/workflow-authoring-options');assert(validate(r.body),JSON.stringify(validate.errors));assert(r.body.data.actors.some(a=>a.id===fixture.actor));assert(r.body.data.connections.some(c=>c.id===fixture.connection));assert(!JSON.stringify(r.body).includes('permissions'));assert(!JSON.stringify(r.body).includes('credential'));});
+ await test('validation requires native CSRF and rejects invalid DAG without writing',async()=>{assert.equal((await call('workflows/validate',{graph},'POST',{'X-CSRF-Token':''})).status,403);assert.equal((await checked('workflows/validate',{graph})).valid,true);const bad=structuredClone(graph);bad.nodes[0].next='delay';assert.equal((await call('workflows/validate',{graph:bad})).status,422);assert.equal((await call('workflows/validate',{graph,unknown:true})).status,400);});
+ await test('create/replay and definition lookup preserve disabled state',async()=>{if(!fixture.definition){const key=randomUUID(),body={key:'workflow_cms_fixture',name:'Workflow CMS fixture',service_actor_id:fixture.actor};const a=await call('workflows',body,'POST',{'Idempotency-Key':key}),b=await call('workflows',body,'POST',{'Idempotency-Key':key});assert.equal(a.status,201);assert.deepEqual(a,b);fixture.definition=a.body.data.id;await writeFile(path,JSON.stringify(fixture));}const d=await checked('workflows/'+fixture.definition);if(d.enabled)await checked('workflows/'+d.id,{enabled:false},200,'PATCH',{'If-Match':`"${d.version}"`});assert.equal((await checked('workflows/'+fixture.definition)).enabled,false);});
+ let version;
+ await test('saved immutable graph/role reopens exactly; same-key save replays',async()=>{const key=randomUUID(),body={graph,execution_role_id:f.role},path=`workflows/${fixture.definition}/versions`;const a=await call(path,body,'POST',{'Idempotency-Key':key}),b=await call(path,body,'POST',{'Idempotency-Key':key});assert.equal(a.status,201);assert.deepEqual(a,b);version=a.body.data;const rows=await checked(path);assert.deepEqual(rows[0].graph,graph);assert.equal(rows[0].execution_role_id,f.role);const changed=structuredClone(graph);changed.nodes[0].config.duration_seconds=120;await checked(path,{graph:changed,execution_role_id:f.role},201);assert.deepEqual((await checked(path)).find(v=>v.id===version.id).graph,graph);});
+ await test('publish/enable live CAS prevents stale updates; restore disabled',async()=>{const d=await checked('workflows/'+fixture.definition),path=`workflows/${d.id}`;await checked(`${path}/versions/${version.number}/publish`,{},200,'POST',{'If-Match':`"${d.version}"`});assert.equal((await call(path,{enabled:true},'PATCH',{'If-Match':`"${d.version}"`})).status,409);const fresh=await checked(path),on=await checked(path,{enabled:true},200,'PATCH',{'If-Match':`"${fresh.version}"`});assert.equal((await checked(path)).enabled,true);await checked(path,{enabled:false},200,'PATCH',{'If-Match':`"${on.version}"`});});
+ await test('tenant/query/session negatives and live design revoke',async()=>{for(const path of ['workflows/authoring','workflows/'+fixture.definition,`workflows/${fixture.definition}/versions`]){assert.equal((await call(path,undefined,'GET',{'X-Tenant-Id':f.foreignTenant})).status,403);assert.equal((await call(path,undefined,'GET',{cookie:''})).status,401);}assert.equal((await call('workflows?after=invalid')).status,400);await rights(grants.filter(g=>g.action!=='design'));assert.equal((await call('workflows/authoring')).status,403);assert.equal((await call('workflows/validate',{graph})).status,403);await rights(grants,'viewer');assert.equal((await call('workflows')).status,403);await rights();});
+ await test('definition pagination stable and schema accepts additive cursor',async()=>{let after='',seen=new Set();do{const r=await call('workflows?limit=1'+(after?'&after='+after:''));assert.equal(r.status,200);assert(ajv.getSchema('workflow#/definitions/workflow-list')(r.body));for(const d of r.body.data){assert(!seen.has(d.id));seen.add(d.id);}after=r.body.next_cursor;}while(after);assert(seen.has(fixture.definition));});
+ if(process.argv.includes('--browser'))await test('browser real native CMS lifecycle and mobile/permissions',async()=>{await testWorkflowBrowser({url,sid,csrf,tenant:f.tenant,fixture,rights});});
+ await mkdir('artifacts/workflow-cms',{recursive:true});await writeFile('artifacts/workflow-cms/native.json',JSON.stringify({at:new Date().toISOString(),database:env.MYSQL_DATABASE,groups,passed:groups.length},null,2));
+}finally{
+ if(fixture.definition)await ds.query('UPDATE workflow_definition SET enabled=0 WHERE tenant_id=? AND id=?',[f.tenant,fixture.definition]);
+ await rights(original.permissions,original.seat_code);if(sid)await auth.logout(sid,config.origin,csrf).catch(()=>{});await app?.close();await pool.end();await ds.destroy();
+}

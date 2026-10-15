@@ -5,4 +5,6 @@ export interface CrmDealPatch {
   amount?: string;
   currency?: string;
   stage?: "open" | "qualified" | "proposal" | "won" | "lost";
+  conversation_id?: string;
+  conversation_session_id?: string;
 }

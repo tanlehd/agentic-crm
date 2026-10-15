@@ -4,6 +4,7 @@ import { digest, refKey, type Registry } from './registry.js';
 import type { AccessContext, Binding, Catalog, CompileResult, Definition, FieldDescriptor, Filter, Issue, MetricDescriptor } from './types.js';
 
 const validateShape = new Ajv({ strict: true, allErrors: false, coerceTypes: false }).compile<Definition>(definitionSchema);
+export function hasDefinitionShape(input:unknown):input is Definition{return validateShape(input);}
 const uuid = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/;
 const systemTenant = '01900000-0000-7000-8000-000000000001';
 const decimal = /^-?(?:0|[1-9][0-9]{0,19})(?:\.[0-9]{1,8})?$/;

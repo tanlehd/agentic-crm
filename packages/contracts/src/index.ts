@@ -14,3 +14,7 @@ export type { MessageContent } from './generated/message-content.js';
 
 export { intakeSchema } from './generated/intake-schema.js';
 export type { IntakeRequest } from './generated/intake-request.js';
+export type { WorkflowCatalog } from './generated/workflow-catalog.js';
+export type { WorkflowAuthoring } from './generated/workflow-authoring.js';
+export { workflowCatalogSchema } from './generated/workflow-catalog-schema.js';
+export { workflowAuthoringSchema } from './generated/workflow-authoring-schema.js';

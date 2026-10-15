@@ -14,6 +14,10 @@ import { SalesHandoffs } from '../src/modules/sales/handoff.js';
 import { tools } from '../src/modules/agents/protocol.js';
 import type { Envelope } from '../src/kernel/reliability/delivery.js';
 import { healthcareMetrics } from './fixtures/healthcare-metrics.js';
+import { CrmRecords } from '../src/modules/crm/records.js';
+import { coreDomains,contactReferences } from '../src/modules/crm/core.js';
+import { LeadService,leadDomain } from '../src/modules/sales/leads.js';
+import { LeadMerge } from '../src/modules/sales/lead-merge.js';
 
 export function healthcareCases(isolated:(name:string)=>Promise<DataSource>){describe('SRC-023 healthcare fixture',()=>{
  const id=(n:number)=>`0199ab00-0000-7000-8000-${String(n).padStart(12,'0')}`;
@@ -105,13 +109,17 @@ export function healthcareCases(isolated:(name:string)=>Promise<DataSource>){des
   expect((await metrics()).inbound_messages).toBe(12);
   await expect(metrics(tenant,to,from)).rejects.toThrow('INVALID_METRIC_WINDOW');
  });
- it('SRC-053 new referral fences old qualification and preserves AI outbound session membership',async()=>{
+ it('SRC-068 new referral preserves active qualification and AI outbound session membership',async()=>{
   at('06:00:00');await start('acquisition-boundary','06:00:30','boundary-a');const f=fixtures['acquisition-boundary']!;
   const [old]=await ds.query("SELECT id FROM conversation_acquisition_session WHERE tenant_id=? AND conversation_id=? AND status='active'",[tenant,f.conversation]);
   const outbound=await ds.query("SELECT m.id,am.session_id FROM message m JOIN message_acquisition_membership am ON am.tenant_id=m.tenant_id AND am.message_id=m.id WHERE m.tenant_id=? AND m.conversation_id=? AND m.direction='outbound'",[tenant,f.conversation]);expect(outbound).toHaveLength(1);expect(outbound[0].session_id).toBe(old.id);
   at('06:01:00');await receive('acquisition-boundary',2,'Synthetic next ad','boundary-b');
-  expect((await ds.query('SELECT status,error_code FROM chatflow_session WHERE tenant_id=? AND id=?',[tenant,f.session]))[0]).toMatchObject({status:'cancelled',error_code:'ACQUISITION_SESSION_CHANGED'});
-  await chatStep();expect(await ds.query('SELECT record_id FROM `lead` WHERE tenant_id=? AND qualification_session_id=?',[tenant,f.session])).toHaveLength(0);
+  expect((await ds.query('SELECT status FROM chatflow_session WHERE tenant_id=? AND id=?',[tenant,f.session]))[0].status).not.toBe('cancelled');
+  expect((await ds.query("SELECT id FROM conversation_acquisition_session WHERE tenant_id=? AND conversation_id=? AND status='active'",[tenant,f.conversation]))[0].id).toBe(old.id);
   expect((await ds.query('SELECT session_id FROM message_acquisition_membership WHERE tenant_id=? AND message_id=?',[tenant,outbound[0].id]))[0].session_id).toBe(old.id);
+  const domains=coreDomains();domains.set('lead',leadDomain(contactReferences));const records=new CrmRecords(ds,'synthetic-merge-guard',domains),leads=new LeadService(records,contactReferences),[c]=await ds.query('SELECT contact_id FROM conversation WHERE tenant_id=? AND record_id=?',[tenant,f.conversation]);
+  const create=()=>leads.create(account,tenant,{contact_id:c.contact_id,conversation_id:f.conversation},randomUUID(),'synthetic'),source=(await create()).body.data,target=(await create()).body.data;
+  await ds.query('UPDATE `lead` SET qualification_session_id=? WHERE tenant_id=? AND record_id=?',[f.session,tenant,source.id]);await ds.query('UPDATE role SET permissions=? WHERE tenant_id=? AND id=?',[JSON.stringify([...grants,{resource:'lead',action:'archive',scope:'all'}]),tenant,role]);
+  try{await expect(new LeadMerge(records).preview(account,tenant,source.id,{target_id:target.id})).rejects.toThrow('SESSION_ORCHESTRATION_REQUIRED');}finally{await ds.query('UPDATE role SET permissions=? WHERE tenant_id=? AND id=?',[JSON.stringify(grants),tenant,role]);}
  });
 });}

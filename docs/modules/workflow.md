@@ -1,7 +1,13 @@
 # MOD-08 — Workflow
 
+SRC-066 adds [M2 Workflow CMS](../development/workflow-cms.md) on local: menu, seven-node list editor, immutable saved versions, review/publish, enable/disable and scoped discovery/validation APIs. Target distributed CMS/Kafka remains pending.
+
+SRC-065 adds native shared CRM catalog and pure typed authoring kernel for the new architecture, [runbook](../development/workflow-foundation.md). Metadata/validation only; M2 runtime below remains unchanged. Independent Kafka/execution/CMS not yet implemented.
+
 > Kiến trúc đích microservice theo ADR-017: [Workflow Orchestrator](../services/workflow.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.
 Status: Primitive engine M2 implemented SRC-019; visual builder Draft M5. Requirements: REQ-08, REQ-09.
+
+PLAN-024 / ADR-022 (2026-10-13): [kiến trúc Web/API/Core và Kafka](../system/workflow-architecture.md) cùng [kế hoạch thiết kế](../planning/workflow-platform.md) đã chốt hướng CMS, node/action registry, CRM related-record automation và follow-up communication trên [shared metadata](../data/workflow-metadata.md). Architecture Ready; exact contracts/source chưa Ready. Hạn chế primitive/trigger/timer dưới đây vẫn là contract M2, không áp ngược catalog node mới vào runtime cũ. Canvas CMS đã thuộc scope thiết kế user yêu cầu; parallel/loop/subworkflow và provider thật giữ gate riêng.
 
 ## Mục tiêu và phạm vi
 

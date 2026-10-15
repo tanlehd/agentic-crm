@@ -1,5 +1,7 @@
 # Native mock query API — PLAN-022F / SRC-059
 
+**Current policy CHG-20261014-03:** [Tenant super admin](tenant-super-admin.md) supersedes explicit-grant and field-deny rules below only for active Humans with admin seat + tenant_admin role. Full access stays tenant-bound; ordinary admin-seat users, AI and services remain explicitly authorized. No schema change.
+
 2026-10-12 · CHG-20261012-04 · Ready scoped contract. Builds on [query core](reporting-query.md), [native draft transport](reporting-persistence.md), [source ownership](../data/service-ownership.md). SRC-059 remains IN_PROGRESS; no new tables/migrations. No connected producer access, persistent run lifecycle, record drilldown or UI in this phase.
 
 ## Native route and source policy

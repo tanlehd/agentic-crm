@@ -1,12 +1,14 @@
 # CRM native authentication và authorization
 
+**Current policy CHG-20261014-03:** [Tenant super admin](tenant-super-admin.md) supersedes explicit-grant and field-deny rules below only for active Humans with admin seat + tenant_admin role. Full access stays tenant-bound; ordinary admin-seat users, AI and services remain explicitly authorized. No schema change.
+
 PLAN-007 / ADR-021, 2026-10-07. **Chốt kiến trúc/hành vi đích**, thay lựa chọn Keycloak/OIDC login của [contract cũ](auth.md). PLAN-007A exact physical/API contract: [implementation](native-auth-implementation.md). SRC-038 đã triển khai native auth trong monolith và cutover local; model bên dưới là logical target, physical fields theo exact contract.
 
 ## Trách nhiệm
 
 Identity của CRM tự quản lý account, password credential, session, account recovery, membership, principal, role, team, scope và field policy trong MySQL. MySQL là nguồn chuẩn; Redis chỉ cache/queue (rate limit native hiện ở MySQL), không giữ bản quyền duy nhất. Keycloak không thuộc target dev/test/prod topology, không có OIDC issuer/client secret/JWKS/refresh token phụ thuộc provider. Native login không thay Facebook OAuth dùng kết nối Page.
 
-Giữ thuật toán quyền đã có: active tenant/membership/principal → seat/entitlement → role grant union own/team/all trong đúng tenant → field deny thắng → business/owner/auth revision fences. Không có grant mặc định thì deny. Platform operator không được đọc dữ liệu khách hàng. AI và service actor vẫn tách Human; không dùng mật khẩu nhân viên cho service-to-service authentication.
+Ngoại lệ tenant super admin theo contract hiện hành ở trên; với các actor còn lại, giữ thuật toán quyền: active tenant/membership/principal → seat/entitlement → role grant union own/team/all trong đúng tenant → field deny thắng → business/owner/auth revision fences. Không có grant mặc định thì deny. Platform operator không được đọc dữ liệu khách hàng. AI và service actor vẫn tách Human; không dùng mật khẩu nhân viên cho service-to-service authentication.
 
 Account là danh tính người dùng dùng chung nhiều tenant, thuộc system scope Identity theo [DB guideline](../data/database-guidelines.md). Login chỉ chứng minh account, chưa cấp quyền tenant. Chọn tenant từ active memberships; mọi request domain vẫn kiểm `X-Tenant-Id` với session và live membership. Không tự tạo membership khi đăng nhập, đăng ký hoặc trùng email. Không fork role/policy vào claim để trở thành authority thứ hai.
 

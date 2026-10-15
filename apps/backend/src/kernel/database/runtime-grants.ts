@@ -8,7 +8,7 @@ export async function applyRuntimeGrants(connection: Connection, database: strin
   for (const {name} of tables as {name:string}[]) {
     if (!/^[a-z][a-z0-9_]*$/.test(name)) throw new Error('Invalid table');
     if (['account_credential','auth_session','auth_token','auth_challenge','auth_attempt','system_audit_entry','channel_marketing_credential','channel_marketing_admission_receipt'].includes(name)) continue;
-    const privileges = ['audit_entry','ownership_history'].includes(name) ? 'SELECT,INSERT' : ['account','schema_migration'].includes(name) ? 'SELECT' : 'SELECT,INSERT,UPDATE,DELETE';
+    const privileges = ['audit_entry','ownership_history','session_process_version','session_stage_event','session_need','session_milestone_event'].includes(name) ? 'SELECT,INSERT' : ['session_process_head','session_progress'].includes(name) ? 'SELECT,INSERT,UPDATE' : ['account','schema_migration'].includes(name) ? 'SELECT' : 'SELECT,INSERT,UPDATE,DELETE';
     await connection.query(`GRANT ${privileges} ON \`${database}\`.\`${name}\` TO ?@'%'`,[user]);
   }
 }

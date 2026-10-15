@@ -9,11 +9,13 @@ import { CommandError } from '../../kernel/reliability/commands.js';
 import { databaseSource } from '../../kernel/database/data-source.js';
 import { ReportingBridge,reportingBridgeConfig } from './bridge.js';
 import {ReportingQueryBridge,queryRequest} from './query-bridge.js';
+import {DashboardBridge} from './dashboard-bridge.js';
 interface Request extends IncomingMessage {body:unknown;params:Record<string,string>;query:Record<string,unknown>}
 export class ReportingBridgeRuntime implements OnModuleDestroy {
  private readonly source=databaseSource();private initialized?:Promise<unknown>;
  readonly bridge=new ReportingBridge(this.source,reportingBridgeConfig());
  readonly queryBridge=new ReportingQueryBridge(this.source,reportingBridgeConfig());
+ readonly dashboardBridge=new DashboardBridge(this.source,reportingBridgeConfig());
  async ready(){if(!this.initialized)this.initialized=this.source.initialize().catch(e=>{this.initialized=undefined;throw e;});await this.initialized;}
  async onModuleDestroy(){await this.initialized?.catch(()=>{});if(this.source.isInitialized)await this.source.destroy();}
 }
@@ -94,4 +96,34 @@ export class ReportingRunsController {
  @Post(':id/cancel') cancel(@Req()q:Request,@Res()r:ServerResponse){return this.respond(q,r,'cancel');}
  @Get(':id/result') result(@Req()q:Request,@Res()r:ServerResponse){return this.respond(q,r,'result');}
 }
-@Module({imports:[AuthModule],controllers:[ReportingDefinitionsController,ReportingQueryController,ReportingRunsController,ReportingAuthoringController],providers:[ReportingBridgeRuntime]})export class ReportingDefinitionsModule {}
+@Controller('reporting')
+export class DashboardController {
+ constructor(@Inject(AuthRuntime)private readonly auth:AuthRuntime,@Inject(ReportingBridgeRuntime)private readonly runtime:ReportingBridgeRuntime){}
+ private async respond(req:Request,res:ServerResponse,kind:string){
+  const correlation_id=randomUUID();res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json');res.setHeader('X-Content-Type-Options','nosniff');
+  try{
+   const mutation=req.method!=='GET',sid=cookie(req,'crm_session'),session=mutation?await this.auth.service.requireMutation(sid,req.headers.origin,req.headers['x-csrf-token']):await this.auth.service.session(sid,true),tenant=req.headers['x-tenant-id'];if(!uuid(tenant))throw new CommandError(400,'INVALID_REQUEST');
+   const op:Record<string,any>={kind};for(const k of ['id','widgetId','version','templateKey'])if(req.params[k])op[k]=req.params[k];
+   if(['list','reports','legacy','usage'].includes(kind)){op.filters={};for(const [key,value]of Object.entries(req.query)){if(typeof value!=='string'||!['q','owner','archived','model','chart','limit','cursor'].includes(key))throw new CommandError(400,'INVALID_REQUEST');if(key==='archived'){if(!['true','false'].includes(value))throw new CommandError(400,'INVALID_REQUEST');op.filters[key]=value==='true';}else if(key==='limit'){if(!/^\d{1,2}$/.test(value))throw new CommandError(400,'INVALID_REQUEST');op.filters[key]=Number(value);}else op.filters[key]=value;}}
+   else if(Object.keys(req.query).length)throw new CommandError(400,'INVALID_REQUEST');
+   if(mutation){if(!/^application\/json(?:;|$)/i.test(req.headers['content-type']??''))throw new CommandError(400,'INVALID_REQUEST');op.body=req.body;if(!['query','preview'].includes(kind)){if(!uuid(req.headers['idempotency-key']))throw new CommandError(400,'INVALID_REQUEST');op.key=req.headers['idempotency-key'];}if(['update','archive','duplicate','convert_legacy'].includes(kind)){const match=req.headers['if-match'];if(match===undefined)throw new CommandError(428,'PRECONDITION_REQUIRED');if(typeof match!=='string'||!/^"[1-9][0-9]{0,15}"$/.test(match))throw new CommandError(400,'INVALID_REQUEST');op.expectedRevision=match.slice(1,-1);}}
+   await this.runtime.ready();const data=await this.runtime.dashboardBridge.dispatch(session.account_id,tenant,op);await this.auth.service.session(sid,true);if(data.revision)res.setHeader('ETag',`"${data.revision}"`);res.statusCode=200;res.end(JSON.stringify({data,meta:{correlation_id}}));
+  }catch(e){const error=e instanceof CommandError||e instanceof AuthError?e:new CommandError(e instanceof AccessError?403:503,e instanceof AccessError?e.code:'REPORTING_UNAVAILABLE');res.statusCode=error.status;res.end(JSON.stringify({error:{code:error.code,retryable:error.status>=500||error.status===429},meta:{correlation_id}}));}
+ }
+ @Get('dashboards') list(@Req()q:Request,@Res()r:ServerResponse){return this.respond(q,r,'list');}
+ @Get('dashboards/legacy') legacy(@Req()q:Request,@Res()r:ServerResponse){return this.respond(q,r,'legacy');}
+ @Get('dashboards/:id') get(@Req()q:Request,@Res()r:ServerResponse){return this.respond(q,r,'get');}
+ @Post('dashboards') create(@Req()q:Request,@Res()r:ServerResponse){return this.respond(q,r,'create');}
+ @Patch('dashboards/:id') update(@Req()q:Request,@Res()r:ServerResponse){return this.respond(q,r,'update');}
+ @Post('dashboards/:id/archive') archive(@Req()q:Request,@Res()r:ServerResponse){return this.respond(q,r,'archive');}
+ @Post('dashboards/:id/duplicate') duplicate(@Req()q:Request,@Res()r:ServerResponse){return this.respond(q,r,'duplicate');}
+ @Post('dashboards/from-template') templateCreate(@Req()q:Request,@Res()r:ServerResponse){return this.respond(q,r,'from_template');}
+ @Post('dashboards/convert-legacy') convert(@Req()q:Request,@Res()r:ServerResponse){return this.respond(q,r,'convert_legacy');}
+ @Get('dashboard-templates') templates(@Req()q:Request,@Res()r:ServerResponse){return this.respond(q,r,'templates');}
+ @Get('dashboard-templates/:templateKey/versions/1') template(@Req()q:Request,@Res()r:ServerResponse){return this.respond(q,r,'template');}
+ @Get('reports') reports(@Req()q:Request,@Res()r:ServerResponse){return this.respond(q,r,'reports');}
+ @Get('reports/:id/dashboards') usage(@Req()q:Request,@Res()r:ServerResponse){return this.respond(q,r,'usage');}
+ @Post('reports/:id/versions/:version/preview') preview(@Req()q:Request,@Res()r:ServerResponse){return this.respond(q,r,'preview');}
+ @Post('dashboards/:id/widgets/:widgetId/query') query(@Req()q:Request,@Res()r:ServerResponse){return this.respond(q,r,'query');}
+}
+@Module({imports:[AuthModule],controllers:[ReportingDefinitionsController,ReportingQueryController,ReportingRunsController,ReportingAuthoringController,DashboardController],providers:[ReportingBridgeRuntime]})export class ReportingDefinitionsModule {}

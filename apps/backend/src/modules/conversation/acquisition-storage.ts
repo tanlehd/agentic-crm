@@ -1,3 +1,4 @@
+import { initializeProgress,advanceProgressClock } from './session-process-storage.js';
 import { randomUUID } from 'node:crypto';
 import type { TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
 import { CommandError,DurableCommands,type SystemActor } from '../../kernel/reliability/commands.js';
@@ -6,28 +7,37 @@ import { stamp } from '../crm/core.js';
 export interface AcquisitionReferral {ad_id?:string|null;campaign_id?:string|null;touchpoint_id:string}
 export function lateAcquisitionMessage(occurredAt:string,opening:string|Date){return Date.parse(occurredAt)<new Date(opening).getTime();}
 export async function activeAcquisition(s:TransactionScope,conversation:string){const [row]=await s.query("SELECT * FROM conversation_acquisition_session WHERE tenant_id=? AND active_conversation_key=?",[s.context.tenantId,conversation]);return row;}
+export async function closedBoundary(s:TransactionScope,conversation:string,occurredAt:string){
+ const [last]=await s.query('SELECT status,closed_at FROM conversation_acquisition_session WHERE tenant_id=? AND conversation_id=? ORDER BY sequence DESC LIMIT 1',[s.context.tenantId,conversation]);
+ return last?.status==='closed'&&Date.parse(occurredAt)<=new Date(last.closed_at).getTime();
+}
 async function event(s:TransactionScope,row:any,type:'acquisition_session.opened'|'acquisition_session.closed',correlation:string,actor?:SystemActor|{kind:'human';id:string}){
  const a=actor??{kind:'system',id:s.context.tenantId};
  await s.query("INSERT INTO outbox_event(id,tenant_id,event_type,schema_version,aggregate_type,aggregate_id,aggregate_version,payload,correlation_id,actor_kind,actor_id,occurred_at,created_at,status) VALUES (?,?,?,1,'acquisition_session',?,?,?,?,?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6),'pending')",[randomUUID(),s.context.tenantId,type,row.id,row.version,JSON.stringify({session_id:row.id,conversation_id:row.conversation_id,status:row.status,source_classification:row.source_classification,source_ad_id:row.source_ad_id,sequence:String(row.sequence)}),correlation,a.kind,a.id]);
 }
 export async function closeAcquisition(s:TransactionScope,conversation:string,reason:'agent_closed'|'new_referral',correlation:string,actor?:SystemActor|{kind:'human';id:string}){
  const row=await activeAcquisition(s,conversation);if(!row)return;
- await s.query("UPDATE conversation_acquisition_session SET status='closed',closed_at=UTC_TIMESTAMP(6),close_reason=?,version=version+1 WHERE tenant_id=? AND id=?",[reason,s.context.tenantId,row.id]);
+ const recordedAt=await advanceProgressClock(s);
+ await s.query("UPDATE conversation_acquisition_session SET status='closed',closed_at=?,close_reason=?,version=version+1 WHERE tenant_id=? AND id=?",[recordedAt,reason,s.context.tenantId,row.id]);
  await event(s,{...row,status:'closed',version:String(BigInt(row.version)+1n)},'acquisition_session.closed',correlation,actor);
+ return recordedAt;
 }
 export async function acquisitionInbound(s:TransactionScope,input:{conversation:string;message:string;connection:string;occurredAt:string;correlation:string;actor?:SystemActor;referral?:AcquisitionReferral}){
  const {conversation,message,connection,occurredAt,correlation,actor,referral}=input;let current=await activeAcquisition(s,conversation);
- if(current&&lateAcquisitionMessage(occurredAt,current.opening_occurred_at)){await membership(s,conversation,message,null,'unresolved_late');return;}
- if(!current||referral){
-  if(current)await closeAcquisition(s,conversation,'new_referral',correlation,actor);
+ if(current&&lateAcquisitionMessage(occurredAt,current.opening_occurred_at)||!current&&await closedBoundary(s,conversation,occurredAt)){await membership(s,conversation,message,null,'unresolved_late');return false;}
+ if(!current){
+  // Serialize cohort creation with progress writes/funnel snapshots before stamping opened_at.
+  const recordedAt=await advanceProgressClock(s);
   const [last]=await s.query('SELECT sequence FROM conversation_acquisition_session WHERE tenant_id=? AND conversation_id=? ORDER BY sequence DESC LIMIT 1',[s.context.tenantId,conversation]);
   const meta=await new ChannelReferences().metadata(s,connection),id=randomUUID(),sequence=String(BigInt(last?.sequence??0)+1n);
   const source=referral?'paid':meta.page_id?'organic':'unknown';
-  await s.query("INSERT INTO conversation_acquisition_session(tenant_id,id,conversation_id,sequence,status,opening_reason,opened_at,opening_occurred_at,source_classification,source_channel,source_page_id,source_ad_id,source_campaign_id,source_connection_id,source_touchpoint_id,policy_version) VALUES (?,?,?,?,'active',?,UTC_TIMESTAMP(6),?,?,?,?,?,?,?,?,'acquisition_v1')",[s.context.tenantId,id,conversation,sequence,referral?'new_referral':last?'after_close':'first_inbound',new Date(occurredAt),source,meta.channel,meta.page_id,referral?.ad_id??null,referral?.campaign_id??null,connection,referral?.touchpoint_id??null]);
-  current=await activeAcquisition(s,conversation);await event(s,current,'acquisition_session.opened',correlation,actor);
+  await s.query("INSERT INTO conversation_acquisition_session(tenant_id,id,conversation_id,sequence,status,opening_reason,opened_at,opening_occurred_at,source_classification,source_channel,source_page_id,source_ad_id,source_campaign_id,source_connection_id,source_touchpoint_id,policy_version) VALUES (?,?,?,?,'active',?,?,?,?,?,?,?,?,?,?,'inbox_v2')",[s.context.tenantId,id,conversation,sequence,last?'after_close':'first_inbound',recordedAt,new Date(occurredAt),source,meta.channel,meta.page_id,referral?.ad_id??null,referral?.campaign_id??null,connection,referral?.touchpoint_id??null]);
+  await initializeProgress(s,id,'full',recordedAt);current=await activeAcquisition(s,conversation);await event(s,current,'acquisition_session.opened',correlation,actor);
   await new DurableCommands().systemAudit(s,correlation,'acquisition_session',id,'acquisition.open',['status','source'],actor);
  }
+ if(referral)await s.query('INSERT INTO session_touchpoint(tenant_id,touchpoint_id,session_id,conversation_id,occurred_at,recorded_at) VALUES (?,?,?,?,?,UTC_TIMESTAMP(6))',[s.context.tenantId,referral.touchpoint_id,current.id,conversation,new Date(occurredAt)]);
  await membership(s,conversation,message,current.id,'assigned');
+ return true;
 }
 async function membership(s:TransactionScope,conversation:string,message:string,session:string|null,resolution:string){
  // Writer verifies the message is in this thread; no cross-thread nullable-session loophole.

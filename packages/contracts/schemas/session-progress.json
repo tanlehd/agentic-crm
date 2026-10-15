@@ -1,0 +1,999 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "session-progress.json",
+  "definitions": {
+    "session-process-input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "stages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "key": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                "not": {
+                  "enum": [
+                    "won",
+                    "lost",
+                    "revenue",
+                    "consent"
+                  ]
+                }
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "key",
+              "label"
+            ]
+          },
+          "maxItems": 20,
+          "minItems": 1
+        },
+        "milestones": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "key": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                "not": {
+                  "enum": [
+                    "won",
+                    "lost",
+                    "revenue",
+                    "consent"
+                  ]
+                }
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "required": [
+              "key",
+              "label"
+            ]
+          },
+          "maxItems": 12,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "stages",
+        "milestones"
+      ]
+    },
+    "session-process-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "version": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}$"
+            },
+            "current_version": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}$"
+            },
+            "definition": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "stages": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "key": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                        "not": {
+                          "enum": [
+                            "won",
+                            "lost",
+                            "revenue",
+                            "consent"
+                          ]
+                        }
+                      },
+                      "label": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 120
+                      }
+                    },
+                    "required": [
+                      "key",
+                      "label"
+                    ]
+                  },
+                  "maxItems": 20,
+                  "minItems": 1
+                },
+                "milestones": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "key": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                        "not": {
+                          "enum": [
+                            "won",
+                            "lost",
+                            "revenue",
+                            "consent"
+                          ]
+                        }
+                      },
+                      "label": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 120
+                      }
+                    },
+                    "required": [
+                      "key",
+                      "label"
+                    ]
+                  },
+                  "maxItems": 12,
+                  "minItems": 1
+                }
+              },
+              "required": [
+                "stages",
+                "milestones"
+              ]
+            }
+          },
+          "required": [
+            "version",
+            "current_version",
+            "definition"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "session-progress-input": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "const": "enroll"
+            }
+          },
+          "required": [
+            "action"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "const": "stage"
+            },
+            "stage_key": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]{0,63}$",
+              "not": {
+                "enum": [
+                  "won",
+                  "lost",
+                  "revenue",
+                  "consent"
+                ]
+              }
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500
+            }
+          },
+          "required": [
+            "action",
+            "stage_key",
+            "reason"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "const": "need"
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          "required": [
+            "action",
+            "label"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "const": "record"
+            },
+            "need_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "milestone_key": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]{0,63}$",
+              "not": {
+                "enum": [
+                  "won",
+                  "lost",
+                  "revenue",
+                  "consent"
+                ]
+              }
+            },
+            "occurred_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500
+            },
+            "message_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "action",
+            "need_id",
+            "milestone_key",
+            "occurred_at",
+            "reason"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "const": "replace"
+            },
+            "supersedes_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "occurred_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500
+            },
+            "message_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "action",
+            "supersedes_id",
+            "occurred_at",
+            "reason"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "const": "retract"
+            },
+            "supersedes_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500
+            }
+          },
+          "required": [
+            "action",
+            "supersedes_id",
+            "reason"
+          ]
+        }
+      ]
+    },
+    "session-progress-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "session_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "can_edit": {
+              "type": "boolean"
+            },
+            "status": {
+              "enum": [
+                "active",
+                "closed"
+              ]
+            },
+            "coverage": {
+              "enum": [
+                "full",
+                "partial",
+                "none"
+              ]
+            },
+            "version": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,19})$"
+            },
+            "process": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "version": {
+                      "type": "string",
+                      "pattern": "^[1-9][0-9]{0,19}$"
+                    },
+                    "current_version": {
+                      "type": "string",
+                      "pattern": "^[1-9][0-9]{0,19}$"
+                    },
+                    "definition": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "stages": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "key": {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                                "not": {
+                                  "enum": [
+                                    "won",
+                                    "lost",
+                                    "revenue",
+                                    "consent"
+                                  ]
+                                }
+                              },
+                              "label": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 120
+                              }
+                            },
+                            "required": [
+                              "key",
+                              "label"
+                            ]
+                          },
+                          "maxItems": 20,
+                          "minItems": 1
+                        },
+                        "milestones": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "key": {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                                "not": {
+                                  "enum": [
+                                    "won",
+                                    "lost",
+                                    "revenue",
+                                    "consent"
+                                  ]
+                                }
+                              },
+                              "label": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 120
+                              }
+                            },
+                            "required": [
+                              "key",
+                              "label"
+                            ]
+                          },
+                          "maxItems": 12,
+                          "minItems": 1
+                        }
+                      },
+                      "required": [
+                        "stages",
+                        "milestones"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "version",
+                    "current_version",
+                    "definition"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "needs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "session_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "created_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "actor_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                "required": [
+                  "id",
+                  "session_id",
+                  "label",
+                  "created_at",
+                  "actor_id"
+                ]
+              },
+              "maxItems": 100
+            },
+            "history": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "session_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "need_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "revision": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]{0,19}$"
+                      },
+                      "milestone_key": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                        "not": {
+                          "enum": [
+                            "won",
+                            "lost",
+                            "revenue",
+                            "consent"
+                          ]
+                        }
+                      },
+                      "kind": {
+                        "enum": [
+                          "record",
+                          "replace",
+                          "retract"
+                        ]
+                      },
+                      "supersedes_id": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "message_id": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "reason": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 500
+                      },
+                      "occurred_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "recorded_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "actor_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "corrected_by": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "type": {
+                        "const": "milestone"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "session_id",
+                      "need_id",
+                      "revision",
+                      "milestone_key",
+                      "kind",
+                      "supersedes_id",
+                      "message_id",
+                      "reason",
+                      "occurred_at",
+                      "recorded_at",
+                      "actor_id",
+                      "corrected_by",
+                      "type"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "session_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "revision": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]{0,19}$"
+                      },
+                      "from_stage": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                        "not": {
+                          "enum": [
+                            "won",
+                            "lost",
+                            "revenue",
+                            "consent"
+                          ]
+                        }
+                      },
+                      "to_stage": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                        "not": {
+                          "enum": [
+                            "won",
+                            "lost",
+                            "revenue",
+                            "consent"
+                          ]
+                        }
+                      },
+                      "reason": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 500
+                      },
+                      "actor_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "recorded_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "type": {
+                        "const": "stage"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "session_id",
+                      "revision",
+                      "from_stage",
+                      "to_stage",
+                      "reason",
+                      "actor_id",
+                      "recorded_at",
+                      "type"
+                    ]
+                  }
+                ]
+              },
+              "maxItems": 50
+            },
+            "next_before_revision": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[1-9][0-9]{0,19}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "process_version": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}$"
+            },
+            "stage_key": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]{0,63}$",
+              "not": {
+                "enum": [
+                  "won",
+                  "lost",
+                  "revenue",
+                  "consent"
+                ]
+              }
+            },
+            "created_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updated_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "session_id",
+            "can_edit",
+            "status",
+            "coverage",
+            "version",
+            "process",
+            "needs",
+            "history",
+            "next_before_revision"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "session-progress-result": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "session_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "version": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}$"
+            },
+            "action": {
+              "enum": [
+                "enroll",
+                "stage",
+                "need",
+                "record",
+                "replace",
+                "retract"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "session_id",
+            "version",
+            "action"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
+    "session-funnel-response": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "sessions": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "denominator": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "coverage": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "full": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "partial": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "none": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "other_version": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "full",
+                "partial",
+                "none",
+                "other_version"
+              ]
+            },
+            "steps": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]{0,63}$",
+                    "not": {
+                      "enum": [
+                        "won",
+                        "lost",
+                        "revenue",
+                        "consent"
+                      ]
+                    }
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "sessions": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "cohort_rate": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "previous_rate": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "key",
+                  "label",
+                  "sessions",
+                  "cohort_rate",
+                  "previous_rate"
+                ]
+              },
+              "maxItems": 12
+            },
+            "from": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "to": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "as_of": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "process_version": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}$"
+            },
+            "timezone": {
+              "const": "UTC"
+            },
+            "scope": {
+              "const": "current_authorized_conversations"
+            },
+            "mode": {
+              "const": "same_need_ordered"
+            }
+          },
+          "required": [
+            "sessions",
+            "denominator",
+            "coverage",
+            "steps",
+            "from",
+            "to",
+            "as_of",
+            "process_version",
+            "timezone",
+            "scope",
+            "mode"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    }
+  }
+}

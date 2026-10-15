@@ -8,6 +8,7 @@ import { uuid } from '../identity/admin.js';
 import { databaseSource } from '../../kernel/database/data-source.js';
 import { CommandError } from '../../kernel/reliability/commands.js';
 import { Conversations } from './domain.js';
+import { SessionProgress } from './session-progress.js';
 interface Request extends IncomingMessage {query:Record<string,unknown>;params:Record<string,string>;body:unknown}
 export class ConversationRuntime implements OnModuleDestroy {
   private readonly source=databaseSource();private initialized?:Promise<unknown>;readonly conversations:Conversations;
@@ -47,5 +48,25 @@ export class ConversationChannelsController {
  constructor(@Inject(AuthRuntime) private readonly auth:AuthRuntime,@Inject(ConversationRuntime) private readonly runtime:ConversationRuntime){}
  @Get() async list(@Req() req:Request,@Res() res:ServerResponse){res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json');const correlation=randomUUID();try{const session=await this.auth.service.session(cookie(req,'crm_session'),true),tenant=req.headers['x-tenant-id'];if(!uuid(tenant))throw new CommandError(400,'INVALID_REQUEST');await this.runtime.ready();res.end(JSON.stringify({...await this.runtime.conversations.channelOptions(session.account_id,tenant,req.query),meta:{correlation_id:correlation}}));}catch(e){const f=e instanceof CommandError||e instanceof AuthError?e:new CommandError(e instanceof AccessError?403:503,e instanceof AccessError?'FORBIDDEN':'TEMPORARILY_UNAVAILABLE');res.statusCode=f.status;res.end(JSON.stringify({error:{code:f.code,message:'Không thể tải danh sách kênh.',fields:[],retryable:f.status===503},meta:{correlation_id:correlation}}));}}
 }
-@Module({imports:[AuthModule],controllers:[ConversationController,ConversationChannelsController],providers:[ConversationRuntime]})
+@Controller()
+export class SessionProgressController {
+ constructor(@Inject(AuthRuntime) private readonly auth:AuthRuntime,@Inject(ConversationRuntime) private readonly runtime:ConversationRuntime){}
+ private async respond(req:Request,res:ServerResponse,kind:'process'|'progress'|'funnel',mutation=false){
+  const correlation=randomUUID();res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json');res.setHeader('X-Content-Type-Options','nosniff');
+  try{
+   const session=mutation?await this.auth.service.requireMutation(cookie(req,'crm_session'),req.headers.origin,req.headers['x-csrf-token']):await this.auth.service.session(cookie(req,'crm_session'),true),tenant=req.headers['x-tenant-id'];
+   if(!uuid(tenant)||Object.values(req.params).some(v=>!uuid(v)))throw new CommandError(400,'INVALID_REQUEST');await this.runtime.ready();const progress=new SessionProgress(this.runtime.conversations);
+   if(!mutation){const result=kind==='process'?await progress.process(session.account_id,tenant,req.query):kind==='funnel'?await progress.funnel(session.account_id,tenant,req.query):await progress.read(session.account_id,tenant,req.params.conversation!,req.params.session!,req.query);if('version' in result.data)res.setHeader('ETag',`"${result.data.version}"`);res.end(JSON.stringify({...result,meta:{correlation_id:correlation}}));return;}
+   const key=req.headers['idempotency-key'],match=req.headers['if-match'];if(Object.keys(req.query).length||typeof key!=='string'||!/^application\/json(?:;|$)/i.test(req.headers['content-type']??'')||match!==undefined&&(typeof match!=='string'||!/^"(0|[1-9][0-9]{0,19})"$/.test(match)))throw new CommandError(400,'INVALID_REQUEST');
+   const version=typeof match==='string'?match.slice(1,-1):undefined;
+   const result=kind==='process'?await progress.publish(session.account_id,tenant,req.body,key,version,correlation):await progress.mutate(session.account_id,tenant,req.params.conversation!,req.params.session!,req.body,key,version,correlation);res.statusCode=result.status;res.setHeader('ETag',`"${result.body.data.version}"`);res.end(JSON.stringify(result.body));
+  }catch(e){const f=e instanceof CommandError||e instanceof AuthError?e:new CommandError(e instanceof AccessError?403:503,e instanceof AccessError?'FORBIDDEN':'TEMPORARILY_UNAVAILABLE');res.statusCode=f.status;res.end(JSON.stringify({error:{code:f.code,message:'Không thể hoàn tất yêu cầu tiến trình phiên.',fields:[],retryable:f.status===503},meta:{correlation_id:correlation}}));}
+ }
+ @Get('session-process') process(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'process');}
+ @Post('session-process') publish(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'process',true);}
+ @Get('session-funnel') funnel(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'funnel');}
+ @Get('conversations/:conversation/sessions/:session/progress') read(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'progress');}
+ @Post('conversations/:conversation/sessions/:session/progress') mutate(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'progress',true);}
+}
+@Module({imports:[AuthModule],controllers:[ConversationController,ConversationChannelsController,SessionProgressController],providers:[ConversationRuntime]})
 export class ConversationModule {}

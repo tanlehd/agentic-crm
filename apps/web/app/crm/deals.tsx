@@ -4,10 +4,10 @@ import { Button } from '../../components/ui/button';
 import { useApi,useCommand,ErrorNotice,can,type Context } from './api';
 import { Dialog } from './dialog';
 const labels:Record<string,string>={open:'Mới',qualified:'Đủ điều kiện',proposal:'Đề xuất',won:'Chốt thắng',lost:'Thất bại'};
-export function DealForm({tenant,record,contactId,leadId,onSaved}:{tenant:string;record?:any;contactId?:string;leadId?:string;onSaved:(r:any)=>void}){
+export function DealForm({tenant,record,contactId,leadId,conversation,acquisitionSession,onSaved}:{tenant:string;record?:any;contactId?:string;leadId?:string;conversation?:string;acquisitionSession?:string;onSaved:(r:any)=>void}){
  const contacts=useApi(tenant,'/api/v1/objects/contact/records?limit=100',!record&&!contactId),command=useCommand(tenant);
  const [contact,setContact]=useState(contactId??''),[title,setTitle]=useState(record?.fields.title??''),[amount,setAmount]=useState(record?.fields.amount??'0'),[currency,setCurrency]=useState(record?.fields.currency??'VND'),[stage,setStage]=useState(record?.fields.stage??'open');
- return <form className="crm-form" aria-label={record?'Cập nhật Deal':'Tạo Deal'} onSubmit={async e=>{e.preventDefault();const body=record?{title,amount,currency,stage}:{contact_id:contact,...(leadId?{lead_id:leadId}:{}),title,amount,currency};const r=await command.run('/api/v1/deals'+(record?'/'+record.id:''),body,record?'PATCH':'POST',record?.version);if(r)onSaved(r.data);}}>
+ return <form className="crm-form" aria-label={record?'Cập nhật Deal':'Tạo Deal'} onSubmit={async e=>{e.preventDefault();const body=record?{title,amount,currency,stage,...(stage==='won'&&conversation&&acquisitionSession?{conversation_id:conversation,conversation_session_id:acquisitionSession}:{})}:{contact_id:contact,...(conversation?{conversation_id:conversation,conversation_session_id:acquisitionSession}:{}),...(leadId?{lead_id:leadId}:{}),title,amount,currency};const r=await command.run('/api/v1/deals'+(record?'/'+record.id:''),body,record?'PATCH':'POST',record?.version);if(r)onSaved(r.data);}}>
  {!record&&!contactId&&<label>Liên hệ<select aria-label="Liên hệ Deal" required value={contact} onChange={e=>setContact(e.target.value)}><option value="">Chọn liên hệ…</option>{contacts.data?.data.map((c:any)=><option key={c.id} value={c.id}>{c.fields.display_name??c.id}</option>)}</select></label>}
  {leadId&&<p>Nguồn hệ thống được kế thừa từ Lead.</p>}
  <label>Tên Deal<input aria-label="Tên Deal" required maxLength={255} value={title} onChange={e=>setTitle(e.target.value)}/></label>

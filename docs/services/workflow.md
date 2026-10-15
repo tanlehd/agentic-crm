@@ -1,4 +1,8 @@
-# Workflow Orchestrator
+# Workflow platform — Web, API và Core
+
+PLAN-024 / ADR-022, 2026-10-13 cập nhật **target architecture**: [Workflow Web](workflow-web.md) cho CMS, [Workflow API](workflow-api.md) sở hữu authoring/control trong crm_workflow, [Workflow Core](workflow-core.md) sở hữu execution trong crm_workflow_core. Kafka nhận CRM object changes; metadata object/property/association dùng chung CRM Base. [Architecture](../system/workflow-architecture.md) · [design plan](../planning/workflow-platform.md) · [metadata](../data/workflow-metadata.md). Architecture Ready, exact implementation gates TODO; source hiện hữu vẫn monolith.
+
+Các phần bên dưới là mô tả target cũ của PLAN-005 để giữ lineage. ADR-022 thay single deploy unit/schema Workflow: definition/version về API; immutable installed artifact/run/step/wait/selection/action về Core, không shared SQL/UoW. Không còn dùng đề xuất services/workflow một schema chung để triển khai service mới.
 
 Status: Target architecture accepted direction — PLAN-005 / ADR-017. Service extraction/API/physical schema chưa Ready; không đồng nghĩa deployed. [Module hiện tại](../modules/workflow.md) · [Catalog](README.md) · [Cross-service rules](../contracts/service-boundaries.md).
 

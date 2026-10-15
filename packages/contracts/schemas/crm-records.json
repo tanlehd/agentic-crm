@@ -1213,6 +1213,14 @@
         "currency": {
           "type": "string",
           "pattern": "^[A-Z]{3}$"
+        },
+        "conversation_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "conversation_session_id": {
+          "type": "string",
+          "format": "uuid"
         }
       },
       "required": [
@@ -1248,6 +1256,14 @@
             "won",
             "lost"
           ]
+        },
+        "conversation_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "conversation_session_id": {
+          "type": "string",
+          "format": "uuid"
         }
       }
     }

@@ -1,5 +1,9 @@
 # Schema catalog — nơi đặt bảng mới
 
+**Current 2026-10-14 / CHG-20261014-05:** User authorized implementation after PLAN-027 review. Dashboard/Reports local slice is implemented: Reporting-owned schema4 (six new tenant-scoped tables;13 prior business tables preserved), native APIs, atomic templates and separate UI. [Runbook](../development/dashboard-workspace.md) · [Backend evidence](../tracking/details/SRC-071.md) · [UI evidence](../tracking/details/SRC-072.md). Earlier design-only/phase statements below are historical; broad Reporting milestones remain in tracker.
+
+PLAN-027 proposes six [Dashboard tables](dashboard-workspace.md) owned only by crm_reporting: dashboard_definition, dashboard_version, dashboard_widget, dashboard_command_receipt, dashboard_audit_entry, dashboard_outbox_event. All business tenant_id NOT NULL; same-schema report/version/generation FKs. Template catalog initially release artifacts, not system DB rows. Review-only2026-10-14; current schema3 unchanged, forward DDL gate PLAN-027A before source.
+
 SRC-059 lifecycle update2026-10-12: local/test Reporting now v3 with13 business tables+system journal. Forward003 adds run head and immutable run event; old11 tables preserved. [Filled table dictionary](../contracts/reporting-runs.md), [evidence](../tracking/details/SRC-059.md). CRM remains27;001/002/003 applied history immutable. Previous v2 description below is historical.
 
 **Current Reporting physical slice SRC-057/058:** crm_reporting and retained test_crm_reporting are now v2,11 business tables plus system journal:6 draft tables plus5 synthetic projection/control tables. [Draft templates](../contracts/reporting-persistence.md), [projection templates](../contracts/reporting-projections.md), [mock runbook](../development/reporting-projections.md). Connected projections/query/export remain later gates.
@@ -7,6 +11,8 @@ SRC-059 lifecycle update2026-10-12: local/test Reporting now v3 with13 business 
 PLAN-007 / ADR-021, 2026-10-07. **Normative cho thiết kế mới**; không phải danh sách database đã tạo. Source hiện tại vẫn `agentic_crm` monolith và Connector private database. [Guideline](database-guidelines.md) · [Ownership hiện tại→đích](service-ownership.md) · [Lộ trình](../planning/native-identity-data-plan.md).
 
 ## Nguyên tắc phân vùng
+
+PLAN-024 / ADR-022 thêm crm_workflow_core vào target catalog, tách authoring và execution; cả hai Workflow schemas chưa được provision/extract. Catalog hiện có 15 schema đích, gồm Marketing được bổ sung sau ADR-021 và Workflow Core mới. [Logical map](workflow-metadata.md), [architecture](../system/workflow-architecture.md). Không thay tables/grants hiện tại; table templates/DDL/migration gate PLAN-024C phải hoàn tất trước source.
 
 Trong MySQL, schema đồng nghĩa database, không có lớp schema lồng trong một database như PostgreSQL. Một instance local có thể chứa các database dưới đây; production có thể đặt chúng ở các instance khác nhau mà contract không đổi. Không tạo database theo tenant; các tenant dùng cùng schema của owning service và tách bằng `tenant_id`.
 
@@ -27,7 +33,8 @@ Mỗi schema có đúng một service writer, migration lineage và runtime cred
 | `crm_sales` | Sales | lead, lead_handoff; Deal/pipeline/stage trong scope M4 sau Ready; Sales record metadata/ownership/history; snapshot attribution của Lead | Contact master; message; tự chuyển Customer thành entity độc lập |
 | `crm_ai` | AI Runtime | provider Agent config/policy, agent_execution/tool_execution, capacity slot, execution receipt/knowledge refs khi Ready | Identity principal/roles; toàn bộ message transcript sao chép mặc định |
 | `crm_routing` | Routing | routing_cursor, eligibility/allocation policy/projection, routing_attention | Owner authoritative của Conversation/Lead; AI execution lease |
-| `crm_workflow` | Workflow | definition/version/trigger selection/run/step/action/wait; durable business orchestration | Chatflow session/turn; ghi thẳng bảng service khác |
+| `crm_workflow` | Workflow API — target ADR-022 | definition/draft/immutable version, publish request/audit/outbox; authoring authority | Runtime run/step/wait, canonical CRM metadata; Core DB access |
+| `crm_workflow_core` | Workflow Core — target ADR-022 | installed artifact/deployment, Kafka inbox/enrollment, run/step/action/wait/timer/reconciliation | Mutable drafts, canonical CRM records; API DB access |
 | `crm_chatflow` | Chatflow | definition/version/session/node_run/turn; qualification provenance và logical Lead refs | Canonical Lead, Contact, message hoặc tool execution |
 | `crm_media` | Media | asset/rendition/scan/extraction metadata và storage refs sau gate Ready | File binary trong bảng message; public unprotected media URL |
 | `crm_ticket` | Ticket | ticket/SLA/service lifecycle và local ownership sau M4 Ready | Sales opportunity; generic miscellaneous tables |
@@ -81,3 +88,7 @@ SRC-054 / PLAN-011D now provisions independent `crm_marketing` database v1,22 bu
 PLAN-011E proposed [control tables](../contracts/marketing-sync-tables.md): Marketing scheduler/receipts/change clock/event tables in crm_marketing v2; Channels account credentials/admission receipts in baseline agentic_crm,target crm_connector, consistent with existing Page authority. Not yet migrated; no cross-service SQL/FK.
 
 SRC-051 foundation: local/test Marketing schema3 now has26 business tables plus journal/400 columns. Versions2/3 add the four reviewed control tables and admission/run metadata; v1 checksums preserved. Channels remains CRM schema27. Scheduler and durable change/snapshot repositories are implemented and tested; provider ingestion and HTTP API/worker still incomplete. [Progress](../tracking/details/SRC-051.md).
+
+SRC-0682026-10-13: [Ready Customer360/session contract](../contracts/customer-360-session.md) defines forward28 session_touchpoint (Chat), sales_session_context and lead_merge (Sales), immutable origin versus actual context, active-session referral continuity and separate duplicate consolidation. Implemented and verified in SRC-068: 333unit,11 persistent MySQL,6 focused healthcare and8 native/browser groups; no stage/milestone/report completion claim. Existing physical monolith retains application ports; no external FK.
+
+PLAN-025 / SRC-069: [Ready session progress contract](../contracts/session-progress.md) defines six Chat-owned tables in forward29, pinned process/stage, need-scoped manual evidence/corrections and a connected behavioral session funnel. Current monolith application producer + pure Reporting reducer; no cross-service SQL or mock-builder permission activation. SP-01…07 implemented and verified in SRC-069 (345unit,13persistent MySQL,8native/browser,6healthcare); see task evidence.

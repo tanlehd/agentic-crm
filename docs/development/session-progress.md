@@ -1,0 +1,21 @@
+# Session progress and behavioral funnel
+
+[Contract](../contracts/session-progress.md) · [Evidence](../tracking/details/SRC-069.md) · [Logical ERD](../data/chat-sales-erd.md).
+
+Open Inbox → a Conversation → Customer360 → **Tiến trình & chuyển đổi**. On small screens, open **Thông tin liên hệ** first. Select the current or historical inbox session, then inspect its pinned process, stage and evidence history. Additional old sessions can be loaded without changing the active Sales context below.
+
+An agent with Conversation update can move stage with a reason, create a named need and attest a behavioral milestone. Stage changes never assert conversion. Evidence can optionally reference an inbound message from that exact session. Use **Sửa bằng chứng** or **Thu hồi** in history to correct it; the original remains visible. Enter short operational reasons, never sensitive transcripts/patient details. Closed sessions allow late evidence that occurred before closure; they cannot accept new stages or new needs.
+
+**Quy trình phiên** edits ordered stages and ordered milestones. Existing configure + schema.update/all permission is required to publish. Every publication is immutable; it affects only new sessions. No new Identity permissions are granted by this feature. Keys must be unique ASCII identifiers; won/lost/revenue/consent are reserved because this is manual behavior evidence, not Sales outcome or legal consent authority.
+
+**Phễu theo lượt inbox** reads actual authorized Chat data. Select a process version and opening-day cohort (UTC, end exclusive, maximum93days). Optional as_of is entered in local machine time and converted to UTC. The report displays distinct sessions and same-need ordered milestone counts/rates. Full coverage in the selected version is the denominator. Partial, untracked historical and other-version sessions are disclosed separately. The generic mock Report Builder and its separate Alpha activation gate are unchanged. Revenue/Deal won reports remain Sales-owned.
+
+Limits:100needs/session;20stages/12milestones/version;50history events/page;2000cohort sessions and20000evidence rows per query, explicit QUERY_TOO_LARGE above bounds. Narrow dates when needed. Empty denominator yields an undefined rate, displayed as —. Current ACL is reapplied to historical reports; past permissions are not reproduced. Tenant serialization and a durable monotonic millisecond watermark during bounded report queries provide a committed recorded-time cutoff even when DB wall time regresses; distributed extraction must replace it with an equivalent watermark.
+
+## Local operations and verification
+
+Use the project Node24 shell first: `. ./scripts/dev-shell.ps1`. Migration29 expands six Chat tables in the current monolith; old migrations and sessions are unchanged. Runtime grants are SELECT/INSERT on ledgers and additionally UPDATE on head/progress. `node scripts/session-progress-local-upgrade.mjs` checks the local development target, stops managed API/worker writers, writes a private SQL backup, fingerprints every old table, migrates/reruns, applies only required new-table grants, then restarts writers. A preservation failure leaves writers stopped. Do not reset persistent MySQL/Redis. Prefer forward fixes; old binaries would produce explicitly untracked sessions.
+
+Verification commands: `pnpm --filter @agentic-crm/backend build`; `pnpm test:unit`; `node scripts/session-progress-test.mjs`; `node scripts/acquisition-session-test.mjs`; `node scripts/session-progress-browser.mjs`; `pnpm test:healthcare`; `pnpm typecheck`; `pnpm docs:check`; `pnpm lint`; `pnpm schemas:check`; `pnpm contracts:check`. Browser harness uses actual local Alpha native HTTP and existing permissions, no transport mocks. It publishes identical process semantics as a new version; existing sessions retain their pin. Synthetic fixture data is retained. Persistent MySQL tests use native_seed_test and restore temporary role/field denies.
+
+For a Next production build while local dev serves traffic, set NEXT_BUILD_DIR=.next-session-progress-build and restore original next-env.d.ts/tsconfig bytes afterwards. Evidence lives in ignored artifacts/session-progress; no secrets are printed or committed.

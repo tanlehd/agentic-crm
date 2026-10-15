@@ -1,5 +1,9 @@
 # Reporting & Analytics
 
+**Current 2026-10-14 / CHG-20261014-05:** User authorized implementation after PLAN-027 review. Dashboard/Reports local slice is implemented: Reporting-owned schema4 (six new tenant-scoped tables;13 prior business tables preserved), native APIs, atomic templates and separate UI. [Runbook](../development/dashboard-workspace.md) · [Backend evidence](../tracking/details/SRC-071.md) · [UI evidence](../tracking/details/SRC-072.md). Earlier design-only/phase statements below are historical; broad Reporting milestones remain in tracker.
+
+**PLAN-027 design proposal, 2026-10-14:** Reporting remains sole writer of the [dashboard aggregate and six proposed tables](../data/dashboard-workspace.md). [API](../contracts/dashboard-workspace.md) serves dashboard/report libraries, immutable template catalog, atomic creation of report drafts + dashboard, current-viewer widget execution and explicit legacy conversion. Report versions remain existing storage; no frontend/other-service SQL. Review-only at user request; schemas/endpoints not implemented. Current source status is tracker, not historical phase entries below.
+
 **2026-10-12 / CHG-20261012-06:** User accepted early API-backed UI. [PLAN-022H](../contracts/reporting-authoring.md) scopes source/model/fields/axes/flat filters/chart/pivot/private draft/CSV over delivered APIs. SRC-064 is the sole active source task; SRC-059 requeued READY, incomplete scope/evidence preserved. Full SRC-060 follows SRC-059 and SRC-064; no publish/dashboard/drilldown completion claim. No database changes.
 
 SRC-059 lifecycle phase2026-10-12 adds caller-driven [durable run API/storage](../contracts/reporting-runs.md) in own schema3,owner/current native authority,pinned snapshot/executor,attempt lease/cancel fencing and result retrieval. No producer SQL,automatic worker or shared UoW. [Runbook](../development/reporting-runs.md), [evidence](../tracking/details/SRC-059.md). Drilldown/production worker/UI are subsequent scopes; prior slice descriptions below are historical.
@@ -82,3 +86,8 @@ CHG-20261012-07: [bounded Ready contract](../contracts/reporting-measures.md) ad
 ## Common visualization extension — 2026-10-12
 
 CHG-20261012-08: [Ready scoped contract](../contracts/reporting-visualizations.md) adds horizontal bar, stacked bar, area, pie/donut and descriptor-driven quick-start presets to SRC-064. Trend uses temporal line/area, composition requires additive measures and complete nonnegative partitions, exact table remains available. Existing definitions stay compatible; no database migration. Published reusable templates/dashboard/period comparison remain separate.
+
+SRC-069 adds a connected behavioral session funnel in the current monolith: Chat authorizes and provides bounded session/evidence facts, a pure Reporting reducer counts same-need prefixes with as_of/coverage. The independent Reporting service and mock builder are unchanged; no cross-service DB access or new Alpha grants. [Contract](../contracts/session-progress.md), [evidence](../tracking/details/SRC-069.md).
+
+
+PLAN-026 / SRC-070 adds the bounded [50-inbox private dashboard contract](../contracts/inbox-demo-dashboards.md): four synthetic grains and two saved operations/ad-quality dashboards, reusing existing Reporting storage and authorization with no migration. Native CRM fixture IDs are retained; timing/capacity/spend are explicitly simulated. Code and isolated tests are implemented; Alpha role activation remains pending. [Runbook](../development/inbox-demo-dashboards.md), [evidence](../tracking/details/SRC-070.md). This does not complete generic SRC-061 or connected Reporting ingestion.

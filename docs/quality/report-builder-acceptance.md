@@ -1,5 +1,7 @@
 # Report Builder — acceptance và golden fixtures
 
+PLAN-0272026-10-14: bounded Dashboard/Reports redesign has [DW-AC01…14](dashboard-workspace-acceptance.md), feature/component/data/API traceability and legacy conversion gates. Review documents only, runtime NOT_RUN; does not close RB-13 or SRC-061 global filters/comparison/sharing.
+
 SRC-059 lifecycle phase2026-10-12: [evidence](../tracking/details/SRC-059.md) adds13 MySQL run/race/reconnect/recovery/preservation groups and12 native groups (8 preview+4 runs). RB-10/16 caller-driven durable run sub-scope verified,248 unit total PASS. OS kill/restart,automatic worker,drilldown,remaining event-role/cost metrics and browser UI still open; full RB-MOCK not closed.
 
 SRC-059 native phase2026-10-12 adds8 MySQL/native HTTP groups for RB-01/10 mock sub-scope: cookie/CSRF/membership,explicit run/source/export grants,tenant-complete synthetic scope,private signed admission/cache/CSV and live permission/session revocation before delivery.243 unit total PASS. [Evidence](../tracking/details/SRC-059.md). Connected source field/row ACL, durable run/drilldown and browser/UI still open; broader RB IDs not closed.

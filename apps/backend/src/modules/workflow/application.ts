@@ -4,7 +4,8 @@ import type { DataSource } from 'typeorm';
 import { CommandError,DurableCommands } from '../../kernel/reliability/commands.js';
 import type { TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
 import { IdentityAuthorization } from '../identity/authorization.js';
-import { workflowActor } from '../identity/workflow-port.js';
+import { workflowActor,workflowIdentityOptions } from '../identity/workflow-port.js';
+import { workflowChatflowOptions } from '../chatflow/authoring-port.js';
 import { RoutingIdentityPort } from '../identity/routing-port.js';
 import { permits,type Access } from '../identity/domain/authorization.js';
 import { uuid } from '../identity/admin.js';
@@ -22,11 +23,20 @@ export class Workflows {
   private permission(a:Access,action:string){if(!permits(a,'automation',action))throw new CommandError(403,'FORBIDDEN');}
   private async definition(s:TransactionScope,id:string){const [d]=await s.query('SELECT * FROM workflow_definition WHERE tenant_id=? AND id=? FOR UPDATE',[s.context.tenantId,id]);if(!d)throw new CommandError(404,'NOT_FOUND');return d;}
   private async readableRun(s:TransactionScope,a:Access,id:string){const [r]=await s.query('SELECT * FROM workflow_run WHERE tenant_id=? AND id=?',[s.context.tenantId,id]);if(!r)throw new CommandError(404,'NOT_FOUND');const c=await conversation(s,json(r.context).trigger.aggregate_id);requirePermission(a,c.record,'read');if(!permits(a,'automation','read',c.record))throw new CommandError(404,'NOT_FOUND');return r;}
-  read(account:string,tenant:string,kind:'definitions'|'versions'|'run',id?:string,limit=50){return this.auth.runHuman(account,tenant,async(s,raw)=>{
+  validate(account:string,tenant:string,body:unknown){return this.auth.runHuman(account,tenant,async(_s,a)=>{this.permission(a,'design');const b=object(body,['graph']),graph=validateGraph(b.graph);return {data:{valid:true,node_count:graph.nodes.length}};});}
+  authoring(account:string,tenant:string){return this.auth.runHuman(account,tenant,async(s,a)=>{
+    this.permission(a,'design');const identity=await workflowIdentityOptions(s),connections=await new ChannelReferences().workflowOptions(s),chatflows=await workflowChatflowOptions(s);
+    if([identity.actors,identity.teams,connections,chatflows].some(rows=>rows.length>200))throw new CommandError(422,'CATALOG_LIMIT_EXCEEDED');
+    return {data:{...identity,connections,chatflows}};
+  });}
+  read(account:string,tenant:string,kind:'definitions'|'definition'|'versions'|'run',id?:string,limit=50,after=''){return this.auth.runHuman(account,tenant,async(s,raw)=>{
     const a=await withFieldPolicies(s,raw);if(!Number.isInteger(limit)||limit<1||limit>100)throw new CommandError(400,'INVALID_REQUEST');
     if(kind==='run'){const r=await this.readableRun(s,a,id!);return {data:{id:r.id,definition_id:r.definition_id,version_id:r.version_id,status:r.status,current_node:r.current_node,error_code:r.error_code,attention:!!r.attention,cancel_pending:!!r.cancel_pending,steps:await s.query('SELECT node_key,status,attempt,error_code FROM workflow_step_run WHERE tenant_id=? AND run_id=? ORDER BY node_key',[tenant,id]),waits:await s.query('SELECT node_key,kind,status,resume_at FROM workflow_wait WHERE tenant_id=? AND run_id=? ORDER BY node_key',[tenant,id])}};}
     this.permission(a,'design');if(kind==='versions'){await this.definition(s,id!);return {data:(await s.query('SELECT id,number,state,graph,execution_role_id FROM workflow_version WHERE tenant_id=? AND definition_id=? ORDER BY number DESC LIMIT ?',[tenant,id,limit])).map((v:any)=>({...v,graph:json(v.graph)}))};}
-    return {data:(await s.query('SELECT id,`key`,name,service_actor_id,active_version_id,enabled,version FROM workflow_definition WHERE tenant_id=? ORDER BY id LIMIT ?',[tenant,limit])).map((d:any)=>({...d,enabled:!!d.enabled,version:String(d.version)}))};
+    if(kind==='definition'){const d=await this.definition(s,id!);return {data:{id:d.id,key:d.key,name:d.name,service_actor_id:d.service_actor_id,active_version_id:d.active_version_id,enabled:!!d.enabled,version:String(d.version)}};}
+    if(after&&!uuid(after))throw new CommandError(400,'INVALID_REQUEST');
+    const rows=await s.query('SELECT id,`key`,name,service_actor_id,active_version_id,enabled,version FROM workflow_definition WHERE tenant_id=? AND id>? ORDER BY id LIMIT ?',[tenant,after,limit+1]);
+    return {data:rows.slice(0,limit).map((d:any)=>({...d,enabled:!!d.enabled,version:String(d.version)})),next_cursor:rows.length>limit?rows[limit-1].id:null};
   });}
   listRuns(account:string,tenant:string,query:Record<string,unknown>){return this.auth.runHuman(account,tenant,async(s,raw)=>{
     const a=await withFieldPolicies(s,raw),{limit,cursor}=page(query);if(!a.grants.some(g=>g.resource==='automation'&&g.action==='read')||!a.capabilities.includes('read'))throw new CommandError(403,'FORBIDDEN');const rows=await s.query('SELECT id,status,current_node,attention,started_at,context FROM workflow_run WHERE tenant_id=? AND id>? ORDER BY id LIMIT 201',[tenant,cursor]),data=[];let scanned=cursor;

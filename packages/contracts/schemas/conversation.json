@@ -1406,7 +1406,10 @@
                 ]
               },
               "policy_version": {
-                "const": "acquisition_v1"
+                "enum": [
+                  "acquisition_v1",
+                  "inbox_v2"
+                ]
               }
             }
           }

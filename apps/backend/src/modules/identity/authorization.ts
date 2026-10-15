@@ -1,5 +1,5 @@
 import { UnitOfWork, type TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
-import { parseGrants, seatCapabilities, type Access } from './domain/authorization.js';
+import { parseGrants, principalPermissions, seatCapabilities, type Access } from './domain/authorization.js';
 export class AccessError extends Error {
   constructor(readonly code: 'FORBIDDEN' | 'STALE_AUTHORIZATION') { super(code); }
 }
@@ -26,11 +26,11 @@ export class IdentityAuthorization {
       if (!actor) throw new AccessError('FORBIDDEN');
       const revision = String(actor.auth_revision);
       if (expected && (expected.tenantId !== tenantId || expected.principalId !== actor.id || expected.revision !== revision)) throw new AccessError('STALE_AUTHORIZATION');
-      const roles = await scope.query(`SELECT r.id,r.permissions FROM principal_role pr JOIN \`role\` r ON r.tenant_id=pr.tenant_id AND r.id=pr.role_id WHERE pr.tenant_id=? AND pr.principal_id=?`, [tenantId,actor.id]);
+      const roles = await scope.query(`SELECT r.id,r.\`key\`,r.permissions FROM principal_role pr JOIN \`role\` r ON r.tenant_id=pr.tenant_id AND r.id=pr.role_id WHERE pr.tenant_id=? AND pr.principal_id=?`, [tenantId,actor.id]);
       const teams = await scope.query(`SELECT t.id FROM team_member tm JOIN team t ON t.tenant_id=tm.tenant_id AND t.id=tm.team_id WHERE tm.tenant_id=? AND tm.principal_id=? AND tm.active=1 AND t.active=1`, [tenantId,actor.id]);
       const access: Access = {
         tenantId, principalId: actor.id, revision, capabilities: seatCapabilities(actor.seat_code),
-        grants: roles.flatMap((row: {permissions: unknown}) => parseGrants(row.permissions)),
+        ...principalPermissions('human',actor.seat_code,roles),
         roleIds: roles.map((row: {id: string}) => row.id),
         teamIds: teams.map((row: {id: string}) => row.id), fieldDenies: [],
       };

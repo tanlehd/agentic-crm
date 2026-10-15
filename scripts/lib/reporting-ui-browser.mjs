@@ -1,3 +1,4 @@
+import {testInboxDashboards} from './inbox-demo-browser.mjs';
 import {reopenReport} from './reporting-browser-library.mjs';
 import {testMeasureBuilder} from './reporting-measures-browser.mjs';
 import {testVisualBuilder} from './reporting-visuals-browser.mjs';
@@ -8,7 +9,7 @@ import {parseEnv} from 'node:util';
 import assert from 'node:assert/strict';
 // Browser UI uses a test-only transport proxy to the retained isolated native fixture.
 // No Alpha permissions or real app endpoint responses are changed outside this browser context.
-export async function testReportingBrowser({url,sid,csrf,tenant,principal,grants,revoke,usecase=false,bindingId}){
+export async function testReportingBrowser({url,sid,csrf,tenant,principal,grants,revoke,usecase=false,bindingId,inboxDemo}){
  const env=parseEnv(await readFile('.env','utf8'));assert.equal(env.APP_ENV,'development');const origin=env.APP_ORIGIN;assert.equal(origin,'http://localhost:18080');
  await mkdir('artifacts/reporting-ui',{recursive:true});const browser=await chromium.launch({channel:'chrome',headless:true}),page=await browser.newPage({viewport:{width:1600,height:1000}}),checks=[],errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('dialog',d=>d.accept());page.setDefaultTimeout(20000);
  let denied=false,delayNext=false,releaseDelayed,forceConflict=false;
@@ -25,6 +26,7 @@ export async function testReportingBrowser({url,sid,csrf,tenant,principal,grants
   });
   const tenantSelect=page.getByLabel('Chọn tổ chức',{exact:true});if(await tenantSelect.isVisible())await tenantSelect.selectOption({index:1});
   await page.getByRole('navigation',{name:'Menu ứng dụng'}).getByRole('button',{name:'Report Builder',exact:true}).click();await expect(page.getByRole('heading',{name:'Từ dữ liệu đến báo cáo'})).toBeVisible();
+  if(inboxDemo)return await testInboxDashboards(page,inboxDemo);
   const source=page.getByLabel('Datasource',{exact:true});await expect(source.locator('option')).not.toHaveCount(1);await source.selectOption(bindingId??{index:1});if(usecase)return await captureReportingUsecase(page);
   await testVisualBuilder(page);checks.push('common visualizations:14 browser groups (see reporting-visuals/browser.json)');
   await testMeasureBuilder(page);checks.push("field summaries:9 browser groups (see reporting-measures/browser.json)");

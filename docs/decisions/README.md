@@ -100,6 +100,8 @@ Tradeoffs: thêm network failure/latency, eventual consistency, distributed auth
 
 ## ADR-018 — First Connector extraction uses durable HTTP bridge
 
+Scope update2026-10-13: ADR-022 supersedes the JetStream proposal in ADR-017 only for CRM object-change → Workflow Core with Kafka, explicitly requested by user. Other event streams retain their own PLAN-006 design gates; no broker deployment implied.
+
 Accepted technical refinement2026-10-06, CHG-20261006-08. [Exact bridge](../contracts/connector-bridge.md) allows independent ingress DB/API/worker to forward normalized mock commands to monolith compatibility receiver with existing stable provider event key. REST + own durable delivery ledger provides retry/receipt; no broker installed or falsely claimed. Verify remote tenant/connection via authenticated binding API before payload transmission. No Human delegation/outbound control/Chat ownership transfer. Remaining ADR-017 JetStream/dispatch/saga gates remain PLAN-006; first source task is functional independent ingress, not full Connector extraction. No preview data cutover.
 
 ## ADR-019 — Connector enrichment/cache, CRM identity authority, Chat Contact context
@@ -122,3 +124,15 @@ Mọi application table có tenant_id NOT NULL. Business data dùng tenant xác 
 MySQL schema=database: catalog13 bounded-context schemas, không database-per-tenant; gateway stateless. Mỗi schema service writer/credentials/migrations riêng, không cross-service SQL/FK/UoW. Baseline monolith dùng transaction ports hiện có tới scoped extraction DONE. [Catalog](../data/schema-catalog.md), [guideline](../data/database-guidelines.md), [native auth](../contracts/native-auth.md), [research](../references/crm-database-patterns.md), [transition](../planning/native-identity-data-plan.md).
 
 Supersedes OIDC/no-password-store target in security/auth and provider choice of ADR-011/012/020; retains baseline evidence and ADR-017 service boundaries. PLAN-007 design-only; runtime vẫn Keycloak đến native source/cutover acceptance. Không xóa volume hoặc reset account credentials để thực hiện quyết định.
+
+## ADR-022 — Workflow Web/API/Core, Kafka và shared CRM metadata
+
+Accepted architectural direction2026-10-13 theo yêu cầu trực tiếp user; PLAN-024 / CHG-20261013-01. [Architecture](../system/workflow-architecture.md), [design gates](../planning/workflow-platform.md). Đây là thiết kế, không implementation/deployment acceptance.
+
+Tách Workflow Web (Next.js CMS stateless), Workflow API (NestJS authoring/control, crm_workflow) và Workflow Core (NestJS engine/consumer/scheduler/worker, crm_workflow_core). Hai backend service không share schema/credentials/SQL/UoW; API publish immutable artifacts và activation saga qua Core APIs, Core owns effective deployment generation và durable execution. Giữ version pinning, tenant isolation/native Identity/Human-AI ownership và engine semantics M2.
+
+Chọn Kafka cho owning-service transactional object-change outbox → Core inbox/enrollment theo yêu cầu user, thay proposal JetStream ADR-017 trong phạm vi này. Broker ACK/offset không thay MySQL receipt; at-least-once, stable event/action identity, ordered per-record change evaluation, immutable change-image refs và live authorization. Exact version/topology/ACL/retention/producer schemas cần PLAN-024B. Không chuyển transport các luồng khác hoặc cài broker ở phiên này.
+
+Object/property/association models dùng chung canonical CRM Base metadata. Workflow chỉ owns graph/binding/versioned manifest; Sales/Chat/CRM giữ business authority. Data actions qua owning APIs, communication qua adapters (Chat/Connector cho messages; email/notification/task capabilities phải chốt ownership trước source). Không fork metadata hoặc dùng Reporting mock models làm authority.
+
+Tradeoff: thêm activation saga, immutable artifact replica, database và reconciliation vận hành để CMS và engine scale/release riêng. Reuse primitives/tests M2, không đổi wire graph cũ; legacy runs drain ở monolith và chỉ một starter per definition sau cutover. Exclusive branching + durable delay/data/routing/follow-up là scope thiết kế; parallel/loop/nested/arbitrary code deferred. Source tasks/physical table templates/DDL/migration/security và runtime acceptance vẫn gated; no DB changes/reset/automatic permission grants.

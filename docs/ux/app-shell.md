@@ -1,5 +1,7 @@
 # APP-01 — App shell, header, navigation
 
+PLAN-027 review proposal2026-10-14: [Dashboard/Reports navigation](dashboard-workspace.md) adds two peer entries in PHÂN TÍCH, each with its own library/home and deep links. Builder becomes a report editing screen; Dashboard no longer nested inside it. Design-only at user request; existing app shell source/menu unchanged until SRC-072.
+
 Status: Ready UX design, UX-004 (supersedes tab layout UX-003), 2026-10-07. Shell là phạm vi frontend; search record đa object/profile editor và module Draft chưa Ready implementation. [Guideline](guidelines.md) · [Inbox mock](mockups/inbox.html).
 
 ## Anatomy và phân cấp

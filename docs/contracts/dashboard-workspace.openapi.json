@@ -1,0 +1,1490 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Dashboard workspace",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/reporting/dashboards": {
+      "get": {
+        "operationId": "dashboard_list",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 160
+            }
+          },
+          {
+            "name": "owner",
+            "in": "query",
+            "schema": {
+              "enum": [
+                "all",
+                "me"
+              ]
+            }
+          },
+          {
+            "name": "archived",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "model",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 120
+            }
+          },
+          {
+            "name": "chart",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 32
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 4096
+            }
+          },
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized result; see behavioral contract for resource-specific response"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "403": {
+            "description": "Current authority denied"
+          },
+          "404": {
+            "description": "Unavailable or foreign resource"
+          },
+          "409": {
+            "description": "Version, source or idempotency conflict"
+          },
+          "422": {
+            "description": "Invalid layout or report dependency"
+          },
+          "503": {
+            "description": "Retry using the same command key"
+          }
+        }
+      },
+      "post": {
+        "operationId": "dashboard_create",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 160,
+                    "minLength": 1
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 4000
+                  },
+                  "widgets": {
+                    "type": "array",
+                    "maxItems": 12,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                        },
+                        "reportId": {
+                          "type": "string",
+                          "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                        },
+                        "reportVersion": {
+                          "type": "string",
+                          "pattern": "^[1-9][0-9]{0,15}$"
+                        },
+                        "bindingId": {
+                          "type": "string",
+                          "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                        },
+                        "generationId": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "titleOverride": {
+                          "anyOf": [
+                            {
+                              "type": "null"
+                            },
+                            {
+                              "type": "string",
+                              "maxLength": 160,
+                              "minLength": 1
+                            }
+                          ]
+                        },
+                        "note": {
+                          "type": "string",
+                          "maxLength": 2000
+                        },
+                        "layout": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "x": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 11
+                            },
+                            "y": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 119
+                            },
+                            "w": {
+                              "enum": [
+                                4,
+                                6,
+                                12
+                              ]
+                            },
+                            "h": {
+                              "type": "integer",
+                              "minimum": 3,
+                              "maximum": 10
+                            }
+                          },
+                          "required": [
+                            "x",
+                            "y",
+                            "w",
+                            "h"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "reportId",
+                        "reportVersion",
+                        "bindingId",
+                        "generationId",
+                        "titleOverride",
+                        "note",
+                        "layout"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "name",
+                  "description"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized result; see behavioral contract for resource-specific response"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "403": {
+            "description": "Current authority denied"
+          },
+          "404": {
+            "description": "Unavailable or foreign resource"
+          },
+          "409": {
+            "description": "Version, source or idempotency conflict"
+          },
+          "422": {
+            "description": "Invalid layout or report dependency"
+          },
+          "503": {
+            "description": "Retry using the same command key"
+          }
+        }
+      }
+    },
+    "/api/v1/reporting/dashboards/legacy": {
+      "get": {
+        "operationId": "dashboard_legacy",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 160
+            }
+          },
+          {
+            "name": "owner",
+            "in": "query",
+            "schema": {
+              "enum": [
+                "all",
+                "me"
+              ]
+            }
+          },
+          {
+            "name": "archived",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "model",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 120
+            }
+          },
+          {
+            "name": "chart",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 32
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 4096
+            }
+          },
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized result; see behavioral contract for resource-specific response"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "403": {
+            "description": "Current authority denied"
+          },
+          "404": {
+            "description": "Unavailable or foreign resource"
+          },
+          "409": {
+            "description": "Version, source or idempotency conflict"
+          },
+          "422": {
+            "description": "Invalid layout or report dependency"
+          },
+          "503": {
+            "description": "Retry using the same command key"
+          }
+        }
+      }
+    },
+    "/api/v1/reporting/dashboards/{id}": {
+      "get": {
+        "operationId": "dashboard_get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized result; see behavioral contract for resource-specific response"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "403": {
+            "description": "Current authority denied"
+          },
+          "404": {
+            "description": "Unavailable or foreign resource"
+          },
+          "409": {
+            "description": "Version, source or idempotency conflict"
+          },
+          "422": {
+            "description": "Invalid layout or report dependency"
+          },
+          "503": {
+            "description": "Retry using the same command key"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "dashboard_update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]{0,15}\"$"
+            }
+          },
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 160,
+                    "minLength": 1
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 4000
+                  },
+                  "widgets": {
+                    "type": "array",
+                    "maxItems": 12,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                        },
+                        "reportId": {
+                          "type": "string",
+                          "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                        },
+                        "reportVersion": {
+                          "type": "string",
+                          "pattern": "^[1-9][0-9]{0,15}$"
+                        },
+                        "bindingId": {
+                          "type": "string",
+                          "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                        },
+                        "generationId": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "titleOverride": {
+                          "anyOf": [
+                            {
+                              "type": "null"
+                            },
+                            {
+                              "type": "string",
+                              "maxLength": 160,
+                              "minLength": 1
+                            }
+                          ]
+                        },
+                        "note": {
+                          "type": "string",
+                          "maxLength": 2000
+                        },
+                        "layout": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "x": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 11
+                            },
+                            "y": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 119
+                            },
+                            "w": {
+                              "enum": [
+                                4,
+                                6,
+                                12
+                              ]
+                            },
+                            "h": {
+                              "type": "integer",
+                              "minimum": 3,
+                              "maximum": 10
+                            }
+                          },
+                          "required": [
+                            "x",
+                            "y",
+                            "w",
+                            "h"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "reportId",
+                        "reportVersion",
+                        "bindingId",
+                        "generationId",
+                        "titleOverride",
+                        "note",
+                        "layout"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "name",
+                  "description",
+                  "widgets"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized result; see behavioral contract for resource-specific response"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "403": {
+            "description": "Current authority denied"
+          },
+          "404": {
+            "description": "Unavailable or foreign resource"
+          },
+          "409": {
+            "description": "Version, source or idempotency conflict"
+          },
+          "422": {
+            "description": "Invalid layout or report dependency"
+          },
+          "503": {
+            "description": "Retry using the same command key"
+          }
+        }
+      }
+    },
+    "/api/v1/reporting/dashboards/{id}/archive": {
+      "post": {
+        "operationId": "dashboard_archive",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]{0,15}\"$"
+            }
+          },
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "archived": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "archived"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized result; see behavioral contract for resource-specific response"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "403": {
+            "description": "Current authority denied"
+          },
+          "404": {
+            "description": "Unavailable or foreign resource"
+          },
+          "409": {
+            "description": "Version, source or idempotency conflict"
+          },
+          "422": {
+            "description": "Invalid layout or report dependency"
+          },
+          "503": {
+            "description": "Retry using the same command key"
+          }
+        }
+      }
+    },
+    "/api/v1/reporting/dashboards/{id}/duplicate": {
+      "post": {
+        "operationId": "dashboard_duplicate",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]{0,15}\"$"
+            }
+          },
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "sourceVersion": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,15}$"
+                  },
+                  "name": {
+                    "type": "string",
+                    "maxLength": 160,
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "sourceVersion",
+                  "name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized result; see behavioral contract for resource-specific response"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "403": {
+            "description": "Current authority denied"
+          },
+          "404": {
+            "description": "Unavailable or foreign resource"
+          },
+          "409": {
+            "description": "Version, source or idempotency conflict"
+          },
+          "422": {
+            "description": "Invalid layout or report dependency"
+          },
+          "503": {
+            "description": "Retry using the same command key"
+          }
+        }
+      }
+    },
+    "/api/v1/reporting/dashboards/from-template": {
+      "post": {
+        "operationId": "dashboard_from_template",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 160,
+                    "minLength": 1
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 4000
+                  },
+                  "templateKey": {
+                    "enum": [
+                      "inbox_operations_v1",
+                      "ad_inbox_quality_v1"
+                    ]
+                  },
+                  "templateVersion": {
+                    "const": 1
+                  },
+                  "templateHash": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "selectedRecipeKeys": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 12,
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                    }
+                  },
+                  "sourceBindings": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "demo": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "bindingId": {
+                            "type": "string",
+                            "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                          },
+                          "generationId": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          }
+                        },
+                        "required": [
+                          "bindingId",
+                          "generationId"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "demo"
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "description",
+                  "templateKey",
+                  "templateVersion",
+                  "templateHash",
+                  "selectedRecipeKeys",
+                  "sourceBindings"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized result; see behavioral contract for resource-specific response"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "403": {
+            "description": "Current authority denied"
+          },
+          "404": {
+            "description": "Unavailable or foreign resource"
+          },
+          "409": {
+            "description": "Version, source or idempotency conflict"
+          },
+          "422": {
+            "description": "Invalid layout or report dependency"
+          },
+          "503": {
+            "description": "Retry using the same command key"
+          }
+        }
+      }
+    },
+    "/api/v1/reporting/dashboards/convert-legacy": {
+      "post": {
+        "operationId": "dashboard_convert_legacy",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]{0,15}\"$"
+            }
+          },
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "legacyReportId": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                  },
+                  "legacyVersion": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,15}$"
+                  }
+                },
+                "required": [
+                  "legacyReportId",
+                  "legacyVersion"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized result; see behavioral contract for resource-specific response"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "403": {
+            "description": "Current authority denied"
+          },
+          "404": {
+            "description": "Unavailable or foreign resource"
+          },
+          "409": {
+            "description": "Version, source or idempotency conflict"
+          },
+          "422": {
+            "description": "Invalid layout or report dependency"
+          },
+          "503": {
+            "description": "Retry using the same command key"
+          }
+        }
+      }
+    },
+    "/api/v1/reporting/dashboard-templates": {
+      "get": {
+        "operationId": "dashboard_templates",
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized result; see behavioral contract for resource-specific response"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "403": {
+            "description": "Current authority denied"
+          },
+          "404": {
+            "description": "Unavailable or foreign resource"
+          },
+          "409": {
+            "description": "Version, source or idempotency conflict"
+          },
+          "422": {
+            "description": "Invalid layout or report dependency"
+          },
+          "503": {
+            "description": "Retry using the same command key"
+          }
+        }
+      }
+    },
+    "/api/v1/reporting/dashboard-templates/{templateKey}/versions/1": {
+      "get": {
+        "operationId": "dashboard_template",
+        "parameters": [
+          {
+            "name": "templateKey",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 64
+            }
+          },
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized result; see behavioral contract for resource-specific response"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "403": {
+            "description": "Current authority denied"
+          },
+          "404": {
+            "description": "Unavailable or foreign resource"
+          },
+          "409": {
+            "description": "Version, source or idempotency conflict"
+          },
+          "422": {
+            "description": "Invalid layout or report dependency"
+          },
+          "503": {
+            "description": "Retry using the same command key"
+          }
+        }
+      }
+    },
+    "/api/v1/reporting/reports": {
+      "get": {
+        "operationId": "dashboard_reports",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 160
+            }
+          },
+          {
+            "name": "owner",
+            "in": "query",
+            "schema": {
+              "enum": [
+                "all",
+                "me"
+              ]
+            }
+          },
+          {
+            "name": "archived",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "model",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 120
+            }
+          },
+          {
+            "name": "chart",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 32
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 4096
+            }
+          },
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized result; see behavioral contract for resource-specific response"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "403": {
+            "description": "Current authority denied"
+          },
+          "404": {
+            "description": "Unavailable or foreign resource"
+          },
+          "409": {
+            "description": "Version, source or idempotency conflict"
+          },
+          "422": {
+            "description": "Invalid layout or report dependency"
+          },
+          "503": {
+            "description": "Retry using the same command key"
+          }
+        }
+      }
+    },
+    "/api/v1/reporting/reports/{id}/dashboards": {
+      "get": {
+        "operationId": "dashboard_usage",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 160
+            }
+          },
+          {
+            "name": "owner",
+            "in": "query",
+            "schema": {
+              "enum": [
+                "all",
+                "me"
+              ]
+            }
+          },
+          {
+            "name": "archived",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "model",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 120
+            }
+          },
+          {
+            "name": "chart",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 32
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 4096
+            }
+          },
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized result; see behavioral contract for resource-specific response"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "403": {
+            "description": "Current authority denied"
+          },
+          "404": {
+            "description": "Unavailable or foreign resource"
+          },
+          "409": {
+            "description": "Version, source or idempotency conflict"
+          },
+          "422": {
+            "description": "Invalid layout or report dependency"
+          },
+          "503": {
+            "description": "Retry using the same command key"
+          }
+        }
+      }
+    },
+    "/api/v1/reporting/dashboards/{id}/widgets/{widgetId}/query": {
+      "post": {
+        "operationId": "dashboard_query",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "widgetId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "dashboardVersion": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,15}$"
+                  }
+                },
+                "required": [
+                  "dashboardVersion"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized result; see behavioral contract for resource-specific response"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "403": {
+            "description": "Current authority denied"
+          },
+          "404": {
+            "description": "Unavailable or foreign resource"
+          },
+          "409": {
+            "description": "Version, source or idempotency conflict"
+          },
+          "422": {
+            "description": "Invalid layout or report dependency"
+          },
+          "503": {
+            "description": "Retry using the same command key"
+          }
+        }
+      }
+    },
+    "/api/v1/reporting/reports/{id}/versions/{version}/preview": {
+      "post": {
+        "operationId": "dashboard_preview",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,15}$"
+            }
+          },
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "generationId": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  }
+                },
+                "required": [
+                  "generationId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized result; see behavioral contract for resource-specific response"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "403": {
+            "description": "Current authority denied"
+          },
+          "404": {
+            "description": "Unavailable or foreign resource"
+          },
+          "409": {
+            "description": "Version, source or idempotency conflict"
+          },
+          "422": {
+            "description": "Invalid layout or report dependency"
+          },
+          "503": {
+            "description": "Retry using the same command key"
+          }
+        }
+      }
+    }
+  }
+}

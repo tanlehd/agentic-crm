@@ -1,0 +1,13 @@
+# Tenant super admin
+
+2026-10-14 · CHG-20261014-03 · Ready, explicitly authorized by the user's alpha_admin correction. SRC-070 remains the single active implementation task, Codex 2026-10-14.
+
+An active Human principal with an active membership, seat `admin`, and assigned role key `tenant_admin` is the tenant super admin. Derive this from current Identity storage on every authorization load; never from a username, client flag, token claim, display name, or admin seat alone. `alpha_admin` already has this combination. AI and service actors do not inherit this privilege.
+
+Super admins receive all-scope effective grants for implemented, registered actions, including Reporting discovery/read/design/run/export/mock-source, Workflow, Conversation, CRM standard/custom objects and configuration. They bypass record owner/team scopes and field denies inside the selected active tenant. CRM expands grants from its own active object catalog; Identity does not query CRM tables. Existing HTTP context shape stays unchanged: it exposes concrete effective grants, never wildcards. Unknown/unimplemented operations still fail closed.
+
+Authentication/session/CSRF, active tenant/membership/principal, tenant boundaries, live authorization revision checks, idempotency/CAS, business state/ownership execution rules, required data and immutable fields remain enforced. This is tenant administration, not platform-wide access. Removing the role, changing the seat or suspending membership removes the privilege through existing revision/locking semantics. Last-admin protection requires at least one active Human with admin seat and tenant_admin role; editing that role's explicit permission list cannot remove its intrinsic privileges.
+
+Compatibility: deliberate authorization expansion for existing tenant_admin Humans on admin seats; ordinary roles, restricted admin-seat users, AI/service policies and persisted grants stay unchanged. No new tables, migrations, role assignment or Reporting-specific Alpha grant. Supersedes earlier no-implicit-admin/field-deny/last-admin wording for this exact combination and the pending Alpha Reporting-role approval. Reporting producer/source availability and unsupported connected sources remain unchanged.
+
+Acceptance: actual Alpha native login can discover Reporting, save/reopen/run both inbox dashboards and export; other-owner all-scope access works. Tests cover empty explicit permission list, role/seat revocation and suspension, foreign tenant, restricted admin seat, AI/service exclusion, custom object/field access, unknown operations and stale authorization. Retain synthetic data and restore temporary test restrictions. Evidence: [SRC-070](../tracking/details/SRC-070.md).

@@ -22,6 +22,7 @@ export interface RecordDomain {
 }
 export type RecordRoute={object:string;kind:'properties'|'forms'|'views'|'records'|'archive';id?:string};
 export class CrmRecords {
+  supportsRecords(key:string,custom:boolean){return custom||this.domains.has(key);}
   readonly uow:UnitOfWork;readonly authorization:IdentityAuthorization;
   constructor(source:DataSource,private readonly secret:string|Buffer,private readonly domains:ReadonlyMap<string,RecordDomain>=new Map(),private readonly commands=new DurableCommands(),private readonly archiveGuards:readonly ArchiveGuard[]=[]){
     this.uow=new UnitOfWork(source);this.authorization=new IdentityAuthorization(this.uow);

@@ -13,4 +13,5 @@ export interface WorkflowList {
   meta: {
     correlation_id: string;
   };
+  next_cursor?: string | null;
 }

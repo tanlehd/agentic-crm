@@ -1,5 +1,7 @@
 # Tenant isolation, quyền và vận hành
 
+**Current policy CHG-20261014-03:** [Tenant super admin](../contracts/tenant-super-admin.md) supersedes explicit-grant and field-deny rules below only for active Humans with admin seat + tenant_admin role. Full access stays tenant-bound; ordinary admin-seat users, AI and services remain explicitly authorized. No schema change.
+
 Status: Ready for implementation cho M1–M2.
 
 ## Tenant context
@@ -16,9 +18,9 @@ Mọi repository method cần explicit TenantContext hoặc SystemContext ở co
 
 1. Session/service credential hợp lệ; tenant và membership/principal active.
 2. Human có seat chứa capability; AI/service có entitlement tương ứng. Seat không cấp role.
-3. Role cho phép `resource.action` với scope; nhiều grant kết hợp bằng union. Không có grant thì deny.
+3. Active Human + admin seat + role key tenant_admin receives all-scope effective permissions in the selected tenant and bypasses field denies. Other actors follow role grants below. Role cho phép `resource.action` với scope; nhiều grant kết hợp bằng union. Không có grant thì deny.
 4. `own`: record.owner là caller principal; `team`: record.team hoặc một `record_team_access` nằm trong các team caller đang active; `all`: trong tenant. Record unassigned không thuộc scope own. Team share không tự cấp action chưa có trong role.
-5. Field-level deny/redaction thắng object grant. Filter, sort, export và report không được dùng field bị cấm để suy luận dữ liệu.
+5. Với actor không phải tenant super admin, field-level deny/redaction thắng object grant. Filter, sort, export và report không được dùng field bị cấm để suy luận dữ liệu.
 6. Kiểm tra business guard, agent policy và revision; audit command được chấp nhận hoặc từ chối nhạy cảm.
 
 Đọc association đòi quyền đọc cả hai đầu; không lộ existence/label/count của đầu bị ẩn. Có quyền Conversation không tự có toàn bộ Contact: API trả `contact_id` chỉ khi có quyền Contact, nếu không trả `contact: null` và conversation-local display label. Các fixture cùng intake team bảo đảm chat agent có Contact scope team.

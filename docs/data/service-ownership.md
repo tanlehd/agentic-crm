@@ -1,5 +1,11 @@
 # Data ownership — monolith to service databases
 
+**Current 2026-10-14 / CHG-20261014-05:** User authorized implementation after PLAN-027 review. Dashboard/Reports local slice is implemented: Reporting-owned schema4 (six new tenant-scoped tables;13 prior business tables preserved), native APIs, atomic templates and separate UI. [Runbook](../development/dashboard-workspace.md) · [Backend evidence](../tracking/details/SRC-071.md) · [UI evidence](../tracking/details/SRC-072.md). Earlier design-only/phase statements below are historical; broad Reporting milestones remain in tracker.
+
+PLAN-027 review proposal: Reporting owns [Dashboard heads/versions/widget references and lifecycle ledgers](dashboard-workspace.md), along with existing report definitions/versions. Template materialization may use one Reporting-local UoW for reports + dashboard, never cross-service UoW. Identity still owns permissions; source owners retain business facts; no source writes when creating dashboards. Design-only2026-10-14, no physical changes.
+
+CHG-20261013-08 accepted [Chat/Sales logical ERD](chat-sales-erd.md): Chat owns inbox sessions, versioned stage/milestone semantics/history and session-touchpoint binding; Connector owns raw touchpoint evidence; Sales owns Lead/Deal origins and domain context-link semantics; CRM generic association storage remains single-writer if reused through ports; Reporting owns derived funnels/attribution. No shared writer/cross-service FK/SQL/UoW, physical mapping not Ready, no source/schema change.
+
 SRC-059 lifecycle phase: Reporting now owns report_query_run and immutable report_query_run_event in crm_reporting v3. Tenant-bound FK references only own projection generation/run; native principal is a logical Identity reference. No auth token stored; every operation resolves current native rights and exact owner. [Run table dictionary](../contracts/reporting-runs.md).
 
 SRC-059 native query phase: Identity resolves explicit run/export and tenant-complete report_mock_source grants; BFF signs a query admission and rechecks live Identity/session before public result delivery. Reporting executes only own synthetic snapshots. [Contract](../contracts/reporting-query-api.md). No new tables, shared SQL/UoW, producer field-policy authority or source owner-ID mapping.
@@ -28,7 +34,8 @@ ADR-017 / PLAN-005. Target logical ownership below; current dictionary/ERD/physi
 | conversation, message, message_content, outbound_intent | Chat | Authorized text/JSON APIs and minimized message refs/events; no transcript copy by default |
 | routing_cursor, routing_attention | Routing | Assignment proposals/attention projections; actual owner is domain service local state |
 | agent_capacity_slot, agent_execution, tool_execution | AI Runtime | Execution status/lease refs; Routing capacity API, not direct row access |
-| workflow_definition/version/run/step_run/wait/action/trigger_selection | Workflow | Run/action refs, completion events |
+| workflow_definition/version, proposed draft/publish operations | Workflow API — target ADR-022 | Core installed immutable graph/manifest via API; no definition DB read |
+| workflow_run/step_run/wait/action/trigger_selection, proposed deployment/inbox/enrollment | Workflow Core — target ADR-022 | API authorized runtime reads/operation receipts; no shared SQL |
 | chatflow_definition/version/session/node_run/turn | Chatflow | Session/Lead/message logical refs and typed result receipts |
 | lead, lead_handoff | Sales | Contact-share receipt, qualification result, CRM catalog projection |
 | outbox_event, consumer_inbox, idempotency_record, audit_entry, schema_migration | One set per owning service, never shared writes | Operations aggregated immutable audit/status projection; migration lineage retained |
@@ -40,6 +47,8 @@ PLAN-022A: [Reporting semantic model](reporting-semantic-model.md) bổ sung sou
 Exact source names and columns remain [physical schema](physical-schema.md)/[dictionary](dictionary.md); logical target fields are in each [service document](../services/README.md). A row in this matrix does not assert a Draft table already exists.
 
 ## Registry decomposition is a required gate
+
+PLAN-024 dùng [shared CRM metadata](workflow-metadata.md) cho Workflow Web/API/Core. CRM là canonical object/property/association catalog; business owners vẫn giữ record state/query/command/change images. Kafka object-change producer ở owner outbox, không CRM tổng hợp bằng SQL sang Sales/Chat. API/Core own schemas chỉ là target, legacy Workflow remains monolith tới extraction evidence.
 
 Current crm_record stores version/owner for Conversation and Lead; subtype+registry+audit mutate in one UoW. Merely moving folders/containerizing modules would leave a distributed shared database monolith. Target domain services create local record metadata/version/owner/share/history along with their aggregate. CRM metadata templates are read/config APIs; CRM record catalog becomes a projection for generic navigation/search. Generic mutation APIs route by resource authority; cannot PATCH external owners using CRM generic registry.
 
@@ -86,3 +95,7 @@ PLAN-023 / CHG-20261008-09: [Shared account and Page tenant admission](../contra
 SRC-054: Marketing now physically owns22 business tables and the migration journal in `crm_marketing`; see [physical dictionary](marketing-physical-dictionary.md). No SQL/FK/import into another service, no CRM data move, no second writer for Page ownership. Backend ingestion and Reporting transport remain planned.
 
 PLAN-011E: current Channels owns [Marketing credential and Page admission ports](../contracts/marketing-metadata-sync.md); Marketing owns schedules/accepted metadata and durable change stream. SRC-056 is the producer dependency for SRC-051. Standalone Connector capture does not become a second Page/credential writer.
+
+SRC-0682026-10-13: [Ready Customer360/session contract](../contracts/customer-360-session.md) defines forward28 session_touchpoint (Chat), sales_session_context and lead_merge (Sales), immutable origin versus actual context, active-session referral continuity and separate duplicate consolidation. Implemented and verified in SRC-068: 333unit,11 persistent MySQL,6 focused healthcare and8 native/browser groups; no stage/milestone/report completion claim. Existing physical monolith retains application ports; no external FK.
+
+PLAN-025 / SRC-069: [Ready session progress contract](../contracts/session-progress.md) defines six Chat-owned tables in forward29, pinned process/stage, need-scoped manual evidence/corrections and a connected behavioral session funnel. Current monolith application producer + pure Reporting reducer; no cross-service SQL or mock-builder permission activation. SP-01…07 implemented and verified in SRC-069 (345unit,13persistent MySQL,8native/browser,6healthcare); see task evidence.

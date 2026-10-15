@@ -1,8 +1,12 @@
 # CRM Core & Metadata
 
+SRC-065 now serves GET /api/v1/automation/catalog from canonical CRM metadata with current native tenant/object/field rights. [Exact contract](../contracts/workflow-catalog.md), [evidence](../tracking/details/SRC-065.md). No new persistence; immutable change images, generic Kafka events and relationship query remain gated.
+
 Status: Target architecture accepted direction — PLAN-005 / ADR-017. Service extraction/API/physical schema chưa Ready; không đồng nghĩa deployed. [Module hiện tại](../modules/crm.md) · [Catalog](README.md) · [Cross-service rules](../contracts/service-boundaries.md).
 
 ## Phạm vi và trách nhiệm
+
+PLAN-024: CRM Base cung cấp canonical object/property/association metadata dùng chung cho [Workflow CMS/Core](../system/workflow-architecture.md). Workflow chỉ giữ refs/versioned manifests; generic object metadata không chuyển Lead/Deal/Conversation authority về CRM. Typed discovery/traversal, command/event capability registry và immutable change-image APIs mới thuộc [PLAN-024A/B](../planning/workflow-platform.md), chưa là API đã triển khai.
 
 Contact/Company/Activity, canonical external identity→Contact mapping, provider profile observations, custom objects, schema/property/form/view/association metadata và registry catalog.
 

@@ -1,4 +1,4 @@
-import type { Access, RecordAccess } from '../identity/domain/authorization.js';
+import { superAdminObjectGrants, type Access, type RecordAccess } from '../identity/domain/authorization.js';
 import type { TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
 import { CommandError } from '../../kernel/reliability/commands.js';
 export function allows(access:Access,resource:string,action:string,record?:RecordAccess):boolean {
@@ -8,6 +8,10 @@ export function allows(access:Access,resource:string,action:string,record?:Recor
 }
 export async function withFieldPolicies(scope:TransactionScope,access:Access):Promise<Access>{
   if(scope.context.tenantId!==access.tenantId)throw new CommandError(403,'FORBIDDEN');
+  if(access.superAdmin){
+    const objects=await scope.query('SELECT `key` FROM object_type WHERE tenant_id=? AND archived_at IS NULL',[access.tenantId]);
+    return {...access,fieldDenies:[],grants:[...access.grants,...superAdminObjectGrants(objects.map((o:{key:string})=>o.key))]};
+  }
   const roles=access.roleIds??[];
   if(!roles.length)return access;
   const rows=await scope.query(`SELECT o.\`key\` resource,f.property_key field,f.denied_actions actions FROM field_policy f JOIN object_type o ON o.tenant_id=f.tenant_id AND o.id=f.object_type_id WHERE f.tenant_id=? AND f.role_id IN (${roles.map(()=>'?').join(',')})`,[access.tenantId,...roles]);

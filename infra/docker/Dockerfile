@@ -11,6 +11,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY services/crm-connector/package.json ./services/crm-connector/package.json
 COPY services/marketing/package.json ./services/marketing/package.json
 COPY services/reporting/package.json ./services/reporting/package.json
+COPY services/workflow-core/package.json ./services/workflow-core/package.json
 COPY apps/backend/package.json ./apps/backend/package.json
 COPY apps/web/package.json ./apps/web/package.json
 COPY packages/contracts/package.json ./packages/contracts/package.json

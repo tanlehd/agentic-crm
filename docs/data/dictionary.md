@@ -1,5 +1,13 @@
 # Data dictionary
 
+**Current 2026-10-14 / CHG-20261014-05:** User authorized implementation after PLAN-027 review. Dashboard/Reports local slice is implemented: Reporting-owned schema4 (six new tenant-scoped tables;13 prior business tables preserved), native APIs, atomic templates and separate UI. [Runbook](../development/dashboard-workspace.md) · [Backend evidence](../tracking/details/SRC-071.md) · [UI evidence](../tracking/details/SRC-072.md). Earlier design-only/phase statements below are historical; broad Reporting milestones remain in tracker.
+
+**Proposed PLAN-027 (2026-10-14):** [Dashboard dictionary and filled table designs](dashboard-workspace.md) define dashboard_definition/version/widget/command_receipt/audit_entry/outbox_event in Reporting's own schema, typed saved-report version/source generation refs, immutable layout and template lineage. Design for user review; none of these six tables exists from this task, no migration/version change. Existing private report storage and legacy dashboard JSON remain unchanged.
+
+**Current policy CHG-20261014-03:** [Tenant super admin](../contracts/tenant-super-admin.md) supersedes explicit-grant and field-deny rules below only for active Humans with admin seat + tenant_admin role. Full access stays tenant-bound; ordinary admin-seat users, AI and services remain explicitly authorized. No schema change.
+
+PLAN-024 / ADR-022: [Workflow shared metadata và logical ownership](workflow-metadata.md) bổ sung target API/Core split. Các workflow tables dưới đây tiếp tục là baseline monolith M2; chưa đổi physical schema, chưa có migration/DDL mới. Canonical object/property/association ở CRM Base, Workflow chỉ refs/manifests. Exact table templates thuộc PLAN-024C.
+
 Reporting SRC-059 forward003 adds owner-scoped report_query_run and immutable report_query_run_event in own crm_reporting v3. Exact columns/keys/retention/permissions in [filled run table dictionary](../contracts/reporting-runs.md); no cross-service FK/source ownership change. Native Identity remains owner authority; no admission token stored.
 
 **SRC-058 / 2026-10-12:** [Projection table dictionary](../contracts/reporting-projections.md) adds5 tables in crm_reporting v2: source binding, generation/checkpoint, page receipt, immutable typed observation ledger, activation audit. [Mock source runbook](../development/reporting-projections.md):25objects/120fields, descriptor types and full catalog/coverage pinned in every manifest; no connected-source completeness claim.
@@ -222,3 +230,16 @@ Marketing database v1 / SRC-054: [352-column physical dictionary](marketing-phys
 PLAN-011E: [metadata manifest](marketing-metadata-profile.json) maps88 selected provider fields to six read profiles; [forward control-table templates](../contracts/marketing-sync-tables.md) are design only. Actual v1 physical dictionary remains unchanged until source migrations.
 
 SRC-056 local authority implemented/schema27: [runbook](../development/marketing-authority.md), [evidence](../tracking/details/SRC-056.md). Native credential setup and private Graph/Page/admission ports exist; separate credential DB role. Live Meta remains unconfigured; periodic worker is SRC-051.
+# Chat/Sales logical model — CHG-20261013-08
+
+Review CHG-20261013-09 clarifies inherited primary origin versus actual create context in the [canonical ERD](chat-sales-erd.md). Per-need milestone subject scope, stage/evidence consistency and lifecycle command invariants remain exact-contract gates; no new physical column/type or implementation is claimed.
+
+The logical Chat/Sales update CHG-20261013-08 is defined in the [final ERD/dictionary](chat-sales-erd.md): SESSION.status (processing), current_stage_key (consultation), pinned process version, stage transition history and evidence-backed milestone history. SESSION_TOUCHPOINT separates multiple observed touches from inbox-episode segmentation. Lead/Deal primary origin is distinct from follow-up/closing-context links; no manually maintained session won/revenue authority. All mapped application tables require tenant_id NOT NULL. These are logical entities only; physical templates/keys/DDL/API/version compatibility remain gated, acquisition_v1 source/history unchanged.
+
+# Workflow CMS compatibility — SRC-066
+
+The [M2 CMS](../contracts/workflow-cms-m2.md) reuses existing workflow_definition/workflow_version and native command audit/receipt storage. No new table/column/migration or CRM metadata copy. Immutable draft snapshots and definition CAS unchanged; target service schemas retain ownership under ADR-022.
+
+SRC-0682026-10-13: [Ready Customer360/session contract](../contracts/customer-360-session.md) defines forward28 session_touchpoint (Chat), sales_session_context and lead_merge (Sales), immutable origin versus actual context, active-session referral continuity and separate duplicate consolidation. Implemented and verified in SRC-068: 333unit,11 persistent MySQL,6 focused healthcare and8 native/browser groups; no stage/milestone/report completion claim. Existing physical monolith retains application ports; no external FK.
+
+PLAN-025 / SRC-069: [Ready session progress contract](../contracts/session-progress.md) defines six Chat-owned tables in forward29, pinned process/stage, need-scoped manual evidence/corrections and a connected behavioral session funnel. Current monolith application producer + pure Reporting reducer; no cross-service SQL or mock-builder permission activation. SP-01…07 implemented and verified in SRC-069 (345unit,13persistent MySQL,8native/browser,6healthcare); see task evidence.

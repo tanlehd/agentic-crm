@@ -1,5 +1,7 @@
 # Kiến trúc đích — enterprise microservices
 
+PLAN-024 / ADR-022 (2026-10-13): [Workflow architecture](workflow-architecture.md) tách Workflow Web/CMS, Workflow API authoring (crm_workflow) và Workflow Core execution (crm_workflow_core), dùng shared CRM Base metadata và Kafka cho CRM object-change ingress. Đây là scoped target update; exact contracts/extraction/runtime còn gate, không đổi source monolith hiện tại.
+
 ADR-021 / PLAN-007 bổ sung: **CRM-native Identity, không Keycloak trong target**; MySQL là authority credential/session/quyền, Redis cache. [Schema catalog](../data/schema-catalog.md) đặt tên/phạm vi database mỗi service; [guideline](../data/database-guidelines.md) bắt buộc tenant_id mọi application table. SRC-038 native auth/tenant-column retrofit đã triển khai trong monolith; physical schema extraction chưa triển khai.
 
 Direction accepted2026-10-06 theo user, ADR-017/CHG-20261006-07. PLAN-005 là blueprint documentation, không phải đã tách source/deploy. [Baseline đang chạy](monolith-baseline.md) vẫn Next.js + NestJS API/worker + MySQL shared schema. SRC-028 implements scoped [independent HTTP ingress](../../services/crm-connector/README.md) under ADR-018, verified in disposable containers; no preview cutover. Remaining exact distributed wire/physical schema/security gates còn PLAN-006; không đánh Ready code extraction bằng tài liệu tổng thể này.
@@ -46,7 +48,7 @@ Mũi tên là logical API/event dependency, không đại diện transaction ho�
 
 ## Giao tiếp và tính bền vững
 
-REST/OpenAPI dùng cho queries và commands cần response; async commands/events qua durable broker. Chọn baseline thiết kế NATS JetStream (ADR-017), chưa pin/install/deploy; topology, retention/replication, ordering key và failover proof ở PLAN-006. Redis dùng cache/session/ephemeral fan-out hoặc local job wakeup, không là source of truth của business saga. Không tự thêm Kafka/service mesh/Kubernetes chỉ để gọi là enterprise.
+REST/OpenAPI dùng cho queries và commands cần response; async commands/events qua durable broker. ADR-022 chọn Kafka cho CRM object-change → Workflow Core theo yêu cầu user; topology/retention/ACL/ordering/replay và broker/client versions thuộc PLAN-024B. Các luồng khác giữ proposal NATS JetStream ADR-017 và PLAN-006, chưa pin/install/deploy; không mặc định cần hai broker ở mỗi deployment. Redis dùng cache/session/ephemeral fan-out hoặc local job wakeup, không là source of truth của business saga. Không tự thêm service mesh/Kubernetes.
 
 Every mutation commits local domain state + local audit/outbox. Relay publish at-least-once; consumer writes inbox+local effect atomic. Unique operation IDs/digests, aggregate versions, bounded retry, DLQ và reconciliation thay transaction xuyên service. Không XA/2PC; không exactly-once claim cho provider. [Contract rules](../contracts/service-boundaries.md).
 

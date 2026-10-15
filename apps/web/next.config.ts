@@ -1,5 +1,6 @@
 import type { NextConfig } from 'next';
 const config: NextConfig = {
+  distDir: process.env.NEXT_BUILD_DIR ?? '.next',
   output: 'standalone', poweredByHeader: false,
   async rewrites() {
     const api = process.env.API_INTERNAL_URL;

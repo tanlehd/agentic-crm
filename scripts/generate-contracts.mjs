@@ -1,3 +1,5 @@
+import {sessionProgressContracts} from './generate-session-progress-contracts.mjs';
+import {customer360Contracts} from './generate-customer360-contracts.mjs';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { compile } from 'json-schema-to-typescript';
 import openapiTS, { astToString } from 'openapi-typescript';
@@ -57,6 +59,8 @@ for(const [route,kind] of [['object-types','object'],['association-types','type'
 spec.info.description='Health, OIDC, Identity admin and CRM registry metadata/association APIs. Record CRUD remains in subsequent tasks.';
 const crmRecords=JSON.parse(await readFile('packages/contracts/schemas/crm-records.json','utf8'));
 for(const [name,definition] of Object.entries(crmRecords.definitions))spec.components.schemas[name]=JSON.parse(JSON.stringify(definition).replaceAll('#/definitions/','#/components/schemas/'));
+await customer360Contracts(spec);
+await sessionProgressContracts(spec);
 const crmRoutes=[
   ['get','crm/context',null,'context-response'],['get','objects/{key}/descriptor',null,'descriptor-response'],
   ['get','deals',null,'record-list'],['get','deals/{id}',null,'record-response'],['post','deals','deal-create','record-response'],['patch','deals/{id}','deal-patch','record-response',true],
@@ -129,8 +133,10 @@ spec.paths['/connector/v1/messenger/{appId}/webhook']={
 };
 const workflow=JSON.parse(await readFile('packages/contracts/schemas/workflow.json','utf8'));
 for(const [name,definition] of Object.entries(workflow.definitions))spec.components.schemas[name]=JSON.parse(JSON.stringify(definition).replaceAll('#/definitions/','#/components/schemas/'));
-for(const [method,path,input,output,match] of [['get','workflows',null,'list'],['post','workflows','create','mutation'],['patch','workflows/{id}','enable','mutation',true],['get','workflows/{id}/versions',null,'versions'],['post','workflows/{id}/versions','version-create','mutation'],['post','workflows/{id}/versions/{version}/publish','publish','mutation',true],['get','workflow-runs/{id}',null,'run'],['post','workflow-runs/{id}/cancel','cancel','mutation']]){
+for(const [method,path,input,output,match] of [['get','workflows',null,'list'],['get','workflows/{id}',null,'definition'],['get','workflows/authoring',null,'authoring-options'],['post','workflows/validate','validate-input','validation'],['post','workflows','create','mutation'],['patch','workflows/{id}','enable','mutation',true],['get','workflows/{id}/versions',null,'versions'],['post','workflows/{id}/versions','version-create','mutation'],['post','workflows/{id}/versions/{version}/publish','publish','mutation',true],['get','workflow-runs/{id}',null,'run'],['post','workflow-runs/{id}/cancel','cancel','mutation']]){
  const parameters=[tenantHeader,...[...path.matchAll(/\{(\w+)\}/g)].map(m=>({name:m[1],in:'path',required:true,schema:m[1]==='version'?{type:'integer',minimum:1}:{type:'string',format:'uuid'}})),...(input?mutationHeaders:[]),...(match?[{name:'If-Match',in:'header',required:true,schema:{type:'string'}}]:[]),...(['list','versions'].includes(output)?[{name:'limit',in:'query',schema:{type:'integer',minimum:1,maximum:100,default:50}}]:[])];
+ if(path==='workflows'&&method==='get')parameters.push({name:'after',in:'query',schema:{type:'string',format:'uuid'}});
+ if(input==='validate-input')parameters.splice(parameters.findIndex(p=>p.name==='Idempotency-Key'),1);
  (spec.paths[`/api/v1/${path}`]??={})[method]={operationId:`workflow-${method}-${path.replaceAll(/[{}]/g,'').replaceAll('/','-')}`,security:[{sessionCookie:[]}],parameters,...(input?{requestBody:{required:true,content:{'application/json':{schema:{$ref:`#/components/schemas/workflow-${input}`}}}}}:{}),responses:{...adminErrors,[input==='create'||input==='version-create'?201:200]:response(`workflow-${output}`,'Authorized workflow result')}};
 }
 const chatflowApi=JSON.parse(await readFile('packages/contracts/schemas/chatflow-api.json','utf8'));
@@ -242,3 +248,4 @@ for (const [path, body] of Object.entries(outputs)) {
   } else await writeFile(path, body);
 }
 console.log(check ? 'Generated contracts match schemas.' : 'Generated health/auth types and OpenAPI client types.');
+await import('./generate-workflow-contracts.mjs');

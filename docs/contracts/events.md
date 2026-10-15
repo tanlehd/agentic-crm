@@ -90,3 +90,6 @@ deal.created and deal.won: aggregate_type deal; payload deal_id,contact_id,lead_
 ## Acquisition session events — schema1 / SRC-053
 
 `acquisition_session.opened` and `acquisition_session.closed` use aggregate_type `acquisition_session`, tenant-bound ID and monotonic version. Payload: session_id, conversation_id, status, source_classification, source_ad_id (nullable), sequence (decimal string). Written atomically with inbound/session close; no transcript. Existing message.received schema1 unchanged. Consumers must tolerate these additional event types. Exact lifecycle and compatibility: [implementation contract](acquisition-session-implementation.md).
+
+## Session progress — SRC-069
+Chat writes session.progress_changed schema1 atomically with progress command/receipt/audit. Aggregate session_progress uses session_id and independent progress revision; payload has session_id, revision (decimal string), action (enroll/stage/need/record/replace/retract). Human actor is from native Identity. No reason, transcript, message body or patient data is emitted. Consumers tolerate the additive event type; no distributed relay activation is implied. Process publication records immutable version + audit; new session.opened behavior reads its pinned process through Chat API. [Exact contract](session-progress.md).

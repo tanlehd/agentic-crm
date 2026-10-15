@@ -1,5 +1,7 @@
 # Reporting semantic catalog — objects, links, attributes và metrics
 
+PLAN-0272026-10-14 refines [Dashboard/Report/Template data](dashboard-workspace.md) for design review: widget references an immutable saved edit version plus source generation, template recipes materialize ordinary reports, no duplicate metric engine or per-widget embedded query. Published/shared/parameterized target below stays broader future scope. Current schema/source unchanged; exact new artifacts gated by PLAN-027A.
+
 PLAN-022A · 2026-10-10 · Ready semantic/product design; wire schema, physical table templates và producer coverage còn PLAN-022. [Module plan](../planning/report-builder.md) · [Source ownership](service-ownership.md) · [Marketing dictionary](marketing-storage-dictionary.md) · [Session implementation](../contracts/acquisition-session-implementation.md).
 
 SRC-063/PLAN-022B implements a scoped [catalog and definition kernel](../contracts/reporting-semantic-kernel.md):19 objects/85 fields/26 metric descriptors/4 versioned models; table/KPI/bar/line/pivot encodings and flat typed AND filters. This document remains broader target semantics; model/query shape in the exact contract supersedes the illustrative JSON below for first-slice code. Missing charts, full KPI set, OR/EXISTS, historical projection and execution are not implicitly supported.

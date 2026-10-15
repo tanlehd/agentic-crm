@@ -1,5 +1,7 @@
 # MOD-01 — Identity & Administration
 
+**Current policy CHG-20261014-03:** [Tenant super admin](../contracts/tenant-super-admin.md) supersedes explicit-grant and field-deny rules below only for active Humans with admin seat + tenant_admin role. Full access stays tenant-bound; ordinary admin-seat users, AI and services remain explicitly authorized. No schema change.
+
 **Target ADR-021:** CRM-native authentication + MySQL credential/session/permission authority; không Keycloak. [Native auth](../contracts/native-auth.md), [DB guideline](../data/database-guidelines.md). Các use cases OIDC/issuer subject bên dưới là baseline implemented, superseded cho implementation mới. Login account vẫn có thể tham gia nhiều business tenants; system-scoped account không grant quyền tenant.
 
 > Kiến trúc đích microservice theo ADR-017: [Identity & Access](../services/identity.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.
