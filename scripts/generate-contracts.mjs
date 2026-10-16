@@ -251,3 +251,4 @@ for (const [path, body] of Object.entries(outputs)) {
 }
 console.log(check ? 'Generated contracts match schemas.' : 'Generated health/auth types and OpenAPI client types.');
 await import('./generate-workflow-contracts.mjs');
+await import('./generate-record-pages-contracts.mjs');

@@ -1,5 +1,19 @@
 # Object & Properties và Agent Workspace — PLAN-028
 
+2026-10-16 / SRC-080: [Record detail / preview pages](record-pages.md) supersedes Forms & views tab with two independently persisted Default/team view libraries and builders. Legacy create form/list configuration remains accessible from Setup. [Exact contract](../contracts/record-pages.md).
+
+## Layout SRC-079 — Ready 2026-10-16
+
+CHG-20261016-02, theo ảnh tham chiếu người dùng. Phần này thay bố cục catalog/sidebar và tab mặc định bên dưới. Giữ app shell; sidebar Cài đặt / Quản lý dữ liệu có Đối tượng và Thuộc tính. Nội dung chính có tiêu đề, nút Tạo đối tượng theo schema.create, khung chọn đối tượng native nhóm tiêu chuẩn/tùy chỉnh; dùng catalog được cấp quyền.
+
+Tabs hiện tại (SRC-080): Thiết lập (mặc định), Thuộc tính, Liên kết, Record detail page, Record preview page, Agent Workspace. Biểu mẫu tạo & danh sách nằm trong Thiết lập. Link Xem sơ đồ dữ liệu mở ERD focus object hiện tại. Thiết lập gồm mô tả và các section với link tới các tab tương ứng; số field/relation là metadata, không phải record counts. API key/owner/schema nằm trong disclosure. Reporting/Workflow chưa kết nối chỉ hiển thị trạng thái.
+
+Thuộc tính: tìm nhãn/API key, lọc nguồn tiêu chuẩn/tùy chỉnh và kiểu; count khớp/tổng, xóa bộ lọc và empty riêng. Bảng tên/key, kiểu, quy tắc, thao tác. Tạo field mở dialog dùng renderer hiện có; đổi nhãn giữ key/type. Quyền schema.update và extensions_supported giữ nguyên, episode Conversation theo SRC-078; form episode giải thích nhập trong Inbox.
+
+Đổi object/tab/menu hoặc đóng dialog dirty phải xác nhận; cancel giữ input, save refresh đúng object,409 giữ draft. Tenant remount và cache hiện tại giữ nguyên. Mobile320/390: menu ngang, selector full width, tabs/bảng cuộn nội bộ. Tabs hỗ trợ Arrow/Home/End, focus visible và label đầy đủ. Empty/loading/error/retry tiếp tục theo native API.
+
+API mapping: GET /crm/object-catalog; POST /object-types; POST/PATCH properties; descriptor/default forms/views; association-types; PUT workspace. Không sửa database/event/API/quyền, không migration. Acceptance SRC-079: overview/selector/menu, property filters/empty/create/rename, dirty cancel, ERD/form/workspace, keyboard/mobile và retained native regression. Các gate lifecycle/connected consumers giữ riêng.
+
 2026-10-15 · Product specification cho [plan](../planning/no-code-object-platform.md); API/lifecycle extensions chưa implemented. UI Next.js dùng native session/tenant hiện có, theo app shell; không yêu cầu admin biết SQL/schema database.
 
 ## Luồng admin

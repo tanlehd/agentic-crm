@@ -1,5 +1,7 @@
 # Data dictionary
 
+**SRC-080 physical extension2026-10-16:** [Filled dictionary/table designs](../contracts/record-pages.md) cho `record_page_view` và `record_page_team`, CRM-owned forward32. Layout JSON version1, tenant/object/surface/view keys, CAS version, priority và active Identity team logical references; không chứa business record values. Old forms/list views giữ nguyên.
+
 **SRC-078 physical extension2026-10-16:** [Filled table dictionary](../contracts/thread-conversation-implementation.md): Chat owns session_classification/session_contribution in forward31; Core owns conversation_session definitions. Old conversation_id = Thread, conversation_session_id = episode. Immutable action actor/owner/team snapshots, explicit old-data coverage; no inferred backfill.
 
 PLAN-028A: [Filled object_workspace_config design](../contracts/object-platform-r1.md) is Ready for forward30, CRM-owned in baseline monolith. No schema version claim until actual migration evidence; stable object version is config CAS. Other proposed PLAN-028 lifecycle tables remain unimplemented.

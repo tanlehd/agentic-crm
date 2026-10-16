@@ -1,5 +1,7 @@
 'use client';
 import { LeadDeal } from './deals';
+import {RuntimeRecordPage,RecordPreview} from './record-page-runtime';
+import {Dialog} from './dialog';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '../../components/ui/button';
@@ -14,35 +16,42 @@ export function Records({tenant,context,initial,fixedObject,displayProperty}:{te
   return <>{!fixedObject&&<div className="crm-object-nav" aria-label="Đối tượng CRM">{objects.map(o=><Button key={o.id} variant={object===o.key?'default':'outline'} onClick={()=>setObject(o.key)}>{o.label}</Button>)}</div>}<RecordCollection key={object} tenant={tenant} context={context} object={object} displayProperty={displayProperty} initialId={initial?.object===object?initial.id:undefined}/></>;
 }
 function RecordCollection({tenant,context,object,initialId,displayProperty}:{tenant:string;context:Context;object:string;initialId?:string;displayProperty?:string}){
-  const [id,setId]=useState<string|null>(initialId??null),[creating,setCreating]=useState(false),[cursor,setCursor]=useState<string|null>(null),[filter,setFilter]=useState(''),[sort,setSort]=useState('');
+  const [id,setId]=useState<string|null>(initialId||null),[preview,setPreview]=useState<string|null>(null),[creating,setCreating]=useState(false),[cursor,setCursor]=useState<string|null>(null),[filter,setFilter]=useState(''),[sort,setSort]=useState('');
   const descriptor=useApi(tenant,`/api/v1/objects/${object}/descriptor`),query=new URLSearchParams({limit:'20',...(cursor?{cursor}:{}),...(filter?{filter}:{}),...(sort?{sort}:{})});
   const list=useApi(tenant,`/api/v1/objects/${object}/records?${query}`),name=context.objects.find(o=>o.key===object)?.label??object;
   const savedView=useApi(tenant,`/api/v1/object-types/${object}/views/default`,can(context,'schema','read'));
   const [columns,setColumns]=useState<string[]|null>(null);
   const desc=descriptor.data?.data as Descriptor|undefined;
+  if(id&&desc&&!creating)return <div className="rp-detail-host"><Button variant="outline" className="rp-back" onClick={()=>{if(document.querySelector('[data-record-dirty="true"]')&&!confirm('Bỏ thay đổi bản ghi chưa lưu?'))return;setId(null);}}>← Quay lại danh sách</Button><RecordDetail key={id} tenant={tenant} context={context} object={object} id={id} descriptor={desc} displayProperty={displayProperty}/></div>;
   return <div className="crm-record-layout"><section className="crm-card crm-list"><div className="crm-toolbar"><h3>{name}</h3>{can(context,object,'create')&&<Button onClick={()=>{setId(null);setCreating(true);}}>Tạo {name}</Button>}</div>
     {savedView.data&&<Button variant="outline" onClick={()=>{setFilter(JSON.stringify(savedView.data.data.filter));setSort(savedView.data.data.sort?JSON.stringify(savedView.data.data.sort):'');setColumns(savedView.data.data.columns);setCursor(null);}}>Dùng saved view</Button>}
     {desc&&<QueryControls descriptor={desc} onChange={(f,s)=>{setFilter(f);setSort(s);setCursor(null);}}/>}
     {list.isPending?<p role="status">Đang tải records…</p>:list.error?<ErrorNotice error={list.error} reload={()=>void list.refetch()}/>:<>
-      {!list.data.data.length?<p className="crm-empty">Chưa có record phù hợp.</p>:<ul className="record-list">{list.data.data.map((r:any)=><li key={r.id}><button type="button" aria-pressed={id===r.id} onClick={()=>{setCreating(false);setId(r.id);}}><strong>{String(label(r,displayProperty))}</strong><span>{r.fields?.status??(r.owner_principal_id===context.principal_id?'Của bạn':r.owner_principal_id?'Đã phân công':'Chưa phân công')}</span>{columns?.map(k=><small key={k}>{k}: {String(r.custom_values?.[k]??r.fields?.[k]??'—')}</small>)}<small>{r.id.slice(0,8)} · v{r.version}</small></button></li>)}</ul>}
+      {!list.data.data.length?<p className="crm-empty">Chưa có record phù hợp.</p>:<ul className="record-list">{list.data.data.map((r:any)=><li key={r.id}><button type="button" aria-pressed={id===r.id} onClick={()=>{setCreating(false);setId(r.id);}}><strong>{String(label(r,displayProperty))}</strong><span>{r.fields?.status??(r.owner_principal_id===context.principal_id?'Của bạn':r.owner_principal_id?'Đã phân công':'Chưa phân công')}</span>{columns?.map(k=><small key={k}>{k}: {String(r.custom_values?.[k]??r.fields?.[k]??'—')}</small>)}<small>{r.id.slice(0,8)} · v{r.version}</small></button><button type="button" className="rp-collection-preview-button" onClick={()=>setPreview(r.id)}>Xem nhanh</button></li>)}</ul>}
       <div className="crm-toolbar">{cursor&&<Button variant="outline" onClick={()=>setCursor(null)}>Trang đầu</Button>}{list.data.next_cursor&&<Button variant="outline" onClick={()=>setCursor(list.data.next_cursor)}>Trang tiếp</Button>}</div></>}
-  </section><section className="crm-card crm-detail">{descriptor.isPending?<p role="status">Đang tải cấu trúc dữ liệu…</p>:descriptor.error?<ErrorNotice error={descriptor.error}/>:creating&&desc?(object==='lead'?<LeadCreate tenant={tenant} onCreated={r=>{setCreating(false);setId(r.id);}}/>:<RecordForm tenant={tenant} context={context} object={object} descriptor={desc} onSaved={r=>{setCreating(false);setId(r.id);}}/>):id&&desc?<RecordDetail key={id} tenant={tenant} context={context} object={object} id={id} descriptor={desc} displayProperty={displayProperty}/>:<div className="crm-empty"><h3>Chọn một record</h3><p>Xem thông tin, cập nhật dữ liệu và liên kết các đối tượng.</p></div>}</section></div>;
+  </section><section className="crm-card crm-detail">{descriptor.isPending?<p role="status">Đang tải cấu trúc dữ liệu…</p>:descriptor.error?<ErrorNotice error={descriptor.error}/>:creating&&desc?(object==='lead'?<LeadCreate tenant={tenant} onCreated={r=>{setCreating(false);setId(r.id);}}/>:<RecordForm tenant={tenant} context={context} object={object} descriptor={desc} onSaved={r=>{setCreating(false);setId(r.id);}}/>):id&&desc?<RecordDetail key={id} tenant={tenant} context={context} object={object} id={id} descriptor={desc} displayProperty={displayProperty}/>:<div className="crm-empty"><h3>Chọn một record</h3><p>Xem thông tin, cập nhật dữ liệu và liên kết các đối tượng.</p></div>}</section>{preview&&<Dialog title="Record preview" onClose={()=>setPreview(null)}><RecordPreview tenant={tenant} context={context} object={object} id={preview} onOpen={()=>{setId(preview);setPreview(null);}}/></Dialog>}</div>;
 }
 function QueryControls({descriptor,onChange}:{descriptor:Descriptor;onChange:(filter:string,sort:string)=>void}){
   const fields=[...descriptor.standard,...descriptor.custom].filter(f=>f.indexed),[field,setField]=useState(''),[input,setInput]=useState(''),[sort,setSort]=useState(''),[error,setError]=useState('');
   return <form className="crm-query" onSubmit={e=>{e.preventDefault();try{const f=fields.find(f=>f.key===field),v=f?.type==='integer'?Number(input):f?.type==='boolean'?input==='true':input;onChange(field?JSON.stringify([{field,op:'eq',value:v}]):'',sort?JSON.stringify({field:sort,direction:'asc'}):'');setError('');}catch{setError('Giá trị lọc không hợp lệ.');}}}><label>Lọc theo<select aria-label="Lọc theo" value={field} onChange={e=>setField(e.target.value)}><option value="">Tất cả</option>{fields.map(f=><option key={f.key} value={f.key}>{f.label}</option>)}</select></label>{field&&<label>Giá trị bằng<input value={input} onChange={e=>setInput(e.target.value)}/></label>}<label>Sắp xếp<select aria-label="Sắp xếp" value={sort} onChange={e=>setSort(e.target.value)}><option value="">Ngày tạo</option>{fields.map(f=><option key={f.key} value={f.key}>{f.label}</option>)}</select></label><Button variant="outline" type="submit">Áp dụng</Button>{error&&<span role="alert">{error}</span>}</form>;
 }
+export function RecordDetailPage({tenant,context,object,id}:{tenant:string;context:Context;object:string;id:string}){
+  const descriptor=useApi(tenant,`/api/v1/objects/${object}/descriptor`);
+  if(descriptor.isPending)return <p role="status">Đang tải cấu trúc bản ghi…</p>;
+  if(descriptor.error)return <ErrorNotice error={descriptor.error} reload={()=>void descriptor.refetch()}/>;
+  return <div className="rp-detail-host"><RecordDetail {...{tenant,context,object,id}} descriptor={descriptor.data.data}/></div>;
+}
 function RecordDetail({tenant,context,object,id,descriptor,displayProperty}:{tenant:string;context:Context;object:string;id:string;descriptor:Descriptor;displayProperty?:string}){
-  const record=useApi(tenant,`/api/v1/objects/${object}/records/${id}`);
+  const record=useApi(tenant,`/api/v1/objects/${object}/records/${id}`),[editing,setEditing]=useState(false),[dirty,setDirty]=useState(false);
   if(record.isPending)return <p role="status">Đang tải chi tiết…</p>;if(record.error)return <ErrorNotice error={record.error} reload={()=>void record.refetch()}/>;
   const r=record.data.data;
-  return <><div className="crm-detail-heading"><h3>{String(label(r,displayProperty))}</h3><span className="crm-badge">{r.archived?'Đã lưu trữ':r.fields.status??'Đang hoạt động'}</span><small className="crm-record-id">{r.id}</small><p>Owner: {r.owner_principal_id===context.principal_id?'Bạn':r.owner_principal_id??'Chưa phân công'} · Phiên bản {r.version}</p></div>
-    {object==='lead'&&<LeadDeal tenant={tenant} context={context} record={r}/>}
-    {object==='lead'&&<LeadSource tenant={tenant} context={context} record={r}/>}
-    {object==='lead'?<LeadQualification key={r.version} tenant={tenant} context={context} record={r} editable={descriptor.standard.some(f=>f.key==='qualification'&&f.writable)} reload={()=>void record.refetch()}/>:<RecordForm key={r.version} tenant={tenant} context={context} object={object} descriptor={descriptor} record={r} onSaved={()=>void record.refetch()} reload={()=>void record.refetch()}/>}
+  return <div className="rp-record-detail" data-record-dirty={dirty||undefined}><div className="crm-detail-heading"><h2>{String(label(r,displayProperty))}</h2><span className="crm-badge">{r.archived?'Đã lưu trữ':r.fields.status??'Đang hoạt động'}</span><small className="crm-record-id">{r.id}</small><p>Owner: {r.owner_principal_id===context.principal_id?'Bạn':r.owner_principal_id??'Chưa phân công'} · Phiên bản {r.version}</p></div>
+    <div className="rp-detail-actions">{can(context,object,object==='lead'?'qualify':'update',r)&&<Button variant="outline" onClick={()=>{if(editing&&dirty&&!confirm('Bỏ thay đổi bản ghi chưa lưu?'))return;setEditing(!editing);setDirty(false);}}>{editing?'Đóng chỉnh sửa':'Sửa bản ghi'}</Button>}{object==='lead'&&<LeadDeal tenant={tenant} context={context} record={r}/>}</div>
+    <RuntimeRecordPage {...{tenant,context,object}} record={r}/>
+    {editing&&<section className="crm-card" onChangeCapture={()=>setDirty(true)}>{object==='lead'?<><LeadSource tenant={tenant} context={context} record={r}/><LeadQualification key={r.version} tenant={tenant} context={context} record={r} editable={descriptor.standard.some(f=>f.key==='qualification'&&f.writable)} reload={()=>void record.refetch()}/></>:<RecordForm key={r.version} tenant={tenant} context={context} object={object} descriptor={descriptor} record={r} onSaved={()=>{setDirty(false);void record.refetch();}} reload={()=>void record.refetch()}/>}</section>}
     {!r.archived&&object!=='lead'&&can(context,object,'archive',r)&&<Archive tenant={tenant} object={object} record={r}/>}
-    {can(context,'association','read')&&<Associations tenant={tenant} context={context} record={r}/>}
-  </>;
+    {can(context,'association','read')&&<details><summary>Quản lý liên kết</summary><Associations tenant={tenant} context={context} record={r}/></details>}
+  </div>;
 }
 function FieldControl({field,path,register,disabled}:{field:Field;path:string;register:ReturnType<typeof useForm>['register'];disabled?:boolean}){
   const common={...register(path),disabled,'aria-label':field.label};

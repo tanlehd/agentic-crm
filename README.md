@@ -1,5 +1,7 @@
 # Agentic CRM
 
+**Record pages (2026-10-16):** Object & Properties có **Record detail page** và **Record preview page**, mỗi loại gồm Default view và view riêng theo team. Builder card dùng metadata hiện có; Contact preview áp dụng trong Inbox. [Mở cấu hình](http://localhost:18080/?screen=schema) · [Hướng dẫn](docs/development/record-pages.md) · [Evidence](docs/tracking/details/SRC-080.md).
+
 **Thread / Conversation (2026-10-16):** Đã triển khai thuộc tính phân loại theo lượt, lịch sử đóng góp khi chuyển owner/team và Related Lead/Deal theo quyền. Đóng Thread kết thúc lượt; tin hợp lệ tiếp mở lượt mới với fields trống. [Mở Inbox](http://localhost:18080/) · [Hướng dẫn](docs/development/thread-conversation.md) · [Evidence](docs/tracking/details/SRC-078.md). Ticket/connected Reporting còn gate riêng; ID/API cũ giữ tương thích.
 
 **Kế hoạch tiếp theo 2026-10-15:** [No-code Object Platform — PLAN-028](docs/planning/no-code-object-platform.md): Object & Properties, custom fields/associations, ERD, Agent Workspace và shared entity model cho connected Reporting/Workflow; có Salesforce references. Nền catalog/config và Object & Properties/ERD/Agent Workspace đã triển khai trong SRC-073/074. [Mở local](http://localhost:18080/?screen=schema) · [Hướng dẫn](docs/development/object-platform.md) · [Evidence](docs/tracking/details/SRC-074.md). Connected Reporting/custom-object Workflow và lifecycle nâng cao còn các gate tiếp theo.

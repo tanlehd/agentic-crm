@@ -1,0 +1,453 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "record-page-input.json",
+  "title": "RecordPageInput",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "team_ids",
+    "priority",
+    "layout"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120,
+      "pattern": "\\S"
+    },
+    "team_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "maxItems": 20,
+      "uniqueItems": true
+    },
+    "priority": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 999
+    },
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "left",
+        "tabs",
+        "right"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "left": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "title",
+              "kind",
+              "fields",
+              "relation",
+              "limit",
+              "filter",
+              "sort"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$"
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120,
+                "pattern": "\\S"
+              },
+              "kind": {
+                "enum": [
+                  "properties",
+                  "activities",
+                  "association"
+                ]
+              },
+              "fields": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                },
+                "maxItems": 50,
+                "uniqueItems": true
+              },
+              "relation": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      {
+                        "enum": [
+                          "contact_leads",
+                          "contact_deals"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "limit": {
+                "enum": [
+                  5,
+                  10,
+                  20
+                ]
+              },
+              "filter": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "field",
+                      "value"
+                    ],
+                    "properties": {
+                      "field": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                      },
+                      "value": {
+                        "type": "string",
+                        "maxLength": 255
+                      }
+                    }
+                  }
+                ]
+              },
+              "sort": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "field",
+                      "direction"
+                    ],
+                    "properties": {
+                      "field": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                      },
+                      "direction": {
+                        "enum": [
+                          "asc",
+                          "desc"
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "maxItems": 30
+        },
+        "tabs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "title",
+              "cards"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$"
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120,
+                "pattern": "\\S"
+              },
+              "cards": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "title",
+                    "kind",
+                    "fields",
+                    "relation",
+                    "limit",
+                    "filter",
+                    "sort"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 120,
+                      "pattern": "\\S"
+                    },
+                    "kind": {
+                      "enum": [
+                        "properties",
+                        "activities",
+                        "association"
+                      ]
+                    },
+                    "fields": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                      },
+                      "maxItems": 50,
+                      "uniqueItems": true
+                    },
+                    "relation": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            {
+                              "enum": [
+                                "contact_leads",
+                                "contact_deals"
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "limit": {
+                      "enum": [
+                        5,
+                        10,
+                        20
+                      ]
+                    },
+                    "filter": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "field",
+                            "value"
+                          ],
+                          "properties": {
+                            "field": {
+                              "type": "string",
+                              "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                            },
+                            "value": {
+                              "type": "string",
+                              "maxLength": 255
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "sort": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "field",
+                            "direction"
+                          ],
+                          "properties": {
+                            "field": {
+                              "type": "string",
+                              "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                            },
+                            "direction": {
+                              "enum": [
+                                "asc",
+                                "desc"
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "maxItems": 30
+              }
+            }
+          },
+          "maxItems": 6
+        },
+        "right": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "title",
+              "kind",
+              "fields",
+              "relation",
+              "limit",
+              "filter",
+              "sort"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$"
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120,
+                "pattern": "\\S"
+              },
+              "kind": {
+                "enum": [
+                  "properties",
+                  "activities",
+                  "association"
+                ]
+              },
+              "fields": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                },
+                "maxItems": 50,
+                "uniqueItems": true
+              },
+              "relation": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      {
+                        "enum": [
+                          "contact_leads",
+                          "contact_deals"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "limit": {
+                "enum": [
+                  5,
+                  10,
+                  20
+                ]
+              },
+              "filter": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "field",
+                      "value"
+                    ],
+                    "properties": {
+                      "field": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                      },
+                      "value": {
+                        "type": "string",
+                        "maxLength": 255
+                      }
+                    }
+                  }
+                ]
+              },
+              "sort": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "field",
+                      "direction"
+                    ],
+                    "properties": {
+                      "field": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                      },
+                      "direction": {
+                        "enum": [
+                          "asc",
+                          "desc"
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "maxItems": 30
+        }
+      }
+    }
+  }
+}

@@ -1,5 +1,7 @@
 # MOD-02 — CRM & Object Platform
 
+SRC-080 adds [record detail/preview layouts and Default/team views](../contracts/record-pages.md), CRM-owned forward32 presentation metadata. Admin card builder, native CAS/audit/idempotency and viewer-team resolution use existing catalog/permissions. CRM detail/quick-preview and Inbox Contact consume layouts; old forms/list views stay under Setup. [Runbook](../development/record-pages.md) · [Evidence](../tracking/details/SRC-080.md).
+
 PLAN-028/CHG-20261015-02: [Object Platform plan](../planning/no-code-object-platform.md), [UX](../ux/object-properties-workspace.md), [logical model](../data/no-code-entity-model.md) mở rộng metadata/admin/ERD/workspace và reuse schema trong Reporting/Workflow. M1 wire giữ compatibility; SRC-073/074 bổ sung catalog/config/ERD/Workspace và agent association discovery theo [exact contract](../contracts/object-platform-r1.md). Lifecycle/unlink cần PLAN-028E; connected adapters cần PLAN-028B/C, không tự Ready advanced builders.
 
 > Kiến trúc đích microservice theo ADR-017: [CRM Core & Metadata](../services/crm.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.
@@ -32,6 +34,8 @@ Property definition type immutable; create required field trên object đã có 
 [Metadata/record APIs](../contracts/api.md); read/list dùng cùng evaluator. `contact.created` là event M1. Custom change chưa khởi chạy arbitrary workflow ở M2; M5 bổ sung event catalog theo schema version trước mở builder.
 
 ## UI
+
+SRC-079: [settings layout](../ux/object-properties-workspace.md) uses a data-settings sidebar, object selector and Setup overview. Property management adds search/source/type filters and a create dialog over the existing metadata renderer. No new data owner, API or lifecycle operation.
 
 Object list, record detail, association cards, field editor, form field order và saved view. M1 form renderer tối thiểu theo type; required/error state lấy từ cùng metadata backend. Không hiển thị field bị deny dưới dạng disabled có giá trị.
 

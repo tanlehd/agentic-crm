@@ -19,3 +19,5 @@ export type { WorkflowAuthoring } from './generated/workflow-authoring.js';
 export { workflowCatalogSchema } from './generated/workflow-catalog-schema.js';
 export { workflowAuthoringSchema } from './generated/workflow-authoring-schema.js';
 export type { ObjectWorkspace, ObjectPlatformObject, ObjectPlatformCatalog, WorkspaceObject, ObjectWorkspaceInput } from './object-platform.js';
+export type {RecordPageSurface,RecordPageCard,RecordPageLayout,RecordPageInput,RecordPageView,RecordPageLibrary,ResolvedRecordPage} from './record-pages.js';
+export {recordPageCards,defaultRecordPage} from './record-pages.js';

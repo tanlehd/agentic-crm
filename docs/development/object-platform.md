@@ -1,5 +1,9 @@
 # Object & Properties và Agent Workspace
 
+SRC-080 supersedes the combined Forms/list tab with [Record detail page and Record preview page](record-pages.md), including Default and team views. Existing create-form/list-view configuration now lives under **Thiết lập → Biểu mẫu tạo & danh sách**; old storage/API remain compatible. Forward32 adds only tenant-scoped presentation metadata. The SRC-079 description below records the previous layout iteration.
+
+2026-10-16 / SRC-079: [layout mới](../ux/object-properties-workspace.md) theo ảnh tham chiếu. Mở màn hình → chọn đối tượng ở đầu trang → Thiết lập. Các link dẫn tới Thuộc tính, Liên kết, Biểu mẫu & danh sách và Agent Workspace; Xem sơ đồ dữ liệu mở ERD. Menu Thuộc tính giữ object hiện tại. Bảng tìm theo nhãn/key, lọc nguồn/kiểu và có nút Tạo thuộc tính mở dialog. Tất cả dùng native catalog/API hiện có, không migration. Conversation episode nhập fields trong Inbox; các giới hạn SRC-078 được giữ. [Evidence SRC-079](../tracking/details/SRC-079.md).
+
 2026-10-15 · SRC-073/074 bounded implementation. [Contract](../contracts/object-platform-r1.md) · [Evidence](../tracking/details/SRC-074.md) · [Full plan](../planning/no-code-object-platform.md).
 
 Mở [Object & Properties local](http://localhost:18080/?screen=schema) bằng tài khoản có quyền schema. Chọn standard/custom object; Properties hiển thị field theo canonical metadata, Associations tạo loại liên kết, Forms & views cấu hình biểu mẫu và saved view, Agent Workspace lưu tên menu/thứ tự/thuộc tính hiển thị. Nút Xem ERD mở sơ đồ association có filter, focus, zoom và bảng quan hệ. ERD là association catalog, không phải mọi foreign reference của Sales/Chat/Ticket.

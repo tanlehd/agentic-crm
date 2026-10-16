@@ -14,10 +14,15 @@ Git sync S-20261015-01: user authorized commit/push of all accumulated source/do
 
 ## No-code Object Platform — 2026-10-15
 
+Git publication S-20261016-Record-Pages: user requested commit/push of SRC-079/080 source, specs and evidence. No implementation status change or new active task; see execution log/checkpoint.
+
 Git publication S-20261015-Object-Platform: user requested commit/push of the completed Object Platform foundation and its plan/contracts/evidence. No implementation task/status change; remaining PLAN-028E and connected consumer gates retained. See execution log and checkpoint.
 
 | ID | Deliverable | Deps | Status | Owner | Gate / evidence |
 |---|---|---|---|---|---|
+| PLAN-034 | Exact record detail/preview and team-view design, table templates, native contracts | SRC-079; SRC-078 | DONE | Codex 2026-10-16 | [Ready contract](../contracts/record-pages.md), [UX](../ux/record-pages.md); user chose Default + team views; design-only |
+| SRC-080 | Persisted record detail/preview builder, team views and runtime CRM/Inbox integration | PLAN-034; SRC-079; SRC-078 | DONE | Codex 2026-10-16 | [Evidence](details/SRC-080.md);RP-01…08;380unit/22native/32browser/builds PASS;forward32 preserves98old tables |
+| SRC-079 | Layout cấu hình Đối tượng / Thuộc tính theo ảnh tham chiếu | SRC-074; SRC-078 | DONE | Codex 2026-10-16 | [Evidence](details/SRC-079.md);376unit/16native-browser/build/types/docs/lint PASS; OP-UI-01…05 bounded UI; không migration |
 | PLAN-028 | Object & Properties, ERD, association, Agent Workspace và shared entity model cho Reporting/Workflow; Salesforce reference và staged delivery | SRC-010; SRC-011; SRC-013; SRC-065; SRC-072 | DONE | Codex 2026-10-15 | [Evidence](details/PLAN-028.md); inventory/UX/logical model/contracts/19AC/Salesforce references; docs/dependency checks, design-only; chưa claim implementation |
 | PLAN-028A | Exact metadata/lifecycle/capabilities/association/placement contracts và filled table designs nếu cần | PLAN-028 | DONE | Codex 2026-10-15 | [Scoped Ready contract/table template](../contracts/object-platform-r1.md); docs283/2468links PASS; lifecycle beyond immutable baseline remains follow-up |
 | SRC-073 | Object Platform catalog/capability backend và persisted workspace configuration | PLAN-028A; SRC-011; SRC-065 | DONE | Codex 2026-10-15 | [Evidence](details/SRC-073.md);9 focused unit,8 native/MySQL groups,build/schema PASS; scoped OP-01/02/03/08, immutable baseline; lifecycle/unlink remains PLAN-028E |

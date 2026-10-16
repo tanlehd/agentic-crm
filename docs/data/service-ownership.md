@@ -1,5 +1,7 @@
 # Data ownership — monolith to service databases
 
+SRC-080: CRM Core owns [record detail/preview presentation metadata](../contracts/record-pages.md), target crm_core, baseline forward32. Identity owns active teams/memberships and exposes `recordPageTeams` local application port; future extraction requires Identity API. Sales/Chat retain business records/commands; no new cross-service SQL, FK or shared UoW after extraction.
+
 **Implemented additive slice SRC-078 / 2026-10-16:** [Thread / Conversation exact contract](../contracts/thread-conversation-implementation.md), PLAN-033A DONE. Thread legacy IDs/API remain stable; Conversation episode has optional custom fields and stage, event-time ownership/contributor history, and Related Lead/Deal actions with current permissions. Cross-team transfer preserves the episode; Ticket and connected Reporting remain gated. Physical forward31 stays in the baseline monolith; service extraction rules below remain unchanged.
 
 PLAN-028: [No-code entity ownership](no-code-entity-model.md) — CRM owns canonical schema/custom records/associations và proposed workspace placement; Reporting owns semantic projections/models; Workflow owns artifacts/runs. Owner APIs/events đưa dữ liệu tới consumer, không shared SQL/UoW hoặc transfer Sales/Chat/Ticket authority. Broader model remains logical design; SRC-073 adds CRM-owned object_workspace_config via forward30 in baseline monolith, see [filled physical contract](../contracts/object-platform-r1.md).

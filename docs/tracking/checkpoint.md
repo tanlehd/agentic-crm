@@ -1,5 +1,33 @@
 # Git publication — 2026-10-16
 
+User explicitly requested commit/push of completed Object settings and Record detail/preview work (SRC-079/080). Remote fetched; prepublication base `eebbb55`. Fresh docs305/2635links/80-task DAG and generated-contract/whitespace checks PASS. Existing runtime evidence remains in [SRC-080](details/SRC-080.md); no feature status change, deployment or service mutation in this Git-only session. Publication is in progress; actual commit hash and remote verification are recorded after push in ignored `artifacts/record-pages/git-publication.json`. Secrets, local datasets and SQL backups remain ignored.
+
+## Previous implementation checkpoint
+
+# Record detail / preview pages completed — 2026-10-16
+
+PLAN-034/SRC-080 DONE. [Runbook](../development/record-pages.md) · [UX](../ux/record-pages.md) · [Evidence](details/SRC-080.md) · [Open local](http://localhost:18080/?screen=schema). User chose both Default and team views. Two independent tabs/libraries, full-screen card editor, actual record sample preview, property/activity/association cards, regions/tabs/filter/sort, undo/redo, CAS and dirty retention. Viewer team membership resolves priority/default without granting record rights. CRM detail/quick preview and Inbox Contact consume metadata; legacy forms/list views accessible from Setup.
+
+Validation:380unit/52files,13record-page native+9Object Platform native groups,7record-page+16Object Platform+9Conversation browser groups PASS. Final backend build and isolated Next production build PASS;34strict schemas, generated contracts, OpenAPI reference/type generation, docs305/2629links/80task DAG and AST lint696 PASS before completion links; final docs/whitespace checked again. Screenshots reviewed desktop and320/390, actual sample and related record values verified. Initial test failures/fixes retained in evidence. Final build preserved original next-env/tsconfig.
+
+Local forward32 applied1/repeat0 preserves98old tables with private SQL backup/hash. Runtime CRUD grants added only on two new config tables. Final API3001/worker3002/web18080/Reporting3004 ready;MySQL13306/Redis16379 healthy;Connector configuration-required;monitor127.0.0.1:3020 running. Retained synthetic test objects/views/threads/Lead+Deal; temporary test permissions restored and Contact preview test restores prior layout. No reset/subagents/schedules/commit/push/deployment.
+
+Working tree `main`, base`eebbb55`, dirty with this source/docs and preserved SRC-079 work. No blocker or unresolved decision; no active source task. Next existing backlog: PLAN-028E remaining Object Platform lifecycle exact gate. Ticket/AI/attachments/connected Reporting/Workflow and service extraction remain separately gated.
+
+## Previous checkpoint
+
+# Object settings layout completed — 2026-10-16
+
+SRC-079 DONE; user requested spec and implementation following attached reference. [UX](../ux/object-properties-workspace.md) · [Evidence](details/SRC-079.md) · [Open local](http://localhost:18080/?screen=schema). Settings sidebar, top object selector, Setup overview, localized tabs, property search/source/type filters, create/rename dialogs and ERD link now use existing native APIs. Data model/permissions unchanged; no migration. CHG-20261016-02 resolved; OP-UI-01…05 bounded UI only.
+
+Validation:376unit,16actual native/browser groups, web TypeScript, isolated Next production build, docs/lint/whitespace PASS. Desktop1600 and mobile390/320 screenshots visually reviewed; existing768 layout/ERD regression passed. Retained Alpha fixture adds layout_note_demo optional string field via UI; same record/link fixture reused, no reset/grants. Evidence/artifacts and initial failures recorded in SRC-079. Full conversation-classification browser flow not rerun (selectors adapted); backend/MySQL-only tests not newly run for frontend change.
+
+Working tree main/base eebbb55, initially clean; source3files, browser scripts2files and related spec/module/contract/runbook/acceptance/planning/tracking docs saved, dirty. No new commit/push/deploy/service restart/subagent/schedule. Original next-env/tsconfig preserved after separate .next-settings-build production build. Fresh monitor: web18080/API3001/worker3002/Reporting3004 ready, MySQL13306/Redis16379 healthy, Connector configuration required; monitor127.0.0.1:3020 running. No blockers or unresolved decisions, no active source task. **Next existing backlog action: PLAN-028E exact remaining metadata lifecycle gate.**
+
+## Previous checkpoint
+
+# Git publication — 2026-10-16
+
 User explicitly requested commit/push of the completed Thread/Conversation work and preceding research. Prepublication fetch confirms main and origin/main both at213f831. Docs300/2588links/78-task DAG, generated contracts and tracked whitespace rechecked PASS. Local secrets/data/artifacts remain ignored. Publication commit/push is in progress; final Git result will be verified against origin/main and recorded in ignored artifacts/conversation-classification/git-publication.json. No deployment or runtime changes in this publication step.
 
 ## Previous implementation checkpoint

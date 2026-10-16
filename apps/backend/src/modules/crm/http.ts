@@ -15,6 +15,7 @@ import { databaseSource } from '../../kernel/database/data-source.js';
 import { CommandError } from '../../kernel/reliability/commands.js';
 import { CrmUi } from './ui.js';
 import { ObjectPlatform } from './object-platform.js';
+import {RecordPages,pageSurface} from './record-pages.js';
 import { WorkflowCatalogService } from './workflow-catalog.js';
 import { coreDomains,contactReferences } from './core.js';
 import { leadDomain,leadArchiveGuard,LeadService } from '../sales/leads.js';
@@ -116,6 +117,23 @@ export class CrmController {
     }catch(error){const failure=error instanceof CommandError||error instanceof AuthError?error:error instanceof AccessError?new CommandError(403,error.code):new CommandError(503,'TEMPORARILY_UNAVAILABLE');res.statusCode=failure.status;res.end(JSON.stringify({error:{code:failure.code,message:'Không thể hoàn tất yêu cầu.',fields:error instanceof FieldError?[{path:error.field,code:error.code}]:[],retryable:failure.status===503},meta:{correlation_id:correlation}}));}
   }
   @Get('crm/object-catalog') objectCatalog(@Req() q:Request,@Res() s:ServerResponse){return this.objectPlatformResponse(q,s,'catalog');}
+  @Get('object-types/:key/record-pages/:surface') recordPageList(@Req() q:Request,@Res() s:ServerResponse){return this.recordPageResponse(q,s,'list');}
+  @Put('object-types/:key/record-pages/:surface/:view') recordPageSave(@Req() q:Request,@Res() s:ServerResponse){return this.recordPageResponse(q,s,'save');}
+  @Post('object-types/:key/record-pages/:surface/:view/remove') recordPageRemove(@Req() q:Request,@Res() s:ServerResponse){return this.recordPageResponse(q,s,'remove');}
+  @Get('objects/:key/record-page/:surface') recordPageResolve(@Req() q:Request,@Res() s:ServerResponse){return this.recordPageResponse(q,s,'resolve');}
+  @Get('objects/:key/records/:id/page-activities') recordPageActivities(@Req() q:Request,@Res() s:ServerResponse){return this.recordPageResponse(q,s,'activities');}
+  private async recordPageResponse(req:Request,res:ServerResponse,action:'list'|'save'|'remove'|'resolve'|'activities'){
+    const correlation=randomUUID();res.setHeader('Content-Type','application/json');res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');
+    try{
+      const mutation=action==='save'||action==='remove',session=mutation?await this.auth.service.requireMutation(cookie(req,'crm_session'),req.headers.origin,req.headers['x-csrf-token']):await this.auth.service.session(cookie(req,'crm_session'),true);
+      const tenant=req.headers['x-tenant-id'];if(!uuid(tenant)||Object.keys(req.query).length)throw new CommandError(400,'INVALID_REQUEST');await this.runtime.ready();const pages=new RecordPages(this.runtime.records);
+      if(action==='activities'){res.end(JSON.stringify({...await pages.activities(session.account_id,tenant,req.params.key!,req.params.id!),meta:{correlation_id:correlation}}));return;}
+      const surface=pageSurface(req.params.surface!);
+      if(!mutation){const data=action==='list'?await pages.list(session.account_id,tenant,req.params.key!,surface):await pages.resolve(session.account_id,tenant,req.params.key!,surface);res.end(JSON.stringify({data,meta:{correlation_id:correlation}}));return;}
+      const receipt=req.headers['idempotency-key'],match=req.headers['if-match'];if(typeof receipt!=='string'||!/^application\/json(?:;|$)/i.test(req.headers['content-type']??'')||match!==undefined&&(typeof match!=='string'||!/^"(0|[1-9][0-9]{0,19})"$/.test(match)))throw new CommandError(400,'INVALID_REQUEST');
+      const result=await pages.save(session.account_id,tenant,req.params.key!,surface,req.params.view!,req.body,receipt,typeof match==='string'?match.slice(1,-1):undefined,correlation,action==='remove');res.statusCode=result.status;res.setHeader('ETag',`"${result.body.data.version}"`);res.end(JSON.stringify(result.body));
+    }catch(error){const failure=error instanceof CommandError||error instanceof AuthError?error:new CommandError(error instanceof AccessError?403:503,error instanceof AccessError?'FORBIDDEN':'TEMPORARILY_UNAVAILABLE');res.statusCode=failure.status;res.end(JSON.stringify({error:{code:failure.code,message:'Không thể tải hoặc lưu giao diện bản ghi.',fields:[],retryable:failure.status===503},meta:{correlation_id:correlation}}));}
+  }
   @Get('crm/workspace-objects') workspaceObjects(@Req() q:Request,@Res() s:ServerResponse){return this.objectPlatformResponse(q,s,'workspace');}
   @Get('crm/association-catalog') associationCatalog(@Req() q:Request,@Res() s:ServerResponse){return this.objectPlatformResponse(q,s,'associations');}
   @Put('object-types/:key/workspace') workspaceSave(@Req() q:Request,@Res() s:ServerResponse){return this.objectPlatformResponse(q,s,'save');}

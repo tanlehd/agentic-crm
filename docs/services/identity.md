@@ -1,5 +1,7 @@
 # Identity & Access
 
+SRC-080: `recordPageTeams` is an Identity-owned local application port for active team choices and current viewer memberships. Admin team view operations require team.read; runtime resolution uses authenticated membership teams without granting schema access. CRM stores only logical team references in [record page assignments](../contracts/record-pages.md). Replace this baseline port with authorized Identity API on extraction.
+
 **Current policy CHG-20261014-03:** [Tenant super admin](../contracts/tenant-super-admin.md) supersedes explicit-grant and field-deny rules below only for active Humans with admin seat + tenant_admin role. Full access stays tenant-bound; ordinary admin-seat users, AI and services remain explicitly authorized. No schema change.
 
 Status: Target architecture accepted direction — PLAN-005 / ADR-017. Service extraction/API/physical schema chưa Ready; không đồng nghĩa deployed. [Module hiện tại](../modules/identity.md) · [Catalog](README.md) · [Cross-service rules](../contracts/service-boundaries.md).

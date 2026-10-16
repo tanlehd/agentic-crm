@@ -1,5 +1,21 @@
 # No-code Object Platform acceptance — PLAN-028
 
+## SRC-080 / record page acceptance
+
+Exact [RP-01…08](../contracts/record-pages.md): independent detail/preview defaults; team CRUD/assignment/priority/fallback; card builder and save/undo/dirty behavior; actual CRM/Inbox consumers; live tenant/field/record rights and CAS; legacy form/view compatibility; preserved forward32; desktop/mobile/keyboard/error states. [Executed evidence](../tracking/details/SRC-080.md). Broader no-code lifecycle and connected consumers below retain their separate gates.
+
+## SRC-079 / settings layout acceptance
+
+| ID | Scenario | Expected |
+|---|---|---|
+| OP-UI-01 | Native catalog, chọn standard/custom, setup section/menu | Object context đúng; số field/relation từ metadata; Setup mặc định |
+| OP-UI-02 | Search label/key, source/type, empty/reset | Đúng số kết quả; clear khôi phục danh sách |
+| OP-UI-03 | Create/rename/save, dirty dialog/object/tab cancel | Native mutation/CAS giữ nguyên; cancel giữ input; discard nạp persisted state |
+| OP-UI-04 | ERD/form/workspace, Arrow/Home/End,320/390 | Điều hướng thật, focus visible, cuộn nội bộ không overflow trang |
+| OP-UI-05 | Existing retained regression; episode/unsupported object | Metadata/form/view/record/link tương thích; capability đúng backend |
+
+Execution evidence và giới hạn tại [SRC-079](../tracking/details/SRC-079.md); không đóng toàn bộ OP-01…19 từ layout này.
+
 2026-10-15 · **Full scenarios chưa hoàn tất.** Bounded SRC-073/074 có [acceptance sub-scope/evidence](../tracking/details/SRC-074.md): catalog/config/ERD/record/link/ACL/CAS/upgrade đã test; R2/R3/lifecycle/capacity còn NOT_RUN. Bảng dưới là full test plan, không tự đồng nghĩa PASS. [Plan](../planning/no-code-object-platform.md), [contract direction](../contracts/no-code-object-platform.md). AC-04/M5 và AC-11 extension; không đóng toàn milestone từ docs.
 
 Fixture synthetic giữ lại qua reruns: tenant Alpha/Beta, admin/Human agent/viewer/AI/service actor hiện có hoặc fixture riêng được provision idempotent; Service Request và Service Offering theo keys namespaced, Contact association; quyền temporary phải restore. Không reset DB/Redis.

@@ -1,5 +1,13 @@
 # Execution và change log
 
+## CHG-20261016-03 — Record detail and preview pages
+
+Codex2026-10-16, C2 additive presentation metadata. User requests replace Forms & views with two configurable pages and confirms Default + team views. PLAN-034 exact contract/UX/table templates Ready before source; SRC-080 IN_PROGRESS, deps DONE. Preserve uncommitted SRC-07915files; base eebbb55. New schema/API additive, old forms/views retained. Affected UX/contract/CRM+Identity ports/schema catalog/dictionary/AC/tracker/checkpoint. Tests pending; no parallel agents/schedules/commit/push.
+
+## CHG-20261016-02 — Object settings layout
+
+Codex 2026-10-16, C2 UI compatible, user yêu cầu đặc tả + code theo ảnh. SRC-079 IN_PROGRESS sau SRC-074/078 DONE. UX Ready cập nhật trước code: settings sidebar, object selector, setup overview, property filters/dialog. API/data/ACL giữ nguyên, không migration. Affected UX/contract/runbook/acceptance/tracker/checkpoint; tests pending. Workspace sạch tại base eebbb55; không subagents/schedule/commit/push/deploy.
+
 Append entry mới theo thời gian; checkpoint giữ bản mới nhất, tracker giữ status. Không sửa lịch sử test fail thành pass; thêm kết quả lần chạy mới.
 
 ## CHG-20261013-09 / S-20261013-ERD-second-review — semantic consistency
@@ -1234,3 +1242,23 @@ Codex2026-10-16, PLAN-033A/SRC-078 DONE. Exact contract preceded source; impleme
 Local forward31 applied1/repeat0 preserves96oldtables, with private backup/hash in artifacts/conversation-classification/upgrade.json; metadata adds conversation_session without retargeting legacy IDs. Native test data retained. Source artifacts and full commands in [SRC-078](details/SRC-078.md). Browser screenshots reviewed desktop1600/mobile390;9groups cover field setup/entry/stale-draft/team transfer/Lead+Deal/outcome history/HTTP guards/close/new-round/mobile. Initial test-only failures retained in transcript: strict Ajv scalar union fixed using anyOf; EXPLAIN assertion accepts either tenant+session index; legacy negative ACL tests now temporarily use an ordinary synthetic chat seat instead of tenant-admin bypass; polling timeout and strictly-post-close inbound timing corrected. No runtime ACL/lifecycle weakening. Early build invocation used wrong Next package path; corrected apps/web/node_modules build PASS with original config files restored.
 
 Working tree main/base213f831 includes prior research + source; no commit/push/deploy or reset, no subagents/schedules. API3001/worker3002/web18080/Reporting3004 ready; MySQL13306/Redis16379 healthy; Connector unconfigured. Disposable bootstrap test project cleaned up. Ticket/connected Reporting/credit metrics and full no-code lifecycle remain separately gated; no production/provider/restore-load completion claim. Next backlog action PLAN-028E.
+
+## S-20261016-Object-Settings — SRC-079 completed
+
+Codex2026-10-16; CHG-20261016-02 resolved. User-reference layout implemented after Ready UX: settings sidebar, native object selector, Setup overview, property filters/dialog and keyboard navigation. Existing native APIs/data/ACL retained, no migration. SRC-079 DONE; OP-UI-01…05 bounded UI acceptance. [Evidence](details/SRC-079.md).
+
+Windows/pinned Node24.21.0:376unit PASS,16native/browser groups PASS including retained field creation/rename/config/form/records/link/CAS/ERD and new filters/draft cancel/mobile; web types and isolated Next16.3.8 production build PASS. Docs301/2596links/79DAG and AST lint685/whitespace PASS before completion-entry links. Actual screenshots reviewed1600/390/320;768 regression also passed. Initial exact filter-label browser failure fixed with aria-labels. Initial build redirection denied before compiler start; retry direct output PASS, config original bytes restored. Full conversation-classification flow script updated for new selectors but NOT_RUN this session; unchanged business runtime covered only by existing unit suite, no new backend/MySQL-only suite or migration test.
+
+Main/base eebbb55 initially clean, task changes remain dirty in working tree. No commit/push/deploy, DB reset, service restart, subagents or schedule. Native synthetic data retained, no grants added. Fresh monitor: web/API/worker/Reporting ready, MySQL/Redis healthy, Connector unconfigured. No blocker/decision; next existing backlog PLAN-028E. Full no-code consumers/lifecycle/release stay gated.
+
+## S-20261016-Record-Pages — SRC-080 completed
+
+Codex2026-10-16; PLAN-034/SRC-080 DONE, CHG-20261016-03 resolved. User-reference two libraries/builders support independently persisted Default/team detail/preview views, actual card data and CRM/Inbox consumers. Ready contract/table designs preceded source; CRM/Identity ports, data ownership/dictionary, UX/module/runbook/acceptance/tracker/checkpoint synchronized. Legacy forms/list views remain at Setup. [Evidence](details/SRC-080.md).
+
+Windows/pinned Node24.21.0:380unit/52files,13new native+9Object Platform native,7new browser+16Object Platform+9Conversation browser groups PASS. Final backend build/isolated Next production build PASS;34strict schemas/generated contracts/OpenAPI refs+TypeScript generation/docs305/2629links/80-task DAG/AST lint696/normal Git whitespace PASS before completion links. Screenshots reviewed desktop and320/390, actual sample and related data verified. Initial fixture/label/hidden-list/load-timeout/CRLF failures and fixes recorded; no false pass or relaxed business assertions.
+
+Local schema31→32 applied1/repeat0, fingerprints preserve98old tables, private backup/hash in artifacts/record-pages/upgrade.json. Added runtime CRUD only for two config tables, not user grants. API/worker restarted after final backend build;web/API/worker/Reporting ready,MySQL/Redis healthy,Connector unconfigured. Native synthetic data retained; test-only rights restored, temporary Contact preview restored. Main/baseeebbb55 working tree dirty with prior SRC-079;no commit/push/deploy/reset/subagents/schedules. No remaining blocker/decision/active source task;next existing backlog PLAN-028E.
+
+## S-20261016-Record-Pages-publication
+
+User explicitly authorized commit/push of completed SRC-079/080 changes. Remote fetch PASS; prepublication base eebbb55. Reviewed49source/documentation files; .env/.local/artifacts remain ignored, including private SQL backup and credentials. Fresh Windows/Node24.21.0 checks: docs305Markdown/2635links/80acyclic source tasks, generated contracts, Git whitespace PASS. Previous runtime tests/builds remain in SRC-080; no additional runtime verification or deployment claimed for this Git-only session. Actual resulting commit and remote verification will be recorded in ignored artifacts/record-pages/git-publication.json and reported to user. Source statuses unchanged; no active implementation task.

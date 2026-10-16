@@ -1,5 +1,7 @@
 # Schema catalog — nơi đặt bảng mới
 
+PLAN-034/SRC-080: [record_page_view / record_page_team](../contracts/record-pages.md), CRM Core target crm_core, physical monolith forward32. Presentation metadata only; Identity team logical references through application port, no cross-owner FK.
+
 PLAN-033A: [session_classification / session_contribution](../contracts/thread-conversation-implementation.md), Chat owner / target crm_chat, physical monolith; forward31, tenant-scoped episode values and immutable handling evidence. Core owns conversation_session property definitions. No cross-service FK.
 
 PLAN-028A/SRC-073: [object_workspace_config](../contracts/object-platform-r1.md), CRM Core owner/target crm_core, physical monolith until extraction. Forward30 adds only tenant-bound object presentation/placement; no per-object table or cross-service schema access.
