@@ -15,7 +15,7 @@ export function Customer360({tenant,context,conversation,contactId,canEdit,open}
  if(sessions.isPending)return <p role="status">Đang tải Customer 360…</p>;
  if(sessions.error)return <ErrorNotice error={sessions.error} reload={()=>void sessions.refetch()}/>;
  const rows=sessions.data.pages.flatMap(p=>p.data),active=rows.find((s:any)=>s.status==='active');
- return <><SessionProgressPanel key={conversation} {...{tenant,context,conversation}} sessions={rows}/>{sessions.hasNextPage&&<Button variant="outline" disabled={sessions.isFetchingNextPage} onClick={()=>void sessions.fetchNextPage()}>Tải thêm phiên để theo dõi</Button>}<SalesPanel key={`${contactId}:${active?.id??'closed'}`} {...{tenant,context,conversation,contactId,canEdit,open}} session={active}/></>;
+ return <><SalesPanel key={`${contactId}:${active?.id??'closed'}`} {...{tenant,context,conversation,contactId,canEdit,open}} session={active}/><SessionProgressPanel key={conversation} {...{tenant,context,conversation}} sessions={rows}/>{sessions.hasNextPage&&<Button variant="outline" disabled={sessions.isFetchingNextPage} onClick={()=>void sessions.fetchNextPage()}>Tải thêm phiên để theo dõi</Button>}</>;
 }
 function SalesPanel({tenant,context,conversation,contactId,canEdit,session,open}:{tenant:string;context:Context;conversation:string;contactId:string;canEdit:boolean;session?:any;open?:(kind:'contact'|'lead'|'conversation',id:string)=>void}){
  const [kind,setKind]=useState<'lead'|'deal'>('lead'),[history,setHistory]=useState(false),[selected,setSelected]=useState(''),[form,setForm]=useState<'lead'|'deal'|'from-lead'|null>(null),[merge,setMerge]=useState(false),command=useCommand(tenant);
@@ -26,7 +26,7 @@ function SalesPanel({tenant,context,conversation,contactId,canEdit,session,open}
  const rows:any[]=list.error?[]:list.data?.pages.flatMap(p=>p.data)??[];
  const editable=!!session&&canEdit&&r&&!r.archived&&!['disqualified','won','lost'].includes(state(r))&&can(context,kind,kind==='lead'?'qualify':'update',r);
  const created=(value:any,type:'lead'|'deal')=>{setForm(null);setKind(type);setSelected(value.id);};
- return <section className="crm-form" aria-label="Customer 360"><h4>CUSTOMER 360 · NHU CẦU & CƠ HỘI</h4>
+ return <section className="crm-form" aria-label="Customer 360"><h4>RELATED OBJECTS · HỒ SƠ LIÊN QUAN</h4>
  <p>{session?`Đang xử lý phiên #${session.sequence}`:'Chưa có phiên đang mở. Có thể xem lại hồ sơ.'}</p>
  <div className="crm-actions">{(['lead','deal'] as const).map(k=><Button key={k} variant={kind===k?'default':'outline'} onClick={()=>{setKind(k);setSelected('');setMerge(false);}}>{k==='lead'?'Leads':'Deals'}</Button>)}</div>
  <label className="crm-check"><input type="checkbox" checked={history} onChange={e=>{setHistory(e.target.checked);setSelected('');}}/>Gồm hồ sơ đã kết thúc</label>

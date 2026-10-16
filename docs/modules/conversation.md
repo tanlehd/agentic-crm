@@ -1,5 +1,7 @@
 # MOD-04 — Conversation & Chat Workspace
 
+**Implemented additive slice SRC-078 / 2026-10-16:** [Thread / Conversation exact contract](../contracts/thread-conversation-implementation.md), PLAN-033A DONE. Thread legacy IDs/API remain stable; Conversation episode has optional custom fields and stage, event-time ownership/contributor history, and Related Lead/Deal actions with current permissions. Cross-team transfer preserves the episode; Ticket and connected Reporting remain gated. Physical forward31 stays in the baseline monolith; service extraction rules below remain unchanged.
+
 CHG-20261013-08 accepted [logical ERD](../data/chat-sales-erd.md): session is one inbox episode, new Ad during open session adds evidence without split/reset/cancellation solely due to referral. Configurable process version/current stage, transition history and evidence-backed milestone history are independent of open/closed processing status and Sales outcomes. SRC-068 implements the session/source/context subset through the exact Customer360 contract; stage/milestone configuration remains a separate design gate.
 
 > Kiến trúc đích microservice theo ADR-017: [Chat / Conversation Server](../services/chat.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.

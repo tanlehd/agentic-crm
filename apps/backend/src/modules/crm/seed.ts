@@ -23,6 +23,8 @@ export async function seedRegistry(source:DataSource,env:NodeJS.ProcessEnv=proce
         const tenants=await scoped.query('SELECT id FROM tenant WHERE id=? FOR UPDATE',[tenant]);if(!tenants[0])throw new Error('SEED_IDENTITY_REQUIRED');
         const done=await commands.registryBootstrapExists(scoped);
         const rows=await scoped.query('SELECT id,`key`,kind FROM object_type WHERE tenant_id=?',[tenant]);
+        if(!rows.some((r:any)=>r.key==='conversation_session'))await scoped.query("INSERT INTO object_type(id,tenant_id,`key`,label,kind,created_at,updated_at) VALUES (UUID(),?,'conversation_session','Conversation (lượt trao đổi)','standard',UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[tenant]);
+        else if(rows.some((r:any)=>r.key==='conversation_session'&&r.kind!=='standard'))throw new Error('SEED_CONFLICT');
         if(done){
           for(const key of standardKeys)if(!rows.some((r:any)=>r.id===fixtureId(`${label}:object:${key}`)&&r.key===key&&r.kind==='standard'))throw new Error('SEED_INCOMPLETE');
           existing++;continue;

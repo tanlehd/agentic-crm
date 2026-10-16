@@ -52,7 +52,8 @@ export function seedCases(isolated:(name:string)=>Promise<DataSource>){
       expect(await ds.query("SELECT id FROM audit_entry WHERE action='registry.bootstrap.v2'")).toEqual([]);
       await ds.query('DROP TRIGGER registry_seed_fail');
       const results=await Promise.all([seedRegistry(ds,env),seedRegistry(ds,env)]);expect(results.map(r=>r.created).sort()).toEqual([0,2]);
-      expect((await ds.query('SELECT COUNT(*) n FROM object_type'))[0].n).toBe('14');
+      expect((await ds.query('SELECT COUNT(*) n FROM object_type'))[0].n).toBe('16');
+      expect((await ds.query("SELECT tenant_id FROM object_type WHERE `key`='conversation_session' AND kind='standard'")).length).toBe(2);
       await ds.query("UPDATE object_type SET label='Preserved',version=version+1 WHERE id=?",[fixtureId('alpha:object:contact')]);
       const snapshot=await ds.query('SELECT * FROM object_type ORDER BY id');const roles=await ds.query('SELECT * FROM `role` ORDER BY id');
       expect(await seedRegistry(ds,env)).toEqual({created:0,existing:2});expect(await ds.query('SELECT * FROM object_type ORDER BY id')).toEqual(snapshot);expect(await ds.query('SELECT * FROM `role` ORDER BY id')).toEqual(roles);

@@ -1808,6 +1808,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/conversations/{conversation}/sessions/{session}/classification": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["conversation-classification-get-conversations-conversation-sessions-session-classification"];
+        put?: never;
+        post: operations["conversation-classification-post-conversations-conversation-sessions-session-classification"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversations/{conversation}/sessions/{session}/contributions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["conversation-classification-get-conversations-conversation-sessions-session-contributions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/records/{id}/assignment-teams": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["conversation-classification-get-records-id-assignment-teams"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -5198,6 +5246,107 @@ export interface components {
         NativeResetCompleteRequest: {
             token: string;
             new_password: string;
+        };
+        "conversation-classification-input": {
+            values: {
+                [key: string]: string | number | boolean | null;
+            };
+        };
+        "conversation-classification-response": {
+            data: {
+                /** Format: uuid */
+                session_id: string;
+                /** Format: uuid */
+                thread_id: string;
+                /** @enum {unknown} */
+                status: "active" | "closed";
+                version: string;
+                can_edit: boolean;
+                definitions: {
+                    /** Format: uuid */
+                    id: string;
+                    key: string;
+                    label: string;
+                    /** @enum {unknown} */
+                    type: "string" | "text" | "integer" | "decimal" | "boolean" | "date" | "datetime" | "enum";
+                    required: boolean;
+                    default_value: string | number | boolean | null;
+                    options: string[] | null;
+                    indexed: boolean;
+                    sensitive: boolean;
+                    version: string;
+                    can_write: boolean;
+                }[];
+                values: {
+                    [key: string]: string | number | boolean | null;
+                };
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "conversation-classification-result": {
+            data: {
+                /** Format: uuid */
+                session_id: string;
+                version: string;
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "conversation-contributions-response": {
+            data: {
+                /** Format: uuid */
+                session_id: string;
+                /** @enum {unknown} */
+                coverage: "full" | "partial" | "none";
+                owner: null | {
+                    /** Format: uuid */
+                    id: string | null;
+                    /** Format: uuid */
+                    team_id: string | null;
+                    revision: string;
+                };
+                history: {
+                    /** Format: uuid */
+                    id: string;
+                    revision: string;
+                    /** @enum {unknown} */
+                    kind: "opened" | "closed" | "assignment" | "outbound_submitted" | "note" | "stage" | "evidence" | "classification" | "outcome";
+                    /** Format: uuid */
+                    source_id: string;
+                    source_revision: string;
+                    actor: null | {
+                        kind: string;
+                        /** Format: uuid */
+                        id: string;
+                    };
+                    /** Format: uuid */
+                    owner_id: string | null;
+                    /** Format: uuid */
+                    handling_team_id: string | null;
+                    owner_revision: string;
+                    /** Format: date-time */
+                    recorded_at: string;
+                    payload: Record<string, never>;
+                }[];
+                next_before_revision: string | null;
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "conversation-assignment-teams-response": {
+            data: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                purpose: string;
+            }[];
+            meta: {
+                correlation_id: string;
+            };
         };
     };
     responses: never;
@@ -12778,7 +12927,9 @@ export interface operations {
     };
     "routing-targets": {
         parameters: {
-            query?: never;
+            query?: {
+                team_id?: string;
+            };
             header: {
                 "X-Tenant-Id": string;
             };
@@ -19614,6 +19765,339 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["AuthErrorResponse"];
                 };
+            };
+        };
+    };
+    "conversation-classification-get-conversations-conversation-sessions-session-classification": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                conversation: string;
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized episode result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["conversation-classification-response"];
+                };
+            };
+            /** @description Sanitized failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "conversation-classification-post-conversations-conversation-sessions-session-classification": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                conversation: string;
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["conversation-classification-input"];
+            };
+        };
+        responses: {
+            /** @description Authorized episode result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["conversation-classification-result"];
+                };
+            };
+            /** @description Sanitized failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "conversation-classification-get-conversations-conversation-sessions-session-contributions": {
+        parameters: {
+            query?: {
+                before_revision?: string;
+            };
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                conversation: string;
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized episode result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["conversation-contributions-response"];
+                };
+            };
+            /** @description Sanitized failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "conversation-classification-get-records-id-assignment-teams": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized episode result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["conversation-assignment-teams-response"];
+                };
+            };
+            /** @description Sanitized failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

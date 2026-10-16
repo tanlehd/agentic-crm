@@ -1,4 +1,5 @@
 import { initializeProgress,advanceProgressClock } from './session-process-storage.js';
+import { contribute } from './contribution-storage.js';
 import { randomUUID } from 'node:crypto';
 import type { TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
 import { CommandError,DurableCommands,type SystemActor } from '../../kernel/reliability/commands.js';
@@ -17,6 +18,7 @@ async function event(s:TransactionScope,row:any,type:'acquisition_session.opened
 }
 export async function closeAcquisition(s:TransactionScope,conversation:string,reason:'agent_closed'|'new_referral',correlation:string,actor?:SystemActor|{kind:'human';id:string}){
  const row=await activeAcquisition(s,conversation);if(!row)return;
+ await contribute(s,conversation,{session:row.id,kind:'closed',source:row.id,actor,payload:{reason}});
  const recordedAt=await advanceProgressClock(s);
  await s.query("UPDATE conversation_acquisition_session SET status='closed',closed_at=?,close_reason=?,version=version+1 WHERE tenant_id=? AND id=?",[recordedAt,reason,s.context.tenantId,row.id]);
  await event(s,{...row,status:'closed',version:String(BigInt(row.version)+1n)},'acquisition_session.closed',correlation,actor);
@@ -33,6 +35,7 @@ export async function acquisitionInbound(s:TransactionScope,input:{conversation:
   const source=referral?'paid':meta.page_id?'organic':'unknown';
   await s.query("INSERT INTO conversation_acquisition_session(tenant_id,id,conversation_id,sequence,status,opening_reason,opened_at,opening_occurred_at,source_classification,source_channel,source_page_id,source_ad_id,source_campaign_id,source_connection_id,source_touchpoint_id,policy_version) VALUES (?,?,?,?,'active',?,?,?,?,?,?,?,?,?,?,'inbox_v2')",[s.context.tenantId,id,conversation,sequence,last?'after_close':'first_inbound',recordedAt,new Date(occurredAt),source,meta.channel,meta.page_id,referral?.ad_id??null,referral?.campaign_id??null,connection,referral?.touchpoint_id??null]);
   await initializeProgress(s,id,'full',recordedAt);current=await activeAcquisition(s,conversation);await event(s,current,'acquisition_session.opened',correlation,actor);
+  await contribute(s,conversation,{session:id,kind:'opened',source:id,actor});
   await new DurableCommands().systemAudit(s,correlation,'acquisition_session',id,'acquisition.open',['status','source'],actor);
  }
  if(referral)await s.query('INSERT INTO session_touchpoint(tenant_id,touchpoint_id,session_id,conversation_id,occurred_at,recorded_at) VALUES (?,?,?,?,?,UTC_TIMESTAMP(6))',[s.context.tenantId,referral.touchpoint_id,current.id,conversation,new Date(occurredAt)]);
@@ -44,7 +47,11 @@ async function membership(s:TransactionScope,conversation:string,message:string,
  const [m]=await s.query('SELECT id FROM message WHERE tenant_id=? AND id=? AND conversation_id=?',[s.context.tenantId,message,conversation]);if(!m)throw new CommandError(409,'MESSAGE_BINDING_MISMATCH');
  await s.query('INSERT INTO message_acquisition_membership(tenant_id,message_id,conversation_id,session_id,resolution,created_at) VALUES (?,?,?,?,?,UTC_TIMESTAMP(6))',[s.context.tenantId,message,conversation,session,resolution]);
 }
-export async function acquisitionOutbound(s:TransactionScope,conversation:string,message:string){const row=await activeAcquisition(s,conversation);await membership(s,conversation,message,row?.id??null,row?'assigned':'unresolved_legacy');}
+export async function acquisitionOutbound(s:TransactionScope,conversation:string,message:string){
+ const row=await activeAcquisition(s,conversation);await membership(s,conversation,message,row?.id??null,row?'assigned':'unresolved_legacy');
+ const [intent]=await s.query('SELECT i.actor_kind,i.actor_id FROM message m JOIN outbound_intent i ON i.tenant_id=m.tenant_id AND i.id=m.outbound_intent_id WHERE m.tenant_id=? AND m.id=?',[s.context.tenantId,message]);
+ if(row&&intent)await contribute(s,conversation,{session:row.id,kind:'outbound_submitted',source:message,actor:{kind:intent.actor_kind,id:intent.actor_id}});
+}
 export async function listAcquisitions(s:TransactionScope,conversation:string,query:Record<string,unknown>){
  const limit=query.limit===undefined?50:Number(query.limit),before=query.before_sequence;
  if(Object.keys(query).some(k=>!['limit','before_sequence'].includes(k))||!Number.isInteger(limit)||limit<1||limit>100||typeof query.limit==='object'||before!==undefined&&(typeof before!=='string'||! /^[1-9][0-9]{0,19}$/.test(before)))throw new CommandError(400,'INVALID_REQUEST');

@@ -17,12 +17,12 @@ export class RoutingRuntime implements OnModuleDestroy {
 @Controller()
 export class RoutingController {
   constructor(@Inject(AuthRuntime) private readonly auth:AuthRuntime,@Inject(RoutingRuntime) private readonly runtime:RoutingRuntime){}
-  private async respond(req:Request,res:ServerResponse,kind:'assignment'|'takeover'|'targets'|'history'){
+  private async respond(req:Request,res:ServerResponse,kind:'assignment'|'takeover'|'targets'|'history'|'teams'){
     const correlation=randomUUID();res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json');res.setHeader('X-Content-Type-Options','nosniff');
     try{
       const mutation=kind==='assignment'||kind==='takeover',session=mutation?await this.auth.service.requireMutation(cookie(req,'crm_session'),req.headers.origin,req.headers['x-csrf-token']):await this.auth.service.session(cookie(req,'crm_session'),true),tenant=req.headers['x-tenant-id'];
-      if(!uuid(tenant)||!uuid(req.params.id)||Object.keys(req.query).length)throw new CommandError(400,'INVALID_REQUEST');await this.runtime.ready();
-      if(!mutation){res.end(JSON.stringify({...await this.runtime.routing.read(session.account_id,tenant,req.params.id,kind as 'targets'|'history'),meta:{correlation_id:correlation}}));return;}
+      if(!uuid(tenant)||!uuid(req.params.id)||mutation&&Object.keys(req.query).length)throw new CommandError(400,'INVALID_REQUEST');await this.runtime.ready();
+      if(!mutation){res.end(JSON.stringify({...await this.runtime.routing.read(session.account_id,tenant,req.params.id,kind as 'targets'|'history'|'teams',req.query),meta:{correlation_id:correlation}}));return;}
       const key=req.headers['idempotency-key'],match=req.headers['if-match'];
       if(typeof key!=='string'||!/^application\/json(?:;|$)/i.test(req.headers['content-type']??'')||match!==undefined&&(typeof match!=='string'||!/^"[1-9][0-9]{0,19}"$/.test(match)))throw new CommandError(400,'INVALID_REQUEST');
       const result=await this.runtime.routing.mutate(session.account_id,tenant,req.params.id,kind==='takeover',req.body,key,typeof match==='string'?match.slice(1,-1):undefined,correlation);res.statusCode=result.status;res.setHeader('ETag',`"${result.body.data.version}"`);res.end(JSON.stringify(result.body));
@@ -31,6 +31,7 @@ export class RoutingController {
   @Post('records/:id/assignment') assignment(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'assignment');}
   @Post('conversations/:id/takeover') takeover(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'takeover');}
   @Get('records/:id/assignment-targets') targets(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'targets');}
+  @Get('records/:id/assignment-teams') teams(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'teams');}
   @Get('records/:id/ownership-history') history(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'history');}
 }
 @Module({imports:[AuthModule],controllers:[RoutingController],providers:[RoutingRuntime]})

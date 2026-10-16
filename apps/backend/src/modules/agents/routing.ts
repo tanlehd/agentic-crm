@@ -58,13 +58,16 @@ export class Routing {
       const response={status:200,body:{data,meta:{correlation_id:correlation}}};await this.commands.complete(s,command,response);return response;
     });
   }
-  async read(account:string,tenant:string,id:string,kind:'targets'|'history'){
+  async read(account:string,tenant:string,id:string,kind:'targets'|'history'|'teams',query:Record<string,unknown>={}){
     if(!uuid(id)||!uuid(tenant))throw new CommandError(400,'INVALID_REQUEST');
+    if(Object.keys(query).some(k=>kind!=='targets'||k!=='team_id')||query.team_id!==undefined&&!uuid(query.team_id))throw new CommandError(400,'INVALID_REQUEST');
     return this.uow.run({tenantId:tenant},async s=>{
       const a=await withFieldPolicies(s,await this.auth.loadHuman(s,account,undefined,true)),r=await this.registry.get(s,id);this.registry.read(a,r);
       if(!(r.objectKey==='conversation'?(permits(a,'conversation','takeover',r)||permits(a,'conversation','assign',r)):allows(a,r.objectKey,'assign',r)))throw new CommandError(403,'FORBIDDEN');
       if(kind==='history')return {data:await this.history(s,r)};
-      const data=[];for(const owner of await this.identity.candidates(s,r.teamId)){const p=await this.identity.principal(s,owner),reason=await this.eligibility(s,r,owner,r.teamId);data.push({id:owner,kind:p!.kind,eligible:reason===null,reason});}return {data};
+      if(kind==='teams')return {data:await this.identity.teams(s)};
+      const team=query.team_id as string|undefined??r.teamId;await this.identity.team(s,team);
+      const data=[];for(const owner of await this.identity.candidates(s,team)){const p=await this.identity.principal(s,owner),reason=await this.eligibility(s,r,owner,team);data.push({id:owner,kind:p!.kind,eligible:reason===null,reason});}return {data};
     });
   }
   private async history(s:TransactionScope,r:RegistryRecord){return ownershipHistory(s,r.id);}

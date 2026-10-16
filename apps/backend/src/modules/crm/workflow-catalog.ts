@@ -40,7 +40,7 @@ export function catalogObject(type:SourceObject,custom:SourceProperty[],access:A
   const properties=[...standard,...custom.filter(p=>fieldAllowed(access,type.key,p.key,'read')).map(p=>scalar(p))];
   if(properties.length>200)limit();
   return {...type,version:String(type.version),schema_version:String(type.schema_version),
-    owner_service:type.kind==='custom'?'crm':type.key==='lead'||type.key==='deal'?'sales':type.key==='conversation'?'chat':type.key==='ticket'?'ticket':'crm',
+    owner_service:type.kind==='custom'?'crm':type.key==='lead'||type.key==='deal'?'sales':['conversation','conversation_session'].includes(type.key)?'chat':type.key==='ticket'?'ticket':'crm',
     properties,capabilities:{record_read:read,record_query:read,record_update:write,workflow_actions:false,object_change_events:false,change_images:false,relation_traversal:false}};
 }
 

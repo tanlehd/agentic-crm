@@ -1,3 +1,65 @@
+# Git publication — 2026-10-16
+
+User explicitly requested commit/push of the completed Thread/Conversation work and preceding research. Prepublication fetch confirms main and origin/main both at213f831. Docs300/2588links/78-task DAG, generated contracts and tracked whitespace rechecked PASS. Local secrets/data/artifacts remain ignored. Publication commit/push is in progress; final Git result will be verified against origin/main and recorded in ignored artifacts/conversation-classification/git-publication.json. No deployment or runtime changes in this publication step.
+
+## Previous implementation checkpoint
+
+# Thread / Conversation implemented — 2026-10-16
+
+PLAN-033A/SRC-078 DONE. [Runbook](../development/thread-conversation.md) · [Evidence](details/SRC-078.md). Episode classification/canonical metadata, append-only contribution snapshots, cross-team transfer and Related Lead/Deal UI implemented. Legacy IDs remain stable; Ticket/connected Reporting are gated.376unit/11native/24regression/9browser/9cold-bootstrap PASS; backend build, all workspace types and isolated Next production build PASS. Docs300/2588links/DAG78,31strict schemas/generated contracts/lint/whitespace PASS.214legacy schemas and113legacy paths structurally preserved (only additive team query). Screenshots reviewed at1600/390px.
+
+Local forward31 applied1/repeat0 preserves96old tables with private backup; API/worker restarted ready, web18080 and Reporting3004 ready. Retained Alpha DEMO classification field/threads/Lead+Deal outcomes. No reset/commit/push/deploy/subagents/schedules; main base213f831 dirty with prior research plus this source. Test-only negative ACL seats/roles restored. No active source task. Next existing backlog action: PLAN-028E exact remaining Object Platform lifecycle gate; this Thread/Conversation request is complete within the approved bounded scope.
+
+## Previous product-only checkpoint
+
+# Thread / Conversation product decision — 2026-10-15
+
+PLAN-033 DONE product-only, CHG-20261015-04 user-approved. [Authoritative model/UX/ownership/AC](../contracts/thread-conversation-product.md), [evidence](details/PLAN-033.md). Thread open/closed contains episode Conversations with stage/custom classification fields. Related objects below Contact exposes authorized/capability-backed Lead/Deal/Ticket creation with domain validation. Transfer keeps the same episode and historical actors/team transitions; current owner is not retrospective contribution credit. Existing model/module/service/UX/dictionary/ownership/contracts/acceptance synchronized with legacy naming/physical compatibility notes.
+
+Docs/whitespace PASS; runtime/source/DB/browser and TC-01…10 NOT_RUN. No registry/API/DB rename, schema migration or feature activation. Current code still uses old conversation_id for Thread and conversation_session_id for episode; per-episode owner authority/custom fields/unified contributions need exact design. Prior research changes preserved on main base213f831; no commit/push/deploy/service mutations, subagents or scheduling; services not freshly checked.
+
+**Next design action: PLAN-033A** — compatibility/metadata-key migration, field ownership/ACL/storage, assignment/contribution evidence, related-outcome eligibility and reporting grain, then scoped source tasks. PLAN-028E and other outstanding backlog retained; no implementation task active.
+
+## Previous Intercom research checkpoint
+
+# Intercom / multiple interaction rounds research — 2026-10-15
+
+PLAN-032 DONE research-only: [evaluation/model/flow](../references/intercom-multiple-interaction-rounds.md), [evidence](details/PLAN-032.md). Eleven official sources distinguish Conversation, Customer/Back-office/Tracker tickets, channel-dependent return behavior and explicit merge. Recommendation: retain distinct Sessions linked to persistent business records; existing SRC-068 follow_up context is the foundation. Docs/whitespace PASS. No automatic new Ticket per round, no copied vendor timeout or new generic Case table proposed for implementation.
+
+Source/Ready-contract/runtime unchanged. Prior dirty PLAN-029/030/031 docs preserved on main base213f831; no commit/push/deploy/DB/service changes, subagents or schedule. Services not freshly checked. Candidate portal/runtime tests and Mermaid rendering NOT_RUN. Documentation validation recorded in evidence/log. Next source action remains PLAN-028E; no implementation active.
+
+## Previous HubSpot research checkpoint
+
+# HubSpot conversation / stage-fields research — 2026-10-15
+
+Lifecycle follow-up: [ERD and flows](../references/hubspot-ticket-conversation-lifecycle.md) distinguish close/reopen from thread matching and explicit merge. Legacy Inbox cascades cannot be generalized to every Help Desk channel. Reply-to-existing-ticket differs from a fresh conversation. Closing T2/reopening T1 does not establish reassociation. Exact Facebook post-close segmentation remains NOT_VERIFIED. Research only, no source task activated; final verification in log/evidence.
+
+PLAN-031 DONE research-only: [research](../references/hubspot-conversation-stage-fields.md), [evidence](details/PLAN-031.md). Six official public docs distinguish thread OPEN/CLOSED from Ticket pipeline/status. Help Desk exposes Ticket status/properties beside conversation; conditional stage fields belong to the business record. Docs/whitespace PASS; portal/API/runtime/Mermaid rendering NOT_RUN.
+
+Prior PLAN-029/030 working-tree docs preserved on main base213f831. No code/schema/Ready-contract/service/DB changes, commit/push/deploy or background work. Services not freshly checked. Existing source next action remains PLAN-028E; no source task active.
+
+## Previous Salesforce research checkpoint
+
+# Salesforce session / stage-fields research — 2026-10-15
+
+PLAN-030 DONE research-only: [evaluation](../references/salesforce-session-stage-fields.md), [evidence](details/PLAN-030.md). Docs290/links2523/source DAG77 and tracked/new-file whitespace PASS; artifacts/salesforce-session-research/docs.log. Salesforce has Enhanced Facebook Messenger and extensible MessagingSession; status for interaction handling is distinct from Case Status/Opportunity Stage. Path binds existing object fields to picklist steps; layout/visibility and conditional validation are separate. Standard Path support list does not include MessagingSession. Email-to-Case groups emails into a Case with its own business fields/status. Pre-chat examples apply Web/In-App and cannot establish Facebook pre-chat parity.
+
+Recommendation only: Session context versus durable need/Lead/Deal fields, explicit selected-record bindings, phase-specific validation that does not block intake, and historical evidence separately from current values. Existing Ready contracts/source priorities unchanged. Working tree main213f831 retains prior PLAN-029 docs plus this research; no commit/push/deploy/DB/service/subagent/schedule changes. Services not freshly checked. **One next source action remains PLAN-028E**; no implementation task active.
+
+## Previous research checkpoint
+
+# Session fields / attribution research — 2026-10-15
+
+Follow-up: [research section9](../references/conversation-session-fields-attribution.md#9-clarification-erd-logical-respondio-và-vị-trí-nhập-liệu) adds respond.io inferred ERD and Inbox field locations after two additional official Inbox documents. Sidebar edits Contact fields; Closing Notes edits conversation category/summary if enabled. No verified generic Conversation custom-field form; prior Session-field recommendation remains our proposal. No runtime/source changes.
+
+PLAN-029 DONE research-only: [evaluation](../references/conversation-session-fields-attribution.md), [evidence](details/PLAN-029.md). Final docs288/local links2510/source DAG77 and tracked/new-file whitespace PASS; artifacts/session-fields-research. User asked whether to add Session custom fields or use Contact like respond.io, and whether missing detailed attribution causes real problems. Official docs show respond.io has conversation IDs/categories/sources and repeated lifecycle journeys alongside Contact fields; Chatwoot supports both attribute scopes. Missing history/grain causes ambiguity for repeat visits/multiple needs, but no market-wide incidence or ROI was measured.
+
+Recommendation: retain Contact master; add bounded Session context only with a working consumer; attribution uses existing structured session/source/touchpoint/Sales-context facts, not mutable custom source fields. No approved business contract, runtime capability, PLAN-028 task order or source status changed. Candidate extension scenarios are NOT_RUN and exact design is not Ready.
+
+Working tree began clean main213f831; current changes are research/index/tracking docs, no commit/push/deploy/migration/reset/service changes. Services not freshly probed, no subagents or schedules. **One next source action remains PLAN-028E** from the prior checkpoint; Session extensions need a separate exact scope if selected. No implementation task active.
+
+## Previous implementation checkpoint
+
 # Object Platform foundation implemented — 2026-10-15
 
 Git publication S-20261015-Object-Platform: user explicitly requested “Push git” after implementation. Authorized commit/push of the reviewed54source/contract/design/tracking files to origin/main; no feature status change. Fresh fetch confirms base5ab70a6 matches origin/main; docs/generated-contract/whitespace checks PASS. This checkpoint is included in the publication commit; actual commit hash and verified push outcome are recorded in ignored artifacts/object-platform/git-publication.json and the user-facing result. Prior no-commit notes below describe implementation before this authorization.

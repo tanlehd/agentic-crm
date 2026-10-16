@@ -1,5 +1,7 @@
 # Data model và ERD
 
+**Implemented additive slice SRC-078 / 2026-10-16:** [Thread / Conversation exact contract](../contracts/thread-conversation-implementation.md), PLAN-033A DONE. Thread legacy IDs/API remain stable; Conversation episode has optional custom fields and stage, event-time ownership/contributor history, and Related Lead/Deal actions with current permissions. Cross-team transfer preserves the episode; Ticket and connected Reporting remain gated. Physical forward31 stays in the baseline monolith; service extraction rules below remain unchanged.
+
 PLAN-0282026-10-15: [No-code logical entity model và ERD](no-code-entity-model.md) bổ sung canonical metadata/association/consumer bindings, lifecycle và ownership direction. Physical baseline không đổi; exact table templates/migrations thuộc PLAN-028A/B/C. Generic standard writes vẫn bị owner capability giới hạn.
 
 PLAN-0272026-10-14: [Dashboard/Report ERD and dictionary](dashboard-workspace.md) proposes dedicated Dashboard aggregate with report-version refs, snapshot pins, immutable layout and template lineage. Six own-schema tables designed for review; not migrated. Existing SRC-070 inline documents remain compatible through explicit future conversion, not automatic backfill.

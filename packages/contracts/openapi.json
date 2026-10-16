@@ -10580,6 +10580,14 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "team_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -20269,6 +20277,345 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/v1/conversations/{conversation}/sessions/{session}/classification": {
+      "get": {
+        "operationId": "conversation-classification-get-conversations-conversation-sessions-session-classification",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "conversation",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "session",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized episode result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/conversation-classification-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized failure"
+          },
+          "401": {
+            "description": "Sanitized failure"
+          },
+          "403": {
+            "description": "Sanitized failure"
+          },
+          "404": {
+            "description": "Sanitized failure"
+          },
+          "409": {
+            "description": "Sanitized failure"
+          },
+          "422": {
+            "description": "Sanitized failure"
+          },
+          "428": {
+            "description": "Sanitized failure"
+          },
+          "503": {
+            "description": "Sanitized failure"
+          }
+        }
+      },
+      "post": {
+        "operationId": "conversation-classification-post-conversations-conversation-sessions-session-classification",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "conversation",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "session",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/conversation-classification-input"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorized episode result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/conversation-classification-result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized failure"
+          },
+          "401": {
+            "description": "Sanitized failure"
+          },
+          "403": {
+            "description": "Sanitized failure"
+          },
+          "404": {
+            "description": "Sanitized failure"
+          },
+          "409": {
+            "description": "Sanitized failure"
+          },
+          "422": {
+            "description": "Sanitized failure"
+          },
+          "428": {
+            "description": "Sanitized failure"
+          },
+          "503": {
+            "description": "Sanitized failure"
+          }
+        }
+      }
+    },
+    "/api/v1/conversations/{conversation}/sessions/{session}/contributions": {
+      "get": {
+        "operationId": "conversation-classification-get-conversations-conversation-sessions-session-contributions",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "conversation",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "session",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "before_revision",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,19})$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized episode result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/conversation-contributions-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized failure"
+          },
+          "401": {
+            "description": "Sanitized failure"
+          },
+          "403": {
+            "description": "Sanitized failure"
+          },
+          "404": {
+            "description": "Sanitized failure"
+          },
+          "409": {
+            "description": "Sanitized failure"
+          },
+          "422": {
+            "description": "Sanitized failure"
+          },
+          "428": {
+            "description": "Sanitized failure"
+          },
+          "503": {
+            "description": "Sanitized failure"
+          }
+        }
+      }
+    },
+    "/api/v1/records/{id}/assignment-teams": {
+      "get": {
+        "operationId": "conversation-classification-get-records-id-assignment-teams",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized episode result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/conversation-assignment-teams-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized failure"
+          },
+          "401": {
+            "description": "Sanitized failure"
+          },
+          "403": {
+            "description": "Sanitized failure"
+          },
+          "404": {
+            "description": "Sanitized failure"
+          },
+          "409": {
+            "description": "Sanitized failure"
+          },
+          "422": {
+            "description": "Sanitized failure"
+          },
+          "428": {
+            "description": "Sanitized failure"
+          },
+          "503": {
+            "description": "Sanitized failure"
           }
         }
       }
@@ -35228,6 +35575,476 @@
             "maxLength": 128
           }
         }
+      },
+      "conversation-classification-input": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "values": {
+            "type": "object",
+            "minProperties": 1,
+            "maxProperties": 100,
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "values"
+        ]
+      },
+      "conversation-classification-response": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "session_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "thread_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "status": {
+                "enum": [
+                  "active",
+                  "closed"
+                ]
+              },
+              "version": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,19})$"
+              },
+              "can_edit": {
+                "type": "boolean"
+              },
+              "definitions": {
+                "type": "array",
+                "maxItems": 100,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "key": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "enum": [
+                        "string",
+                        "text",
+                        "integer",
+                        "decimal",
+                        "boolean",
+                        "date",
+                        "datetime",
+                        "enum"
+                      ]
+                    },
+                    "required": {
+                      "type": "boolean"
+                    },
+                    "default_value": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "options": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "indexed": {
+                      "type": "boolean"
+                    },
+                    "sensitive": {
+                      "type": "boolean"
+                    },
+                    "version": {
+                      "type": "string",
+                      "pattern": "^(0|[1-9][0-9]{0,19})$"
+                    },
+                    "can_write": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "key",
+                    "label",
+                    "type",
+                    "required",
+                    "default_value",
+                    "options",
+                    "indexed",
+                    "sensitive",
+                    "version",
+                    "can_write"
+                  ]
+                }
+              },
+              "values": {
+                "type": "object",
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "boolean"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            },
+            "required": [
+              "session_id",
+              "thread_id",
+              "status",
+              "version",
+              "can_edit",
+              "definitions",
+              "values"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "conversation-classification-result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "session_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "version": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,19})$"
+              }
+            },
+            "required": [
+              "session_id",
+              "version"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "conversation-contributions-response": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "session_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "coverage": {
+                "enum": [
+                  "full",
+                  "partial",
+                  "none"
+                ]
+              },
+              "owner": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "format": "uuid"
+                      },
+                      "team_id": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "format": "uuid"
+                      },
+                      "revision": {
+                        "type": "string",
+                        "pattern": "^(0|[1-9][0-9]{0,19})$"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "team_id",
+                      "revision"
+                    ]
+                  }
+                ]
+              },
+              "history": {
+                "type": "array",
+                "maxItems": 50,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "revision": {
+                      "type": "string",
+                      "pattern": "^(0|[1-9][0-9]{0,19})$"
+                    },
+                    "kind": {
+                      "enum": [
+                        "opened",
+                        "closed",
+                        "assignment",
+                        "outbound_submitted",
+                        "note",
+                        "stage",
+                        "evidence",
+                        "classification",
+                        "outcome"
+                      ]
+                    },
+                    "source_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "source_revision": {
+                      "type": "string",
+                      "pattern": "^(0|[1-9][0-9]{0,19})$"
+                    },
+                    "actor": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "kind": {
+                              "type": "string"
+                            },
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            }
+                          },
+                          "required": [
+                            "kind",
+                            "id"
+                          ]
+                        }
+                      ]
+                    },
+                    "owner_id": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "uuid"
+                    },
+                    "handling_team_id": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "uuid"
+                    },
+                    "owner_revision": {
+                      "type": "string",
+                      "pattern": "^(0|[1-9][0-9]{0,19})$"
+                    },
+                    "recorded_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "payload": {
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "revision",
+                    "kind",
+                    "source_id",
+                    "source_revision",
+                    "actor",
+                    "owner_id",
+                    "handling_team_id",
+                    "owner_revision",
+                    "recorded_at",
+                    "payload"
+                  ]
+                }
+              },
+              "next_before_revision": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[1-9][0-9]{0,19}$"
+              }
+            },
+            "required": [
+              "session_id",
+              "coverage",
+              "owner",
+              "history",
+              "next_before_revision"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "conversation-assignment-teams-response": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "maxItems": 200,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "purpose": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "purpose"
+              ]
+            }
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "correlation_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "correlation_id"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
       }
     },
     "securitySchemes": {

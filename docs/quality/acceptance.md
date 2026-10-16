@@ -1,5 +1,7 @@
 # Acceptance và traceability
 
+SRC-0782026-10-16: [TC-01…10 evidence and bounded scope](../tracking/details/SRC-078.md). Local/native lifecycle/fields/Related Lead+Deal/transfer/current ACL/history verified; TC-06 role separation is in history, connected Reporting/credit metrics not activated. Ticket runtime remains outside this slice. Prior source evidence preserved.
+
 PLAN-0282026-10-15: [OP-01…19](no-code-object-platform-acceptance.md) bổ sung AC-04/M5 và AC-11 cho Object & Properties/ERD/Workspace/shared model/connected Reporting/custom Flow. Test plan only, tất cả runtime scenarios NOT_RUN; source gates và evidence theo tracker.
 
 PLAN-0272026-10-14 adds [DW-AC01…14](dashboard-workspace-acceptance.md) for separate Dashboard/Reports navigation, templates, saved-report refs, layout, current authority, replay/CAS, legacy preservation and native UI. All runtime scenarios NOT_RUN; documents only for user review. Existing SRC-070 evidence and broader RB-MOCK gates unchanged.

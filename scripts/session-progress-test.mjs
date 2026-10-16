@@ -1,3 +1,4 @@
+import {ordinaryTestAdmin} from './test-ordinary-admin.mjs';
 import assert from 'node:assert/strict';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {parseEnv} from 'node:util';
@@ -68,7 +69,7 @@ try{
   await assert.rejects(()=>progress.funnel(account,tenant,{...range,to:new Date(Date.now()+100*86400000).toISOString()}),e=>e.code==='INVALID_WINDOW');
   await assert.rejects(()=>progress.funnel(account,tenant,{...range,as_of:new Date(Date.now()+86400000).toISOString()}),e=>e.code==='INVALID_AS_OF');
  });
- await test('current authorization on replay and field-denied reads/funnel, tenant negatives',async()=>{
+ await test('current authorization on replay and field-denied reads/funnel, tenant negatives',async()=>ordinaryTestAdmin(ds,tenant,principal,async()=>{
   const key=randomUUID(),v=(await read()).version,b={action:'need',label:'Revocation probe'};await progress.mutate(account,tenant,cid,sid,b,key,v,'synthetic');
   const roles=await ds.query('SELECT r.id,r.permissions FROM role r JOIN principal_role p ON p.tenant_id=r.tenant_id AND p.role_id=r.id WHERE p.tenant_id=? AND p.principal_id=?',[tenant,principal]);
   try{for(const r of roles){const grants=typeof r.permissions==='string'?JSON.parse(r.permissions):r.permissions;await ds.query('UPDATE role SET permissions=? WHERE tenant_id=? AND id=?',[JSON.stringify(grants.filter(g=>!(g.resource==='conversation'&&g.action==='update'))),tenant,r.id]);}await assert.rejects(()=>progress.mutate(account,tenant,cid,sid,b,key,v,'synthetic'),e=>e.status===403);}finally{for(const r of roles)await ds.query('UPDATE role SET permissions=? WHERE tenant_id=? AND id=?',[typeof r.permissions==='string'?r.permissions:JSON.stringify(r.permissions),tenant,r.id]);}
@@ -76,7 +77,7 @@ try{
   await ds.query('INSERT INTO field_policy(id,tenant_id,role_id,object_type_id,property_key,denied_actions,created_at,updated_at) VALUES (?,?,?,?,?,JSON_ARRAY(?),UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))',[fieldId,tenant,role,obj.id,'text','read']);
   try{await assert.rejects(read,e=>e.status===403);assert.equal((await progress.funnel(account,tenant,range)).data.sessions,0);}finally{await ds.query('DELETE FROM field_policy WHERE tenant_id=? AND id=?',[tenant,fieldId]);}
   const beta=fixtureId('clinic_beta'),[member]=await ds.query('SELECT account_id FROM membership WHERE tenant_id=? AND id=?',[beta,fixtureId('beta:member:beta_admin')]);await assert.rejects(()=>progress.read(member.account_id,beta,cid,sid),e=>e.status===404);
- });
+ }));
  await test('closed session accepts late attestation and correction but rejects stage; reopen pins latest',async()=>{
   const at=await dbNow(),r=(await conversations.read(account,tenant,cid)).data;await conversations.mutate(account,tenant,cid,'transition',{target_status:'closed',reason:'Synthetic close'},randomUUID(),r.version,'synthetic');
   const milestone=await command({action:'record',need_id:needA,milestone_key:original.milestones[1].key,occurred_at:at,reason:'Late recorded synthetic confirmation'});await command({action:'retract',supersedes_id:milestone.id,reason:'Late correction'});

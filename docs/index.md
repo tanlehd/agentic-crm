@@ -1,5 +1,17 @@
 # Bản đồ tài liệu
 
+[Thread / Conversation implementation](development/thread-conversation.md) — SRC-078 /2026-10-16: stage + classification per episode, history across team transfer, Related Lead/Deal actions. [Exact gate](contracts/thread-conversation-implementation.md) · [Evidence](tracking/details/SRC-078.md). Ticket/connected Reporting remain gated.
+
+[Intercom / nhiều lượt trao đổi / hồ sơ nghiệp vụ xuyên phiên](references/intercom-multiple-interaction-rounds.md) — PLAN-032 research2026-10-15; logical model và khuyến nghị, không đổi Ready contracts.
+
+[HubSpot Conversation / Ticket stages / Help Desk fields](references/hubspot-conversation-stage-fields.md) — PLAN-031 research2026-10-15; stage trong workspace thuộc Ticket, chưa là Ready contract.
+
+[HubSpot Ticket–Conversation ERD / close–reopen / threading / merge](references/hubspot-ticket-conversation-lifecycle.md) — phân biệt Inbox legacy, Help Desk và giới hạn kiểm chứng Facebook.
+
+[Salesforce MessagingSession / Email-to-Case / fields theo stage](references/salesforce-session-stage-fields.md) — PLAN-030 research2026-10-15; phân biệt object values, Path, layout/visibility và validation; chưa là Ready contract.
+
+[Contact versus Session custom fields / Facebook attribution](references/conversation-session-fields-attribution.md) — PLAN-029, nghiên cứu2026-10-15 từ respond.io, Chatwoot và Meta; khuyến nghị phạm vi, chưa là contract Ready hoặc implementation.
+
 [No-code Object Platform PLAN-028](planning/no-code-object-platform.md) — [UX](ux/object-properties-workspace.md), [entity model](data/no-code-entity-model.md), [contract direction](contracts/no-code-object-platform.md), [acceptance](quality/no-code-object-platform-acceptance.md), [Salesforce research](references/salesforce-object-platform.md). Product plan2026-10-15; bounded SRC-073/074 đã có [runtime hướng dẫn](development/object-platform.md) và [evidence](tracking/details/SRC-074.md), lifecycle/connected consumers còn gate.
 
 [Dashboard/Reports redesign PLAN-027](planning/dashboard-workspace.md) — feature/flow, [component và screen](ux/dashboard-workspace.md), [data/table design](data/dashboard-workspace.md), [API](contracts/dashboard-workspace.md), [acceptance](quality/dashboard-workspace-acceptance.md). 2026-10-14: design for review only; user explicitly requests review before code. Không thay runtime hoặc đóng generic Reporting gates.

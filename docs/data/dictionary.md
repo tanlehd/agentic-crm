@@ -1,5 +1,7 @@
 # Data dictionary
 
+**SRC-078 physical extension2026-10-16:** [Filled table dictionary](../contracts/thread-conversation-implementation.md): Chat owns session_classification/session_contribution in forward31; Core owns conversation_session definitions. Old conversation_id = Thread, conversation_session_id = episode. Immutable action actor/owner/team snapshots, explicit old-data coverage; no inferred backfill.
+
 PLAN-028A: [Filled object_workspace_config design](../contracts/object-platform-r1.md) is Ready for forward30, CRM-owned in baseline monolith. No schema version claim until actual migration evidence; stable object version is config CAS. Other proposed PLAN-028 lifecycle tables remain unimplemented.
 
 PLAN-0282026-10-15: [Logical Object/Property/Association, placement và consumer-binding dictionary](no-code-entity-model.md) bổ sung phạm vi thiết kế no-code. Không thêm/sửa persisted fields/bảng ở phiên này; per-table designs/schema ownership/backfill thuộc PLAN-028A/B/C trước DDL. Existing runtime dictionary bên dưới giữ nguyên.
@@ -247,3 +249,6 @@ The [M2 CMS](../contracts/workflow-cms-m2.md) reuses existing workflow_definitio
 SRC-0682026-10-13: [Ready Customer360/session contract](../contracts/customer-360-session.md) defines forward28 session_touchpoint (Chat), sales_session_context and lead_merge (Sales), immutable origin versus actual context, active-session referral continuity and separate duplicate consolidation. Implemented and verified in SRC-068: 333unit,11 persistent MySQL,6 focused healthcare and8 native/browser groups; no stage/milestone/report completion claim. Existing physical monolith retains application ports; no external FK.
 
 PLAN-025 / SRC-069: [Ready session progress contract](../contracts/session-progress.md) defines six Chat-owned tables in forward29, pinned process/stage, need-scoped manual evidence/corrections and a connected behavioral session funnel. Current monolith application producer + pure Reporting reducer; no cross-service SQL or mock-builder permission activation. SP-01…07 implemented and verified in SRC-069 (345unit,13persistent MySQL,8native/browser,6healthcare); see task evidence.
+## Thread / Conversation additive extension (2026-10-16)
+
+[Exact dictionary and filled table templates](../contracts/thread-conversation-implementation.md): session_classification stores optional typed values per acquisition session; session_contribution stores event-time actor/handling owner/team snapshots with source references. conversation_session metadata key denotes episode; legacy conversation denotes Thread. New tables belong to Chat; no guessed historical backfill.

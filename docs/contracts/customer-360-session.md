@@ -1,5 +1,7 @@
 # Customer 360 và inbox session — Ready, SRC-068
 
+**Implemented additive slice SRC-078 / 2026-10-16:** [Thread / Conversation exact contract](thread-conversation-implementation.md), PLAN-033A DONE. Thread legacy IDs/API remain stable; Conversation episode has optional custom fields and stage, event-time ownership/contributor history, and Related Lead/Deal actions with current permissions. Cross-team transfer preserves the episode; Ticket and connected Reporting remain gated. Physical forward31 stays in the baseline monolith; service extraction rules below remain unchanged.
+
 2026-10-13, CHG-20261013-10. User approved implementation after [final ERD](../data/chat-sales-erd.md). This exact slice replaces referral-driven session splitting and implements agent intake/continuation, direct Deal context and explicit duplicate Lead consolidation. Configurable session stages/milestone evidence are a separate subsequent slice; no funnel reporting completion is implied by this delivery.
 
 ## Behavior and compatibility

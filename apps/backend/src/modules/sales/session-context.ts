@@ -8,6 +8,8 @@ import { object,checkField,fieldError } from '../crm/properties.js';
 import { stamp,contactReferences } from '../crm/core.js';
 import { uuid } from '../identity/admin.js';
 import { requireSalesSession } from '../conversation/sales-context-port.js';
+import { contribute } from '../conversation/contribution-storage.js';
+import { RoutingIdentityPort } from '../identity/routing-port.js';
 
 export function contextInput(b:Record<string,any>){
  if(b.conversation_session_id!=null&&!b.conversation_id)fieldError('conversation_id');
@@ -18,6 +20,7 @@ export async function appendSalesContext(s:TransactionScope,record:string,conver
  const [existing]=await s.query('SELECT id FROM sales_session_context WHERE tenant_id=? AND record_id=? AND session_id=? AND kind=?',[s.context.tenantId,record,session,kind]);
  if(existing)return {id:existing.id,created:false};
  const id=randomUUID();await s.query('INSERT INTO sales_session_context(tenant_id,id,record_id,conversation_id,session_id,actor_id,kind,recorded_at) VALUES (?,?,?,?,?,?,?,UTC_TIMESTAMP(6))',[s.context.tenantId,id,record,conversation,session,actor,kind]);
+ await contribute(s,conversation,{session,kind:'outcome',source:id,actor:{kind:await new RoutingIdentityPort().actorKind(s,actor),id:actor},payload:{record_id:record,role:kind}});
  return {id,created:true};
 }
 export class SalesSessionContext {

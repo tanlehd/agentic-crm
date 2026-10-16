@@ -70,7 +70,7 @@ export class CrmRecords {
     try{return await this.uow.run({tenantId:tenant},async scope=>{
       const access=await withFieldPolicies(scope,await this.authorization.loadHuman(scope,account,undefined,true));actor=access.principalId;
       const type=await this.type(scope,route.object),defs=await properties(scope,type.id);
-      if(route.kind==='properties'&&type.kind!=='custom'&&!['contact','company','activity','lead'].includes(route.object))throw new CommandError(422,'OBJECT_NOT_IMPLEMENTED');
+      if(route.kind==='properties'&&type.kind!=='custom'&&!['contact','company','activity','lead','conversation_session'].includes(route.object))throw new CommandError(422,'OBJECT_NOT_IMPLEMENTED');
       if(route.kind!=='records'&&route.kind!=='archive')this.authorizeSchema(access,true);
       const queryDefs=[...(standardFields[route.object]??[]),...defs];
       const command={actorId:access.principalId,correlationId:correlation,route:domainCreate?`${method} /api/v1/${route.object}s${route.id?'/'+route.id:''}`:`${method} /api/v1/${route.kind==='records'||route.kind==='archive'?'objects':'object-types'}/${route.object}/${route.kind==='archive'?'records':route.kind}${route.id?'/'+route.id:''}${route.kind==='archive'?'/archive':''}`,key,body,version};
@@ -96,6 +96,7 @@ export class CrmRecords {
           data={...p,label:b.label,version:String(BigInt(p.version)+1n)};
         }else{
           const p=propertyInput(body);if(p.key.startsWith('source_')||['declared_source','conversation_id','conversation_session_id','contact_id','lead_id'].includes(p.key)||queryDefs.some(d=>d.key===p.key))throw new CommandError(422,'RESERVED_PROPERTY');checkField(access,route.object,p.key,'write');checkField(access,route.object,p.key,'read');
+          if(route.object==='conversation_session'&&(p.required||p.indexed||p.default_value!==null||defs.length>=100||['stage','stage_key','thread_id','sequence','opened_at','closed_at','policy_version'].includes(p.key)))throw new CommandError(422,'CLASSIFICATION_PROPERTY_UNSUPPORTED');
           if(String(type.version)!==version)throw new CommandError(409,'VERSION_CONFLICT');
           if(p.required&&(await scope.query('SELECT id FROM crm_record WHERE tenant_id=? AND object_type_id=? LIMIT 1',[tenant,type.id])).length)throw new CommandError(422,'REQUIRED_PROPERTY_REQUIRES_EMPTY_OBJECT');
           const id=registryId();await scope.query('INSERT INTO property_definition(id,tenant_id,object_type_id,`key`,label,type,required,default_value,options,indexed,`sensitive`,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))',[id,tenant,type.id,p.key,p.label,p.type,p.required,p.default_value===null?null:JSON.stringify(p.default_value),p.options===null?null:JSON.stringify(p.options),p.indexed,p.sensitive]);

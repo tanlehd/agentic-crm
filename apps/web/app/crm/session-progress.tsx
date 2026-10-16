@@ -3,6 +3,7 @@ import { useRef,useState } from 'react';
 import { useApi,useCommand,ErrorNotice,can,type Context } from './api';
 import { Button } from '../../components/ui/button';
 import { Dialog } from './dialog';
+import { ConversationClassificationPanel } from './conversation-classification';
 
 type Entry={key:string;label:string};
 export function SessionProgressPanel({tenant,context,conversation,sessions}:{tenant:string;context:Context;conversation:string;sessions:any[]}){
@@ -12,6 +13,7 @@ export function SessionProgressPanel({tenant,context,conversation,sessions}:{ten
  <div className="crm-actions"><Button variant="outline" onClick={()=>setTool('funnel')}>Phễu theo lượt inbox</Button><Button variant="outline" onClick={()=>setTool('process')}>Quy trình phiên</Button></div>
  {!!sessions.length&&<label>Phiên theo dõi<select aria-label="Phiên theo dõi" value={selected?.id??''} onChange={e=>setChosen(e.target.value)}>{sessions.map(s=><option key={s.id} value={s.id}>#{s.sequence} · {s.status==='active'?'Đang mở':'Đã đóng'}</option>)}</select></label>}
  {selected&&<Progress key={selected.id} {...{tenant,conversation}} session={selected}/>}
+ {selected&&<ConversationClassificationPanel key={'classification:'+selected.id} tenant={tenant} thread={conversation} session={selected.id}/>}
  {tool==='process'&&<Dialog title="Quy trình phiên" onClose={()=>setTool(null)}><ProcessEditor tenant={tenant} editable={can(context,'schema','update')}/></Dialog>}
  {tool==='funnel'&&<Dialog title="Phễu chuyển đổi theo lượt inbox" onClose={()=>setTool(null)}><Funnel tenant={tenant}/></Dialog>}
  </section>;

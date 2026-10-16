@@ -1,5 +1,7 @@
 # Session progress and behavioral funnel
 
+**Implemented additive slice SRC-078 / 2026-10-16:** [Thread / Conversation exact contract](thread-conversation-implementation.md), PLAN-033A DONE. Thread legacy IDs/API remain stable; Conversation episode has optional custom fields and stage, event-time ownership/contributor history, and Related Lead/Deal actions with current permissions. Cross-team transfer preserves the episode; Ticket and connected Reporting remain gated. Physical forward31 stays in the baseline monolith; service extraction rules below remain unchanged.
+
 PLAN-025 / SRC-069 · 2026-10-14 · Ready. CHG-20261014-01 implements the remaining user-approved [ERD](../data/chat-sales-erd.md) after [Customer360](customer-360-session.md). This contract is the exact scope, including a connected behavioral funnel independent of the mock Report Builder.
 
 ## Process and lifecycle

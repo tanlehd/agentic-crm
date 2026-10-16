@@ -11,7 +11,7 @@ import { page } from './page.js';
 export const standardKeys=['contact','company','lead','deal','ticket','conversation','activity'] as const;
 export type MetadataRoute='object-types'|'association-types';
 const tables={'object-types':'object_type','association-types':'association_type'} as const;
-const reservedKeys=new Set<string>([...standardKeys,'schema','association','membership','role','team','agent','automation','integration','audit']);
+const reservedKeys=new Set<string>([...standardKeys,'conversation_session','schema','association','membership','role','team','agent','automation','integration','audit']);
 const isKey=(v:unknown):v is string=>typeof v==='string'&&/^[a-z][a-z0-9_]{0,63}$/.test(v);
 export function validateRegistryInput(route:MetadataRoute|'associations',input:unknown):Record<string,any>{
   if(!input||typeof input!=='object'||Array.isArray(input))throw new CommandError(400,'INVALID_REQUEST');

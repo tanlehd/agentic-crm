@@ -1,5 +1,7 @@
 # Kế hoạch sinh source code M1–M2
 
+**Implemented 2026-10-16 / CHG-20261016-01:** PLAN-033A exact gate DONE; SRC-078 delivers [Thread/Conversation classification, transfer and contributions](../development/thread-conversation.md) over existing stage/Lead/Deal runtime. Forward31 preserves old IDs. Ticket/connected Reporting and PLAN-028E backlog remain separately gated.
+
 **Next priority2026-10-15 / CHG-20261015-02:** [PLAN-028](no-code-object-platform.md) lập kế hoạch mở rộng M1 metadata thành no-code CRM: Object & Properties/ERD/Workspace → connected custom-object Reporting → custom-object Workflow. PLAN-028A…D exact gates và SRC-073…077 tuần tự; SRC-059/PLAN-024B…E còn prerequisites, không đổi DONE/evidence của task cũ. SRC-073/074 bounded model/workspace implemented; [runbook](../development/object-platform.md), [evidence](../tracking/details/SRC-074.md). No active source task; PLAN-028E preserves remaining R1, R2/R3 pending.
 
 **Current 2026-10-14 / CHG-20261014-05:** User authorized implementation after PLAN-027 review. Dashboard/Reports local slice is implemented: Reporting-owned schema4 (six new tenant-scoped tables;13 prior business tables preserved), native APIs, atomic templates and separate UI. [Runbook](../development/dashboard-workspace.md) · [Backend evidence](../tracking/details/SRC-071.md) · [UI evidence](../tracking/details/SRC-072.md). Earlier design-only/phase statements below are historical; broad Reporting milestones remain in tracker.

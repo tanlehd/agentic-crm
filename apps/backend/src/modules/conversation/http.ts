@@ -9,6 +9,7 @@ import { databaseSource } from '../../kernel/database/data-source.js';
 import { CommandError } from '../../kernel/reliability/commands.js';
 import { Conversations } from './domain.js';
 import { SessionProgress } from './session-progress.js';
+import { ConversationClassification } from './classification.js';
 interface Request extends IncomingMessage {query:Record<string,unknown>;params:Record<string,string>;body:unknown}
 export class ConversationRuntime implements OnModuleDestroy {
   private readonly source=databaseSource();private initialized?:Promise<unknown>;readonly conversations:Conversations;
@@ -68,5 +69,23 @@ export class SessionProgressController {
  @Get('conversations/:conversation/sessions/:session/progress') read(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'progress');}
  @Post('conversations/:conversation/sessions/:session/progress') mutate(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'progress',true);}
 }
-@Module({imports:[AuthModule],controllers:[ConversationController,ConversationChannelsController,SessionProgressController],providers:[ConversationRuntime]})
+@Controller('conversations/:conversation/sessions/:session')
+export class ClassificationController {
+ constructor(@Inject(AuthRuntime) private readonly auth:AuthRuntime,@Inject(ConversationRuntime) private readonly runtime:ConversationRuntime){}
+ private async respond(req:Request,res:ServerResponse,kind:'classification'|'contributions',mutation=false){
+  const correlation=randomUUID();res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json');res.setHeader('X-Content-Type-Options','nosniff');
+  try{
+   const session=mutation?await this.auth.service.requireMutation(cookie(req,'crm_session'),req.headers.origin,req.headers['x-csrf-token']):await this.auth.service.session(cookie(req,'crm_session'),true),tenant=req.headers['x-tenant-id'];
+   if(!uuid(tenant)||Object.values(req.params).some(v=>!uuid(v))||kind==='classification'&&Object.keys(req.query).length)throw new CommandError(400,'INVALID_REQUEST');await this.runtime.ready();
+   const service=new ConversationClassification(this.runtime.conversations),cid=req.params.conversation!,sid=req.params.session!;
+   if(!mutation){const result=kind==='classification'?await service.read(session.account_id,tenant,cid,sid):await service.history(session.account_id,tenant,cid,sid,req.query);if('version' in result.data)res.setHeader('ETag',`"${result.data.version}"`);res.end(JSON.stringify({...result,meta:{correlation_id:correlation}}));return;}
+   const key=req.headers['idempotency-key'],match=req.headers['if-match'];if(typeof key!=='string'||!/^application\/json(?:;|$)/i.test(req.headers['content-type']??'')||match!==undefined&&(typeof match!=='string'||!/^"(0|[1-9][0-9]{0,19})"$/.test(match)))throw new CommandError(400,'INVALID_REQUEST');
+   const result=await service.mutate(session.account_id,tenant,cid,sid,req.body,key,typeof match==='string'?match.slice(1,-1):undefined,correlation);res.statusCode=result.status;res.setHeader('ETag',`"${result.body.data.version}"`);res.end(JSON.stringify(result.body));
+  }catch(e){const f=e instanceof CommandError||e instanceof AuthError?e:new CommandError(e instanceof AccessError?403:503,e instanceof AccessError?'FORBIDDEN':'TEMPORARILY_UNAVAILABLE');res.statusCode=f.status;res.end(JSON.stringify({error:{code:f.code,message:'Không thể hoàn tất yêu cầu Conversation.',fields:[],retryable:f.status===503},meta:{correlation_id:correlation}}));}
+ }
+ @Get('classification') read(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'classification');}
+ @Post('classification') update(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'classification',true);}
+ @Get('contributions') history(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'contributions');}
+}
+@Module({imports:[AuthModule],controllers:[ConversationController,ConversationChannelsController,SessionProgressController,ClassificationController],providers:[ConversationRuntime]})
 export class ConversationModule {}

@@ -1,5 +1,7 @@
 # Conversation Session — acquisition và CRM lineage
 
+**Implemented additive slice SRC-078 / 2026-10-16:** [Thread / Conversation exact contract](thread-conversation-implementation.md), PLAN-033A DONE. Thread legacy IDs/API remain stable; Conversation episode has optional custom fields and stage, event-time ownership/contributor history, and Related Lead/Deal actions with current permissions. Cross-team transfer preserves the episode; Ticket and connected Reporting remain gated. Physical forward31 stays in the baseline monolith; service extraction rules below remain unchanged.
+
 **Current SRC-068:** [Customer360/session contract](customer-360-session.md) implements session-preserving Ad touches, actual Lead/Deal context and duplicate consolidation in forward28. [Final ERD](../data/chat-sales-erd.md) remains the target for configurable stage/history and milestone evidence, which are not included in this slice. Historical rules below do not override the SRC-068 writer.
 
 **Accepted direction CHG-20261013-07,2026-10-13:** Ad mới trong một session chưa close không mở session mới. SRC-068 now implements this; connected funnel/attribution reporting remains separate.

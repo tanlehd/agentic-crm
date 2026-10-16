@@ -1,4 +1,5 @@
 import type { TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
+import { contribute } from '../conversation/contribution-storage.js';
 import { activityNotification,activitySupported,type ActivityActor } from '../../kernel/reliability/activity-notification.js';
 import { RecordRegistry } from './registry.js';
 import { allows } from './access.js';
@@ -17,5 +18,7 @@ export class CrmActivityPort {
 export async function notifyConversationNote(s:TransactionScope,id:string,operation:'created'|'updated'|'archived',actor:ActivityActor,revision?:string){
   if(!await activitySupported(s))return;const b=await new CrmActivityPort().binding(s,id);if(!b)return;
   const source_revision=revision??String(b.version);
+  await s.query('SELECT id FROM crm_record WHERE tenant_id=? AND id=? FOR UPDATE',[s.context.tenantId,b.conversation_id]);
+  await contribute(s,b.conversation_id,{kind:'note',source:id,revision:source_revision,actor,payload:{operation}});
   await activityNotification(s,'crm.conversation_note.changed','activity',id,source_revision,{conversation_id:b.conversation_id,activity_id:id,operation,source_revision},actor);
 }

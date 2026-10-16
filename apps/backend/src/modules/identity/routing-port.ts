@@ -5,6 +5,8 @@ import { validateOwnershipTarget } from './authorization.js';
 export interface RoutingPrincipal { id:string;kind:'human'|'ai';available:boolean;access:Access;maxConcurrency:number;actions:string[];tools:string[];policyId:string|null;policyVersion:string;timeoutMs:number;maxToolCalls:number;runtimeAdapter:string|null }
 // Identity owns all SQL for principal/membership/team/policy projections.
 export class RoutingIdentityPort {
+  async actorKind(s:TransactionScope,id:string){const [r]=await s.query('SELECT kind FROM principal WHERE tenant_id=? AND id=?',[s.context.tenantId,id]);if(r)return r.kind as string;const [service]=await s.query('SELECT id FROM service_actor WHERE tenant_id=? AND id=?',[s.context.tenantId,id]);return service?'service':'unknown';}
+  async teams(s:TransactionScope){const rows=await s.query('SELECT id,name,purpose FROM team WHERE tenant_id=? AND active=1 ORDER BY name,id LIMIT 201',[s.context.tenantId]);if(rows.length>200)throw new CommandError(422,'TEAM_LIMIT_EXCEEDED');return rows;}
   async team(s:TransactionScope,id:string|null){await validateOwnershipTarget(s,null,id);}
   async salesTeam(s:TransactionScope,id:string){await this.team(s,id);const [t]=await s.query('SELECT purpose FROM team WHERE tenant_id=? AND id=?',[s.context.tenantId,id]);if(t?.purpose!=='sales')throw new CommandError(422,'SALES_TEAM_REQUIRED');}
   async chatTeam(s:TransactionScope,id:string){await this.team(s,id);const [t]=await s.query('SELECT purpose FROM team WHERE tenant_id=? AND id=?',[s.context.tenantId,id]);if(!['chat','general'].includes(t?.purpose))throw new CommandError(422,'CHAT_TEAM_REQUIRED');}

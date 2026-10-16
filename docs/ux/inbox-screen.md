@@ -1,5 +1,7 @@
 # INBOX-01 — Quản lý hội thoại
 
+**Implemented additive slice SRC-078 / 2026-10-16:** [Thread / Conversation exact contract](../contracts/thread-conversation-implementation.md), PLAN-033A DONE. Thread legacy IDs/API remain stable; Conversation episode has optional custom fields and stage, event-time ownership/contributor history, and Related Lead/Deal actions with current permissions. Cross-team transfer preserves the episode; Ticket and connected Reporting remain gated. Physical forward31 stays in the baseline monolith; service extraction rules below remain unchanged.
+
 Status: Ready UX design, UX-003, 2026-10-07. Kế thừa toàn bộ nghiệp vụ [Agent Chat UX](agent-chat-workspace.md), [contract](../contracts/agent-chat-workspace.md), [Chat service](../services/chat.md), [ownership](../data/service-ownership.md). Tài liệu này là screen entrypoint; UX-003 thay layout app rail, không thay state machine hoặc API.
 
 ## Người dùng và mục tiêu

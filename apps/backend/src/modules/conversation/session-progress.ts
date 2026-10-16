@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { contribute } from './contribution-storage.js';
 import type { TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
 import { CommandError,DurableCommands } from '../../kernel/reliability/commands.js';
 import type { Access } from '../identity/domain/authorization.js';
@@ -98,6 +99,7 @@ export class SessionProgress {
     }
     await s.query('UPDATE session_progress SET version=?,updated_at=? WHERE tenant_id=? AND session_id=?',[next,recordedAt,tenant,sid]);
    }
+   await contribute(s,cid,{session:sid,kind:action==='stage'?'stage':'evidence',source:id,revision:next,actor:{kind:'human',id:a.principalId},payload:{action,...(action==='stage'?{from_stage:p.stage_key,to_stage:b.stage_key}:{})}});
    await event(s,a.principalId,correlation,sid,next,action);const response={status:200,body:{data:{id,session_id:sid,version:next,action},meta:{correlation_id:correlation}}};await commands.complete(s,cmd,response);return response;
   });
  }

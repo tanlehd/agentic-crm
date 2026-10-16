@@ -30,7 +30,20 @@ Git publication S-20261015-Object-Platform: user requested commit/push of the co
 | PLAN-028D | Exact bounded release/capacity/restore/compatibility matrix | SRC-076 | TODO | unassigned | Limits/retention và retained synthetic fixtures |
 | SRC-077 | No-code platform retained-data E2E/recovery/upgrade release | PLAN-028D; SRC-076 | TODO | unassigned | OP-18/19 và integrated R1→R2→R3; runtime evidence required |
 
+## Session fields / attribution evaluation — 2026-10-15
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-029 | Nghiên cứu Contact versus Session custom fields, respond.io/Chatwoot và attribution Facebook; khuyến nghị phạm vi | SRC-068; SRC-069; SRC-074 | DONE | Codex 2026-10-15 | [Research/evidence](details/PLAN-029.md);7official public pages, docs/links/DAG PASS; research-only, không đổi contract Ready/PLAN-028 hoặc claim source |
+| PLAN-030 | Salesforce Messaging/Email-to-Case; object fields versus stage/Path/layout/validation | PLAN-029 | DONE | Codex 2026-10-15 | [Evidence/research](details/PLAN-030.md);17official source groups, docs/whitespace PASS; research-only, không đổi Ready contracts hoặc claim source |
+| PLAN-031 | HubSpot Conversation versus Ticket pipeline, stage properties và Help Desk UX | PLAN-030 | DONE | Codex 2026-10-15 | [Evidence/research](details/PLAN-031.md); stage plus lifecycle ERD/threading/merge follow-up; docs checks in log; research-only, exact Facebook segmentation NOT_VERIFIED |
+| PLAN-032 | Intercom conversation/ticket lifecycle và khuyến nghị quản lý nhiều lượt trao đổi | PLAN-031 | DONE | Codex 2026-10-15 | [Evidence/research](details/PLAN-032.md);11official sources, docs/whitespace PASS; recommendation only, no implementation or Ready-contract change |
+| PLAN-033 | Chốt Thread/Conversation, thuộc tính theo phiên, related outcomes và truy hồi đóng góp khi chuyển owner | PLAN-032; SRC-068; SRC-069; SRC-074 | DONE | Codex 2026-10-15 | [Evidence/product contract](details/PLAN-033.md); CHG-20261015-04 user-approved, docs/whitespace PASS; original product-only evidence; follow-up PLAN-033A/SRC-078 below |
+| PLAN-033A | Exact compatibility, Conversation fields/ownership history, related-outcome commands và reporting attribution gate | PLAN-033 | DONE | Codex 2026-10-16 | [Exact contract/table designs](../contracts/thread-conversation-implementation.md); docs298/2574 links/DAG77 PASS; runtime NOT_RUN |
+| SRC-078 | Thread/Conversation episode classification, contribution history, transfer and related outcomes UI | PLAN-033A; SRC-069; SRC-074 | DONE | Codex 2026-10-16 | [Evidence](details/SRC-078.md);376unit/11native/24regression/9browser/9cold-bootstrap PASS; builds/types/static checks; forward31 preserves96tables; Ticket/connected Reporting gated |
+
 ## Customer 360 — 2026-10-13
+
 
 | ID | Deliverable | Deps | Status | Owner | Gate / evidence |
 |---|---|---|---|---|---|
