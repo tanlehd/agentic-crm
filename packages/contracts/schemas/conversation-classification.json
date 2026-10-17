@@ -45,7 +45,7 @@
               "type": "string",
               "format": "uuid"
             },
-            "thread_id": {
+            "conversation_id": {
               "type": "string",
               "format": "uuid"
             },
@@ -170,7 +170,7 @@
           },
           "required": [
             "session_id",
-            "thread_id",
+            "conversation_id",
             "status",
             "version",
             "can_edit",

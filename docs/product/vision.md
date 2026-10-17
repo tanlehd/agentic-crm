@@ -2,6 +2,8 @@
 
 Status: Ready for implementation — baseline phạm vi.
 
+Tài liệu tính năng, UX, demo và presentation tổ chức theo [nhóm mục tiêu và người sử dụng](capability-map.md): persona → mục tiêu → tính năng → kết quả. Bản đồ phân biệt chức năng đã triển khai và định hướng, không thay nguồn trạng thái trong tracker.
+
 ## Mục tiêu
 
 Chuyển hội thoại thành kết quả CRM có thể đo: nhu cầu được qualify, sale tiếp nhận, lịch hẹn, cơ hội thắng và chăm sóc sau bán. Doanh nghiệp cấu hình object, quyền, quy trình và agent theo ngành mà không fork ứng dụng.

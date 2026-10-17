@@ -8,7 +8,7 @@ const envelope=data=>obj({data,meta:obj({correlation_id:str})});
 export async function conversationClassificationContracts(spec){
  const definitions={
   'conversation-classification-input':obj({values:{type:'object',minProperties:1,maxProperties:100,additionalProperties:scalar}}),
-  'conversation-classification-response':envelope(obj({session_id:uuid,thread_id:uuid,status:{enum:['active','closed']},version:revision,can_edit:bool,definitions:{type:'array',maxItems:100,items:definition},values:{type:'object',additionalProperties:scalar}})),
+  'conversation-classification-response':envelope(obj({session_id:uuid,conversation_id:uuid,status:{enum:['active','closed']},version:revision,can_edit:bool,definitions:{type:'array',maxItems:100,items:definition},values:{type:'object',additionalProperties:scalar}})),
   'conversation-classification-result':envelope(obj({session_id:uuid,version:revision})),
   'conversation-contributions-response':envelope(obj({session_id:uuid,coverage:{enum:['full','partial','none']},owner:{anyOf:[{type:'null'},obj({id:nullableId,team_id:nullableId,revision})]},history:{type:'array',maxItems:50,items:obj({id:uuid,revision,kind:{enum:['opened','closed','assignment','outbound_submitted','note','stage','evidence','classification','outcome']},source_id:uuid,source_revision:revision,actor,owner_id:nullableId,handling_team_id:nullableId,owner_revision:revision,recorded_at:{type:'string',format:'date-time'},payload:{type:'object'}})},next_before_revision:{type:['string','null'],pattern:'^[1-9][0-9]{0,19}$'}})),
   'conversation-assignment-teams-response':envelope({type:'array',maxItems:200,items:obj({id:uuid,name:str,purpose:str})}),

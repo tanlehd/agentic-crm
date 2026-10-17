@@ -1,5 +1,7 @@
 # Data dictionary
 
+SRC-0832026-10-17 uses existing [Chat inbox/share fields](agent-chat-workspace.md) unchanged. New [authoring options](../contracts/custom-inbox-builder.md) are transient Identity projections (id/name), not a new persisted directory or queue table. No migration or schema ownership change.
+
 **SRC-080 physical extension2026-10-16:** [Filled dictionary/table designs](../contracts/record-pages.md) cho `record_page_view` và `record_page_team`, CRM-owned forward32. Layout JSON version1, tenant/object/surface/view keys, CAS version, priority và active Identity team logical references; không chứa business record values. Old forms/list views giữ nguyên.
 
 **SRC-078 physical extension2026-10-16:** [Filled table dictionary](../contracts/thread-conversation-implementation.md): Chat owns session_classification/session_contribution in forward31; Core owns conversation_session definitions. Old conversation_id = Thread, conversation_session_id = episode. Immutable action actor/owner/team snapshots, explicit old-data coverage; no inferred backfill.
@@ -254,3 +256,7 @@ PLAN-025 / SRC-069: [Ready session progress contract](../contracts/session-progr
 ## Thread / Conversation additive extension (2026-10-16)
 
 [Exact dictionary and filled table templates](../contracts/thread-conversation-implementation.md): session_classification stores optional typed values per acquisition session; session_contribution stores event-time actor/handling owner/team snapshots with source references. conversation_session metadata key denotes episode; legacy conversation denotes Thread. New tables belong to Chat; no guessed historical backfill.
+
+2026-10-16 / CHG-20261016-04: User authorized per-need AI enrichment and follow-up workflow; SRC-082 restores canonical conversation_id per CHG-20261016-05. PLAN-035/SRC-081 DONE; [runtime evidence](../tracking/details/SRC-081.md). See [contract](../contracts/need-follow-up.md). Forward34 renames four physical relationship columns; compatibility preserves immutable v1/graphs/receipts; real adapter configured explicitly; no invented provider result.
+
+SRC-082 / CHG-20261016-05: [Conversation identity alignment](../contracts/conversation-identity.md) makes conversation_id canonical and preserves session_id episode semantics. Forward34 renames session_contribution/need_assessment/need_follow_up/sales_need_outcome.thread_id without changing IDs, grants, tenant ownership or cross-service boundaries. New need.assessed/classification events use v2; v1 artifacts stay readable. CI-01…03 validation tracked separately from SRC-081 history.

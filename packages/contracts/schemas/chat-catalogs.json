@@ -3,6 +3,113 @@
   "$id": "https://agentic-crm.local/schemas/chat-catalogs.json",
   "title": "ChatWorkspaceCatalogs",
   "definitions": {
+    "catalog-inbox-options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "filter_fields": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "status",
+                  "owner_principal_id",
+                  "team_id",
+                  "channel",
+                  "channel_id",
+                  "tags"
+                ]
+              },
+              "maxItems": 6
+            },
+            "can_share": {
+              "type": "boolean"
+            },
+            "teams": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "name": {
+                    "type": "string",
+                    "maxLength": 255
+                  }
+                },
+                "required": [
+                  "id",
+                  "name"
+                ]
+              },
+              "maxItems": 200
+            },
+            "principals": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "name": {
+                    "type": "string",
+                    "maxLength": 255
+                  }
+                },
+                "required": [
+                  "id",
+                  "name"
+                ]
+              },
+              "maxItems": 500
+            }
+          },
+          "required": [
+            "filter_fields",
+            "can_share",
+            "teams",
+            "principals"
+          ]
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "correlation_id": {
+              "type": "string"
+            },
+            "as_of": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "allowed_actions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32
+              }
+            }
+          },
+          "required": [
+            "correlation_id"
+          ]
+        }
+      },
+      "required": [
+        "data",
+        "meta"
+      ]
+    },
     "catalog-predicate": {
       "type": "object",
       "additionalProperties": false,

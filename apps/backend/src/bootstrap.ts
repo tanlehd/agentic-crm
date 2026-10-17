@@ -1,3 +1,4 @@
+import { threadBoundary } from './modules/conversation/thread-boundary.js';
 import { FacebookModule } from './modules/channels/facebook-http.js';
 import { ReportingDefinitionsModule } from './modules/reporting/http.js';
 import { MarketingAuthorityModule } from './modules/channels/marketing-http.js';
@@ -25,6 +26,7 @@ export async function bootstrap(role: 'api' | 'worker'): Promise<void> {
   class RuntimeModule {}
   const app = await NestFactory.create<NestExpressApplication>(RuntimeModule, { logger: ['error', 'warn', 'log'],bodyParser:false });
   safeJsonBody(app);
+  threadBoundary(app);
   app.enableShutdownHooks();
   app.setGlobalPrefix('api/v1', { exclude: [{ path: 'auth/{*path}', method: RequestMethod.ALL }, {path:'internal/v1/marketing-authority/{*path}',method:RequestMethod.ALL}] });
   const port = Number(process.env.PORT ?? (role === 'api' ? 3001 : 3002));

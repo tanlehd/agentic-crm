@@ -30,7 +30,7 @@ export class ConversationClassification {
  async read(account:string,tenant:string,cid:string,sid:string){return this.conversations.uow.run({tenantId:tenant},async s=>{
   const {a,record,session}=await this.authorize(s,account,cid,sid),defs=await this.definitions(s),[row]=await s.query('SELECT * FROM session_classification WHERE tenant_id=? AND session_id=?',[tenant,sid]);
   const visible=defs.filter(p=>fieldAllowed(a,resource,p.key,'read'));
-  return {data:{session_id:sid,thread_id:cid,status:session.status,version:String(row?.version??0),can_edit:session.status==='active'&&permits(a,'conversation','update',record)&&fieldAllowed(a,'conversation','text','write'),definitions:visible.map(p=>({...p,can_write:fieldAllowed(a,resource,p.key,'write')})),values:Object.fromEntries(Object.entries(row?json(row.values_json):{}).filter(([key])=>visible.some(p=>p.key===key)))}};
+  return {data:{session_id:sid,conversation_id:cid,status:session.status,version:String(row?.version??0),can_edit:session.status==='active'&&permits(a,'conversation','update',record)&&fieldAllowed(a,'conversation','text','write'),definitions:visible.map(p=>({...p,can_write:fieldAllowed(a,resource,p.key,'write')})),values:Object.fromEntries(Object.entries(row?json(row.values_json):{}).filter(([key])=>visible.some(p=>p.key===key)))}};
  });}
  async mutate(account:string,tenant:string,cid:string,sid:string,input:unknown,key:string,version:string|undefined,correlation:string){
   const b=object(input,['values']);if(!version)fail('PRECONDITION_REQUIRED',428);const expected=version!;if(!/^(0|[1-9][0-9]{0,19})$/.test(expected)||! /^[\x21-\x7e]{1,128}$/.test(key))fail('INVALID_REQUEST',400);
@@ -44,7 +44,7 @@ export class ConversationClassification {
    await s.query('INSERT INTO session_classification(tenant_id,session_id,values_json,version,created_at,updated_at) VALUES (?,?,?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6)) ON DUPLICATE KEY UPDATE values_json=?,version=?,updated_at=UTC_TIMESTAMP(6)',[tenant,sid,JSON.stringify(values),next,JSON.stringify(values),next]);
    await contribute(s,cid,{session:sid,kind:'classification',source:sid,revision:next,actor:{kind:'human',id:a.principalId},payload:{changes}});
    await commands.audit(s,a.principalId,correlation,resource,sid,'classification.update',Object.keys(b.values));
-   await s.query("INSERT INTO outbox_event(id,tenant_id,event_type,schema_version,aggregate_type,aggregate_id,aggregate_version,payload,correlation_id,actor_kind,actor_id,occurred_at,created_at,status) VALUES (?,?,'conversation.classification_changed',1,'conversation_session',?,?,?,?,'human',?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6),'pending')",[randomUUID(),tenant,sid,next,JSON.stringify({thread_id:cid,session_id:sid,version:next,changed_keys:Object.keys(b.values)}),correlation,a.principalId]);
+   await s.query("INSERT INTO outbox_event(id,tenant_id,event_type,schema_version,aggregate_type,aggregate_id,aggregate_version,payload,correlation_id,actor_kind,actor_id,occurred_at,created_at,status) VALUES (?,?,'conversation.classification_changed',2,'conversation_session',?,?,?,?,'human',?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6),'pending')",[randomUUID(),tenant,sid,next,JSON.stringify({conversation_id:cid,session_id:sid,version:next,changed_keys:Object.keys(b.values)}),correlation,a.principalId]);
    const response={status:200,body:{data:{session_id:sid,version:next},meta:{correlation_id:correlation}}};await commands.complete(s,cmd,response);return response;
   });
  }

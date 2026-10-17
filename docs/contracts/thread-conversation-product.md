@@ -1,5 +1,7 @@
 # Thread và Conversation — mô hình sản phẩm đã chốt
 
+CHG-20261016-04 / SRC-081: [Thread identity, need enrichment and recovery](need-follow-up.md) supersedes earlier exclusions for this bounded scope. Current canonical Chat APIs use conversation_id (SRC-082 / CHG-20261016-05); deprecated thread_id artifacts remain readable through scoped compatibility. Need-scoped default/custom values, on-demand provider protocol, Human pins and read_need/recover_need workflow actions are implemented separately from general autonomous Agent Runtime or live channel delivery. See task evidence for actual validation.
+
 2026-10-16 implementation authorization: [exact additive contract](thread-conversation-implementation.md), PLAN-033A/SRC-078. The product-only status below describes the original decision; source status/evidence is in the task tracker.
 
 PLAN-033 · CHG-20261015-04 · 2026-10-15. **Product direction approved by user; PLAN-033A exact gate DONE, implementation SRC-078.** Đây là nguồn chuẩn mới về thuật ngữ, phân loại lượt trao đổi, related outcomes và bảo toàn đóng góp khi chuyển owner. Các contract API/physical đã triển khai tiếp tục mô tả baseline đến khi có versioned cutover; không đổi schema/source trong task này.

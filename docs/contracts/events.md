@@ -1,5 +1,7 @@
 # Domain events và delivery semantics
 
+CHG-20261016-04 / SRC-081: [Thread identity, need enrichment and recovery](need-follow-up.md) supersedes earlier exclusions for this bounded scope. Current canonical Chat APIs use conversation_id (SRC-082 / CHG-20261016-05); deprecated thread_id artifacts remain readable through scoped compatibility. Need-scoped default/custom values, on-demand provider protocol, Human pins and read_need/recover_need workflow actions are implemented separately from general autonomous Agent Runtime or live channel delivery. See task evidence for actual validation.
+
 SRC-057 Reporting stores own immutable event facts `report.definition.create.v1`, `report.definition.update.v1`, `report.definition.archive.v1` atomically with draft mutations. Physical payload is tenant/id/report_id/event_type/aggregate_revision/created_at only; archive includes restore commands under the same operation type. This is a local outbox fact, not an activated distributed envelope/relay. Consumer/rebuild/relay contracts must be reviewed before publication; see [storage contract](reporting-persistence.md).
 
 > Microservices target ADR-017 dùng [cross-service rules](service-boundaries.md). APIs/UoW trong tài liệu này là baseline implementation hiện tại; exact remote contracts và sagas cần PLAN-006 trước extraction.
@@ -93,3 +95,5 @@ deal.created and deal.won: aggregate_type deal; payload deal_id,contact_id,lead_
 
 ## Session progress — SRC-069
 Chat writes session.progress_changed schema1 atomically with progress command/receipt/audit. Aggregate session_progress uses session_id and independent progress revision; payload has session_id, revision (decimal string), action (enroll/stage/need/record/replace/retract). Human actor is from native Identity. No reason, transcript, message body or patient data is emitted. Consumers tolerate the additive event type; no distributed relay activation is implied. Process publication records immutable version + audit; new session.opened behavior reads its pinned process through Chat API. [Exact contract](session-progress.md).
+
+SRC-082: need.assessed and conversation.classification_changed producers now emit schema_version2 with conversation_id; all other envelope fields remain unchanged. Existing v1 events retain thread_id. The delivery allowlist accepts v2 only for these two types; workflow.need.starter.v1 keeps its inbox identity and consumes both versions. Published run context/graphs are not rewritten. [Compatibility contract](conversation-identity.md).

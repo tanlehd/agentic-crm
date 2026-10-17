@@ -1568,6 +1568,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/chat-workspace/inbox-options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["catalog-inbox-options"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/chat-workspace/inboxes": {
         parameters: {
             query?: never;
@@ -1850,6 +1866,54 @@ export interface paths {
         get: operations["conversation-classification-get-records-id-assignment-teams"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversations/{conversation}/sessions/{session}/needs/{need}/assessment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["need-get-assessment"];
+        put?: never;
+        post: operations["need-post-assessment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversations/{conversation}/sessions/{session}/needs/{need}/enrich": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["need-post-enrich"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversations/{conversation}/sessions/{session}/needs/{need}/outcome": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["need-post-outcome"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2759,6 +2823,10 @@ export interface components {
             /** Format: uuid */
             supersedes_id: string;
             reason: string;
+        } | {
+            /** @constant */
+            action: "identify_need";
+            label: string;
         };
         "session-progress-response": {
             data: {
@@ -2854,7 +2922,7 @@ export interface components {
                 session_id: string;
                 version: string;
                 /** @enum {unknown} */
-                action: "enroll" | "stage" | "need" | "record" | "replace" | "retract";
+                action: "enroll" | "stage" | "need" | "record" | "replace" | "retract" | "identify_need";
             };
             meta: {
                 correlation_id: string;
@@ -3517,8 +3585,8 @@ export interface components {
         };
         "workflow-graph": {
             trigger: {
-                /** @constant */
-                event_type: "conversation.created";
+                /** @enum {unknown} */
+                event_type: "conversation.created" | "need.assessed";
                 /** Format: uuid */
                 connection_id: string;
             };
@@ -3544,12 +3612,15 @@ export interface components {
                 /** @constant */
                 type: "start_chatflow";
                 config: {
-                    conversation_id: string | {
+                    conversation_id?: string | {
                         ref: string;
                     };
                     /** Format: uuid */
                     chatflow_version_id: string;
-                };
+                    thread_id?: string | {
+                        ref: string;
+                    };
+                } & (unknown | unknown);
                 next: string;
             } | {
                 key: string;
@@ -3608,6 +3679,112 @@ export interface components {
                 config: {
                     outcome: string;
                 };
+            } | {
+                key: string;
+                /** @constant */
+                type: "read_need";
+                config: {
+                    conversation_id: {
+                        /** @constant */
+                        ref: "trigger.conversation_id";
+                    };
+                    session_id: {
+                        /** @constant */
+                        ref: "trigger.session_id";
+                    };
+                    need_id: {
+                        /** @constant */
+                        ref: "trigger.need_id";
+                    };
+                    assessment_version: {
+                        /** @constant */
+                        ref: "trigger.assessment_version";
+                    };
+                };
+                next: string;
+            } | {
+                key: string;
+                /** @constant */
+                type: "read_need";
+                config: {
+                    thread_id: {
+                        /** @constant */
+                        ref: "trigger.thread_id";
+                    };
+                    session_id: {
+                        /** @constant */
+                        ref: "trigger.session_id";
+                    };
+                    need_id: {
+                        /** @constant */
+                        ref: "trigger.need_id";
+                    };
+                    assessment_version: {
+                        /** @constant */
+                        ref: "trigger.assessment_version";
+                    };
+                };
+                next: string;
+            } | {
+                key: string;
+                /** @constant */
+                type: "recover_need";
+                config: {
+                    conversation_id: {
+                        /** @constant */
+                        ref: "trigger.conversation_id";
+                    };
+                    session_id: {
+                        /** @constant */
+                        ref: "trigger.session_id";
+                    };
+                    need_id: {
+                        /** @constant */
+                        ref: "trigger.need_id";
+                    };
+                    assessment_version: {
+                        /** @constant */
+                        ref: "trigger.assessment_version";
+                    };
+                    /** Format: uuid */
+                    team_id: string;
+                    /** @enum {unknown} */
+                    preference: "human" | "ai" | "any";
+                    min_confidence: number;
+                    cooldown_seconds: number;
+                    max_age_seconds: number;
+                };
+                next: string;
+            } | {
+                key: string;
+                /** @constant */
+                type: "recover_need";
+                config: {
+                    thread_id: {
+                        /** @constant */
+                        ref: "trigger.thread_id";
+                    };
+                    session_id: {
+                        /** @constant */
+                        ref: "trigger.session_id";
+                    };
+                    need_id: {
+                        /** @constant */
+                        ref: "trigger.need_id";
+                    };
+                    assessment_version: {
+                        /** @constant */
+                        ref: "trigger.assessment_version";
+                    };
+                    /** Format: uuid */
+                    team_id: string;
+                    /** @enum {unknown} */
+                    preference: "human" | "ai" | "any";
+                    min_confidence: number;
+                    cooldown_seconds: number;
+                    max_age_seconds: number;
+                };
+                next: string;
             })[];
         };
         "workflow-create": {
@@ -4713,6 +4890,28 @@ export interface components {
             through_inbound_seq: string;
             read_state_revision: string;
         };
+        "catalog-inbox-options": {
+            data: {
+                filter_fields: ("status" | "owner_principal_id" | "team_id" | "channel" | "channel_id" | "tags")[];
+                can_share: boolean;
+                teams: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                }[];
+                principals: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                }[];
+            };
+            meta: {
+                correlation_id: string;
+                /** Format: date-time */
+                as_of?: string;
+                allowed_actions?: string[];
+            };
+        };
         "catalog-predicate": {
             /** @enum {unknown} */
             scope: "all" | "mine" | "unassigned" | "team";
@@ -5257,7 +5456,7 @@ export interface components {
                 /** Format: uuid */
                 session_id: string;
                 /** Format: uuid */
-                thread_id: string;
+                conversation_id: string;
                 /** @enum {unknown} */
                 status: "active" | "closed";
                 version: string;
@@ -5347,6 +5546,118 @@ export interface components {
             meta: {
                 correlation_id: string;
             };
+        };
+        "need-assessment-input": {
+            values?: {
+                [key: string]: string | number | boolean | null;
+            };
+            release_pins?: string[];
+        };
+        "need-enrich-input": Record<string, never>;
+        "need-outcome-input": {
+            /** Format: uuid */
+            record_id: string;
+        };
+        "need-assessment-result": {
+            data: {
+                /** Format: uuid */
+                conversation_id: string;
+                /** Format: uuid */
+                session_id: string;
+                /** Format: uuid */
+                need_id: string;
+                version: string;
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "need-assessment-response": {
+            data: {
+                /** Format: uuid */
+                conversation_id: string;
+                /** Format: uuid */
+                session_id: string;
+                /** Format: uuid */
+                need_id: string;
+                version: string;
+                outcomes: {
+                    /** Format: uuid */
+                    id: string;
+                    label: string;
+                    linked: boolean;
+                    can_link: boolean;
+                }[];
+                can_edit: boolean;
+                definitions: {
+                    id: string;
+                    key: string;
+                    label: string;
+                    /** @enum {unknown} */
+                    type: "string" | "text" | "integer" | "decimal" | "boolean" | "date" | "datetime" | "enum";
+                    required: boolean;
+                    default_value: string | number | boolean | null;
+                    options: string[] | null;
+                    indexed: boolean;
+                    sensitive: boolean;
+                    version: string;
+                    can_write: boolean;
+                }[];
+                values: {
+                    [key: string]: string | number | boolean | null;
+                };
+                pinned: string[];
+                proposal: {
+                    values: {
+                        [key: string]: string | number | boolean | null;
+                    };
+                    confidence?: number;
+                    evidence_ids?: string[];
+                    provider?: string;
+                    model?: string;
+                    config_version?: string;
+                    input_fingerprint?: string;
+                    /** Format: date-time */
+                    assessed_at?: string;
+                };
+                history: {
+                    version: string;
+                    values: {
+                        [key: string]: string | number | boolean | null;
+                    };
+                    /** Format: date-time */
+                    recorded_at: string;
+                    proposal: {
+                        values: {
+                            [key: string]: string | number | boolean | null;
+                        };
+                        confidence?: number;
+                        evidence_ids?: string[];
+                        provider?: string;
+                        model?: string;
+                        config_version?: string;
+                        input_fingerprint?: string;
+                        /** Format: date-time */
+                        assessed_at?: string;
+                    };
+                }[];
+            };
+            meta: {
+                correlation_id: string;
+            };
+        };
+        "need-assessed-event-data": {
+            /** Format: uuid */
+            conversation_id: string;
+            /** Format: uuid */
+            session_id: string;
+            /** Format: uuid */
+            need_id: string;
+            assessment_version: string;
+            /** Format: uuid */
+            contact_id: string;
+            /** Format: uuid */
+            connection_id: string;
         };
     };
     responses: never;
@@ -17250,6 +17561,100 @@ export interface operations {
             };
         };
     };
+    "catalog-inbox-options": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized Inbox authoring choices */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["catalog-inbox-options"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+            /** @description Sanitized identity failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthErrorResponse"];
+                };
+            };
+        };
+    };
     "catalog-list-inboxes": {
         parameters: {
             query?: {
@@ -20087,6 +20492,386 @@ export interface operations {
             };
             /** @description Sanitized failure */
             428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "need-get-assessment": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+            };
+            path: {
+                conversation: string;
+                session: string;
+                need: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized need assessment */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["need-assessment-response"];
+                };
+            };
+            /** @description Sanitized failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "need-post-assessment": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                conversation: string;
+                session: string;
+                need: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["need-assessment-input"];
+            };
+        };
+        responses: {
+            /** @description Authorized need assessment */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["need-assessment-result"];
+                };
+            };
+            /** @description Sanitized failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "need-post-enrich": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                conversation: string;
+                session: string;
+                need: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["need-enrich-input"];
+            };
+        };
+        responses: {
+            /** @description Authorized need assessment */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["need-assessment-result"];
+                };
+            };
+            /** @description Sanitized failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "need-post-outcome": {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Tenant-Id": string;
+                Origin: string;
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+                "If-Match": string;
+            };
+            path: {
+                conversation: string;
+                session: string;
+                need: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["need-outcome-input"];
+            };
+        };
+        responses: {
+            /** @description Authorized need assessment */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["need-assessment-result"];
+                };
+            };
+            /** @description Sanitized failure */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            428: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sanitized failure */
+            502: {
                 headers: {
                     [name: string]: unknown;
                 };

@@ -1,5 +1,47 @@
 # Execution và change log
 
+## S-20261017-04 — Authorized Git publication
+
+User explicitly requested “Push git” for accumulated work on main: SRC-081 need enrichment/follow-up, SRC-082 conversation identity alignment, SRC-083 custom Inbox, PLAN-037/038/039 research/design and capability grouping. No new source task or feature status change. Existing 104 changed/untracked source/docs/test files reviewed by inventory; ignored local artifacts/config stay outside publication. `git fetch origin` succeeded; pre-commit HEAD and origin/main both99130b2 (ahead0/behind0), remote https://github.com/tanlehd/agentic-crm.git.
+
+Fresh pre-publication checks on Windows PowerShell/pinned Node24.21.0: `pnpm test:unit` PASS391tests/55files; `pnpm -r typecheck` PASS8packages; `node scripts/check-docs.mjs` PASS315Markdown/2765links/83source DAG; `node scripts/check-schemas.mjs` PASS35; `node scripts/generate-contracts.mjs --check` PASS; `node scripts/lint.mjs` PASS720files. Existing native/browser/build evidence remains in SRC-081/082/083; those suites not rerun for this Git-only session. Staged whitespace checked before commit. The commit containing this entry is the publication snapshot; push result and remote SHA are verified after commit, not preclaimed here.
+
+No DB/migration execution, service restart, reset, deployment, subagent or schedule. Services not freshly checked. No implementation blocker or active source task; next existing backlog remains PLAN-028E. User authorization covers commit/push of this accumulated snapshot; no force push requested.
+
+## S-20261017-03 — PLAN-039 product capability grouping
+
+User requested grouping features by goals and users so future presentation follows the same axis. PLAN-039 claimed IN_PROGRESS with PLAN-037/SRC-083 DONE, completed documentation-only DOC-G01…04. [Capability map](../product/capability-map.md) defines eight goal/persona groups, primary versus related capabilities, agent/team/admin configuration responsibilities, current versus future list views, and a reusable presentation outline. README, vision, index, UX hub, change-control and build plan link the same source. Reviewed current Inbox, Sales, Deal, generic Records and Object & Properties code; no source changed this session.
+
+Verification on Windows PowerShell/pinned Node24.21.0: `.local/node-v24.21.0-win-x64/node.exe scripts/check-docs.mjs` PASS before completion references (315 Markdown,2762 local links,6 JSON examples,35 Mermaid headers,83 acyclic source tasks); `git diff --check` PASS (Git line-ending conversion warnings only). Manual DOC-G01…03 review: groups include persona/goal/result/source, sharing distinguishes use/management, runtime statements retain Ticket/provider/connected-consumer gates. Final doc/whitespace checks follow completion entries. Runtime/build/browser tests NOT_RUN because documentation-only; no claim of a new runtime feature or deck.
+
+Final completion checks: docs315/2765 local links/83source DAG PASS; normal `git diff --check` and explicit new-file whitespace check PASS. An attempted `core.autocrlf=false` override incorrectly treated existing CRLF as trailing whitespace; repeated with repository Git configuration, no files normalized or rewritten.
+
+Working tree main base99130b2 remains dirty; prior SRC-081/082/083 changes preserved. This session added capability-map.md and documentation links/tracking only. No commit/push/deploy/reset/service restart/subagent/schedule. Services not freshly checked; last runtime snapshot remains SRC-083. No blocker, unresolved taxonomy decision or active source task. Next existing backlog action remains PLAN-028E exact lifecycle gate; future feature docs/presentations must use this map and current evidence.
+
+## CHG-20261017-02 — Goal/persona axis for feature documentation
+
+PLAN-039; documentation organization, no behavioral/contract change. Evidence: user explicitly requested grouping by goals/users; current references mix module, UI layout and saved-list terminology. Decision: canonical G01…G08 product map, common documentation/presentation template, explicit current/future boundaries and links from entry/governance docs. Affected files listed in S-20261017-03. Compatibility/migration: none; service/data ownership, permissions, UI navigation and implementation dependencies unchanged. Documentation acceptance DOC-G01…04 and checks above; resolved. Generalized view library/team publishing remains future exact-contract work, not implementation approval inferred from this grouping.
+
+## S-20261017-02 — SRC-083 completed
+
+PLAN-038/SRC-083 DONE scoped CIB-01…05; CHG-20261017-01 resolved. [Evidence](details/SRC-083.md) and [usage](../development/custom-inbox.md). Added strict native option discovery through Identity port and full saved Inbox UI lifecycle/preview on existing schema21. No migration, owner/routing change or default role grant; source task dependencies DONE and design written before code. Existing dirty SRC-081/082/PLAN-037 preserved.
+
+Windows PowerShell/Node24.21.0 commands PASS: pnpm --filter @agentic-crm/backend build; pnpm --filter @agentic-crm/web typecheck; pnpm -r typecheck; pnpm test:unit (389/54); vitest run apps/backend/tests/inbox-options.test.ts apps/backend/tests/workspace-catalogs.test.ts (5cases,2new); scripts/custom-inbox-native-test.mjs (8groups); scripts/custom-inbox-browser.mjs (final13groups); scripts/check-schemas.mjs (35); scripts/generate-contracts.mjs --check; scripts/lint.mjs (720). Isolated next build with NEXT_BUILD_DIR=.next-inbox-validation PASS, artifacts/custom-inbox/web-build.log; saved next-env/tsconfig bytes restored. Initial browser strict Close selector failure fixed in test, then11groups PASS, expanded12groups and final13groups PASS. Native test expanded to cover field deny and withheld target directory; no DB reset. Artifacts contain actual native/browser outcomes and screenshots, synthetic data only.
+
+Final precompletion docs check314Markdown/2723links/83acyclic source tasks PASS; tracked whitespace PASS. Completion references and explicit new-file whitespace checked again afterward. Screenshots create/library desktop and mobile390/320 inspected. Actual local Alpha admin/chat_anna, mock-only synthetic fixture; no external message/provider configuration. API restarted through existing manager; other services retained. Source files in main base99130b2 working tree, no commit/push/deploy/subagent/schedule. No blocker/active implementation. Next existing backlog PLAN-028E.
+
+## CHG-20261017-01 — Custom Inbox builder
+
+User approved implementation of customizable conversation lists. C2 additive discovery API and UI on existing Chat inbox predicate/schema21. [Ready contract](../contracts/custom-inbox-builder.md) saved before source. PLAN-038 DONE design-only; SRC-083 claimed IN_PROGRESS, dependencies DONE. Existing dirty SRC-081/082 and PLAN-037 work preserved; no parallel agent/schedule. No schema or owner change; CIB evidence pending. Full SRC-036/037 not closed by this slice.
+
+## S-20261017-01 — Agent workspace queue/view research
+
+PLAN-037 claimed IN_PROGRESS with SRC-033/SRC-074/SRC-082 DONE, then completed research-only. [Research](../references/agent-workspace-queues-views.md) compares official respond.io, HubSpot, Atlassian and Microsoft documentation with Chat saved-inbox and Object Workspace source/contracts. Seven official source links; Salesforce direct page CSS error excluded from detailed evidence. First web request used unsupported search parameter and returned an error; retried with documented system2_search_query successfully. Some guessed local paths were absent; resolved using rg --files. No unsupported vendor physical-schema claim. Current-source contracts remain authoritative; logical proposals are not Ready DDL/API or runtime features.
+
+Windows PowerShell, pinned Node24.21.0: `.local/node-v24.21.0-win-x64/node.exe scripts/check-docs.mjs` PASS before completion update (311Markdown,2701local links,6JSON examples,35Mermaid headers not rendered,82acyclic source tasks); `git -c core.safecrlf=false diff --check` and explicit new research trailing-whitespace scan PASS. Completion patch initially failed its log context and made no changes; corrected context before final checks. Runtime/MySQL/browser/vendor portal tests NOT_RUN for documentation research.
+
+Main base99130b2 with preexisting SRC-081/082 dirty source/docs preserved. Added research and updated tasks/log/checkpoint only. No commit/push/deploy/DB mutation/service restart/subagents/schedules. Services not freshly checked. PLAN-037 DONE; existing next implementation gate PLAN-028E retained; no implementation claim or new user decision blocker.
+
 ## CHG-20261016-03 — Record detail and preview pages
 
 Codex2026-10-16, C2 additive presentation metadata. User requests replace Forms & views with two configurable pages and confirms Default + team views. PLAN-034 exact contract/UX/table templates Ready before source; SRC-080 IN_PROGRESS, deps DONE. Preserve uncommitted SRC-07915files; base eebbb55. New schema/API additive, old forms/views retained. Affected UX/contract/CRM+Identity ports/schema catalog/dictionary/AC/tracker/checkpoint. Tests pending; no parallel agents/schedules/commit/push.
@@ -1262,3 +1304,22 @@ Local schema31→32 applied1/repeat0, fingerprints preserve98old tables, private
 ## S-20261016-Record-Pages-publication
 
 User explicitly authorized commit/push of completed SRC-079/080 changes. Remote fetch PASS; prepublication base eebbb55. Reviewed49source/documentation files; .env/.local/artifacts remain ignored, including private SQL backup and credentials. Fresh Windows/Node24.21.0 checks: docs305Markdown/2635links/80acyclic source tasks, generated contracts, Git whitespace PASS. Previous runtime tests/builds remain in SRC-080; no additional runtime verification or deployment claimed for this Git-only session. Actual resulting commit and remote verification will be recorded in ignored artifacts/record-pages/git-publication.json and reported to user. Source statuses unchanged; no active implementation task.
+
+## CHG-20261016-04 / SRC-081 started
+User explicitly authorized full scope. Working tree initially clean main 99130b2. Exact design/table templates saved before source. One active task, no subagents/schedules. Implementation and NF-01…07 evidence pending.
+
+## SRC-081 completed — 2026-10-16
+
+CHG-20261016-04 resolved; PLAN-035/SRC-081 DONE, owner Codex. [Evidence](details/SRC-081.md), [runbook](../development/need-follow-up.md).386unit/13new native/11regression/10browser, backend + isolated web build/types and contracts/schema/docs/lint checks passed. Forward33 preserves100old tables; native fixtures retained, temporary rights restored. Canonical thread_id is API/new-model identity with explicit legacy SQL/v1 compatibility. Builtin/custom need values, Human pins, configured HTTP enrichment, need outcome links and durable read/recovery actions delivered. Provider remains unconfigured; no automatic model calls on close, generic custom workflow/live delivery stay separately gated.
+
+Initial idempotency prepare bug and accessible-label/browser failures fixed and rerun, not reset away. API/worker restarted after edits; all app runtimes ready with connector configuration-required. Main99130b2 working tree dirty; no commit/push/deploy/subagents/schedules. No remaining work within exact NF-01…07 scope, no active source task.
+
+## CHG-20261016-05 / SRC-082 started — 2026-10-16
+
+User explicitly reverses thread_id to conversation_id for platform consistency. C3 authorized naming change; PLAN-036 Ready/DONE, SRC-082 claimed Codex IN_PROGRESS with dependencies DONE. [Contract](../contracts/conversation-identity.md) specifies forward34, v2 events, compatibility for immutable v1/workflows/receipts, unchanged need/AI/recovery behavior. Checks pending; applied migrations and existing dirty workspace preserved.
+
+## SRC-082 completed — 2026-10-16
+
+CHG-20261016-05 resolved; PLAN-036/SRC-082 DONE, owner Codex. [Evidence](details/SRC-082.md). Canonical conversation_id restored across APIs/UI/schema34 and new workflow/v2 events, session_id and need/AI/recovery unchanged. Scoped legacy adapters preserve old clients/receipts/graphs/context/steps/results.389unit/54files,14native +11classification regression,10native/browser,backend + isolated Next builds/workspace types/generated contracts/35schemas/docs/lint/whitespace PASS. Local forward34 applied1/repeat0 preserves104tables and private backup; retained native test rows preserved. Initial browser5s panel timeout resolved on rerun; no page exceptions. No reset/commit/push/deploy/live provider activation. Working tree main base99130b2 includes prior SRC-081 dirty work; no active source task.
+
+SRC-082 final static recheck:310 Markdown/2692links/82-source-task DAG,715 AST-linted JS/TS files and tracked/untracked whitespace checks PASS. Final monitor: API/worker/web/Reporting ready; MySQL/Redis healthy; Connector configuration-required.

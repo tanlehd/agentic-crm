@@ -12,6 +12,17 @@ Git sync S-20261013-01: user explicitly requested commit/push of the accumulated
 
 Git sync S-20261015-01: user authorized commit/push of all accumulated source/docs on main. Fresh pre-commit validation in [execution log](log.md); no feature status change or new implementation task.
 
+## Agent workspace queue/view research — 2026-10-17
+
+Git publication S-20261017-04: user authorized commit/push of accumulated SRC-081/082/083 and PLAN-037/038/039 work on main. Fresh unit/type/static checks in [execution log](log.md); no source task or acceptance status changed.
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-039 | Group product capabilities by user goal/persona and establish presentation/documentation axis | PLAN-037; SRC-083 | DONE | Codex 2026-10-17 | [Capability map / DOC-G01…04](../product/capability-map.md); docs315/2762links/83source DAG + whitespace PASS; documentation-only, no runtime redesign |
+| PLAN-037 | Compare workspace filters/views and routing queues; propose configuration/data separation | SRC-033; SRC-074; SRC-082 | DONE | Codex 2026-10-17 | [Research/evidence](../references/agent-workspace-queues-views.md); official sources + local inspection; research-only, no Ready contract/schema/source change |
+| PLAN-038 | Exact custom Inbox builder and authorized discovery gate | PLAN-037; SRC-033; SRC-039; SRC-082 | DONE | Codex 2026-10-17 | [Scoped contract](../contracts/custom-inbox-builder.md); design-only |
+| SRC-083 | Custom Inbox builder, preview, lifecycle/share and workspace integration | PLAN-038; SRC-033; SRC-039; SRC-082 | DONE | Codex 2026-10-17 | [Evidence](details/SRC-083.md); CIB-01…05 bounded v1;8native/13browser/builds/types PASS, no migration |
+
 ## No-code Object Platform — 2026-10-15
 
 Git publication S-20261016-Record-Pages: user requested commit/push of SRC-079/080 source, specs and evidence. No implementation status change or new active task; see execution log/checkpoint.
@@ -20,6 +31,10 @@ Git publication S-20261015-Object-Platform: user requested commit/push of the co
 
 | ID | Deliverable | Deps | Status | Owner | Gate / evidence |
 |---|---|---|---|---|---|
+| PLAN-036 | Conversation identity alignment gate | SRC-081 | DONE | Codex 2026-10-16 | [Ready contract](../contracts/conversation-identity.md); design-only |
+| SRC-082 | Restore conversation_id across API, storage and workflows | PLAN-036; SRC-081 | DONE | Codex 2026-10-16 | [Evidence](details/SRC-082.md); CI-01…03;389unit/25native/10browser/builds PASS;forward34 preserves104tables |
+| PLAN-035 | Thread identity, need enrichment and follow-up exact gate | SRC-078; SRC-080; SRC-066 | DONE | Codex 2026-10-16 | [Ready contract](../contracts/need-follow-up.md); design-only |
+| SRC-081 | Canonical thread API, need assessment/AI adapter and workflow recovery | PLAN-035; SRC-078; SRC-080; SRC-066 | DONE | Codex 2026-10-16 | [Evidence](details/SRC-081.md); NF-01…07;386unit/24native/10browser/builds PASS;forward33 preserves100old tables |
 | PLAN-034 | Exact record detail/preview and team-view design, table templates, native contracts | SRC-079; SRC-078 | DONE | Codex 2026-10-16 | [Ready contract](../contracts/record-pages.md), [UX](../ux/record-pages.md); user chose Default + team views; design-only |
 | SRC-080 | Persisted record detail/preview builder, team views and runtime CRM/Inbox integration | PLAN-034; SRC-079; SRC-078 | DONE | Codex 2026-10-16 | [Evidence](details/SRC-080.md);RP-01…08;380unit/22native/32browser/builds PASS;forward32 preserves98old tables |
 | SRC-079 | Layout cấu hình Đối tượng / Thuộc tính theo ảnh tham chiếu | SRC-074; SRC-078 | DONE | Codex 2026-10-16 | [Evidence](details/SRC-079.md);376unit/16native-browser/build/types/docs/lint PASS; OP-UI-01…05 bounded UI; không migration |

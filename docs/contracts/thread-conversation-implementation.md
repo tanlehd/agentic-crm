@@ -1,5 +1,7 @@
 # Thread / Conversation — implementation contract
 
+CHG-20261016-04 / SRC-081: [Thread identity, need enrichment and recovery](need-follow-up.md) supersedes earlier exclusions for this bounded scope. Current canonical Chat APIs use conversation_id (SRC-082 / CHG-20261016-05); deprecated thread_id artifacts remain readable through scoped compatibility. Need-scoped default/custom values, on-demand provider protocol, Human pins and read_need/recover_need workflow actions are implemented separately from general autonomous Agent Runtime or live channel delivery. See task evidence for actual validation.
+
 PLAN-033A · CHG-20261016-01 · 2026-10-16. Exact additive implementation of the [approved product model](thread-conversation-product.md). Ready: document validation completed before source; implemented acceptance in [SRC-078](../tracking/details/SRC-078.md).
 
 ## Compatibility and authority
@@ -18,7 +20,7 @@ Types reuse canonical validators. This release permits optional, unindexed class
 
 `GET .../contributions?before_revision=N` returns newest 50 append-only handling facts, next cursor and explicit full/partial/none coverage. Events include opened, closed, assignment, outbound_submitted, note, stage/evidence and classification changes. Source IDs/revisions make retries unique. Outbound actor is captured at submission; it does not imply delivery. Existing message receipt/status remains authoritative. Notes and Sales contexts expose source references only after current source ACL; no body/transcript duplicated. Sales-owned outcome context remains the authoritative created/follow_up/closing history. Chat records only its source reference and role with actor/time, rechecking Sales read permission on history access. It is not copied into a reporting revenue aggregate.
 
-New fields are not exposed by legacy Thread APIs, exports or reporting; no silent metadata consumer remap. New event `conversation.classification_changed` v1 carries only thread_id/session_id/version/changed_keys, atomically with audit and values, never field contents. Contribution ledger is a local Chat read model; distributed projection/credit metrics are not activated.
+New fields are not exposed by legacy Thread APIs, exports or reporting; no silent metadata consumer remap. New event `conversation.classification_changed` v2 carries only conversation_id/session_id (v1 thread_id remains immutable)/version/changed_keys, atomically with audit and values, never field contents. Contribution ledger is a local Chat read model; distributed projection/credit metrics are not activated.
 
 ## Filled table designs
 
@@ -28,7 +30,7 @@ Both tables use target crm_chat, physical current monolith until ADR-017 extract
 |---|---|---|
 | Task / AC | SRC-078, TC-02/04/07/09 | SRC-078, TC-04/06/07/08/09 |
 | Meaning / kind | Current episode custom values, source of truth | Immutable handling evidence; not work-time or revenue credit |
-| Columns | tenant_id/session_id CHAR36 ASCII NOT NULL; values_json JSON NOT NULL; version BIGINT UNSIGNED default1; created_at/updated_at DATETIME(6) UTC NOT NULL | tenant_id/session_id/id/thread_id CHAR36 NOT NULL; revision BIGINT UNSIGNED NOT NULL; kind VARCHAR32 NOT NULL; source_id CHAR36 NOT NULL; source_revision VARCHAR20 NOT NULL; actor_kind VARCHAR16 and actor_id CHAR36 nullable; owner_id/team_id CHAR36 nullable; owner_revision BIGINT UNSIGNED NOT NULL (0 = historical unknown); payload JSON NOT NULL; recorded_at DATETIME(6) UTC NOT NULL |
+| Columns | tenant_id/session_id CHAR36 ASCII NOT NULL; values_json JSON NOT NULL; version BIGINT UNSIGNED default1; created_at/updated_at DATETIME(6) UTC NOT NULL | tenant_id/session_id/id/conversation_id CHAR36 NOT NULL; revision BIGINT UNSIGNED NOT NULL; kind VARCHAR32 NOT NULL; source_id CHAR36 NOT NULL; source_revision VARCHAR20 NOT NULL; actor_kind VARCHAR16 and actor_id CHAR36 nullable; owner_id/team_id CHAR36 nullable; owner_revision BIGINT UNSIGNED NOT NULL (0 = historical unknown); payload JSON NOT NULL; recorded_at DATETIME(6) UTC NOT NULL |
 | Keys / constraints | PK tenant/session; FK to same-tenant Chat acquisition session; version>=1 | PK tenant/session/revision; unique tenant/session/kind/source_id/source_revision; FK to same-tenant Chat episode; revision>=1; index tenant/thread/session |
 | Remote references | Property key via canonical Core metadata port; unavailable fails closed | Owner/team/actor logical Identity refs; source refs validated at read; unavailable/forbidden source facts suppressed |
 | Queries / bound | One point read; <=100 fields /64KiB | Episode revision keyset, 51 rows/page; no cross-tenant aggregate |

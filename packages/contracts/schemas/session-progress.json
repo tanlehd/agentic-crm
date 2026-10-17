@@ -353,6 +353,24 @@
             "supersedes_id",
             "reason"
           ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "const": "identify_need"
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          "required": [
+            "action",
+            "label"
+          ]
         }
       ]
     },
@@ -804,7 +822,8 @@
                 "need",
                 "record",
                 "replace",
-                "retract"
+                "retract",
+                "identify_need"
               ]
             }
           },

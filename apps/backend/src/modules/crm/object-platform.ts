@@ -7,7 +7,7 @@ import {catalogObject} from './workflow-catalog.js';
 import {object,properties,validKey,checkField} from './properties.js';
 import type {CrmRecords} from './records.js';
 
-export const supportsExtensions=(key:string,kind:string)=>kind==='custom'||['contact','company','activity','lead','conversation_session'].includes(key);
+export const supportsExtensions=(key:string,kind:string)=>kind==='custom'||['contact','company','activity','lead','conversation_session','conversation_need'].includes(key);
 const hasRead=(a:Access,key:string)=>a.capabilities.includes('read')&&a.grants.some(g=>g.resource===key&&g.action==='read');
 const overflow=()=>{throw new CommandError(422,'CATALOG_LIMIT_EXCEEDED');};
 export function workspaceSettings(row:Record<string,any>,label:string):ObjectWorkspace {

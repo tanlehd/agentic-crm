@@ -1,3 +1,4 @@
+import {needBuiltins} from './need-fields.js';
 import type { TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
 import { CommandError,DurableCommands } from '../../kernel/reliability/commands.js';
 import type { Access } from '../identity/domain/authorization.js';
@@ -18,6 +19,7 @@ export const stamp=(v:any)=>v===null?null:v instanceof Date?v.toISOString():new 
 export const standardProperty=(key:string,type:string,options:string[]|null=null):Property=>({id:`standard:${key}`,key,label:key,type,required:false,default_value:null,options,indexed:true,sensitive:false,version:'1'});
 export const standardQueries:Record<string,Property[]>={deal:[standardProperty('contact_id','string'),standardProperty('lead_id','string'),standardProperty('title','string'),standardProperty('stage','enum',['open','qualified','proposal','won','lost']),standardProperty('closed_at','datetime')],contact:['display_name','normalized_phone','normalized_email'].map(k=>standardProperty(k,'string')),company:['name','domain'].map(k=>standardProperty(k,'string')),activity:[standardProperty('kind','enum',['note','task','call']),standardProperty('subject','string'),standardProperty('due_at','datetime')],lead:[standardProperty('contact_id','string'),standardProperty('status','enum',['new','qualifying','qualified','handed_off','accepted','disqualified']),standardProperty('qualified_at','datetime')]};
 export const standardFields:Record<string,Property[]>={
+  conversation_need:needBuiltins,
   deal:standardQueries.deal!,
   contact:[...standardQueries.contact!,{...standardProperty('contact_preference','text'),indexed:false}],
   company:standardQueries.company!,

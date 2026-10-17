@@ -1,5 +1,7 @@
 # Workflow CMS local
 
+CHG-20261016-04 / SRC-081: [Thread identity, need enrichment and recovery](../contracts/need-follow-up.md) supersedes earlier exclusions for this bounded scope. Current canonical Chat APIs use conversation_id (SRC-082 / CHG-20261016-05); deprecated thread_id artifacts remain readable through scoped compatibility. Need-scoped default/custom values, on-demand provider protocol, Human pins and read_need/recover_need workflow actions are implemented separately from general autonomous Agent Runtime or live channel delivery. See task evidence for actual validation.
+
 SRC-066 · 2026-10-13. Open [Workflows](http://localhost:18080/?workflows), select Clinic Alpha, then Automation → Workflows. Native API on3001 has been reloaded; Next.js dev on18080 serves the new UI. User explicitly approved a separate Workflow Admin role for alpha_admin: automation.design/publish/read/operate, scope all. Prior roles and all other accounts remain unchanged. No workflow was enabled in Alpha by this release.
 
 ## Use

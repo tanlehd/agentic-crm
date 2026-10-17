@@ -40,8 +40,8 @@ export class DurableDelivery {
   }
   private envelope(row: any): Envelope {
     const data = typeof row.payload === 'string' ? JSON.parse(row.payload) : row.payload;
-    if (!data || Array.isArray(data) || typeof data !== 'object' || String(row.schema_version)!=='1') throw new DeliveryError('INVALID_EVENT');
-    return {event_id:row.id,tenant_id:row.tenant_id,event_type:row.event_type,schema_version:1,
+    if (!data || Array.isArray(data) || typeof data !== 'object' || !(String(row.schema_version)==='1'||String(row.schema_version)==='2'&&['need.assessed','conversation.classification_changed'].includes(row.event_type))) throw new DeliveryError('INVALID_EVENT');
+    return {event_id:row.id,tenant_id:row.tenant_id,event_type:row.event_type,schema_version:Number(row.schema_version),
       aggregate_type:row.aggregate_type,aggregate_id:row.aggregate_id,aggregate_version:String(row.aggregate_version),
       occurred_at:new Date(row.occurred_at).toISOString(),correlation_id:row.correlation_id,causation_id:row.causation_id,
       actor:{kind:row.actor_kind,id:row.actor_id},data};

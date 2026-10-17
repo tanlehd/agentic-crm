@@ -1,5 +1,7 @@
 # Acceptance và traceability
 
+SRC-083: [CIB-01…05](../contracts/custom-inbox-builder.md) scopes saved Inbox authoring, compound filter preview, update/duplicate/share/revoke/archive, native permissions/CAS/idempotency and responsive UI. [Executed evidence](../tracking/details/SRC-083.md). This supplements bounded UX-CHAT-14/15/16; does not close full SRC-036/037 or general queues.
+
 SRC-0782026-10-16: [TC-01…10 evidence and bounded scope](../tracking/details/SRC-078.md). Local/native lifecycle/fields/Related Lead+Deal/transfer/current ACL/history verified; TC-06 role separation is in history, connected Reporting/credit metrics not activated. Ticket runtime remains outside this slice. Prior source evidence preserved.
 
 PLAN-0282026-10-15: [OP-01…19](no-code-object-platform-acceptance.md) bổ sung AC-04/M5 và AC-11 cho Object & Properties/ERD/Workspace/shared model/connected Reporting/custom Flow. Test plan only, tất cả runtime scenarios NOT_RUN; source gates và evidence theo tracker.
@@ -277,3 +279,7 @@ PLAN-025 / SRC-069: [Ready session progress contract](../contracts/session-progr
 
 
 PLAN-026 / SRC-070: [50-inbox demo acceptance](../contracts/inbox-demo-dashboards.md). ID-01 native 50 sessions / 30 assigned / 20 queued / 10 Leads and stable rerun PASS. ID-02 query-engine counts/rates/latency/capacity/spend PASS. ID-03/04 private dashboard save/reopen/edit, desktop/mobile, partial errors and authorization purge PASS in retained isolated Reporting fixture. ID-05 actual Alpha Reporting login remains pending explicit role approval; prepared snapshot is not activation evidence. [Execution evidence](../tracking/details/SRC-070.md).
+
+2026-10-16 / CHG-20261016-04: User authorized per-need AI enrichment and follow-up workflow; SRC-082 restores canonical conversation_id per CHG-20261016-05. PLAN-035/SRC-081 DONE; [runtime evidence](../tracking/details/SRC-081.md). See [contract](../contracts/need-follow-up.md). Forward34 renames four physical relationship columns; compatibility preserves immutable v1/graphs/receipts; real adapter configured explicitly; no invented provider result.
+
+SRC-082 / CHG-20261016-05: [Conversation identity alignment](../contracts/conversation-identity.md) makes conversation_id canonical and preserves session_id episode semantics. Forward34 renames session_contribution/need_assessment/need_follow_up/sales_need_outcome.thread_id without changing IDs, grants, tenant ownership or cross-service boundaries. New need.assessed/classification events use v2; v1 artifacts stay readable. CI-01…03 validation tracked separately from SRC-081 history.

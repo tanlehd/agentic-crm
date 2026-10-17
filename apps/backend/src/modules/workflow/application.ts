@@ -67,7 +67,8 @@ export class Workflows {
         else{
           const [v]=await s.query('SELECT * FROM workflow_version WHERE tenant_id=? AND definition_id=? AND number=? FOR UPDATE',[tenant,id,number]);if(!v)throw new CommandError(404,'NOT_FOUND');if(v.state!=='draft')throw new CommandError(409,'VERSION_IMMUTABLE');
           const graph=validateGraph(json(v.graph)),actor=await workflowActor(s,d.service_actor_id,v.execution_role_id);await new ChannelReferences().connection(s,graph.trigger.connection_id);
-          for(const node of graph.nodes)if(node.type==='assign_owner'){await new RoutingIdentityPort().team(s,node.config.team_id);if(!permits(actor,'conversation','assign'))throw new CommandError(403,'FORBIDDEN');}
+          for(const node of graph.nodes)if(node.type==='assign_owner'||node.type==='recover_need'){await new RoutingIdentityPort().team(s,node.config.team_id);if(!permits(actor,'conversation','assign')||node.type==='recover_need'&&(!permits(actor,'conversation','update')||!permits(actor,'conversation','read')))throw new CommandError(403,'FORBIDDEN');}
+          if(graph.nodes.some(n=>n.type==='read_need')&&!permits(actor,'conversation','read'))throw new CommandError(403,'FORBIDDEN');
           await this.engine.children.validate(s,graph,actor);await s.query("UPDATE workflow_version SET state='published',published_at=UTC_TIMESTAMP(6) WHERE tenant_id=? AND id=?",[tenant,v.id]);await s.query('UPDATE workflow_definition SET active_version_id=?,version=version+1 WHERE tenant_id=? AND id=?',[v.id,tenant,id]);
         }data={id,version:String(BigInt(d.version)+1n)};
       }

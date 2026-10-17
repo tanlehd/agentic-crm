@@ -4,6 +4,8 @@ Status: Ready for implementation. Áp dụng cho mọi task sinh source.
 
 ## Nguồn chuẩn và thời điểm cập nhật
 
+Tài liệu sản phẩm/UX/hướng dẫn/demo/presentation dùng [bản đồ mục tiêu và người sử dụng](../product/capability-map.md): gắn nhóm chính, persona, người cấu hình và kết quả; tính năng xuyên nhóm dùng tham chiếu. Phải phân biệt đã triển khai, thiết kế và kế hoạch, kèm nguồn evidence. Module/service/contract giữ nguồn chuẩn kỹ thuật; không suy trạng thái runtime từ việc một tính năng xuất hiện trong nhóm hoặc slide.
+
 Module design định nghĩa hành vi; data dictionary định nghĩa persisted state; contract định nghĩa wire shape; ADR định nghĩa quyết định xuyên module; tracker định nghĩa trạng thái công việc. Code phải hội tụ về thiết kế cuối cùng được ghi lại, không để “chỉ biết trong chat”.
 
 Khi phát hiện mismatch: ghi change trong execution log, xác định affected docs/tasks, sửa thiết kế liên quan trước khi tiếp tục code phụ thuộc. Thay đổi nhỏ trong cùng phiên có thể đi cùng patch; không hoãn docs đến cuối milestone. Nếu code đã làm lộ vấn đề thiết kế, cập nhật spec + test trước khi hoàn tất task.

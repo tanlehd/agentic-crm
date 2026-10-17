@@ -1,5 +1,7 @@
 # Agent Chat workspace — kế hoạch build theo UX-002
 
+2026-10-17 / CHG-20261017-01: user ưu tiên [Custom Inbox builder](../contracts/custom-inbox-builder.md). PLAN-038 DONE; SRC-083 after SRC-033/SRC-039/SRC-082 implements saved-list design/preview/edit/duplicate/share/archive on existing predicate/storage. Additive authorized option discovery, no migration. Full SRC-035/036/037 remaining gates unchanged.
+
 Status: Ready scoped design; SRC-032/033/034 DONE backend (SRC-038 final regression); trạng thái source theo tracker. [UX](../ux/agent-chat-workspace.md), [contract](../contracts/agent-chat-workspace.md), [data model](../data/agent-chat-workspace.md). CHG-20261006-19 bổ sung product flow phù hợp ảnh theo chỉ đạo người dùng, không đợi toàn bộ provider M3 hoàn tất để xây nội bộ Chat.
 
 | Task | Deliverable | Dependency | Gate |

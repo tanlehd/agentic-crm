@@ -5,7 +5,7 @@ export interface WorkflowValidateInput {
 }
 export interface WorkflowGraph {
   trigger: {
-    event_type: "conversation.created";
+    event_type: "conversation.created" | "need.assessed";
     connection_id: string;
   };
   entry_node: string;
@@ -33,13 +33,25 @@ export interface WorkflowGraph {
       | {
           key: string;
           type: "start_chatflow";
-          config: {
-            conversation_id:
+          config: (
+            | {
+                [k: string]: unknown;
+              }
+            | {
+                [k: string]: unknown;
+              }
+          ) & {
+            conversation_id?:
               | string
               | {
                   ref: string;
                 };
             chatflow_version_id: string;
+            thread_id?:
+              | string
+              | {
+                  ref: string;
+                };
           };
           next: string;
         }
@@ -102,6 +114,92 @@ export interface WorkflowGraph {
           config: {
             outcome: string;
           };
+        }
+      | {
+          key: string;
+          type: "read_need";
+          config: {
+            conversation_id: {
+              ref: "trigger.conversation_id";
+            };
+            session_id: {
+              ref: "trigger.session_id";
+            };
+            need_id: {
+              ref: "trigger.need_id";
+            };
+            assessment_version: {
+              ref: "trigger.assessment_version";
+            };
+          };
+          next: string;
+        }
+      | {
+          key: string;
+          type: "read_need";
+          config: {
+            thread_id: {
+              ref: "trigger.thread_id";
+            };
+            session_id: {
+              ref: "trigger.session_id";
+            };
+            need_id: {
+              ref: "trigger.need_id";
+            };
+            assessment_version: {
+              ref: "trigger.assessment_version";
+            };
+          };
+          next: string;
+        }
+      | {
+          key: string;
+          type: "recover_need";
+          config: {
+            conversation_id: {
+              ref: "trigger.conversation_id";
+            };
+            session_id: {
+              ref: "trigger.session_id";
+            };
+            need_id: {
+              ref: "trigger.need_id";
+            };
+            assessment_version: {
+              ref: "trigger.assessment_version";
+            };
+            team_id: string;
+            preference: "human" | "ai" | "any";
+            min_confidence: number;
+            cooldown_seconds: number;
+            max_age_seconds: number;
+          };
+          next: string;
+        }
+      | {
+          key: string;
+          type: "recover_need";
+          config: {
+            thread_id: {
+              ref: "trigger.thread_id";
+            };
+            session_id: {
+              ref: "trigger.session_id";
+            };
+            need_id: {
+              ref: "trigger.need_id";
+            };
+            assessment_version: {
+              ref: "trigger.assessment_version";
+            };
+            team_id: string;
+            preference: "human" | "ai" | "any";
+            min_confidence: number;
+            cooldown_seconds: number;
+            max_age_seconds: number;
+          };
+          next: string;
         }
     ),
     ...(
@@ -123,13 +221,25 @@ export interface WorkflowGraph {
       | {
           key: string;
           type: "start_chatflow";
-          config: {
-            conversation_id:
+          config: (
+            | {
+                [k: string]: unknown;
+              }
+            | {
+                [k: string]: unknown;
+              }
+          ) & {
+            conversation_id?:
               | string
               | {
                   ref: string;
                 };
             chatflow_version_id: string;
+            thread_id?:
+              | string
+              | {
+                  ref: string;
+                };
           };
           next: string;
         }
@@ -192,6 +302,92 @@ export interface WorkflowGraph {
           config: {
             outcome: string;
           };
+        }
+      | {
+          key: string;
+          type: "read_need";
+          config: {
+            conversation_id: {
+              ref: "trigger.conversation_id";
+            };
+            session_id: {
+              ref: "trigger.session_id";
+            };
+            need_id: {
+              ref: "trigger.need_id";
+            };
+            assessment_version: {
+              ref: "trigger.assessment_version";
+            };
+          };
+          next: string;
+        }
+      | {
+          key: string;
+          type: "read_need";
+          config: {
+            thread_id: {
+              ref: "trigger.thread_id";
+            };
+            session_id: {
+              ref: "trigger.session_id";
+            };
+            need_id: {
+              ref: "trigger.need_id";
+            };
+            assessment_version: {
+              ref: "trigger.assessment_version";
+            };
+          };
+          next: string;
+        }
+      | {
+          key: string;
+          type: "recover_need";
+          config: {
+            conversation_id: {
+              ref: "trigger.conversation_id";
+            };
+            session_id: {
+              ref: "trigger.session_id";
+            };
+            need_id: {
+              ref: "trigger.need_id";
+            };
+            assessment_version: {
+              ref: "trigger.assessment_version";
+            };
+            team_id: string;
+            preference: "human" | "ai" | "any";
+            min_confidence: number;
+            cooldown_seconds: number;
+            max_age_seconds: number;
+          };
+          next: string;
+        }
+      | {
+          key: string;
+          type: "recover_need";
+          config: {
+            thread_id: {
+              ref: "trigger.thread_id";
+            };
+            session_id: {
+              ref: "trigger.session_id";
+            };
+            need_id: {
+              ref: "trigger.need_id";
+            };
+            assessment_version: {
+              ref: "trigger.assessment_version";
+            };
+            team_id: string;
+            preference: "human" | "ai" | "any";
+            min_confidence: number;
+            cooldown_seconds: number;
+            max_age_seconds: number;
+          };
+          next: string;
         }
     )[]
   ];

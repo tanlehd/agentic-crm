@@ -1,5 +1,7 @@
 # Data model và ERD
 
+CHG-20261016-04 / SRC-081: [Thread identity, need enrichment and recovery](../contracts/need-follow-up.md) supersedes earlier exclusions for this bounded scope. Current canonical Chat APIs use conversation_id (SRC-082 / CHG-20261016-05); deprecated thread_id artifacts remain readable through scoped compatibility. Need-scoped default/custom values, on-demand provider protocol, Human pins and read_need/recover_need workflow actions are implemented separately from general autonomous Agent Runtime or live channel delivery. See task evidence for actual validation.
+
 **Implemented additive slice SRC-078 / 2026-10-16:** [Thread / Conversation exact contract](../contracts/thread-conversation-implementation.md), PLAN-033A DONE. Thread legacy IDs/API remain stable; Conversation episode has optional custom fields and stage, event-time ownership/contributor history, and Related Lead/Deal actions with current permissions. Cross-team transfer preserves the episode; Ticket and connected Reporting remain gated. Physical forward31 stays in the baseline monolith; service extraction rules below remain unchanged.
 
 PLAN-0282026-10-15: [No-code logical entity model và ERD](no-code-entity-model.md) bổ sung canonical metadata/association/consumer bindings, lifecycle và ownership direction. Physical baseline không đổi; exact table templates/migrations thuộc PLAN-028A/B/C. Generic standard writes vẫn bị owner capability giới hạn.

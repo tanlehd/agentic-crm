@@ -1,5 +1,9 @@
 # REST API contract — M1–M2
 
+SRC-083 / CHG-20261017-01: [Custom Inbox builder](custom-inbox-builder.md) adds native GET `/api/v1/chat-workspace/inbox-options` for authorized filter/team/share-target discovery. Existing catalog/query/mutation v1 semantics remain; no database/event change.
+
+CHG-20261016-04 / SRC-081: [Thread identity, need enrichment and recovery](need-follow-up.md) supersedes earlier exclusions for this bounded scope. Current canonical Chat APIs use conversation_id (SRC-082 / CHG-20261016-05); deprecated thread_id artifacts remain readable through scoped compatibility. Need-scoped default/custom values, on-demand provider protocol, Human pins and read_need/recover_need workflow actions are implemented separately from general autonomous Agent Runtime or live channel delivery. See task evidence for actual validation.
+
 > Microservices target ADR-017 dùng [cross-service rules](service-boundaries.md). APIs/UoW trong tài liệu này là baseline implementation hiện tại; exact remote contracts và sagas cần PLAN-006 trước extraction.
 Status: Ready for implementation. Health/auth và Identity admin API đã có source; registry metadata/association API đã có SRC-010 ([exact contract](registry.md)); record CRUD còn thiết kế. Exact Identity DTO tại [admin contract](identity-admin.md); OpenAPI/schema/generated TS trong packages/contracts.
 

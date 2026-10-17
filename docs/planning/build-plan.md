@@ -1,5 +1,9 @@
 # Kế hoạch sinh source code M1–M2
 
+2026-10-17 / CHG-20261017-02: PLAN-039 tổ chức [nhóm tính năng theo mục tiêu và người sử dụng](../product/capability-map.md) làm trục cho tài liệu/UX/demo/presentation. Documentation-only; không đổi source dependency, service ownership, runtime scope hoặc backlog PLAN-028E.
+
+2026-10-17 / CHG-20261017-01: PLAN-038/SRC-083 DONE scoped [Custom Inbox builder](../contracts/custom-inbox-builder.md): saved conversation filter preview/lifecycle/share UI and additive native discovery on existing Chat storage. [Evidence](../tracking/details/SRC-083.md); no migration. Remaining full workspace release/general filters and PLAN-028E remain separate.
+
 2026-10-16 / CHG-20261016-03: PLAN-034 exact gate DONE; SRC-080 triển khai [record detail/preview + Default/team views](../contracts/record-pages.md), forward32 chỉ thêm presentation metadata. [Runbook](../development/record-pages.md). PLAN-028E/connected consumers giữ nguyên dependency và phạm vi.
 
 2026-10-16 / CHG-20261016-02: user ưu tiên layout Object & Properties. SRC-079 phụ thuộc SRC-074/SRC-078 DONE; [UX Ready](../ux/object-properties-workspace.md) dùng catalog/commands hiện tại, không migration. PLAN-028E và connected consumers giữ gate riêng.
@@ -190,3 +194,7 @@ SRC-0682026-10-13: [Ready Customer360/session contract](../contracts/customer-36
 PLAN-025 / SRC-069: [Ready session progress contract](../contracts/session-progress.md) defines six Chat-owned tables in forward29, pinned process/stage, need-scoped manual evidence/corrections and a connected behavioral session funnel. Current monolith application producer + pure Reporting reducer; no cross-service SQL or mock-builder permission activation. SP-01…07 implemented and verified in SRC-069 (345unit,13persistent MySQL,8native/browser,6healthcare); see task evidence.
 
 SRC-070 DONE2026-10-14: [50-inbox dashboards](../contracts/inbox-demo-dashboards.md), user-confirmed30accepted/20queued. CHG-20261014-03 [tenant super admin](../contracts/tenant-super-admin.md) implemented; actual Alpha activation/native browser PASS without added role. 356unit,22native and5actual Alpha browser groups PASS; backend/Next builds, workspace types/static checks PASS. Full SRC-061 remains separate.
+
+2026-10-16 / CHG-20261016-04: User authorized per-need AI enrichment and follow-up workflow; SRC-082 restores canonical conversation_id per CHG-20261016-05. PLAN-035/SRC-081 DONE; [runtime evidence](../tracking/details/SRC-081.md). See [contract](../contracts/need-follow-up.md). Forward34 renames four physical relationship columns; compatibility preserves immutable v1/graphs/receipts; real adapter configured explicitly; no invented provider result.
+
+SRC-082 / CHG-20261016-05: [Conversation identity alignment](../contracts/conversation-identity.md) makes conversation_id canonical and preserves session_id episode semantics. Forward34 renames session_contribution/need_assessment/need_follow_up/sales_need_outcome.thread_id without changing IDs, grants, tenant ownership or cross-service boundaries. New need.assessed/classification events use v2; v1 artifacts stay readable. CI-01…03 validation tracked separately from SRC-081 history.

@@ -1,3 +1,4 @@
+import { emitNeedAssessment } from './need-events.js';
 import { initializeProgress,advanceProgressClock } from './session-process-storage.js';
 import { contribute } from './contribution-storage.js';
 import { randomUUID } from 'node:crypto';
@@ -12,7 +13,7 @@ export async function closedBoundary(s:TransactionScope,conversation:string,occu
  const [last]=await s.query('SELECT status,closed_at FROM conversation_acquisition_session WHERE tenant_id=? AND conversation_id=? ORDER BY sequence DESC LIMIT 1',[s.context.tenantId,conversation]);
  return last?.status==='closed'&&Date.parse(occurredAt)<=new Date(last.closed_at).getTime();
 }
-async function event(s:TransactionScope,row:any,type:'acquisition_session.opened'|'acquisition_session.closed',correlation:string,actor?:SystemActor|{kind:'human';id:string}){
+export async function acquisitionEvent(s:TransactionScope,row:any,type:'acquisition_session.opened'|'acquisition_session.closed',correlation:string,actor?:SystemActor|{kind:'human';id:string}){
  const a=actor??{kind:'system',id:s.context.tenantId};
  await s.query("INSERT INTO outbox_event(id,tenant_id,event_type,schema_version,aggregate_type,aggregate_id,aggregate_version,payload,correlation_id,actor_kind,actor_id,occurred_at,created_at,status) VALUES (?,?,?,1,'acquisition_session',?,?,?,?,?,?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6),'pending')",[randomUUID(),s.context.tenantId,type,row.id,row.version,JSON.stringify({session_id:row.id,conversation_id:row.conversation_id,status:row.status,source_classification:row.source_classification,source_ad_id:row.source_ad_id,sequence:String(row.sequence)}),correlation,a.kind,a.id]);
 }
@@ -21,7 +22,9 @@ export async function closeAcquisition(s:TransactionScope,conversation:string,re
  await contribute(s,conversation,{session:row.id,kind:'closed',source:row.id,actor,payload:{reason}});
  const recordedAt=await advanceProgressClock(s);
  await s.query("UPDATE conversation_acquisition_session SET status='closed',closed_at=?,close_reason=?,version=version+1 WHERE tenant_id=? AND id=?",[recordedAt,reason,s.context.tenantId,row.id]);
- await event(s,{...row,status:'closed',version:String(BigInt(row.version)+1n)},'acquisition_session.closed',correlation,actor);
+ await acquisitionEvent(s,{...row,status:'closed',version:String(BigInt(row.version)+1n)},'acquisition_session.closed',correlation,actor);
+ const assessments=await s.query('SELECT need_id,version FROM need_assessment WHERE tenant_id=? AND session_id=?',[s.context.tenantId,row.id]);
+ for(const assessment of assessments)await emitNeedAssessment(s,conversation,row.id,assessment.need_id,String(assessment.version),correlation,{kind:'system',id:s.context.tenantId});
  return recordedAt;
 }
 export async function acquisitionInbound(s:TransactionScope,input:{conversation:string;message:string;connection:string;occurredAt:string;correlation:string;actor?:SystemActor;referral?:AcquisitionReferral}){
@@ -34,7 +37,7 @@ export async function acquisitionInbound(s:TransactionScope,input:{conversation:
   const meta=await new ChannelReferences().metadata(s,connection),id=randomUUID(),sequence=String(BigInt(last?.sequence??0)+1n);
   const source=referral?'paid':meta.page_id?'organic':'unknown';
   await s.query("INSERT INTO conversation_acquisition_session(tenant_id,id,conversation_id,sequence,status,opening_reason,opened_at,opening_occurred_at,source_classification,source_channel,source_page_id,source_ad_id,source_campaign_id,source_connection_id,source_touchpoint_id,policy_version) VALUES (?,?,?,?,'active',?,?,?,?,?,?,?,?,?,?,'inbox_v2')",[s.context.tenantId,id,conversation,sequence,last?'after_close':'first_inbound',recordedAt,new Date(occurredAt),source,meta.channel,meta.page_id,referral?.ad_id??null,referral?.campaign_id??null,connection,referral?.touchpoint_id??null]);
-  await initializeProgress(s,id,'full',recordedAt);current=await activeAcquisition(s,conversation);await event(s,current,'acquisition_session.opened',correlation,actor);
+  await initializeProgress(s,id,'full',recordedAt);current=await activeAcquisition(s,conversation);await acquisitionEvent(s,current,'acquisition_session.opened',correlation,actor);
   await contribute(s,conversation,{session:id,kind:'opened',source:id,actor});
   await new DurableCommands().systemAudit(s,correlation,'acquisition_session',id,'acquisition.open',['status','source'],actor);
  }

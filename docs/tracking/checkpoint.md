@@ -1,3 +1,57 @@
+# Git publication session — 2026-10-17
+
+S-20261017-04: user authorized commit/push of accumulated SRC-081/082/083 and PLAN-037/038/039 on main to origin. Base99130b2; fetched origin/main matches before commit. Publication snapshot is the commit containing this checkpoint; remote result is checked after commit. Fresh391unit/55files,8package typecheck,docs315/2765links/83source DAG,35schemas,generated contracts and AST lint720 PASS. Native/browser/build suites retain prior evidence; not rerun this Git-only session. No DB/runtime/service changes; services not freshly checked. No active source task/blocker. Next existing backlog action: PLAN-028E exact remaining Object Platform lifecycle gate. Product documentation follows capability map below.
+
+## Previous checkpoint
+
+# Product capability grouping completed — 2026-10-17
+
+PLAN-039 DONE, CHG-20261017-02 resolved documentation-only. [Capability map](../product/capability-map.md) is the common goal/persona axis for product docs, UX, guidance, demo and future presentation. Eight groups, primary/related features, agent/team/admin responsibility, list-view/layout/routing distinctions and a presentation template. Entry docs and change-control link it. No deck or runtime redesign created; generalized view library/team ownership/publishing still require exact gates.
+
+Windows/pinned Node24.21.0: docs check PASS315 Markdown/2762links/83source DAG before completion references; tracked whitespace PASS. DOC-G01…03 manually reviewed; final checks recorded in log. Runtime tests NOT_RUN (docs-only). Main base99130b2 dirty; prior SRC-081/082/083 work preserved; no commit/push/deploy/reset or service changes. Services not freshly checked; previous SRC-083 snapshot below. No blocker or active source task. Next existing backlog action: PLAN-028E exact remaining Object Platform lifecycle gate; use capability map for new or revised product docs/presentations.
+
+## Previous checkpoint
+
+# Custom Inbox builder completed — 2026-10-17
+
+PLAN-038/SRC-083 DONE scoped CIB-01…05. [Usage](../development/custom-inbox.md), [evidence](details/SRC-083.md), [contract](../contracts/custom-inbox-builder.md), [Inbox local](http://localhost:18080/). Sidebar custom inbox create/designer/real preview/update/private duplicate/grouping/share/revoke/archive, current filter options and stored sort; ambiguous retries preserve payload/key, CAS preserves drafts. Native Identity-backed named target discovery, no new table/migration/default grants. Generalized nested/custom/related filters and full SRC-036/037 remain gated.
+
+Windows/pinned Node24.21.0: backend build, isolated Next production build (next-env/tsconfig restored), recursive workspace types,389existing unit+5focused cases (2new/3existing),8native and13native/browser groups PASS. Screenshots desktop390/320 visually inspected. Strict35schemas/generated contracts/AST lint720/docs314/83source DAG and whitespace PASS; final counts/log in evidence. First browser failure was test selector ambiguity, corrected and rerun; no unresolved product failure.
+
+Working tree main base99130b2 dirty, preserved prior SRC-081/082/PLAN-037 changes plus SRC-083. No commit/push/deploy/reset/subagent/schedule. API restarted via manager to load additive route; Web dev updated. Native test role/seat/policies restored; synthetic inbox/tag/mock thread retained, QA archive only. MySQL/Redis/API/worker/Web/Reporting checked again at completion; Connector remains unconfigured. No provider/live transport activation. No active implementation or blocker. Next existing backlog action: PLAN-028E exact remaining Object Platform lifecycle gate.
+
+## Previous checkpoint
+
+# Agent workspace queue/view research — 2026-10-17
+
+PLAN-037 DONE research-only. [Comparison/configuration proposal](../references/agent-workspace-queues-views.md): respond.io and HubSpot views versus routing; Jira filtered queues; Dynamics QueueItem. Saved view is persisted configuration with dynamic membership; routing queue/work item represents assignment lifecycle. Current Chat inbox/share already implements saved-query backend; Object Workspace navigation and record-page layouts are separate. No Ready contract or generalized queue implementation change.
+
+Windows PowerShell/pinned Node24.21.0: docs check PASS (311Markdown/2701links before completion links, 82acyclic source tasks); tracked diff and new research whitespace PASS. Runtime/vendor portal tests NOT_RUN; services not freshly checked. Main base99130b2, existing SRC-081/082 dirty work preserved; only research/tasks/log/checkpoint changed this turn. No DB/source/service changes, commit/push/deploy/subagent/schedule. No blocker or implementation task claimed. Next existing implementation action remains PLAN-028E exact lifecycle gate; queue implementation needs a separately scoped design task.
+
+## Previous checkpoint
+
+# Conversation identity restored — 2026-10-16
+
+PLAN-036/SRC-082 DONE; CHG-20261016-05 resolved per user's reversal. Canonical conversation_id and /api/v1/conversations now align API/UI, new workflow refs, v2 events and four physical columns. session_id remains the episode. Need AI enrichment/Human pins/outcome links/recovery are preserved. Deprecated /threads, old v1/graphs/pending steps/results/receipt keys are intentionally supported without rewriting history. [Contract](../contracts/conversation-identity.md) · [Evidence](details/SRC-082.md).
+
+Verification:389unit/54files,14 need/native compatibility +11 classification regression groups,10 native/browser groups, backend and isolated web production builds, workspace types,35 strict schemas/generated contracts/docs/lint/whitespace PASS. Local33→34 applied1/repeat0 preserves104tables with private SQL backup/hash; retained native_seed_test upgraded without resetting fixtures. Initial browser5s panel timeout followed by full passing rerun; harness now configures30s.
+
+Working tree main base99130b2, dirty from SRC-081 plus SRC-082 source/generated contracts/docs/scripts; no commit/push/deploy/reset/subagents/schedules. API3001/worker3002 restarted to load current build; web18080 and Reporting3004 retained, monitor3020, MySQL13306/Redis16379. Provider unconfigured; synthetic workflows disabled; live provider/delivery NOT_RUN. No unresolved decision/blocker or active source task. Next action: PLAN-028E exact remaining Object Platform lifecycle gate, separately from this completed naming change.
+
+## Previous checkpoint
+
+# Thread identity, need enrichment and follow-up completed — 2026-10-16
+
+PLAN-035/SRC-081 DONE. [Runbook](../development/need-follow-up.md) · [Evidence](details/SRC-081.md). Canonical /threads and thread_id, per-need standard/custom assessment, Human pins, on-demand configured AI protocol, exact outcome links and read_need/recover_need workflow nodes. Closed review can register a need; legacy untracked episodes get partial coverage. Recovery opens a new episode, keeps old history, checks current version/evidence/outcomes/rights and routes once per need. Existing SQL/v1/events/graphs preserved; no automatic real AI/message activation.
+
+Validation:386unit/53files,13new native+11regression,10native/browser groups,backend and isolated Next production build,workspace types,35strictschemas/generated contracts,docs308/2659links/81task DAG and lint711 PASS before completion-doc updates. Final docs/lint/whitespace rechecked after completion update.219legacy schemas/116paths compared; only additive workflow/session-progress schemas differ. Screenshots1600/390/320 reviewed. Evidence contains initial failures/fixes and real limitations.
+
+Local forward33 applied1/repeat0,100old tables preserved with private backup/hash; native synthetic test DB retained. Final API3001/worker3002/web18080/Reporting3004 ready;MySQL13306/Redis16379 healthy;monitor3020 running;Connector configuration-required. No provider configured, no live transport claim. Workflow demo drafts remain disabled; test grants restored. No reset/subagent/schedule/commit/push/deploy.
+
+Working tree main base99130b2, dirty with SRC-081 source/generated contracts/docs/scripts; next-env/tsconfig restored. No blocker or unresolved design decision for this slice; no active source task. Next existing backlog action: PLAN-028E exact remaining Object Platform lifecycle gate. Provider configuration/live evaluation and generic custom-field workflow are separate recorded boundaries.
+
+## Previous checkpoint
+
 # Git publication — 2026-10-16
 
 User explicitly requested commit/push of completed Object settings and Record detail/preview work (SRC-079/080). Remote fetched; prepublication base `eebbb55`. Fresh docs305/2635links/80-task DAG and generated-contract/whitespace checks PASS. Existing runtime evidence remains in [SRC-080](details/SRC-080.md); no feature status change, deployment or service mutation in this Git-only session. Publication is in progress; actual commit hash and remote verification are recorded after push in ignored `artifacts/record-pages/git-publication.json`. Secrets, local datasets and SQL backups remain ignored.

@@ -40,7 +40,7 @@ export class ChatflowEngine implements ChatflowSessionPort {
   }
   children():WorkflowChildren{return {
     validate:async(s,g,a)=>{for(const n of g.nodes){if(n.type==='request_lead_handoff'||n.type==='wait_event'&&n.config.event_type!=='chatflow.completed')throw new CommandError(422,'WORKFLOW_CHILD_UNAVAILABLE');if(n.type==='start_chatflow'){await this.version(s,n.config.chatflow_version_id);if(!permits(a,'conversation','read'))throw new CommandError(403,'FORBIDDEN');}}},
-    execute:async(s,n,input,c)=>{if(n.type!=='start_chatflow')throw new CommandError(422,'WORKFLOW_CHILD_UNAVAILABLE');return {session_id:await this.start(s,input.chatflow_version_id,input.conversation_id,c)};},
+    execute:async(s,n,input,c)=>{if(n.type!=='start_chatflow')throw new CommandError(422,'WORKFLOW_CHILD_UNAVAILABLE');return {session_id:await this.start(s,input.chatflow_version_id,input.thread_id??input.conversation_id,c)};},
     result:async(s,run,type,id)=>{if(type!=='chatflow.completed')throw new CommandError(422,'WORKFLOW_CHILD_UNAVAILABLE');const r=await this.lock(s,id);if(r.parent_run_id!==run)throw new CommandError(409,'CHATFLOW_PARENT_INVALID');return active(r.status)?null:{outcome:r.outcome??'needs_attention',lead_id:r.lead_id};},
     cancel:async(s,run)=>{const rows=await s.query("SELECT id FROM chatflow_session WHERE tenant_id=? AND parent_run_id=? AND status IN('running','waiting_message','paused_human')",[s.context.tenantId,run]);for(const row of rows){const r=await this.lock(s,row.id);await this.stop(s,r,'cancelled','PARENT_CANCELLED');}},
   };}

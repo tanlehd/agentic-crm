@@ -1,3 +1,4 @@
+import { NeedAssessments } from './need-assessment.js';
 import { Controller,Get,Post,Req,Res,Inject,Module,type OnModuleDestroy } from '@nestjs/common';
 import type { IncomingMessage,ServerResponse } from 'node:http';
 import { createHmac,randomUUID } from 'node:crypto';
@@ -87,5 +88,22 @@ export class ClassificationController {
  @Post('classification') update(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'classification',true);}
  @Get('contributions') history(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'contributions');}
 }
-@Module({imports:[AuthModule],controllers:[ConversationController,ConversationChannelsController,SessionProgressController,ClassificationController],providers:[ConversationRuntime]})
+@Controller('conversations/:conversation/sessions/:session/needs/:need')
+export class NeedAssessmentController {
+ constructor(@Inject(AuthRuntime) private readonly auth:AuthRuntime,@Inject(ConversationRuntime) private readonly runtime:ConversationRuntime){}
+ private async respond(req:Request,res:ServerResponse,kind:'read'|'assessment'|'enrich'|'outcome'){
+  const correlation=randomUUID();res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json');res.setHeader('X-Content-Type-Options','nosniff');
+  try{const session=kind==='read'?await this.auth.service.session(cookie(req,'crm_session'),true):await this.auth.service.requireMutation(cookie(req,'crm_session'),req.headers.origin,req.headers['x-csrf-token']),tenant=req.headers['x-tenant-id'];
+   if(!uuid(tenant)||Object.values(req.params).some(v=>!uuid(v))||Object.keys(req.query).length)throw new CommandError(400,'INVALID_REQUEST');await this.runtime.ready();const service=new NeedAssessments(this.runtime.conversations),cid=req.params.conversation!,sid=req.params.session!,need=req.params.need!;
+   if(kind==='read'){const result=await service.read(session.account_id,tenant,cid,sid,need);res.setHeader('ETag',`"${result.data.version}"`);res.end(JSON.stringify({...result,meta:{correlation_id:correlation}}));return;}
+   const key=req.headers['idempotency-key'],match=req.headers['if-match'];if(typeof key!=='string'||!/^application\/json(?:;|$)/i.test(req.headers['content-type']??'')||match!==undefined&&(typeof match!=='string'||!/^"(0|[1-9][0-9]{0,19})"$/.test(match)))throw new CommandError(400,'INVALID_REQUEST');
+   const version=typeof match==='string'?match.slice(1,-1):undefined,result=kind==='outcome'?await service.link(session.account_id,tenant,cid,sid,need,req.body,key,version,correlation):await service.mutate(session.account_id,tenant,cid,sid,need,req.body,key,version,correlation,kind==='enrich');res.statusCode=result.status;res.setHeader('ETag',`"${result.body.data.version}"`);res.end(JSON.stringify(result.body));
+  }catch(e){const f=e instanceof CommandError||e instanceof AuthError?e:new CommandError(e instanceof AccessError?403:503,e instanceof AccessError?'FORBIDDEN':'TEMPORARILY_UNAVAILABLE');res.statusCode=f.status;res.end(JSON.stringify({error:{code:f.code,message:f.code==='AI_CONFIGURATION_REQUIRED'?'Chưa cấu hình nhà cung cấp AI.':'Không thể cập nhật đánh giá nhu cầu.',fields:[],retryable:f.status===503},meta:{correlation_id:correlation}}));}
+ }
+ @Get('assessment') read(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'read');}
+ @Post('assessment') update(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'assessment');}
+ @Post('enrich') enrich(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'enrich');}
+ @Post('outcome') outcome(@Req() q:Request,@Res() s:ServerResponse){return this.respond(q,s,'outcome');}
+}
+@Module({imports:[AuthModule],controllers:[ConversationController,ConversationChannelsController,SessionProgressController,ClassificationController,NeedAssessmentController],providers:[ConversationRuntime]})
 export class ConversationModule {}

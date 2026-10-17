@@ -13,11 +13,12 @@ interface Request extends IncomingMessage {query:Record<string,unknown>;params:R
 @Controller('chat-workspace')
 export class WorkspaceCatalogController {
   constructor(@Inject(AuthRuntime) private readonly auth:AuthRuntime,@Inject('WorkspaceRuntime') private readonly runtime:WorkspaceRuntime){}
-  private async respond(req:Request,res:ServerResponse,action:'list'|'get'|'create'|'update'|'archive'|'shares'|'attach'|'detach'){
+  private async respond(req:Request,res:ServerResponse,action:'list'|'get'|'options'|'create'|'update'|'archive'|'shares'|'attach'|'detach'){
     const correlation=randomUUID();res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json');res.setHeader('X-Content-Type-Options','nosniff');
     try{
-      const mutation=!['list','get'].includes(action),session=mutation?await this.auth.service.requireMutation(cookie(req,'crm_session'),req.headers.origin,req.headers['x-csrf-token']):await this.auth.service.session(cookie(req,'crm_session'),true),tenant=req.headers['x-tenant-id'];
+      const mutation=!['list','get','options'].includes(action),session=mutation?await this.auth.service.requireMutation(cookie(req,'crm_session'),req.headers.origin,req.headers['x-csrf-token']):await this.auth.service.session(cookie(req,'crm_session'),true),tenant=req.headers['x-tenant-id'];
       if(!uuid(tenant)||req.params.id&&!uuid(req.params.id)||req.params.tagId&&!uuid(req.params.tagId)||action!=='list'&&Object.keys(req.query).length)throw new CommandError(400,'INVALID_REQUEST');
+      if(action==='options'){await this.runtime.ready();const r=await this.runtime.catalogs.options(session.account_id,tenant);res.end(JSON.stringify({...r,meta:{...r.meta,correlation_id:correlation}}));return;}
       const link=action==='attach'||action==='detach',kind=req.params.catalog as CatalogKind;if(!link&&!['inboxes','tags','snippets'].includes(kind)||action==='shares'&&kind!=='inboxes')throw new CommandError(404,'NOT_FOUND');
       await this.runtime.ready();const catalogs=this.runtime.catalogs;
       if(!mutation){const r=action==='list'?await catalogs.list(session.account_id,tenant,kind,req.query):await catalogs.get(session.account_id,tenant,kind,req.params.id!);res.end(JSON.stringify({...r,meta:{...r.meta,correlation_id:correlation}}));return;}
@@ -26,6 +27,7 @@ export class WorkspaceCatalogController {
       res.statusCode=r.status;if('version' in r.body.data)res.setHeader('ETag',`"${r.body.data.version}"`);res.end(JSON.stringify(r.body));
     }catch(e){const error=e instanceof CommandError||e instanceof AuthError?e:new CommandError(e instanceof AccessError?403:503,e instanceof AccessError?'FORBIDDEN':'TEMPORARILY_UNAVAILABLE');res.statusCode=error.status;res.end(JSON.stringify({error:{code:error.code,message:'Không thể hoàn tất yêu cầu hộp thư.',fields:[],retryable:error.status===503},meta:{correlation_id:correlation}}));}
   }
+  @Get('inbox-options') options(@Req() r:Request,@Res() s:ServerResponse){return this.respond(r,s,'options');}
   @Get(':catalog') list(@Req() r:Request,@Res() s:ServerResponse){return this.respond(r,s,'list');}
   @Get(':catalog/:id') get(@Req() r:Request,@Res() s:ServerResponse){return this.respond(r,s,'get');}
   @Post(':catalog') create(@Req() r:Request,@Res() s:ServerResponse){return this.respond(r,s,'create');}

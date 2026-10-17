@@ -63,7 +63,7 @@ export class SessionProgress {
  }
  async mutate(account:string,tenant:string,cid:string,sid:string,input:unknown,key:string,version:string|undefined,correlation:string){
   if(!uuid(sid))fail();commandKey(key);const expected=versionCheck(version,true),base=object(input,['action','stage_key','reason','label','need_id','milestone_key','occurred_at','message_id','supersedes_id']);
-  const fields:Record<string,string[]>={enroll:[],stage:['stage_key','reason'],need:['label'],record:['need_id','milestone_key','occurred_at','reason','message_id'],replace:['supersedes_id','occurred_at','reason','message_id'],retract:['supersedes_id','reason']};
+  const fields:Record<string,string[]>={enroll:[],stage:['stage_key','reason'],need:['label'],identify_need:['label'],record:['need_id','milestone_key','occurred_at','reason','message_id'],replace:['supersedes_id','occurred_at','reason','message_id'],retract:['supersedes_id','reason']};
   if(typeof base.action!=='string'||!Object.hasOwn(fields,base.action))fail();const b=object(base,['action',...fields[base.action]!]),action=b.action as string;
   return this.conversations.uow.run({tenantId:tenant},async s=>{
    const a=await this.access(s,account),session=await this.authorize(s,a,cid,sid,true,true),commands=new DurableCommands();
@@ -71,17 +71,18 @@ export class SessionProgress {
    const cmd={actorId:a.principalId,correlationId:correlation,route:`POST /api/v1/conversations/${cid}/sessions/${sid}/progress`,key,version:expected,body:b};
    const replay=await commands.replay(s,cmd,async()=>{});if(replay)return replay;
    const recordedAt=await advanceProgressClock(s);
-   const [p]=await s.query('SELECT * FROM session_progress WHERE tenant_id=? AND session_id=? FOR UPDATE',[tenant,sid]);if(String(p?.version??0)!==expected)fail('VERSION_CONFLICT',409);
+   let [p]=await s.query('SELECT * FROM session_progress WHERE tenant_id=? AND session_id=? FOR UPDATE',[tenant,sid]);if(String(p?.version??0)!==expected)fail('VERSION_CONFLICT',409);
    if(['enroll','stage','need'].includes(action)&&session.status!=='active')fail('SESSION_CLOSED',409);
    let id=sid,next=String(BigInt(expected)+1n);
    if(action==='enroll'){if(p)fail('ALREADY_ENROLLED',409);await initializeProgress(s,sid,'partial',recordedAt);}
    else{
+    if(!p&&action==='identify_need'){await initializeProgress(s,sid,'partial',recordedAt);[p]=await s.query('SELECT * FROM session_progress WHERE tenant_id=? AND session_id=?',[tenant,sid]);}
     if(!p)fail('ENROLLMENT_REQUIRED',409);const process=await readProcess(s,String(p.process_version));
     if(action==='stage'){
      const reason=text(b.reason);if(!process.definition.stages.some(x=>x.key===b.stage_key)||p.stage_key===b.stage_key)fail('INVALID_TRANSITION',422);
      id=randomUUID();await s.query('INSERT INTO session_stage_event(tenant_id,id,session_id,revision,from_stage,to_stage,reason,actor_id,recorded_at) VALUES (?,?,?,?,?,?,?,?,?)',[tenant,id,sid,next,p.stage_key,b.stage_key,reason,a.principalId,recordedAt]);
      await s.query('UPDATE session_progress SET stage_key=? WHERE tenant_id=? AND session_id=?',[b.stage_key,tenant,sid]);
-    }else if(action==='need'){
+    }else if(action==='need'||action==='identify_need'){
      const label=text(b.label,120),[count]=await s.query('SELECT COUNT(*) n FROM session_need WHERE tenant_id=? AND session_id=?',[tenant,sid]);if(Number(count.n)>=100)fail('NEED_LIMIT',422);
      id=randomUUID();await s.query('INSERT INTO session_need(tenant_id,id,session_id,label,created_at,actor_id) VALUES (?,?,?,?,?,?)',[tenant,id,sid,label,recordedAt,a.principalId]);
     }else{

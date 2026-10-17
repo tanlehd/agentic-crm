@@ -1,5 +1,11 @@
 # Agentic CRM
 
+**Đọc theo mục tiêu và người sử dụng:** [Bản đồ nhóm tính năng](docs/product/capability-map.md) là trục chung cho tài liệu sản phẩm, UX, demo và presentation. Các cập nhật theo ngày bên dưới là lịch sử triển khai; trạng thái chính thức ở task tracker.
+
+**Hộp thư tùy biến (2026-10-17):** Agent Chat Workspace có tạo bộ lọc, xem trước, lưu/sửa/nhân bản, chia sẻ user/team và lưu trữ inbox. Bộ lọc theo phạm vi, trạng thái, kênh/Page, nhãn, chưa đọc và tạm ẩn; không tự đổi phân công. [Mở Inbox](http://localhost:18080/) · [Hướng dẫn](docs/development/custom-inbox.md) · [Evidence](docs/tracking/details/SRC-083.md). Dùng storage hiện có, không migration.
+
+**Need enrichment & follow-up (2026-10-16):** Canonical Chat API dùng `conversation_id` ([đồng bộ tên](docs/tracking/details/SRC-082.md)); Inbox có đánh giá nhu cầu theo phiên, Human pins và adapter AI cấu hình được. Workflow đọc thuộc tính, kiểm tra lại outcome và mở phiên mới để phân công follow-up. [Hướng dẫn](docs/development/need-follow-up.md) · [Evidence](docs/tracking/details/SRC-081.md). Provider thật chưa cấu hình; không tự bật workflow/gửi tin.
+
 **Record pages (2026-10-16):** Object & Properties có **Record detail page** và **Record preview page**, mỗi loại gồm Default view và view riêng theo team. Builder card dùng metadata hiện có; Contact preview áp dụng trong Inbox. [Mở cấu hình](http://localhost:18080/?screen=schema) · [Hướng dẫn](docs/development/record-pages.md) · [Evidence](docs/tracking/details/SRC-080.md).
 
 **Thread / Conversation (2026-10-16):** Đã triển khai thuộc tính phân loại theo lượt, lịch sử đóng góp khi chuyển owner/team và Related Lead/Deal theo quyền. Đóng Thread kết thúc lượt; tin hợp lệ tiếp mở lượt mới với fields trống. [Mở Inbox](http://localhost:18080/) · [Hướng dẫn](docs/development/thread-conversation.md) · [Evidence](docs/tracking/details/SRC-078.md). Ticket/connected Reporting còn gate riêng; ID/API cũ giữ tương thích.

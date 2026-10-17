@@ -9,6 +9,7 @@ const predicate=obj({scope:{enum:['all','mine','unassigned','team']},team_id:uui
 const shares=array(obj({kind:{enum:['principal','team']},id:uuid}),50),actions=array(str(32));
 const meta=obj({correlation_id:{type:'string'},as_of:{type:'string',format:'date-time'},allowed_actions:actions},['correlation_id']);
 const defs={
+ 'catalog-inbox-options':obj({data:obj({filter_fields:array({enum:['status','owner_principal_id','team_id','channel','channel_id','tags']},6),can_share:{type:'boolean'},teams:array(obj({id:uuid,name:{type:'string',maxLength:255}}),200),principals:array(obj({id:uuid,name:{type:'string',maxLength:255}}),500)}),meta}),
  'catalog-predicate':predicate,
  'catalog-predicate-input':{...predicate,required:[]},
  'catalog-tag-create':obj({name:str(40),color:colors}),

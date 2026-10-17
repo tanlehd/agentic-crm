@@ -65,6 +65,12 @@ export class WorkspaceCatalogs {
     const data=[];for(const row of selected.slice(0,limit))data.push(await this.project(s,a,kind,row));return {data,next_cursor:selected.length>limit?this.sign({binding,id:selected[limit-1].id,exp:Date.now()+300000}):null,meta:{as_of:new Date().toISOString(),allowed_actions:this.manages(a,kind)?['create']:[]}};
   }
   list(account:string,tenant:string,kind:CatalogKind,input:Record<string,unknown>){return this.run(account,tenant,false,(s,a)=>this.listInScope(s,a,kind,input));}
+  options(account:string,tenant:string){return this.run(account,tenant,false,async(s,a)=>{
+    if(!this.manages(a,'inboxes'))throw new CommandError(403,'FORBIDDEN');
+    const filter_fields=['status','owner_principal_id','team_id','channel','channel_id','tags'].filter(field=>fieldAllowed(a,'conversation',field,'filter'));
+    const can_share=this.canShare(a,{creator_principal_id:a.principalId});
+    return {data:{filter_fields,can_share,...await this.identity.inboxOptions(s,filter_fields.includes('team_id')||can_share,can_share)},meta:{as_of:new Date().toISOString()}};
+  });}
   get(account:string,tenant:string,kind:CatalogKind,id:string){return this.run(account,tenant,false,async(s,a)=>({data:await this.project(s,a,kind,await this.row(s,a,kind,id)),meta:{as_of:new Date().toISOString()}}));}
   private async validatePredicate(s:TransactionScope,a:Access,p:any){
     if(p.snooze==='only'&&!await activityFeature(s,'snooze_v1'))throw new CommandError(409,'CAPABILITY_UNAVAILABLE');

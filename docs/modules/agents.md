@@ -1,5 +1,7 @@
 # MOD-07 — Agent & Routing
 
+CHG-20261016-04 / SRC-081: [Thread identity, need enrichment and recovery](../contracts/need-follow-up.md) supersedes earlier exclusions for this bounded scope. Current canonical Chat APIs use conversation_id (SRC-082 / CHG-20261016-05); deprecated thread_id artifacts remain readable through scoped compatibility. Need-scoped default/custom values, on-demand provider protocol, Human pins and read_need/recover_need workflow actions are implemented separately from general autonomous Agent Runtime or live channel delivery. See task evidence for actual validation.
+
 > Kiến trúc đích microservice theo ADR-017: [AI Runtime Platform](../services/ai-runtime.md). Routing/allocation tách riêng ở [Routing Service](../services/routing.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.
 Status: Ready for implementation M2 rule-based routing/mock AI. Requirements: REQ-06, REQ-07.
 

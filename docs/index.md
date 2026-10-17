@@ -1,5 +1,7 @@
 # Bản đồ tài liệu
 
+**Điểm vào theo sản phẩm:** [Nhóm tính năng theo mục tiêu và người sử dụng](product/capability-map.md). Dùng cùng trục cho giới thiệu tính năng, UX, hướng dẫn, demo và presentation; các nhóm tài liệu kỹ thuật bên dưới phục vụ truy vết.
+
 [Thread / Conversation implementation](development/thread-conversation.md) — SRC-078 /2026-10-16: stage + classification per episode, history across team transfer, Related Lead/Deal actions. [Exact gate](contracts/thread-conversation-implementation.md) · [Evidence](tracking/details/SRC-078.md). Ticket/connected Reporting remain gated.
 
 [Intercom / nhiều lượt trao đổi / hồ sơ nghiệp vụ xuyên phiên](references/intercom-multiple-interaction-rounds.md) — PLAN-032 research2026-10-15; logical model và khuyến nghị, không đổi Ready contracts.
