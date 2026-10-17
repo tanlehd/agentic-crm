@@ -1,5 +1,7 @@
 # Reporting & Analytics
 
+SRC-085 / 2026-10-17: [Operations Reporting](../contracts/operations-reporting.md) cung cấp 6 read objects, 7 model và template dashboard trên core chung. Routing/Chat/Identity giữ quyền sở hữu facts, producer qua authorized monolith ports; Reporting chỉ lưu definitions/catalog metadata trong own schema5, không SQL/FK xuyên service. UI phân tích ở Dashboards/Reports; Routing giữ cấu hình và hành động điều phối. [Runbook](../development/operations-reporting.md).
+
 PLAN-028: Reporting compile canonical CRM refs thành own versioned models/projections theo [contract direction](../contracts/no-code-object-platform.md); connected source distinct from mock, producer qua authorized API/events, no cross-schema reads. PLAN-028B chốt physical tables/refresh/ACL/grain trước SRC-075; không đổi delivered scope.
 
 **Current 2026-10-14 / CHG-20261014-05:** User authorized implementation after PLAN-027 review. Dashboard/Reports local slice is implemented: Reporting-owned schema4 (six new tenant-scoped tables;13 prior business tables preserved), native APIs, atomic templates and separate UI. [Runbook](../development/dashboard-workspace.md) · [Backend evidence](../tracking/details/SRC-071.md) · [UI evidence](../tracking/details/SRC-072.md). Earlier design-only/phase statements below are historical; broad Reporting milestones remain in tracker.

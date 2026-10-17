@@ -1,0 +1,34 @@
+[
+  {
+    "database": "crm_reporting",
+    "applied": {
+      "version": 5,
+      "applied": 2,
+      "totalSteps": 21
+    },
+    "repeat": {
+      "version": 5,
+      "applied": 0,
+      "totalSteps": 21
+    },
+    "preservedTables": 20,
+    "backup": "artifacts/operations-reporting/crm_reporting-before5.sql",
+    "backupHash": "b43cf77bdcbd2aff35672927104148ec1f6452e558d9f77d77fc11c4b3c30876"
+  },
+  {
+    "database": "test_crm_reporting",
+    "applied": {
+      "version": 5,
+      "applied": 2,
+      "totalSteps": 21
+    },
+    "repeat": {
+      "version": 5,
+      "applied": 0,
+      "totalSteps": 21
+    },
+    "preservedTables": 20,
+    "backup": "artifacts/operations-reporting/test_crm_reporting-before5.sql",
+    "backupHash": "6a1a6b8e7a7471a9dafa8e8062761758ea7104633a2e211260a4cdcfb6bcb8df"
+  }
+]

@@ -1,0 +1,53 @@
+{
+  "at": "2026-10-17T12:48:30.396Z",
+  "status": "PASS",
+  "checks": [
+    "forward35, tenant columns and repeat without old-table mutation",
+    "team skills CAS, replay and profile config persist",
+    "three conversations, two cap1 agents, one durable waiting; repeated concurrent dispatch",
+    "agent reply/pending retains load; close event releases and pushes next work",
+    "full transfer rejected atomically; capacity increase then successful reroute",
+    "performance credits one close, transfer separate, reply from Chat actor",
+    "wrong tenant and agent admin access forbidden; own workload isolates",
+    "required skills block, restore triggers dispatch; pause queue holds work",
+    "transaction interruption rolls owner/allocation back; fresh runtime retries exactly once",
+    "unavailable and field-denied candidates cannot receive; restored eligibility wakes backlog",
+    "manual assignment shares capacity guard; actor revoke holds queue without losing completed work",
+    "profile rejects non-chat seat; own workload respects field denies"
+  ],
+  "plans": {
+    "load": [
+      {
+        "id": "1",
+        "select_type": "SIMPLE",
+        "table": "routing_human_allocation",
+        "partitions": null,
+        "type": "ref",
+        "possible_keys": "PRIMARY,uq_rha_attempt,uq_rha_active,ix_rha_load,ix_rha_report,fk_rha_work",
+        "key": "ix_rha_load",
+        "key_len": "81",
+        "ref": "const,const,const",
+        "rows": "1",
+        "filtered": 100,
+        "Extra": "Using where; Using index"
+      }
+    ],
+    "wait": [
+      {
+        "id": "1",
+        "select_type": "SIMPLE",
+        "table": "routing_queue_entry",
+        "partitions": null,
+        "type": "ref",
+        "possible_keys": "PRIMARY,uq_rqe_active,ix_rqe_wait,fk_rqe_work,fk_rqe_config",
+        "key": "ix_rqe_wait",
+        "key_len": "86",
+        "ref": "const,const",
+        "rows": "1",
+        "filtered": 100,
+        "Extra": "Using index"
+      }
+    ]
+  },
+  "retained": true
+}

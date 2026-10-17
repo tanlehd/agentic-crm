@@ -1,0 +1,62 @@
+[
+  {
+    "file": "01-template-connected.png",
+    "title": "Chọn template và nguồn CRM kết nối",
+    "bytes": 119350,
+    "sha256": "57eee68dee9d399169e7c36858db01fa8b6f6426891068975b618f0c547e98c7"
+  },
+  {
+    "file": "02-dashboard-live.png",
+    "title": "Workload và hàng chờ trên Dashboard",
+    "bytes": 100020,
+    "sha256": "77cfa293a04bc8d487d52efd4a45347c5901a8389c87566cf689e252c220a6b0"
+  },
+  {
+    "file": "08-dashboard-outcomes.png",
+    "title": "Kết quả xử lý và thời gian giữ việc",
+    "bytes": 92838,
+    "sha256": "5e0b5c6d308dc85cc60bfad5209e1749ef4dc25f6529d989cd328d50c189e8ab"
+  },
+  {
+    "file": "09-dashboard-trend.png",
+    "title": "Thời gian chờ, phản hồi và xu hướng phân công",
+    "bytes": 73759,
+    "sha256": "4baa338ac360faebc79bbdece381b3a7ecb0c190784734e2fcadda89ba9b679a"
+  },
+  {
+    "file": "03-report-builder-objects.png",
+    "title": "Sửa report bằng đối tượng, thuộc tính và phép tổng hợp",
+    "bytes": 141727,
+    "sha256": "499a88c7c5a6bbb3763d214b80eee7d2bb2127b412e2d8cac67d7b2a00c8d921"
+  },
+  {
+    "file": "04-dashboard-saved-layout.png",
+    "title": "Bố cục đã lưu, report version cũ vẫn được ghim",
+    "bytes": 88440,
+    "sha256": "e578b66f133b19c47554ab0c9f782b2e7f5016aa8547c9683033d4ed5025b10b"
+  },
+  {
+    "file": "10-full-capacity-waiting.png",
+    "title": "Đầy capacity: report ghi nhận một lượt đang chờ",
+    "bytes": 78863,
+    "sha256": "0776a5556ff0d0e8dd38a76f8158468383aaa901b33dc87f56ea3c6e00e8b16d"
+  },
+  {
+    "file": "06-close-next-refreshed.png",
+    "title": "Sau close: hàng chờ giảm, hoàn tất tăng khi làm mới",
+    "bytes": 77098,
+    "sha256": "5791a4506cd64c5d8f424f4ec09aab61961385d1f2b9143f7c3ac9eb489512d7"
+  },
+  {
+    "file": "07-routing-dashboard-link.png",
+    "title": "Routing giữ điều phối và dẫn sang Dashboards",
+    "bytes": 87021,
+    "sha256": "2cda104bccdd5418cabf8bcf6b62c5f0e89fc5714df7fd141994af8943cad1a0"
+  },
+  {
+    "file": "05-mobile-dashboard.png",
+    "title": "Dashboard trên màn hình 390px",
+    "bytes": 35917,
+    "sha256": "3543e229eb769c70a7433fc40c71e77f261993237c4481835c0ecdef4c5d72ca"
+  }
+]

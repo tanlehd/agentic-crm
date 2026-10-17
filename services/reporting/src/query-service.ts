@@ -1,3 +1,4 @@
+import {connectedSnapshot,requireMockSource,liveDefinition} from './connected-sources.js';
 import {AsyncLocalStorage} from 'node:async_hooks';
 import {QueryRunner} from './query-runner.js';
 import {QueryError,type QueryAccess} from './query.js';
@@ -25,9 +26,10 @@ export class ReportingQueryService {
   const request=structuredClone(validateQueryRequest(input));if(request.format==='csv'&&!a.canExport)throw new StorageError(403,'QUERY_FORBIDDEN');
   const count=this.active.get(a.tenantId)??0;if(count>=2)throw new QueryError('QUERY_CONCURRENCY_LIMIT');this.active.set(a.tenantId,count+1);
   try{
-   const snapshot=await this.store.read({tenantId:a.tenantId,bindingId:request.definition.bindingId,adapterId:'synthetic_g1_v1',environment:'mock'},request.generation);
-   assertQueryAdmission(a);
-   return await this.context.run({admission:a,snapshot},()=>this.runner.run({tenantId:a.tenantId,principalId:a.principalId},request.definition.bindingId,request.definition,{generation:request.generation,csv:request.format==='csv'}));
+   const connected=connectedSnapshot(request.definition.bindingId,request.generation);if(!connected)requireMockSource();
+   const snapshot=connected??await this.store.read({tenantId:a.tenantId,bindingId:request.definition.bindingId,adapterId:'synthetic_g1_v1',environment:'mock'},request.generation);
+   assertQueryAdmission(a);const definition=liveDefinition(request.definition,snapshot.manifest);
+   return await this.context.run({admission:a,snapshot},()=>this.runner.run({tenantId:a.tenantId,principalId:a.principalId},request.definition.bindingId,definition,{generation:request.generation,csv:request.format==='csv'}));
   }finally{const remaining=(this.active.get(a.tenantId)??1)-1;if(remaining)this.active.set(a.tenantId,remaining);else this.active.delete(a.tenantId);}
  }
 }

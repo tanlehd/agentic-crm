@@ -1,5 +1,77 @@
 # Git publication session — 2026-10-17
 
+S-20261017-12: user explicitly authorized commit/push of accumulated Human Routing (SRC-084), shared operations Dashboard/Report Builder (SRC-085), assignment research/ERD and acceptance screenshots to origin/main. Base8455fac; fetched origin/main matches before commit. Publication snapshot is the commit containing this checkpoint; push result and remote hash are verified after commit.
+
+Fresh399unit/57files,326Markdown/2943links/85source DAG,36strict schemas,generated contracts,AST742 and whitespace PASS. Publication inventory142files/~5.4MiB; no private .env/.local/artifacts paths or credential signatures detected. Native/browser/build evidence remains from completed SRC-084/SRC-085; not rerun this Git-only turn. No DB/runtime changes or service restart; services not freshly checked. PLAN-041 vendor alert screenshot gaps remain IN_PROGRESS; feature statuses unchanged. No active source implementation; next existing backlog PLAN-028E.
+
+## Previous checkpoint
+
+# Operations Dashboard / Report Builder completed — 2026-10-17
+
+PLAN-046 / SRC-085 DONE scoped OR-01…08; CHG-20261017-06 resolved. [Open local](http://localhost:18080/?dashboards=1&dashboard=6194bf0e-a924-5a33-a743-9237ff657d10) · [Runbook](../development/operations-reporting.md) · [Acceptance10screenshots](../quality/operations-reporting-acceptance.md) · [Evidence](details/SRC-085.md).6objects/7models/7saved reports through common source/compiler/query/report/dashboard core. Removed bespoke Routing performance tab, kept config/workload/reroute. Refresh reads current source and preserves report/catalog pins; no auto-refresh claim.
+
+399unit/57files,7producer/native rights,5DB constraints,12mock dashboard native regression,8browser groups plus mobile/navigation and10images PASS. Backend/Reporting types/build and isolated Web production build PASS;36schemas/generated/AST742 PASS. Final docs/whitespace/gallery/health in S-20261017-11. First issues fixed and rerun; no outstanding slice blocker.
+
+Reporting schema4→5 applied2/repeat0 in local and retained test databases;20old tables preserved, backup/hash in artifacts/operations-reporting. Standard reporting-db --test repeat0,CRM35 unchanged. Metadata catalog only, no source rows persisted. Runtime append-only SELECT/INSERT grant for new table. API/worker/Reporting restarted via manager; Web18080 running. Synthetic fixtures/dashboard/reports/conversations retained, temporary test authorization restored, no DB reset/provider activation.
+
+Main/base8455fac dirty: source/docs/scripts/generated schemas/quality assets plus prior SRC-084 and research. No commit/push/deploy/subagents/schedule. No active implementation task. Boundaries:30day/5000row on-demand source; no generic custom-object ingestion, historical workload snapshots or connected durable runs. Next existing backlog PLAN-028E; PLAN-041 vendor alert screenshot gaps remain open. Do not conflate scoped SRC-085 with full SRC-075.
+
+## Previous checkpoint
+
+# Human conversation routing completed — 2026-10-17
+
+PLAN-045 / SRC-084 DONE for bounded monolith HR-01…10; CHG-20261017-05 resolved. [Open local](http://localhost:18080/?screen=routing) · [Runbook](../development/human-routing.md) · [Acceptance and screenshots](../quality/human-routing-acceptance.md) · [Evidence](details/SRC-084.md). Team skill grants, Human capacity, versioned connection queue, durable wait, automatic next dispatch after close, admin reroute, agent confirmed-assignment alert and operational performance implemented. Event tick1s/recovery30s/UI5s; last observed close→assignment 3992ms is not an SLO.
+
+Validation: 393 unit / 56 files, 12 Human routing MySQL groups, 11 Conversation regression groups, 8 native browser groups / 10 screenshots PASS. Backend/Web types and isolated Next production build PASS; 36 strict schemas, generated contracts and AST lint733 PASS. Final docs/whitespace/gallery checks in S-20261017-10. Images reviewed after waiting for real loaded/sent UI states. Source/config/docs and evidence exist; no production-provider claim.
+
+Local forward35 added9tables;104old tables preserved, repeat0; private SQL backup/hash in artifacts/human-routing. Dedicated synthetic accounts/team/mock channel retained, totals accumulate. API3001/worker3002/web18080/Reporting3004 ready; MySQL13306/Redis16379 healthy; monitor3020 running; Connector configuration-required. Existing runtime grants scoped to new tables and dedicated actor; no reset/provider activation.
+
+Main/base8455fac dirty with prior research/ERD plus SRC-084 source/generated contracts/docs/scripts. No commit/push/deploy/subagents/schedule; original next-env/tsconfig restored after isolated build. No blocker or unresolved decision for this slice; no active source implementation. PLAN-041 exact vendor alerts remain open. Broader mapping/visual rules/overflow/weighted capacity/offer-accept/service extraction/generic Report Builder integration stay separate. Next existing backlog: PLAN-028E exact remaining Object Platform lifecycle gate.
+
+## Previous checkpoint
+
+# Conversation routing logical ERD completed — 2026-10-17
+
+PLAN-044 DONE design-only / CHG-20261017-04 logical scope resolved. [ERD and table review](../data/conversation-routing-erd.md) · [3-diagram preview](../data/conversation-routing-preview.html). Separates work/queue entry/attempt/Human allocation; reusable skills and versioned source-mapping policies; Identity/Chat/Workflow authorities preserved. R1 proposes one slot per open Human session, pending/snoozed included, event-driven wakeups, cross-queue capacity and uncertain-commit reconciliation. Proposed product semantics are not claimed user-approved or implemented. Exact API/DDL/permission/retention/cutover/default-cap and durable assignment-notification design remain gates.
+
+ROUTE-D01…08 documentation review complete. Mermaid10.9.3 rendered3 SVG/PNG; browser preview tabs/image loads/no errors/390px overflow and visual desktop/mobile check PASS. Docs/whitespace commands and final count in S-20261017-09; runtime RQ-01…10/DDL/vendor tests NOT_RUN. Main/base8455fac dirty, prior research preserved; no commit/push/deploy/reset/service changes/subagents/schedule. Services not freshly checked. No active source task. Next routing step is exact implementation gate; PLAN-041 screenshot gaps remain pending and unrelated source backlog priority unchanged.
+
+## Previous checkpoint
+
+# Salesforce routing engine versus visual Flow clarified — 2026-10-17
+
+PLAN-043 DONE research-only. [Section7.1](../references/conversation-assignment.md): native Omni-Channel checks backlog when agent capacity/availability changes; admin-defined visual Omni-Channel Flow handles business decisions and hands off with Route Work. Capacity model determines whether close tab or completed work releases capacity; routing and auto-accept are distinct. Proposed CRM default settings + editable routing policy Flow + read-only engine explanation/decision trace. No claim Salesforce has that exact proposed explanation UI.
+
+DOC-FLOW-01…03 evidence/checks in S-20261017-08; Mermaid header checked, not rendered. Main/base8455fac dirty with prior research/preview preserved; no source/schema/runtime/DB/service changes, commit/push/deploy/subagents/schedules. Services not freshly checked; runtime/vendor tests NOT_RUN. No active source task. Next assignment build gate remains exact R1 design; PLAN-041 screenshot gaps remain pending.
+
+## Previous checkpoint
+
+# Queue wakeup research completed — 2026-10-17
+
+PLAN-042 DONE research-only. [Section6.1](../references/conversation-assignment.md) distinguishes state-change wakeups, deadline timeouts and recovery sweeps across HubSpot/Intercom/respond.io/Salesforce/Zendesk. Salesforce directly documents login/work-completion/status-change checks. Other sources establish availability/capacity waiting behavior without a published scheduler interval; respond.io's exact wakeup remains undocumented in checked sources. Proposed CRM event-triggered dispatch + durable deadline + bounded periodic reconciliation;30s sweep/3s p95 are examples to validate, not vendor measurements or implemented settings.
+
+Docs/whitespace checks and source review in S-20261017-07. Main/base8455fac dirty with preserved PLAN-040/041/preview work; no code/schema/runtime/service changes, commit/push/deploy/subagents/schedules. Services not freshly checked; runtime/vendor tests NOT_RUN. No active source implementation. Next action before building routing remains exact R1 contract/data/acceptance design. PLAN-041 screenshot gaps remain open below.
+
+## Previous checkpoint
+
+# Assignment UI references collected; exact alerts pending — 2026-10-17
+
+PLAN-041 IN_PROGRESS, research-only. [8-image dossier](../references/assignment-ui-screenshots.md) · [gallery](../references/assignment-ui-gallery.html). HubSpot Waitlist, Intercom full-capacity reason/assignee table, respond.io Unassigned and assigned workspace collected from official docs; every image includes provenance and semantic label. HubSpot general notification drawer and respond.io new-message toast are related evidence, not verified assignment alerts. Exact recipient incoming-assignment screenshots for all three remain missing; do not mark task DONE or infer feature absence.
+
+Images visually reviewed; seven preserved originals plus one unedited GIF frame. Source manifest/hash/dimensions saved under docs/references/assets/assignment-ui; checks recorded in execution log S-20261017-06. Source/runtime/DB/vendor functionality unchanged and tests NOT_RUN. Main/base8455fac dirty with preserved PLAN-040 plus this gallery/research/tracking; no commit/push/deploy/service changes/subagent/schedule. Services not freshly checked. Next action for this research: capture a real new conversation assignment in an accessible demo recipient workspace for each vendor. No active source implementation task; existing backlog unchanged.
+
+## Previous checkpoint
+
+# Conversation assignment research completed — 2026-10-17
+
+PLAN-040 DONE research-only; CHG-20261017-03 records the extension proposal. [Research and criteria](../references/conversation-assignment.md) compares five vendors and recommends reusable employee skills, Page/ad/post→product/intent mapping, per-session routing, soft sticky owner, Human capacity and durable waiting/overflow through one dispatcher used by Workflow. Current Human routing remains unlimited; AI execution slots and routing_attention do not implement that proposed queue. Existing workflow trigger is conversation.created/need.assessed, not all session openings. No Ready contract/source/schema changed.
+
+DOC-ASG-01…03 manual source review complete; Windows/pinned Node24.21.0 docs check PASS316Markdown/2786links/83source DAG before completion links, tracked whitespace PASS. Final checks in execution log. Runtime/build/browser/vendor tests NOT_RUN; ASG-01…10 are future criteria. Working tree initially clean on main8455fac, now dirty with research/module reference/build-plan/tasks/log/checkpoint only; no commit/push/deploy/DB/service changes, subagent or schedule. Services not freshly checked. No active source task/blocker. Next action for this topic: exact R1 design gate before source; existing PLAN-028E backlog priority unchanged.
+
+## Previous checkpoint
+
+# Git publication session — 2026-10-17
+
 S-20261017-04: user authorized commit/push of accumulated SRC-081/082/083 and PLAN-037/038/039 on main to origin. Base99130b2; fetched origin/main matches before commit. Publication snapshot is the commit containing this checkpoint; remote result is checked after commit. Fresh391unit/55files,8package typecheck,docs315/2765links/83source DAG,35schemas,generated contracts and AST lint720 PASS. Native/browser/build suites retain prior evidence; not rerun this Git-only session. No DB/runtime/service changes; services not freshly checked. No active source task/blocker. Next existing backlog action: PLAN-028E exact remaining Object Platform lifecycle gate. Product documentation follows capability map below.
 
 ## Previous checkpoint

@@ -1,0 +1,12 @@
+PASS template creates six saved reports and one dashboard atomically, concurrent key replays
+PASS saved reference query returns expected cohort without embedded client definition
+PASS failed template rolls back dashboard and every created report
+PASS CAS race, immutable layout, malformed refs and overlap rejected
+PASS report version edit does not change widget pin; archive unavailable, restore compatible
+PASS native tenant/cookie/CSRF and current permission revocation fail closed
+PASS future report shapes remain listed safely and cannot execute
+PASS list/report picker cursor tampering and scoped usage
+PASS archive restore increments revision but preserves content version; duplicate keeps refs
+PASS explicit legacy conversion preserves original bytes, reports and pins; retry stable
+PASS mid-conversion failure rolls back reports already created inside transaction
+PASS storage tenant compound keys and append-only grant constraints

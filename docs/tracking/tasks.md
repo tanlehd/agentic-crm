@@ -12,7 +12,26 @@ Git sync S-20261013-01: user explicitly requested commit/push of the accumulated
 
 Git sync S-20261015-01: user authorized commit/push of all accumulated source/docs on main. Fresh pre-commit validation in [execution log](log.md); no feature status change or new implementation task.
 
+Git sync S-20261017-12: user authorized publishing accumulated SRC-084/SRC-085, assignment research/ERD and evidence to origin/main. Feature states unchanged; PLAN-041 remains IN_PROGRESS. See execution log for checks.
+
+## Operational reporting generalization — 2026-10-17
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-046 | Exact connected operations objects/properties/core reporting integration gate | SRC-084; SRC-072; SRC-063 | DONE | Codex 2026-10-17 | [Ready contract and OR-01…08](../contracts/operations-reporting.md); docs323/2893links/DAG85 PASS before source; forward005 table review added before DDL |
+| SRC-085 | Connected operations source and reusable Report Builder/Dashboard templates | PLAN-046; SRC-084; SRC-072; SRC-063 | DONE | Codex 2026-10-17 | [Evidence](details/SRC-085.md);399unit/7producer/5storage/12regression/8browser groups +10images PASS; Reporting5 preserved20old tables; bounded30day/5000rows |
+
 ## Agent workspace queue/view research — 2026-10-17
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-040 | Research conversation assignment, employee skills, capacity queues and workflow policy against five vendors | PLAN-037; SRC-017; SRC-078; SRC-082 | DONE | Codex 2026-10-17 | [Research / DOC-ASG-01…04](../references/conversation-assignment.md); five-vendor official sources + local inspection; docs/whitespace PASS, research-only; ASG-01…10 runtime NOT_RUN |
+| PLAN-041 | Collect official waitlist and incoming-assignment UI screenshots for HubSpot/respond.io/Intercom and compare clarity | PLAN-040 | IN_PROGRESS | Codex 2026-10-17 | [8-image gallery / evidence](../references/assignment-ui-screenshots.md); queue/state references collected; exact incoming-assignment popup set still missing; public-source research only, no runtime changes |
+| PLAN-042 | Verify queue redispatch wakeups versus time-based retries across five vendors | PLAN-040 | DONE | Codex 2026-10-17 | [Research section6.1 / DOC-WAKE-01…03](../references/conversation-assignment.md);5official vendor references, explicit unknown intervals; docs/whitespace PASS; no implementation or measured SLO |
+| PLAN-043 | Research Salesforce native dispatch versus visual Omni-Channel Flow and capacity release | PLAN-042 | DONE | Codex 2026-10-17 | [Section7.1 / DOC-FLOW-01…03](../references/conversation-assignment.md); official sources separate native push, routing Flow, capacity model and auto-accept; docs/whitespace PASS; runtime NOT_RUN |
+| PLAN-044 | Design logical Omni-style conversation routing ERD and review existing-model gaps | PLAN-043; SRC-017; SRC-082 | DONE | Codex 2026-10-17 | [ERD / ROUTE-D01…08](../data/conversation-routing-erd.md), [preview](../data/conversation-routing-preview.html); 3 Mermaid renders + docs/browser/whitespace checks PASS; logical-only, physical/API/cutover gate remains separate; runtime RQ-01…10 NOT_RUN |
+| PLAN-045 | Exact monolith Human routing, team skills, workload and performance acceptance gate | PLAN-044; SRC-083 | DONE | Codex 2026-10-17 | [Ready bounded contract/table templates/HR-01…10](../contracts/human-routing.md); logical scope reviewed against baseline ports; docs check PASS before source |
+| SRC-084 | Human routing administration, automatic capacity dispatch, agent handling and performance report | PLAN-045; SRC-083 | DONE | Codex 2026-10-17 | [Evidence](details/SRC-084.md); HR-01…10 bounded monolith R1, 12 MySQL + 8 browser groups/10 screenshots, 11 regression groups, 393 unit tests/build/static PASS; mock transport, broader routing gates separate |
 
 Git publication S-20261017-04: user authorized commit/push of accumulated SRC-081/082/083 and PLAN-037/038/039 work on main. Fresh unit/type/static checks in [execution log](log.md); no source task or acceptance status changed.
 

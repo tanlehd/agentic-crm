@@ -1,0 +1,139 @@
+[
+  {
+    "file": "hubspot-waitlist.png",
+    "page": "https://knowledge.hubspot.com/help-desk/use-the-waitlist-in-help-desk",
+    "image": "https://knowledge.hubspot.com/hubfs/Knowledge_Base_2023-24-25/KB-Help-Desk/Waitlist-beta/waitlist-help-desk.png",
+    "sha256": "d41d8ea2c08dd25e16182d9a5b11037b621214573caf6f9aa8022bdf20d59f7f",
+    "bytes": 282605,
+    "section": "Hàng chờ",
+    "title": "HubSpot — Waitlist",
+    "evidence": "Đúng hàng chờ capacity",
+    "comment": "Rõ nhất ở cấp danh sách: Waitlist riêng, số lượng, SLA và banner tự giao cho agent đủ điều kiện. Đây là Help Desk Ticket, không phải legacy Conversations Inbox.",
+    "retrieved": "2026-10-17",
+    "transform": "none",
+    "dimensions": [
+      2764,
+      1076
+    ]
+  },
+  {
+    "file": "intercom-capacity-reason.png",
+    "page": "https://www.intercom.com/help/en/articles/6553774-balanced-assignment-deep-dive",
+    "image": "https://downloads.intercomcdn.com/i/o/tx2p130c/2576811758/64d63b570e20a69c25dc03af768e/CleanShot+2026-07-30+at+17_46_25%402x.png?expires=1792368000&signature=96fa3add0b771f95d674729ab940195d4a72652e68fa614fd1127ca0cbf601c6&req=diUgEMF%2FnIZaUfMW3Hu4gcxP9OpD3VPUHCZF%2FXXWzdMP%2Ba%2FNdEejr4GZ8Uvz%0A2w%3D%3D%0A",
+    "sha256": "d45576fd65302362dce279722f276669245c22c5131dd3f1841f58eaa9604802",
+    "bytes": 70837,
+    "section": "Hàng chờ",
+    "title": "Intercom — lý do chưa giao",
+    "evidence": "Đúng lý do hết capacity",
+    "comment": "Tooltip giải thích mọi teammate đã đầy capacity. Rõ ở từng hội thoại; ảnh này không cho thấy toàn bộ danh sách chờ hay thứ tự ưu tiên.",
+    "retrieved": "2026-10-17",
+    "transform": "none",
+    "dimensions": [
+      1064,
+      386
+    ]
+  },
+  {
+    "file": "intercom-assignee-table.png",
+    "page": "https://www.intercom.com/help/en/articles/6561699-assign-conversations-to-teammates-and-teams",
+    "image": "https://downloads.intercomcdn.com/i/o/849104158/e9ead7971c36b477ec00a0e1/image.png?expires=1792236600&signature=0066a388877cde12e5225a74dd72d12391f9450508a5b34eb90ec512a9421216&req=fCQuF8l6nIRXFb4f3HP0gEVs1UFk5DLyo9CS%2FKfECStOc8LH%2B4G4axCmemdr%0A810r3FucdOO7Nuo%2Bug%3D%3D%0A",
+    "sha256": "7266c5923af815e7c8f82e7d20ca1a18335998b2214bfa32b2f6b4e8c1317967",
+    "bytes": 362139,
+    "section": "Hàng chờ",
+    "title": "Intercom — bảng Assignee",
+    "evidence": "Unassigned, chưa chứng minh chờ capacity",
+    "comment": "Bảng cho thấy cuộc nào đã có người xử lý, cuộc nào Unassigned. Không thể suy mọi dòng Unassigned đều đang chờ vì đầy tải.",
+    "retrieved": "2026-10-17",
+    "transform": "none",
+    "dimensions": [
+      2010,
+      1040
+    ]
+  },
+  {
+    "file": "respond-unassigned.png",
+    "page": "https://respond.io/help/inbox/getting-started-with-inbox",
+    "image": "https://assets2-proxy.respond.io/ph8r57dk1q9w/54vtgbNQyAVrAsqPpKutX4/72cfe5b344e12d27b622f9eebdaa4cbd/Side_panel-Inbox.png",
+    "sha256": "68b1f50f2e308dca799906f045034e3452b8844224c56f461461eb1951820ac0",
+    "bytes": 18746,
+    "section": "Hàng chờ",
+    "title": "respond.io — Unassigned / Team Inbox",
+    "evidence": "Inbox chung, chưa phải Waitlist riêng",
+    "comment": "Sidebar dễ hiểu và gọn. Tuy nhiên Unassigned không giải thích chờ vì offline, đầy tải, thiếu rule hay chưa từng phân công.",
+    "retrieved": "2026-10-17",
+    "transform": "none",
+    "dimensions": [
+      208,
+      381
+    ]
+  },
+  {
+    "file": "respond-assigned-workspace.png",
+    "page": "https://respond.io/help/inbox/getting-started-with-inbox",
+    "image": "https://assets2-proxy.respond.io/ph8r57dk1q9w/2PkftKM6lnH0oUzmUqDA0r/b3cca31fbd9e5a9f00f531c37a0d2a43/Activities_tab.png",
+    "sha256": "7869180b92cdc7445984265276572913aa30e93aaaf74654bedda9416e5ad892",
+    "bytes": 313721,
+    "section": "Nhận việc",
+    "title": "respond.io — Assigned to you",
+    "evidence": "Đúng trạng thái / lịch sử đã giao",
+    "comment": "Trong workspace có Mine, dòng Assigned to you trong hội thoại và Activities ghi thời điểm Assigned. Đây là dấu vết giao việc; không chứng minh popup xuất hiện lúc vừa nhận việc.",
+    "retrieved": "2026-10-17",
+    "transform": "none",
+    "dimensions": [
+      1886,
+      931
+    ]
+  },
+  {
+    "file": "intercom-assigned-workspace.png",
+    "page": "https://www.intercom.com/help/en/articles/6561699-assign-conversations-to-teammates-and-teams",
+    "image": "https://downloads.intercomcdn.com/i/o/849101631/2d53ef9cbba13e94325eb146/image.png?expires=1792236600&signature=a448fba786b217a2f0ae3c547f8f501f3d356c39f0ac6cbeab01ca14e373f0c7&req=fCQuF8l%2Fm4JeFb4f3HP0gGHu4R39nT%2Bw841%2BdCqGbL1EW1vnkFAJFQlS1Nhz%0ANTp76xE9OGqt%2B0bWdw%3D%3D%0A",
+    "sha256": "5c21ffe473deda6699656c695ed360b7706e7697efa8014f751d1dfee72f0cf2",
+    "bytes": 929524,
+    "section": "Nhận việc",
+    "title": "Intercom — Assignee và Team",
+    "evidence": "Đúng người đang phụ trách",
+    "comment": "Details cho thấy người và team được giao. Rõ quyền sở hữu hiện tại, nhưng không có badge mới giao hoặc alert incoming assignment trong ảnh.",
+    "retrieved": "2026-10-17",
+    "transform": "none",
+    "dimensions": [
+      2012,
+      1098
+    ]
+  },
+  {
+    "file": "hubspot-notification-drawer.png",
+    "page": "https://knowledge.hubspot.com/user-management/how-to-set-up-user-notifications-in-hubspot?isVariant=b",
+    "image": "https://53.fs1.hubspotusercontent-na1.net/hub/53/hubfs/Knowledge_Base_2023-24-25/KB-user-management/Inbound%202025%20Screenshot%20Updates/Set%20up%20user%20notifications%20in%20HubSpot/user-management-notification-actions.png?height=183&name=user-management-notification-actions.png&width=500",
+    "sha256": "1eaaeba663142ae1b8922a4d822543f6314772814d198fc9147cf616a5281bd2",
+    "bytes": 15430,
+    "section": "Nhận việc",
+    "title": "HubSpot — Notifications",
+    "evidence": "Thông báo chung; chưa đúng assignment",
+    "comment": "Ảnh chính thức cho thấy popup và ngăn Notifications. Nội dung là logged call / task, không phải nhận hội thoại mới. Ảnh nguồn nhỏ, không thể dùng để đánh giá chi tiết alert assignment.",
+    "retrieved": "2026-10-17",
+    "transform": "none",
+    "dimensions": [
+      500,
+      182
+    ]
+  },
+  {
+    "file": "respond-new-message-toast.png",
+    "page": "https://respond.io/help/user-account/notifications",
+    "image": "https://assets2-proxy.respond.io/ph8r57dk1q9w/1qlzSb7pEplmnXHChVakgK/b1df0eb4712d91a81b257cf7565ede74/desktop-notification-cropped.gif",
+    "sha256": "57a5c7ca9340004e6f839d48e53cddc641d0e295d644df15bad160dcc628f397",
+    "bytes": 9626,
+    "section": "Nhận việc",
+    "title": "respond.io — desktop toast",
+    "evidence": "Thông báo tin nhắn mới; chưa đúng assignment",
+    "comment": "Khung hình 32 (đánh số từ 0) trích từ GIF chính thức. Popup báo New unread messages, không phải Contact Assigned. Chỉ tham khảo hình thức desktop toast.",
+    "retrieved": "2026-10-17",
+    "transform": "GIF frame 32 extracted to PNG; no crop, annotation or content edit",
+    "source_sha256": "8760e4e7ad0649d175ddffa952341cbc8cff90dddf088ba6f6b887cd7956a796",
+    "dimensions": [
+      936,
+      127
+    ]
+  }
+]

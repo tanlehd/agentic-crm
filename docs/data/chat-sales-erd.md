@@ -1,5 +1,9 @@
 # ERD chốt — Conversation, Session, hành vi, Lead và Deal
 
+SRC-084: [Human routing implementation](../contracts/human-routing.md) attaches work to existing session_id and retains Chat owner/contribution authority. Forward35 adds Routing data only; thread/session identity and Sales attribution are unchanged.
+
+PLAN-044 / 2026-10-17: [Conversation routing companion ERD](conversation-routing-erd.md) adds session-bound work, durable waiting and Human allocations as a logical proposal. Chat keeps canonical owner/session/contribution authority; this extension does not change the approved Chat/Sales lifecycle or current source.
+
 **Implemented additive slice SRC-078 / 2026-10-16:** [Thread / Conversation exact contract](../contracts/thread-conversation-implementation.md), PLAN-033A DONE. Thread legacy IDs/API remain stable; Conversation episode has optional custom fields and stage, event-time ownership/contributor history, and Related Lead/Deal actions with current permissions. Cross-team transfer preserves the episode; Ticket and connected Reporting remain gated. Physical forward31 stays in the baseline monolith; service extraction rules below remain unchanged.
 
 CHG-20261013-08 · 2026-10-13 · Owner Codex. **Thiết kế logical đã được người dùng chấp thuận**, gồm clarification CHG-20261013-07 và session stage/milestone. Đây là nguồn chuẩn mô hình đích cho lát cắt Chat→Sales. SRC-068 implements the [exact Customer360/session slice](../contracts/customer-360-session.md): referral preservation, touchpoint membership, create/follow-up/closing context, direct Deal and explicit Lead duplicate consolidation. SRC-069 implements [versioned session stages, scoped evidence/corrections and connected behavioral funnel](../contracts/session-progress.md) in forward29. Logical names below do not imply one physical table per entity.

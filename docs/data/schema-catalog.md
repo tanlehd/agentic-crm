@@ -1,5 +1,11 @@
 # Schema catalog — nơi đặt bảng mới
 
+SRC-084 / forward35: [9 physical Human routing tables](../contracts/human-routing.md) now added to baseline monolith; target owner crm_routing. No target schema extraction. All tenant_id NOT NULL, own-Routing FK only, AI execution slots unchanged.104old tables preserved at local upgrade; [evidence](../tracking/details/SRC-084.md). Earlier PLAN-044 logical-only statements below remain historical.
+
+PLAN-044: [17 logical Routing candidates and table review](conversation-routing-erd.md), all tenant-scoped, target crm_routing. Not physical tables or Ready DDL; no schema provision/migration. Human allocation is separate from AI agent_capacity_slot. Exact types/indexes/permissions/cutover require the next gate.
+
+SRC-085 forward005: Reporting-owned report_connected_catalog and dashboard_widget dual mock-generation/connected-catalog pin. [Filled table review](../contracts/operations-reporting.md). Metadata only, no operational row persistence or cross-service FK.
+
 PLAN-034/SRC-080: [record_page_view / record_page_team](../contracts/record-pages.md), CRM Core target crm_core, physical monolith forward32. Presentation metadata only; Identity team logical references through application port, no cross-owner FK.
 
 PLAN-033A: [session_classification / session_contribution](../contracts/thread-conversation-implementation.md), Chat owner / target crm_chat, physical monolith; forward31, tenant-scoped episode values and immutable handling evidence. Core owns conversation_session property definitions. No cross-service FK.

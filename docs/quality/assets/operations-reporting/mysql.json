@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "at": "2026-10-17T13:25:30.288Z",
+  "checks": [
+    "source grant independent of mock permission, tenant-owned data and minimized properties",
+    "producer rows execute through shared semantic core and reconcile workload; no mock-store fallback",
+    "live source role revocation removes connected source",
+    "own conversation scope cannot expose tenant aggregates",
+    "current field filter deny blocks aggregate source",
+    "export authority is separate from preview",
+    "foreign tenant membership denied"
+  ],
+  "retained": true
+}

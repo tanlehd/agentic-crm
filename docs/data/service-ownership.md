@@ -1,5 +1,11 @@
 # Data ownership — monolith to service databases
 
+SRC-085 / 2026-10-17: [Operations Reporting](../contracts/operations-reporting.md) cung cấp 6 read objects, 7 model và template dashboard trên core chung. Routing/Chat/Identity giữ quyền sở hữu facts, producer qua authorized monolith ports; Reporting chỉ lưu definitions/catalog metadata trong own schema5, không SQL/FK xuyên service. UI phân tích ở Dashboards/Reports; Routing giữ cấu hình và hành động điều phối. [Runbook](../development/operations-reporting.md).
+
+SRC-084 implements the [bounded Human routing contract](../contracts/human-routing.md) in baseline monolith, target crm_routing. Chat/Identity ports own their data; local tenant-fenced UoW permitted until extraction. Remote reservations/API saga remain future gate; no cross-service SQL/FK introduced.
+
+PLAN-044: [Routing logical extension](conversation-routing-erd.md) assigns skill/queue/policy/dispatch/Human occupancy to Routing (target crm_routing). Identity retains principal/team/availability/auth; Chat retains session/owner/history; Workflow retains graph/run/wait; AI execution slots stay AI-owned. No cross-service FK/SQL/UoW; physical extraction and API gate remain open.
+
 SRC-080: CRM Core owns [record detail/preview presentation metadata](../contracts/record-pages.md), target crm_core, baseline forward32. Identity owns active teams/memberships and exposes `recordPageTeams` local application port; future extraction requires Identity API. Sales/Chat retain business records/commands; no new cross-service SQL, FK or shared UoW after extraction.
 
 **Implemented additive slice SRC-078 / 2026-10-16:** [Thread / Conversation exact contract](../contracts/thread-conversation-implementation.md), PLAN-033A DONE. Thread legacy IDs/API remain stable; Conversation episode has optional custom fields and stage, event-time ownership/contributor history, and Related Lead/Deal actions with current permissions. Cross-team transfer preserves the episode; Ticket and connected Reporting remain gated. Physical forward31 stays in the baseline monolith; service extraction rules below remain unchanged.

@@ -1,3 +1,4 @@
+import {operationsSource} from '../agents/operations-source.js';
 import {createHash,createHmac} from 'node:crypto';
 import type {DataSource} from 'typeorm';
 import {UnitOfWork} from '../../kernel/tenancy/unit-of-work.js';
@@ -12,12 +13,12 @@ function scope(a:Access,action:'read'|'design'){
 }
 export class DashboardBridge {
  private readonly authorization:IdentityAuthorization;
- constructor(source:DataSource,private readonly config:ReportingBridgeConfig|null,private readonly request:typeof fetch=fetch){this.authorization=new IdentityAuthorization(new UnitOfWork(source));}
+ constructor(private readonly source:DataSource,private readonly config:ReportingBridgeConfig|null,private readonly request:typeof fetch=fetch){this.authorization=new IdentityAuthorization(new UnitOfWork(source));}
  async dispatch(accountId:string,tenantId:string,op:Record<string,unknown>){
-  if(!this.config)throw new CommandError(503,'REPORTING_NOT_CONFIGURED');const body=JSON.stringify(op);if(Buffer.byteLength(body)>98304)throw new CommandError(413,'REQUEST_TOO_LARGE');
-  const access=await this.authorization.runHuman(accountId,tenantId,async(_s,a)=>{const readScope=scope(a,'read'),designScope=scope(a,'design'),canRun=permits(a,'report_definition','run')&&permits(a,'report_mock_source','read');if(readScope==='none'||mutations.includes(String(op.kind))&&designScope==='none'||['query','preview','from_template','convert_legacy'].includes(String(op.kind))&&!canRun)throw new CommandError(403,'FORBIDDEN');return {tenantId:a.tenantId,principalId:a.principalId,authRevision:a.revision,readScope,designScope,canRun};});
+  if(!this.config)throw new CommandError(503,'REPORTING_NOT_CONFIGURED');const source=await operationsSource(this.source,accountId,tenantId);const body=JSON.stringify({operation:op,sourcePolicy:source.policy});if(Buffer.byteLength(body)>4194304)throw new CommandError(413,'REQUEST_TOO_LARGE');
+  const access=await this.authorization.runHuman(accountId,tenantId,async(_s,a)=>{if(a.revision!==source.authRevision)throw new CommandError(403,'AUTHORITY_CHANGED');const readScope=scope(a,'read'),designScope=scope(a,'design'),canRun=permits(a,'report_definition','run')&&(source.policy.allowMock||source.policy.operations!==null);if(readScope==='none'||mutations.includes(String(op.kind))&&designScope==='none'||['query','preview','from_template','convert_legacy'].includes(String(op.kind))&&!canRun)throw new CommandError(403,'FORBIDDEN');return {tenantId:a.tenantId,principalId:a.principalId,authRevision:a.revision,readScope,designScope,canRun};});
   const issuedAt=Date.now(),payload=Buffer.from(JSON.stringify({audience:'reporting-dashboard-v1',...access,bodyHash:createHash('sha256').update(body).digest('hex'),issuedAt,expiresAt:issuedAt+5000})).toString('base64url'),token=payload+'.'+createHmac('sha256',Buffer.from(this.config.key,'hex')).update(payload).digest('hex');
-  const response=await this.request(this.config.url+'/internal/v1/reporting/dashboards',{method:'POST',redirect:'error',headers:{'content-type':'application/json','x-reporting-admission':token},body,signal:AbortSignal.timeout(4500)});
+  const response=await this.request(this.config.url+'/internal/v1/reporting/connected/dashboards',{method:'POST',redirect:'error',headers:{'content-type':'application/json','x-reporting-admission':token},body,signal:AbortSignal.timeout(4500)});
   if(!response.body)throw new CommandError(503,'REPORTING_RESPONSE_INVALID');const reader=response.body.getReader(),parts:Uint8Array[]=[];let length=0;
   try{for(;;){const {done,value}=await reader.read();if(done)break;length+=value.length;if(length>4194304){await reader.cancel();throw new CommandError(503,'REPORTING_RESPONSE_INVALID');}parts.push(value);}}finally{reader.releaseLock();}
   let result:any;try{result=JSON.parse(Buffer.concat(parts).toString());}catch{throw new CommandError(503,'REPORTING_RESPONSE_INVALID');}

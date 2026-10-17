@@ -1,5 +1,11 @@
 # Routing & Allocation
 
+SRC-085 / 2026-10-17: [Operations Reporting](../contracts/operations-reporting.md) cung cấp 6 read objects, 7 model và template dashboard trên core chung. Routing/Chat/Identity giữ quyền sở hữu facts, producer qua authorized monolith ports; Reporting chỉ lưu definitions/catalog metadata trong own schema5, không SQL/FK xuyên service. UI phân tích ở Dashboards/Reports; Routing giữ cấu hình và hành động điều phối. [Runbook](../development/operations-reporting.md).
+
+SRC-084: [Human routing R1](../contracts/human-routing.md) implements team skills, workload, durable waiting/event dispatch and operational report in current monolith; forward35. [Evidence](../tracking/details/SRC-084.md). This does not complete service extraction or distributed saga acceptance.
+
+PLAN-044 / 2026-10-17: [Omni-style logical ERD](../data/conversation-routing-erd.md) proposes reusable skills, versioned queue/rules, work/queue entry/attempt/Human allocation and decision trace. Human occupancy spans queues and uses Chat owner CAS/reconciliation; agent_capacity_slot remains AI execution only. Logical design reviewed; exact API/DDL/cutover gate not Ready, no runtime expansion.
+
 **Implemented additive slice SRC-078 / 2026-10-16:** [Thread / Conversation exact contract](../contracts/thread-conversation-implementation.md), PLAN-033A DONE. Thread legacy IDs/API remain stable; Conversation episode has optional custom fields and stage, event-time ownership/contributor history, and Related Lead/Deal actions with current permissions. Cross-team transfer preserves the episode; Ticket and connected Reporting remain gated. Physical forward31 stays in the baseline monolith; service extraction rules below remain unchanged.
 
 Status: Target architecture accepted direction — PLAN-005 / ADR-017. Service extraction/API/physical schema chưa Ready; không đồng nghĩa deployed. Module đích mới; chưa có service độc lập. · [Catalog](README.md) · [Cross-service rules](../contracts/service-boundaries.md).

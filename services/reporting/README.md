@@ -1,5 +1,7 @@
 # Reporting service and semantic kernel
 
+SRC-085: bounded native_operations_v1 source now uses the shared compiler/query/report/dashboard core. Own schema5 adds immutable connected catalog metadata and dual widget pins; source observations stay request-local. [Contract](../../docs/contracts/operations-reporting.md), [runbook](../../docs/development/operations-reporting.md). Earlier mock-only descriptions below are historical.
+
 SRC-059 lifecycle phase: native /reporting/runs and private /internal/v1/reporting/runs add owner-scoped durable queued/running/terminal state, pinned snapshot/executor,15s lease attempts,cancel fence and persisted aggregate JSON/CSV. Own schema3 adds two tables; no automatic worker. [Contract](../../docs/contracts/reporting-runs.md), [runbook](../../docs/development/reporting-runs.md). Drilldown and full UI remain pending; earlier slice summaries below are historical.
 
 SRC-059 native mock query phase: POST /internal/v1/reporting/query is now called through native POST /api/v1/reporting/query. Explicit complete-mock source grant plus run/export permissions, separate request-bound audience and live delivery rechecks. [API contract](../../docs/contracts/reporting-query-api.md) · [Runbook](../../docs/development/reporting-query-api.md). No connected source policy or durable runs/drilldown/UI yet. Earlier descriptions below retain dated slice boundaries.

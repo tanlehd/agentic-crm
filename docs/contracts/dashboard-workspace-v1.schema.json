@@ -211,13 +211,13 @@
           "maxLength": 4000
         },
         "templateKey": {
-          "enum": [
-            "inbox_operations_v1",
-            "ad_inbox_quality_v1"
-          ]
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
         },
         "templateVersion": {
-          "const": 1
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
         },
         "templateHash": {
           "type": "string",
@@ -235,9 +235,11 @@
         },
         "sourceBindings": {
           "type": "object",
+          "minProperties": 1,
+          "maxProperties": 8,
           "additionalProperties": false,
-          "properties": {
-            "demo": {
+          "patternProperties": {
+            "^[a-z][a-z0-9_]{0,63}$": {
               "type": "object",
               "additionalProperties": false,
               "properties": {
@@ -255,10 +257,7 @@
                 "generationId"
               ]
             }
-          },
-          "required": [
-            "demo"
-          ]
+          }
         }
       },
       "required": [
@@ -998,13 +997,13 @@
                   "maxLength": 4000
                 },
                 "templateKey": {
-                  "enum": [
-                    "inbox_operations_v1",
-                    "ad_inbox_quality_v1"
-                  ]
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]{0,63}$"
                 },
                 "templateVersion": {
-                  "const": 1
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1000000
                 },
                 "templateHash": {
                   "type": "string",
@@ -1022,9 +1021,11 @@
                 },
                 "sourceBindings": {
                   "type": "object",
+                  "minProperties": 1,
+                  "maxProperties": 8,
                   "additionalProperties": false,
-                  "properties": {
-                    "demo": {
+                  "patternProperties": {
+                    "^[a-z][a-z0-9_]{0,63}$": {
                       "type": "object",
                       "additionalProperties": false,
                       "properties": {
@@ -1042,10 +1043,7 @@
                         "generationId"
                       ]
                     }
-                  },
-                  "required": [
-                    "demo"
-                  ]
+                  }
                 }
               },
               "required": [

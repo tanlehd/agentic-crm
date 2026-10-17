@@ -1,3 +1,4 @@
+import {operationsCatalog} from './operations-catalog.js';
 import {summaryExtensions} from './summary-catalog.js';
 import {inboxDemoExtensions} from './inbox-demo.js';
 import {catalogV1} from './catalog.js';
@@ -21,5 +22,6 @@ export function builtInExecutions(){
  for(const profile of ['base','age','region']){for(const field of ['impressions','clicks','spend'])registry.registerMetric(catalogV1,{id:profile+'_'+field,version:1},{op:'sum',collection:'base',field:'insights_'+profile+'.'+field});for(const [id,numerator,denominator,multiplier]of [['ctr','clicks','impressions',100],['cpc','spend','clicks',1],['cpm','spend','impressions',1000]] as const)registry.registerMetric(catalogV1,{id:profile+'_'+id,version:1},{op:'ratio',numerator:`${profile}_${numerator}@1`,denominator:`${profile}_${denominator}@1`,multiplier});}
  for(const item of summaryExtensions())registry.registerMetric({...catalogV1,metrics:[item.descriptor]},item.descriptor,item.operator);
  const demo=inboxDemoExtensions();for(const model of demo.catalog.models)registry.registerModel(demo.catalog,model);for(const {descriptor,operator}of demo.operators)registry.registerMetric(demo.catalog,descriptor,operator);
+ const operations=operationsCatalog();for(const model of operations.catalog.models)registry.registerModel(operations.catalog,model);for(const {descriptor,operator}of operations.operators)registry.registerMetric(operations.catalog,descriptor,operator);
  return registry;
 }

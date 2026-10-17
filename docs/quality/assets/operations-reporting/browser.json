@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "at": "2026-10-17T13:32:21.338Z",
+  "checks": [
+    "native discovery separates connected CRM source and existing mock sources; six objects and typed properties",
+    "native template creates seven saved reports and dashboard; all shared widgets run connected data",
+    "shared report totals reconcile with Routing current workload and completed allocation ledger",
+    "catalog mismatch, foreign tenant and client source-authority injection rejected",
+    "normal Report Builder edits connected report and rolling period, previews and persists a new version",
+    "dashboard layout persists; previous report version remains pinned after report edit",
+    "same saved report reused in second dashboard; separately authorized aggregate CSV export succeeds",
+    "agent closes synthetic assignment; event automatically assigns waiting work; Refresh increases completion and preserves workload/report/catalog pins"
+  ],
+  "shots": [
+    "assets/operations-reporting/01-template-connected.png",
+    "assets/operations-reporting/02-dashboard-live.png",
+    "assets/operations-reporting/08-dashboard-outcomes.png",
+    "assets/operations-reporting/09-dashboard-trend.png",
+    "assets/operations-reporting/03-report-builder-objects.png",
+    "assets/operations-reporting/04-dashboard-saved-layout.png",
+    "assets/operations-reporting/10-full-capacity-waiting.png",
+    "assets/operations-reporting/06-close-next-refreshed.png",
+    "assets/operations-reporting/07-routing-dashboard-link.png",
+    "assets/operations-reporting/05-mobile-dashboard.png"
+  ],
+  "dashboardId": "6194bf0e-a924-5a33-a743-9237ff657d10",
+  "sourceId": "ba4c2722-aa52-502d-ae63-2c404a9aa4ef",
+  "retained": true
+}

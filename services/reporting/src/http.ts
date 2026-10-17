@@ -1,4 +1,6 @@
 import 'reflect-metadata';
+import {withSourcePolicy} from './connected-sources.js';
+import {hash} from './storage-security.js';
 import { Controller,Get,Inject,Module,Post,Req,Res,type OnModuleDestroy } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import type { IncomingMessage,ServerResponse } from 'node:http';
@@ -30,6 +32,20 @@ export class ReportingRuntime implements OnModuleDestroy {
 @Controller('internal/v1/reporting')
 export class ReportingController {
  constructor(@Inject(ReportingRuntime)private readonly runtime:ReportingRuntime){}
+ private async connected(req:Request,res:ServerResponse,kind:'query'|'authoring'|'dashboards'){
+  const correlation_id=randomUUID();res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json');res.setHeader('X-Content-Type-Options','nosniff');
+  try{
+   if(['cookie','origin','x-tenant-id'].some(k=>req.headers[k]!==undefined)||req.url?.includes('?'))throw new StorageError(403,'PRIVATE_TRANSPORT_REQUIRED');
+   const envelope=req.body as any;if(!envelope||typeof envelope!=='object'||Array.isArray(envelope)||Object.keys(envelope).sort().join(',')!=='operation,sourcePolicy')throw new StorageError(400,'INVALID_REQUEST');
+   const raw=JSON.stringify(envelope.operation);
+   const execute=async()=>{if(kind==='dashboards'){const a=this.runtime.dashboardVerifier.verify(req.headers['x-reporting-admission'],req.rawBodyText);return withSourcePolicy(a.tenantId,envelope.sourcePolicy,()=>this.runtime.dashboards.execute({...a,bodyHash:hash(raw)},envelope.operation,raw));}
+    const a=this.runtime.queryVerifier.verify(req.headers['x-reporting-admission'],req.rawBodyText);return withSourcePolicy<unknown>(a.tenantId,envelope.sourcePolicy,()=>kind==='authoring'?discoverAuthoring(this.runtime.store.pool,{...a,bodyHash:hash(raw)},envelope.operation,raw):this.runtime.queries.execute({...a,bodyHash:hash(raw)},envelope.operation,raw));};
+   const data=await execute(),body=JSON.stringify({data,meta:{correlation_id}});if(Buffer.byteLength(body)>4194304)throw new StorageError(503,'REPORTING_RESPONSE_INVALID');res.statusCode=200;res.end(body);
+  }catch(e){const error=queryHttpError(e);res.statusCode=error.status;res.end(JSON.stringify({error:{code:error.code,retryable:error.status>=500},meta:{correlation_id}}));}
+ }
+ @Post('connected/query') connectedQuery(@Req()q:Request,@Res()r:ServerResponse){return this.connected(q,r,'query');}
+ @Post('connected/authoring') connectedAuthoring(@Req()q:Request,@Res()r:ServerResponse){return this.connected(q,r,'authoring');}
+ @Post('connected/dashboards') connectedDashboard(@Req()q:Request,@Res()r:ServerResponse){return this.connected(q,r,'dashboards');}
  @Post('dashboards') async dashboard(@Req()req:Request,@Res()res:ServerResponse){
   const correlation_id=randomUUID();res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json');res.setHeader('X-Content-Type-Options','nosniff');
   try{if(['cookie','origin','x-tenant-id'].some(k=>req.headers[k]!==undefined)||req.url?.includes('?'))throw new StorageError(403,'PRIVATE_TRANSPORT_REQUIRED');const a=this.runtime.dashboardVerifier.verify(req.headers['x-reporting-admission'],req.rawBodyText),data=await this.runtime.dashboards.execute(a,req.body,req.rawBodyText);res.statusCode=200;res.end(JSON.stringify({data,meta:{correlation_id}}));}catch(e){const error=queryHttpError(e);res.statusCode=error.status;res.end(JSON.stringify({error:{code:error.code,retryable:error.status>=500},meta:{correlation_id}}));}
@@ -72,7 +88,7 @@ export function storageJsonBody(app:{use:(fn:(req:Request,res:ServerResponse,nex
   if(req.method!=='POST')return next();const parts:Buffer[]=[];let size=0,failed=false;
   const reject=(status:number)=>{if(failed)return;failed=true;res.statusCode=status;res.setHeader('Content-Type','application/json');res.setHeader('Cache-Control','no-store');res.end(JSON.stringify({error:{code:'INVALID_REQUEST',retryable:false}}));};
   if(!/^application\/json(?:;|$)/i.test(req.headers['content-type']??''))return reject(400);
-  req.on('data',(chunk:Buffer)=>{size+=chunk.length;if(size>98304){parts.length=0;reject(413);}else if(!failed)parts.push(chunk);});
+  req.on('data',(chunk:Buffer)=>{size+=chunk.length;if(size>(req.url?.startsWith('/internal/v1/reporting/connected/')?4194304:98304)){parts.length=0;reject(413);}else if(!failed)parts.push(chunk);});
   req.on('end',()=>{if(failed)return;try{req.rawBodyText=Buffer.concat(parts).toString('utf8');req.body=JSON.parse(req.rawBodyText);next();}catch{reject(400);}});
   req.on('error',()=>reject(400));
  });

@@ -1,0 +1,804 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "human-routing.json",
+  "definitions": {
+    "human-routing-skills": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]{0,63}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "key",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "human-routing-team-skills": {
+      "type": "object",
+      "properties": {
+        "team_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "skill_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "maxItems": 200,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "team_id",
+        "skill_ids"
+      ],
+      "additionalProperties": false
+    },
+    "human-routing-profiles": {
+      "type": "object",
+      "properties": {
+        "principal_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "capacity": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "principal_id",
+        "capacity",
+        "enabled"
+      ],
+      "additionalProperties": false
+    },
+    "human-routing-queues": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "pattern": "\\S"
+        },
+        "team_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "connection_id": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "format": "uuid"
+            }
+          ]
+        },
+        "skill_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "maxItems": 200,
+          "uniqueItems": true
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999
+        },
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "team_id",
+        "connection_id",
+        "skill_ids",
+        "priority",
+        "enabled"
+      ],
+      "additionalProperties": false
+    },
+    "human-routing-reroute": {
+      "type": "object",
+      "properties": {
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "queue_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "owner_principal_id": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "format": "uuid"
+            }
+          ]
+        }
+      },
+      "required": [
+        "work_id",
+        "queue_id",
+        "owner_principal_id"
+      ],
+      "additionalProperties": false
+    },
+    "human-routing-mine": {
+      "type": "object",
+      "properties": {
+        "profiles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "principal_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "version": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,19})$"
+              },
+              "enabled": {
+                "type": "boolean"
+              },
+              "capacity": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "workload": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "available": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "principal_id",
+              "version",
+              "enabled",
+              "capacity",
+              "workload",
+              "available"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 500
+        },
+        "work": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "conversation_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "session_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "state": {
+                "enum": [
+                  "waiting",
+                  "assigned"
+                ]
+              },
+              "version": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,19})$"
+              },
+              "allocation_id": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                ]
+              },
+              "principal_id": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                ]
+              },
+              "team_id": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                ]
+              },
+              "assigned_at": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                ]
+              },
+              "queue_id": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                ]
+              },
+              "queue_name": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "blocked_reason": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "wait_started_at": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "conversation_id",
+              "session_id",
+              "state",
+              "version",
+              "allocation_id",
+              "principal_id",
+              "team_id",
+              "assigned_at",
+              "queue_id",
+              "queue_name",
+              "blocked_reason",
+              "wait_started_at"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 500
+        }
+      },
+      "required": [
+        "profiles",
+        "work"
+      ],
+      "additionalProperties": false
+    },
+    "human-routing-snapshot": {
+      "type": "object",
+      "properties": {
+        "profiles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "principal_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "version": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,19})$"
+              },
+              "enabled": {
+                "type": "boolean"
+              },
+              "capacity": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "workload": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "available": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "principal_id",
+              "version",
+              "enabled",
+              "capacity",
+              "workload",
+              "available"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 500
+        },
+        "work": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "conversation_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "session_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "state": {
+                "enum": [
+                  "waiting",
+                  "assigned"
+                ]
+              },
+              "version": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,19})$"
+              },
+              "allocation_id": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                ]
+              },
+              "principal_id": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                ]
+              },
+              "team_id": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                ]
+              },
+              "assigned_at": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                ]
+              },
+              "queue_id": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                ]
+              },
+              "queue_name": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "blocked_reason": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "wait_started_at": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "conversation_id",
+              "session_id",
+              "state",
+              "version",
+              "allocation_id",
+              "principal_id",
+              "team_id",
+              "assigned_at",
+              "queue_id",
+              "queue_name",
+              "blocked_reason",
+              "wait_started_at"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 500
+        },
+        "skills": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "skill_key": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "skill_key",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 200
+        },
+        "team_skills": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "team_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "skill_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "maxItems": 200,
+                "uniqueItems": true
+              },
+              "version": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,19})$"
+              }
+            },
+            "required": [
+              "team_id",
+              "skill_ids",
+              "version"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 200
+        },
+        "queues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120,
+                "pattern": "\\S"
+              },
+              "team_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "connection_id": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                ]
+              },
+              "skill_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "maxItems": 200,
+                "uniqueItems": true
+              },
+              "priority": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 999
+              },
+              "enabled": {
+                "type": "boolean"
+              },
+              "version": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,19})$"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "team_id",
+              "connection_id",
+              "skill_ids",
+              "priority",
+              "enabled",
+              "version"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 50
+        },
+        "principals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 500
+        },
+        "teams": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 500
+        },
+        "connections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string"
+              },
+              "provider": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "provider"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 201
+        },
+        "performance": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "principal_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "assignments": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "completed": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "transferred": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "handling_seconds": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                ]
+              }
+            },
+            "required": [
+              "principal_id",
+              "assignments",
+              "completed",
+              "transferred",
+              "handling_seconds"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 500
+        },
+        "replies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "principal_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "submitted_replies": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "principal_id",
+              "submitted_replies"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 500
+        },
+        "average_wait_seconds": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "number",
+              "minimum": 0
+            }
+          ]
+        },
+        "period_days": {
+          "const": 30
+        }
+      },
+      "required": [
+        "profiles",
+        "work",
+        "skills",
+        "team_skills",
+        "queues",
+        "principals",
+        "teams",
+        "connections",
+        "performance",
+        "replies",
+        "average_wait_seconds",
+        "period_days"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

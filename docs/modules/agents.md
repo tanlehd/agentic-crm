@@ -1,5 +1,13 @@
 # MOD-07 — Agent & Routing
 
+SRC-085 / 2026-10-17: [Operations Reporting](../contracts/operations-reporting.md) cung cấp 6 read objects, 7 model và template dashboard trên core chung. Routing/Chat/Identity giữ quyền sở hữu facts, producer qua authorized monolith ports; Reporting chỉ lưu definitions/catalog metadata trong own schema5, không SQL/FK xuyên service. UI phân tích ở Dashboards/Reports; Routing giữ cấu hình và hành động điều phối. [Runbook](../development/operations-reporting.md).
+
+SRC-084 / 2026-10-17: [Human routing R1](../contracts/human-routing.md) now implements bounded team skills/profile capacity/queue dispatch/admin supervisor and agent workload/reporting. Human capacity is enforced for enrolled profiles; other legacy paths remain compatible. AI execution leases unchanged. [Acceptance/screenshots](../quality/human-routing-acceptance.md).
+
+PLAN-044 / 2026-10-17: [Conversation routing ERD](../data/conversation-routing-erd.md) develops PLAN-040 research into a logical design with separate work, queue entries, assignment attempts and Human occupancy. Current M2 implementation below remains unchanged; proposed R1 requires exact physical/API/acceptance gate.
+
+PLAN-040 / 2026-10-17: [Conversation assignment research](../references/conversation-assignment.md) proposes reusable employee skills, source-to-requirement mapping, per-session dispatch and durable Human capacity queues. Research-only; Human capacity/skill catalog remains outside implemented M2 scope below, no Ready contract or runtime change.
+
 CHG-20261016-04 / SRC-081: [Thread identity, need enrichment and recovery](../contracts/need-follow-up.md) supersedes earlier exclusions for this bounded scope. Current canonical Chat APIs use conversation_id (SRC-082 / CHG-20261016-05); deprecated thread_id artifacts remain readable through scoped compatibility. Need-scoped default/custom values, on-demand provider protocol, Human pins and read_need/recover_need workflow actions are implemented separately from general autonomous Agent Runtime or live channel delivery. See task evidence for actual validation.
 
 > Kiến trúc đích microservice theo ADR-017: [AI Runtime Platform](../services/ai-runtime.md). Routing/allocation tách riêng ở [Routing Service](../services/routing.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.

@@ -16,6 +16,7 @@ import { allows,withFieldPolicies } from '../crm/access.js';
 import { object } from '../crm/properties.js';
 import { conversationOwnership,type OwnershipChanged } from '../conversation/ownership-port.js';
 import { AgentCapacity } from './capacity.js';
+import {syncHumanWork,checkHumanCapacity,loadCount} from './human-workload.js';
 export function assignmentInput(input:unknown,takeover=false){
   const b=object(input,takeover?['reason']:['owner_principal_id','team_id','reason']);
   if(!(takeover?['human_takeover']:['manual','handoff']).includes(b.reason)||!takeover&&(!Object.hasOwn(b,'owner_principal_id')||b.owner_principal_id!==null&&!uuid(b.owner_principal_id))||Object.hasOwn(b,'team_id')&&b.team_id!==null&&!uuid(b.team_id))throw new CommandError(400,'INVALID_REQUEST');return b;
@@ -39,12 +40,14 @@ export class Routing {
       const tool=r.objectKey==='conversation'?'conversation.propose_reply':r.objectKey==='lead'?'qualification.save':null;
       if(!tool||!p.tools.includes(tool)||!p.actions.includes(`${r.objectKey}.${action}`)||!p.actions.includes(`${r.objectKey}.read`))return 'policy';
       if(checkCapacity&&await this.capacity.running(s,owner)>=p.maxConcurrency)return 'capacity';
-    }return null;
+    }else if(checkCapacity&&r.objectKey==='conversation'&&r.ownerPrincipalId!==owner){const [profile]=await s.query('SELECT capacity,enabled FROM routing_human_profile WHERE tenant_id=? AND principal_id=?',[s.context.tenantId,owner]);if(profile&&(!profile.enabled||await loadCount(s,owner)>=profile.capacity))return 'capacity';}return null;
   }
-  private async assign(s:TransactionScope,a:Access,r:RegistryRecord,version:string,owner:string|null,team:string|null,correlation:string,reason:string,takeover=false,actorKind:'human'|'service'='human'){
+  private async assign(s:TransactionScope,a:Access,r:RegistryRecord,version:string,owner:string|null,team:string|null,correlation:string,reason:string,takeover=false,actorKind:'human'|'service'='human',synced=false){
+    if(r.objectKey==='conversation'){if(!synced)await syncHumanWork(s);if(owner&&(await this.identity.principal(s,owner))?.kind==='human')await checkHumanCapacity(s,r.id,owner,r.ownerPrincipalId,team);}
     await this.identity.team(s,team);if(owner&&await this.eligibility(s,r,owner,team))throw new CommandError(422,'TARGET_INELIGIBLE');
     const registry=r.objectKey==='conversation'?new RecordRegistry(new Map([['conversation',conversationOwnership(async(s,r)=>{await cancelAgentExecutions(s,r.id);await stopSessions(s,r.id);await this.changed(s,r);})]])):this.records.registry(r.objectKey,r.kind==='custom');
     const updated=await registry.assign(s,a,r.id,version,owner,team,correlation,{reason,takeover,actorKind});
+    if(r.objectKey==='conversation')await syncHumanWork(s);
     if(owner)await s.query('UPDATE routing_attention SET active=0,updated_at=UTC_TIMESTAMP(6) WHERE tenant_id=? AND record_id=?',[s.context.tenantId,r.id]);return updated;
   }
   async mutate(account:string,tenant:string,id:string,takeover:boolean,input:unknown,key:string,version:string|undefined,correlation:string){
@@ -75,6 +78,7 @@ export class Routing {
   async route(s:TransactionScope,a:Access,id:string,version:string,team:string,capability:'chat'|'sales',preference:'human'|'ai'|'any',correlation:string,actorKind:'human'|'service'='human'){
     if(a.tenantId!==s.context.tenantId||!uuid(team)||!['chat','sales'].includes(capability)||!['human','ai','any'].includes(preference))throw new CommandError(400,'INVALID_REQUEST');
     const r=await this.registry.get(s,id,true);this.authorize(a,r);if(r.objectKey!==(capability==='chat'?'conversation':'lead'))throw new CommandError(422,'CAPABILITY_MISMATCH');await this.identity.team(s,team);
+    if(capability==='chat')await syncHumanWork(s);
     await s.query('INSERT INTO routing_cursor(tenant_id,team_id,capability_key) VALUES (?,?,?) ON DUPLICATE KEY UPDATE capability_key=VALUES(capability_key)',[s.context.tenantId,team,capability]);
     const [cursor]=await s.query('SELECT last_principal_id FROM routing_cursor WHERE tenant_id=? AND team_id=? AND capability_key=? FOR UPDATE',[s.context.tenantId,team,capability]);
     const ids=await this.identity.candidates(s,team),ordered=[...ids.filter(x=>x>(cursor.last_principal_id??'')),...ids.filter(x=>x<=(cursor.last_principal_id??''))];let owner:string|null=null;
@@ -90,6 +94,9 @@ export class Routing {
       if(reason)await s.query("INSERT INTO routing_attention(tenant_id,record_id,reason,active,updated_at) VALUES (?,?,'owner_ineligible',1,UTC_TIMESTAMP(6)) ON DUPLICATE KEY UPDATE reason='owner_ineligible',active=1,updated_at=UTC_TIMESTAMP(6)",[s.context.tenantId,id]);
       else await s.query("UPDATE routing_attention SET active=0,updated_at=UTC_TIMESTAMP(6) WHERE tenant_id=? AND record_id=? AND reason='owner_ineligible'",[s.context.tenantId,id]);
     }
+  }
+  async assignManaged(s:TransactionScope,a:Access,id:string,owner:string|null,team:string,correlation:string,service=false){
+    const r=await this.registry.get(s,id,true);this.authorize(a,r);return this.assign(s,a,r,r.version,owner,team,correlation,'human_routing',false,service?'service':'human',true);
   }
   async routeService(s:TransactionScope,actor:string,id:string,version:string,team:string,capability:'chat'|'sales',preference:'human'|'ai'|'any',correlation:string){await requireActiveTenant(s,true);const a=await withFieldPolicies(s,await this.identity.service(s,actor));return this.route(s,a,id,version,team,capability,preference,correlation,'service');}
 }

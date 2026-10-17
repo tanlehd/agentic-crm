@@ -2,9 +2,18 @@ import type { TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
 import { CommandError } from '../../kernel/reliability/commands.js';
 import { parseGrants,principalPermissions,seatCapabilities,type Access } from './domain/authorization.js';
 import { validateOwnershipTarget } from './authorization.js';
+import {randomUUID} from 'node:crypto';
 export interface RoutingPrincipal { id:string;kind:'human'|'ai';available:boolean;access:Access;maxConcurrency:number;actions:string[];tools:string[];policyId:string|null;policyVersion:string;timeoutMs:number;maxToolCalls:number;runtimeAdapter:string|null }
 // Identity owns all SQL for principal/membership/team/policy projections.
 export class RoutingIdentityPort {
+  async humanRoutingActor(s:TransactionScope,create=false){
+    const [old]=await s.query("SELECT id FROM service_actor WHERE tenant_id=? AND `key`='human_routing_dispatch'",[s.context.tenantId]);
+    if(old)return this.service(s,old.id);
+    if(!create)throw new CommandError(403,'ROUTING_ACTOR_UNAVAILABLE');
+    const role=randomUUID(),actor=randomUUID();
+    await s.query("INSERT INTO `role`(id,tenant_id,`key`,name,permissions,created_at,updated_at) VALUES (?,?,'human_routing_dispatch','Human routing dispatcher',?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[role,s.context.tenantId,JSON.stringify(['read','assign'].map(action=>({resource:'conversation',action,scope:'all'})))]);
+    await s.query("INSERT INTO service_actor(id,tenant_id,`key`,role_id,created_at,updated_at) VALUES (?,?,'human_routing_dispatch',?,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))",[actor,s.context.tenantId,role]);return this.service(s,actor);
+  }
   async actorKind(s:TransactionScope,id:string){const [r]=await s.query('SELECT kind FROM principal WHERE tenant_id=? AND id=?',[s.context.tenantId,id]);if(r)return r.kind as string;const [service]=await s.query('SELECT id FROM service_actor WHERE tenant_id=? AND id=?',[s.context.tenantId,id]);return service?'service':'unknown';}
   async teams(s:TransactionScope){const rows=await s.query('SELECT id,name,purpose FROM team WHERE tenant_id=? AND active=1 ORDER BY name,id LIMIT 201',[s.context.tenantId]);if(rows.length>200)throw new CommandError(422,'TEAM_LIMIT_EXCEEDED');return rows;}
   async team(s:TransactionScope,id:string|null){await validateOwnershipTarget(s,null,id);}

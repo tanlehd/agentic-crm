@@ -1,0 +1,38 @@
+{
+  "at": "2026-10-17T13:35:24.974Z",
+  "galleryImages": 10,
+  "services": [
+    {
+      "id": "mysql",
+      "health": "running / healthy"
+    },
+    {
+      "id": "redis",
+      "health": "running / healthy"
+    },
+    {
+      "id": "reporting",
+      "health": "ready"
+    },
+    {
+      "id": "api",
+      "health": "ready"
+    },
+    {
+      "id": "worker",
+      "health": "ready"
+    },
+    {
+      "id": "web",
+      "health": "ready"
+    },
+    {
+      "id": "connector-api",
+      "health": "configuration required"
+    },
+    {
+      "id": "connector-worker",
+      "health": "configuration required"
+    }
+  ]
+}

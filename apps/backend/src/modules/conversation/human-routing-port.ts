@@ -1,0 +1,15 @@
+import type {TransactionScope} from '../../kernel/tenancy/unit-of-work.js';
+import {CommandError} from '../../kernel/reliability/commands.js';
+// Chat-owned projections for the baseline monolith. No Routing SQL over Chat tables.
+export class HumanRoutingChatPort {
+ async replyFacts(s:TransactionScope,sessions:string[],from:string){if(!sessions.length)return [];const rows=await s.query(`SELECT id,session_id,actor_id,team_id,recorded_at FROM session_contribution WHERE tenant_id=? AND session_id IN (${sessions.map(()=>'?').join(',')}) AND kind='outbound_submitted' AND actor_kind='human' AND recorded_at>=? LIMIT 5001`,[s.context.tenantId,...sessions,from.slice(0,-1).replace('T',' ')]);if(rows.length>5000)throw new CommandError(422,'OPERATIONS_SOURCE_LIMIT');return rows;}
+ async active(s:TransactionScope,principals:string[],connections:string[],allChannels:boolean){
+  const filter=[...(principals.length?[`r.owner_principal_id IN (${principals.map(()=>'?').join(',')})`]:[]),...(allChannels?["r.owner_principal_id IS NULL"]:connections.length?[`(r.owner_principal_id IS NULL AND c.connection_id IN (${connections.map(()=>'?').join(',')}))`]:[])];if(!filter.length)return [];
+  const rows=await s.query(`SELECT a.id session_id,a.conversation_id,a.opened_at,a.status,a.closed_at,c.connection_id,r.owner_principal_id,r.team_id,r.owner_revision,GREATEST(a.opened_at,COALESCE((SELECT MAX(h.created_at) FROM ownership_history h WHERE h.tenant_id=r.tenant_id AND h.record_id=r.id AND h.owner_revision=r.owner_revision),a.opened_at)) assigned_at FROM conversation_acquisition_session a JOIN conversation c ON c.tenant_id=a.tenant_id AND c.record_id=a.conversation_id JOIN crm_record r ON r.tenant_id=c.tenant_id AND r.id=c.record_id WHERE a.tenant_id=? AND a.status='active' AND r.archived_at IS NULL AND (${filter.join(' OR ')}) ORDER BY a.opened_at,a.id LIMIT 501`,[s.context.tenantId,...principals,...(allChannels?[]:connections)]);
+  if(rows.length>500)throw new CommandError(422,'ROUTING_SESSION_LIMIT');return rows;
+ }
+ async session(s:TransactionScope,id:string){
+  const [row]=await s.query('SELECT a.id session_id,a.conversation_id,a.opened_at,a.status,a.closed_at,c.connection_id,r.owner_principal_id,r.team_id,r.owner_revision,GREATEST(a.opened_at,COALESCE((SELECT MAX(h.created_at) FROM ownership_history h WHERE h.tenant_id=r.tenant_id AND h.record_id=r.id AND h.owner_revision=r.owner_revision),a.opened_at)) assigned_at FROM conversation_acquisition_session a JOIN conversation c ON c.tenant_id=a.tenant_id AND c.record_id=a.conversation_id JOIN crm_record r ON r.tenant_id=c.tenant_id AND r.id=c.record_id WHERE a.tenant_id=? AND a.id=?',[s.context.tenantId,id]);return row;
+ }
+ async replies(s:TransactionScope,sessions:string[]){if(!sessions.length)return [];return s.query(`SELECT actor_id principal_id,COUNT(*) submitted_replies FROM session_contribution WHERE tenant_id=? AND session_id IN (${sessions.map(()=>'?').join(',')}) AND kind='outbound_submitted' AND actor_kind='human' AND recorded_at>=TIMESTAMPADD(DAY,-30,UTC_TIMESTAMP(6)) GROUP BY actor_id`,[s.context.tenantId,...sessions]);}
+}

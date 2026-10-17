@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-17T12:38:36.349Z",
+  "applied": 1,
+  "repeat": 0,
+  "previousVersion": 34,
+  "preservedTables": 104,
+  "backup": "artifacts/human-routing/before-2026-10-17T12-38-33-051Z.sql",
+  "backupSha256": "d1a0338386e8572c104c0c26223322170c2108c7eda2a959cd49a02fd3e8ea09"
+}

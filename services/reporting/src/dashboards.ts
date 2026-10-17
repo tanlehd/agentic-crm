@@ -1,3 +1,4 @@
+import {connectedSnapshot,requireMockSource,sourcePin,liveDefinition} from './connected-sources.js';
 import {randomUUID} from 'node:crypto';
 import type {PoolConnection,RowDataPacket} from 'mysql2/promise';
 import {ReportingStore} from './storage.js';
@@ -27,13 +28,14 @@ export class DashboardService {
  private async source(c:PoolConnection,a:DashboardAdmission,id:string,generation?:string,lock=false){
   if(!a.canRun)throw new StorageError(403,'FORBIDDEN');
   if(typeof id!=='string'||!/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(id))throw new StorageError(422,'REPORT_NOT_PICKABLE');
+  const connected=connectedSnapshot(id,generation);if(connected){if(lock)await c.execute('INSERT IGNORE INTO report_connected_catalog(tenant_id,binding_id,catalog_hash,catalog,adapter_id,created_at) VALUES (?,?,?,?,?,UTC_TIMESTAMP(6))',[a.tenantId,id,sourcePin(connected.manifest),JSON.stringify(connected.manifest.catalog),'native_operations_v1']);return connected.manifest;}requireMockSource();
   const [b]=await rows(c,`SELECT * FROM report_source_binding WHERE tenant_id=? AND id=?${lock?' FOR UPDATE':''}`,[a.tenantId,id]);
   if(!b||b.environment!=='mock'||b.adapter_id!=='synthetic_g1_v1')throw new StorageError(404,'NOT_FOUND');
   if(!b.active_generation||generation&&b.active_generation!==generation)throw new StorageError(422,'SNAPSHOT_PIN_UNAVAILABLE');
   const [g]=await rows(c,"SELECT manifest FROM report_projection_generation WHERE tenant_id=? AND binding_id=? AND id=? AND state='ready'",[a.tenantId,id,b.active_generation]);if(!g)throw new StorageError(422,'SNAPSHOT_PIN_UNAVAILABLE');return parse(g.manifest) as SnapshotManifest;
  }
  private compile(a:DashboardAdmission,d:any,m:SnapshotManifest){
-  const binding={id:d.bindingId,tenantId:a.tenantId,environment:'mock' as const,revision:m.snapshotId,models:m.catalog.models,availableFields:m.availableFields};
+  d=liveDefinition(d,m);const binding={id:d.bindingId,tenantId:a.tenantId,environment:m.environment,revision:m.snapshotId,models:m.catalog.models,availableFields:m.availableFields};
   const compiled=compileDefinition(createRegistry(m.catalog),d,{tenantId:a.tenantId,principalId:a.principalId,authRevision:a.authRevision,scopeFingerprint:'dashboard_mock_v1',permissions:['report.design'],objects:m.catalog.objects.map(o=>o.id),fields:m.availableFields,bindings:[d.bindingId]},binding);
   if(!compiled.ok||Date.parse(d.time?.asOf)!==Date.parse(m.observedThrough)||Date.parse(d.time?.from)<Date.parse(m.historyFrom))throw new StorageError(422,'REPORT_NOT_PICKABLE');
  }
@@ -42,7 +44,7 @@ export class DashboardService {
   for(const w of [...widgets].sort((x,y)=>x.reportId.localeCompare(y.reportId)))reports.set(w.id,await this.report(c,a,w.reportId,w.reportVersion,true));
   for(const w of [...widgets].sort((x,y)=>x.bindingId.localeCompare(y.bindingId))){const r=reports.get(w.id);if(r.definition.bindingId!==w.bindingId)throw new StorageError(422,'REPORT_NOT_PICKABLE');const m=await this.source(c,a,w.bindingId,w.generationId,true);this.compile(a,r.definition,m);}
  }
- private async widgets(c:PoolConnection,a:DashboardAdmission,id:string,version:string):Promise<Widget[]>{return (await rows(c,'SELECT * FROM dashboard_widget WHERE tenant_id=? AND dashboard_id=? AND dashboard_version=? ORDER BY grid_y,grid_x,id',[a.tenantId,id,version])).map(w=>({id:w.id,reportId:w.report_id,reportVersion:String(w.report_version),bindingId:w.binding_id,generationId:w.generation_id,titleOverride:w.title_override,note:w.note,layout:{x:w.grid_x,y:w.grid_y,w:w.grid_w,h:w.grid_h}}));}
+ private async widgets(c:PoolConnection,a:DashboardAdmission,id:string,version:string):Promise<Widget[]>{return (await rows(c,'SELECT * FROM dashboard_widget WHERE tenant_id=? AND dashboard_id=? AND dashboard_version=? ORDER BY grid_y,grid_x,id',[a.tenantId,id,version])).map(w=>({id:w.id,reportId:w.report_id,reportVersion:String(w.report_version),bindingId:w.binding_id,generationId:w.connected_catalog_hash??w.generation_id,titleOverride:w.title_override,note:w.note,layout:{x:w.grid_x,y:w.grid_y,w:w.grid_w,h:w.grid_h}}));}
  private async detail(c:PoolConnection,a:DashboardAdmission,id:string){
   const h=await this.head(c,a,id),[v]=await rows(c,'SELECT * FROM dashboard_version WHERE tenant_id=? AND dashboard_id=? AND version=?',[a.tenantId,id,h.latest_version]);if(!v)throw new StorageError(503,'STORAGE_UNAVAILABLE');
   const widgets=[];for(const w of await this.widgets(c,a,id,String(h.latest_version))){try{const r=await this.report(c,a,w.reportId,w.reportVersion);widgets.push({...w,reportName:r.versionName,definition:r.definition,latestReportVersion:String(r.latest_version)});}catch(e){if(!(e instanceof StorageError)||![403,404,422].includes(e.status))throw e;widgets.push({id:w.id,layout:w.layout,unavailable:true});}}
@@ -59,7 +61,7 @@ export class DashboardService {
   for(const h of data.slice(0,limit)){
    const item:any={id:h.id,name:h.name,ownerPrincipalId:h.owner_principal_id,revision:String(h.revision),latestVersion:String(h.latest_version),archived:!!h.archived,updatedAt:iso(h.updated_at),allowedActions:actions(a,h)};
    if(report){const d=parse(h.definition),supported=hasDefinitionShape(d);item.modelRef=supported?d.model:null;item.visualizationType=supported?d.visualization.type:null;item.pickable=false;if(!supported)item.unavailableReason='REPORT_NOT_PICKABLE';
-    if(op.kind==='reports'&&supported&&a.canRun&&!h.archived){try{const m=await this.source(c,a,d.bindingId);this.compile(a,d,m);item.pickable=true;item.bindingId=d.bindingId;item.generationId=m.snapshotId;}catch(e){if(!(e instanceof StorageError))throw e;item.unavailableReason=e.code;}}
+    if(op.kind==='reports'&&supported&&a.canRun&&!h.archived){try{const m=await this.source(c,a,d.bindingId);this.compile(a,d,m);item.pickable=true;item.bindingId=d.bindingId;item.generationId=sourcePin(m);}catch(e){if(!(e instanceof StorageError))throw e;item.unavailableReason=e.code;}}
     const [count]=await rows(c,`SELECT COUNT(DISTINCT dh.id) n FROM dashboard_definition dh JOIN dashboard_widget w ON w.tenant_id=dh.tenant_id AND w.dashboard_id=dh.id AND w.dashboard_version=dh.latest_version WHERE dh.tenant_id=? AND dh.archived=0 AND w.report_id=?${a.readScope==='own'?' AND dh.owner_principal_id=?':''}`,[a.tenantId,h.id,...(a.readScope==='own'?[a.principalId]:[])]);item.authorizedDashboardCount=Number(count!.n);
    }else{const [count]=await rows(c,'SELECT COUNT(*) n FROM dashboard_widget WHERE tenant_id=? AND dashboard_id=? AND dashboard_version=?',[a.tenantId,h.id,h.latest_version]);item.widgetCount=Number(count!.n);}
    if(op.kind==='legacy'){const [converted]=await rows(c,`SELECT id FROM dashboard_definition WHERE tenant_id=? AND legacy_report_id=? AND legacy_report_version=?${a.readScope==='own'?' AND owner_principal_id=?':''}`,[a.tenantId,h.id,h.latest_version,...(a.readScope==='own'?[a.principalId]:[])]);item.convertedDashboardId=converted?.id??null;}
@@ -81,7 +83,8 @@ export class DashboardService {
    let recipes:any[];
    if(op.kind==='from_template'){
     const t=dashboardTemplates().find(t=>t.key===body.templateKey);if(!t||t.version!==body.templateVersion||t.contentHash!==body.templateHash)throw new StorageError(409,'TEMPLATE_CHANGED');origin={key:t.key,version:t.version,hash:t.contentHash};
-    recipes=body.selectedRecipeKeys.map((key:string)=>{const r=t.recipes.find(r=>r.key===key);if(!r)throw new StorageError(400,'INVALID_REQUEST');return {...r,generation:body.sourceBindings.demo.generationId,definition:{...r.definition,bindingId:body.sourceBindings.demo.bindingId}};});
+    if(Object.keys(body.sourceBindings).length!==1||!body.sourceBindings[t.sourceSlot])throw new StorageError(400,'INVALID_REQUEST');
+    recipes=body.selectedRecipeKeys.map((key:string)=>{const r=t.recipes.find(r=>r.key===key);if(!r)throw new StorageError(400,'INVALID_REQUEST');return {...r,generation:body.sourceBindings[t.sourceSlot].generationId,definition:{...r.definition,bindingId:body.sourceBindings[t.sourceSlot].bindingId}};});
    }else{
     const r=await this.report(c,a,body.legacyReportId,body.legacyVersion,true);if(String(r.revision)!==op.expectedRevision||String(r.latest_version)!==body.legacyVersion)throw new StorageError(409,'VERSION_CONFLICT');
     const d=r.definition;if(d.kind!=='dashboard'||d.schemaVersion!==1||typeof d.description!=='string'||d.description.length>4000||!Array.isArray(d.widgets)||d.widgets.length>12)throw new StorageError(422,'REPORT_NOT_PICKABLE');
@@ -90,15 +93,15 @@ export class DashboardService {
    }
    if(!a.canRun)throw new StorageError(403,'FORBIDDEN');widgets=[];
    for(const [i,r]of recipes.entries()){
-    const m=await this.source(c,a,r.definition?.bindingId,r.generation,true);this.compile(a,r.definition,m);
+    const m=await this.source(c,a,r.definition?.bindingId,r.generation,true);r.definition=liveDefinition(r.definition,m);this.compile(a,r.definition,m);
     const report=await this.store.mutate(c,{...a,audience:'reporting-definition-v1'} as Admission,validateOperation({kind:'create',key:idFor([op.key,'recipe',i]),body:{name:r.label,definition:r.definition}}));
-    createdReportIds.push(report.id);widgets.push({id:idFor([id,'widget',i]),reportId:report.id,reportVersion:report.version,bindingId:r.definition.bindingId,generationId:r.generation,titleOverride:null,note:r.note??'',layout:{x:0,y:i*4,w:12,h:4}});
+    createdReportIds.push(report.id);widgets.push({id:idFor([id,'widget',i]),reportId:report.id,reportVersion:report.version,bindingId:r.definition.bindingId,generationId:r.generation,titleOverride:null,note:r.note??'',layout:r.definition.time.rollingDays?{x:(i%2)*6,y:Math.floor(i/2)*6,w:6,h:6}:{x:0,y:i*4,w:12,h:4}});
    }
   }
   if(op.kind!=='archive'){
    await this.validateWidgets(c,a,widgets);
    await c.execute('INSERT INTO dashboard_version(tenant_id,dashboard_id,version,schema_version,name,description,template_key,template_version,template_hash,created_by,created_at) VALUES (?,?,?,1,?,?,?,?,?,?,UTC_TIMESTAMP(6))',[a.tenantId,id,version,name,description,origin?.key??null,origin?.version??null,origin?.hash??null,a.principalId]);
-   for(const w of widgets)await c.execute('INSERT INTO dashboard_widget VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',[a.tenantId,id,version,w.id,w.reportId,w.reportVersion,w.bindingId,w.generationId,w.titleOverride,w.note,w.layout.x,w.layout.y,w.layout.w,w.layout.h]);
+   for(const w of widgets){const connected=connectedSnapshot(w.bindingId,w.generationId);await c.execute('INSERT INTO dashboard_widget(tenant_id,dashboard_id,dashboard_version,id,report_id,report_version,binding_id,generation_id,title_override,note,grid_x,grid_y,grid_w,grid_h,connected_catalog_hash) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',[a.tenantId,id,version,w.id,w.reportId,w.reportVersion,w.bindingId,connected?null:w.generationId,w.titleOverride,w.note,w.layout.x,w.layout.y,w.layout.w,w.layout.h,connected?w.generationId:null]);}
   }
   await c.execute('UPDATE dashboard_definition SET name=?,revision=?,latest_version=?,archived=?,legacy_report_id=COALESCE(?,legacy_report_id),legacy_report_version=COALESCE(?,legacy_report_version),updated_at=UTC_TIMESTAMP(6) WHERE tenant_id=? AND id=?',[name,revision,version,op.kind==='archive'?body.archived:head.archived,legacy?.id??null,legacy?.version??null,a.tenantId,id]);
   await c.execute('INSERT INTO dashboard_audit_entry VALUES (?,?,?,?,?,?,UTC_TIMESTAMP(6))',[a.tenantId,randomUUID(),id,a.principalId,op.kind==='archive'?(body.archived?'archive':'restore'):op.kind,revision]);
@@ -108,7 +111,7 @@ export class DashboardService {
  private async resolveQuery(c:PoolConnection,a:DashboardAdmission,op:Record<string,any>){
   if(!a.canRun)throw new StorageError(403,'FORBIDDEN');let id=op.id,version=op.version,generation=op.body.generationId;
   if(op.kind==='query'){const h=await this.head(c,a,op.id);if(h.archived)throw new StorageError(422,'DASHBOARD_ARCHIVED');const w=(await this.widgets(c,a,op.id,op.body.dashboardVersion)).find(w=>w.id===op.widgetId);if(!w)throw new StorageError(404,'NOT_FOUND');id=w.reportId;version=w.reportVersion;generation=w.generationId;}
-  const r=await this.report(c,a,id,version),m=await this.source(c,a,r.definition.bindingId,generation);this.compile(a,r.definition,m);return {definition:r.definition as Definition,generation,reportId:id,reportVersion:version};
+  const r=await this.report(c,a,id,version),m=await this.source(c,a,r.definition.bindingId,generation);this.compile(a,r.definition,m);return {definition:liveDefinition(r.definition,m) as Definition,generation,reportId:id,reportVersion:version};
  }
  async execute(a:DashboardAdmission,input:unknown,raw=JSON.stringify(input)){
   assertDashboard(a);if(a.bodyHash!==hash(raw))throw new StorageError(401,'REQUEST_BINDING_MISMATCH');const op=dashboardOperation(input);if(a.readScope==='none'||mutations.has(op.kind)&&a.designScope==='none')throw new StorageError(403,'FORBIDDEN');

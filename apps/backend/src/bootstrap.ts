@@ -6,6 +6,7 @@ import { OperationsModule } from './modules/operations/http.js';
 import { ChatflowModule } from './modules/chatflow/http.js';
 import { WorkflowModule } from './modules/workflow/http.js';
 import { RoutingModule } from './modules/agents/http.js';
+import {HumanRoutingModule} from './modules/agents/human-routing-http.js';
 import { ChannelsModule } from './modules/channels/http.js';
 import { ConversationModule } from './modules/conversation/http.js';
 import { WorkspaceModule } from './modules/conversation/workspace-http.js';
@@ -22,7 +23,7 @@ import { safeJsonBody } from './kernel/http/json-body.js';
 
 export async function bootstrap(role: 'api' | 'worker'): Promise<void> {
   process.env.SERVICE_ROLE = role;
-  @Module({ imports: role === 'api' && process.env.MYSQL_HOST ? [ApplicationModule, FacebookModule, MarketingAuthorityModule, ReportingDefinitionsModule, AuthModule, IdentityModule, CrmModule, ConversationModule, WorkspaceModule, ChannelsModule, RoutingModule, WorkflowModule, ChatflowModule, OperationsModule] : process.env.MYSQL_HOST && role === 'worker' ? [ApplicationModule, ReliabilityWorkerModule] : [ApplicationModule] })
+  @Module({ imports: role === 'api' && process.env.MYSQL_HOST ? [ApplicationModule, FacebookModule, MarketingAuthorityModule, ReportingDefinitionsModule, AuthModule, IdentityModule, CrmModule, ConversationModule, WorkspaceModule, ChannelsModule, RoutingModule, HumanRoutingModule, WorkflowModule, ChatflowModule, OperationsModule] : process.env.MYSQL_HOST && role === 'worker' ? [ApplicationModule, ReliabilityWorkerModule] : [ApplicationModule] })
   class RuntimeModule {}
   const app = await NestFactory.create<NestExpressApplication>(RuntimeModule, { logger: ['error', 'warn', 'log'],bodyParser:false });
   safeJsonBody(app);

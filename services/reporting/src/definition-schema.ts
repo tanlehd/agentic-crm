@@ -14,7 +14,7 @@ export const definitionSchema = {
       properties: { field: identifier, op: { enum: ['eq', 'in', 'gte', 'lte', 'is_null'] }, value: { anyOf: [...scalar.anyOf, { type: 'array', minItems: 1, maxItems: 50, uniqueItems: true, items: scalar }] } },
     } },
     time: { type: 'object', additionalProperties: false, required: ['mode', 'from', 'to', 'asOf', 'timezone', 'bucket'], properties: {
-      mode: { enum: ['activity', 'acquisition_cohort'] }, from: timestamp, to: timestamp, asOf: timestamp,
+      rollingDays: {type:'integer',minimum:1,maximum:30}, mode: { enum: ['activity', 'acquisition_cohort'] }, from: timestamp, to: timestamp, asOf: timestamp,
       timezone: { type: 'string', minLength: 1, maxLength: 80 }, bucket: { enum: ['day', 'week', 'month'] },
     } },
     currency: { type: 'string', pattern: '^[A-Z]{3}$' },

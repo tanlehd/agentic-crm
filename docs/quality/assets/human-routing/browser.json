@@ -1,0 +1,58 @@
+{
+  "at": "2026-10-17T12:56:30.532Z",
+  "status": "PASS",
+  "checks": [
+    "lost ACK keeps exact payload/key and retries once without duplicate config version",
+    "HR-01 real admin UI config persisted: skill/team/profile/versioned queue",
+    "HR-02 native inbound + worker events produce two assigned and one full-capacity wait",
+    "HR-03 real agent reply, mock delivery sent, Close UI, automatic next allocation; observed 3992ms (not SLO)",
+    "HR-05 full target rejected without owner change, supervisor increases cap and reroutes through UI",
+    "HR-06 connected operational report matches completed/transfer/reply source facts",
+    "HR-07 native admin/agent separation, CSRF, precondition and strict input negatives",
+    "HR-09 desktop/mobile, no browser exceptions, no horizontal page overflow"
+  ],
+  "shots": [
+    "artifacts/human-routing/screenshots/01-admin-team-skills-capacity.png",
+    "artifacts/human-routing/screenshots/02-admin-workload-waitlist.png",
+    "artifacts/human-routing/screenshots/03-agent-new-assignment.png",
+    "artifacts/human-routing/screenshots/04-agent-consultation-sent.png",
+    "artifacts/human-routing/screenshots/05-agent-close-next-assignment.png",
+    "artifacts/human-routing/screenshots/06-agent-next-conversation.png",
+    "artifacts/human-routing/screenshots/07-admin-reroute-review.png",
+    "artifacts/human-routing/screenshots/08-admin-rerouted-workload.png",
+    "artifacts/human-routing/screenshots/09-performance-report.png",
+    "artifacts/human-routing/screenshots/10-mobile-performance.png"
+  ],
+  "redispatchMs": 3992,
+  "work": [
+    {
+      "id": "15d17e65-25e0-42ce-b797-35f3d20eb395",
+      "label": "Routing Demo · Khách 1 · 140e6"
+    },
+    {
+      "id": "c2d0aea3-1e91-4dba-a42c-11ea506c2108",
+      "label": "Routing Demo · Khách 2 · 3edfd"
+    },
+    {
+      "id": "eb0e952a-a1ec-42fe-a0b9-14d318a15191",
+      "label": "Routing Demo · Khách 3 · 0ff46"
+    }
+  ],
+  "report": [
+    {
+      "principal_id": "9505a6b5-9374-5bb3-adab-d8341e975adb",
+      "assignments": 12,
+      "completed": 6,
+      "transferred": 6,
+      "handling_seconds": 17.18596667
+    },
+    {
+      "principal_id": "a37e3835-bf1b-51d9-a7e3-ee9cba20085e",
+      "assignments": 12,
+      "completed": 10,
+      "transferred": 0,
+      "handling_seconds": 158.1080584
+    }
+  ],
+  "retained": true
+}

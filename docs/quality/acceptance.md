@@ -1,5 +1,10 @@
 # Acceptance và traceability
 
+SRC-085: [OR-01…08 operations dashboard acceptance](operations-reporting-acceptance.md) replaces the bespoke Routing performance UI with ordinary Reports/Dashboards. Original HR evidence remains historical; team/agent/reroute behavior is preserved.
+
+SRC-084: [HR-01…10 biên bản và 10 ảnh nghiệm thu](human-routing-acceptance.md) — team skills, capacity/waiting, agent reply/close→next, admin reroute and operational performance. [Executed evidence](../tracking/details/SRC-084.md). Bounded monolith R1 with synthetic mock transport; distributed routing and generic Report Builder integration remain separate.
+
+
 SRC-083: [CIB-01…05](../contracts/custom-inbox-builder.md) scopes saved Inbox authoring, compound filter preview, update/duplicate/share/revoke/archive, native permissions/CAS/idempotency and responsive UI. [Executed evidence](../tracking/details/SRC-083.md). This supplements bounded UX-CHAT-14/15/16; does not close full SRC-036/037 or general queues.
 
 SRC-0782026-10-16: [TC-01…10 evidence and bounded scope](../tracking/details/SRC-078.md). Local/native lifecycle/fields/Related Lead+Deal/transfer/current ACL/history verified; TC-06 role separation is in history, connected Reporting/credit metrics not activated. Ticket runtime remains outside this slice. Prior source evidence preserved.

@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "at": "2026-10-17T13:27:10.721Z",
+  "checks": [
+    "connected widget persists catalog pin with NULL mock generation",
+    "no pin rejected by database CHECK",
+    "unknown catalog rejected by same-tenant binding FK",
+    "catalog exact lookup uses primary key",
+    "runtime metadata is append-only: update and delete denied"
+  ]
+}

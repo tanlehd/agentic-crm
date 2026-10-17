@@ -1,5 +1,9 @@
 # Agentic CRM
 
+**Dashboard vận hành (2026-10-17):** Giám sát workload, hàng chờ và hiệu suất qua 6 đối tượng/thuộc tính kết nối, 7 saved reports dùng chung Report Builder. Template có biểu đồ, KPI và bảng; sửa nhóm/lọc/kỳ/bố cục, dùng lại report. [Mở Dashboards](http://localhost:18080/?dashboards=1) · [Hướng dẫn](docs/development/operations-reporting.md) · [Nghiệm thu và ảnh](docs/quality/operations-reporting-acceptance.md). Tab hiệu suất riêng của Routing được thay bằng lối vào dashboard; các bản ghi dưới là lịch sử.
+
+**Phân bổ hội thoại Human (2026-10-17):** Admin gán kỹ năng cho team, cấu hình queue/capacity, theo dõi và phân lại. Agent close giải phóng workload để engine phân việc tiếp; báo cáo ghi nhận hoàn tất/chuyển giao/phản hồi. [Mở local](http://localhost:18080/?screen=routing) · [Hướng dẫn](docs/development/human-routing.md) · [Nghiệm thu và ảnh](docs/quality/human-routing-acceptance.md). SRC-084 scoped monolith R1; mock transport trong demo.
+
 **Đọc theo mục tiêu và người sử dụng:** [Bản đồ nhóm tính năng](docs/product/capability-map.md) là trục chung cho tài liệu sản phẩm, UX, demo và presentation. Các cập nhật theo ngày bên dưới là lịch sử triển khai; trạng thái chính thức ở task tracker.
 
 **Hộp thư tùy biến (2026-10-17):** Agent Chat Workspace có tạo bộ lọc, xem trước, lưu/sửa/nhân bản, chia sẻ user/team và lưu trữ inbox. Bộ lọc theo phạm vi, trạng thái, kênh/Page, nhãn, chưa đọc và tạm ẩn; không tự đổi phân công. [Mở Inbox](http://localhost:18080/) · [Hướng dẫn](docs/development/custom-inbox.md) · [Evidence](docs/tracking/details/SRC-083.md). Dùng storage hiện có, không migration.

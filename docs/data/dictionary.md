@@ -1,5 +1,11 @@
 # Data dictionary
 
+SRC-085 / 2026-10-17: [Operations Reporting](../contracts/operations-reporting.md) cung cấp 6 read objects, 7 model và template dashboard trên core chung. Routing/Chat/Identity giữ quyền sở hữu facts, producer qua authorized monolith ports; Reporting chỉ lưu definitions/catalog metadata trong own schema5, không SQL/FK xuyên service. UI phân tích ở Dashboards/Reports; Routing giữ cấu hình và hành động điều phối. [Runbook](../development/operations-reporting.md).
+
+SRC-084: [Human routing physical dictionary and metric semantics](../contracts/human-routing.md) supersede PLAN-044 proposal for this bounded9table slice. Work/entry/attempt/allocation, team skills/profile/versioned queue and actual operational performance; forward35, tenant-scoped, no canonical owner duplication.
+
+PLAN-044 / 2026-10-17: [Conversation routing logical dictionary/ERD](conversation-routing-erd.md) proposes skill/queue/policy/work/attempt/Human allocation entities owned by Routing. Design-only; existing physical dictionary and Human unlimited behavior remain unchanged pending exact API/DDL gate.
+
 SRC-0832026-10-17 uses existing [Chat inbox/share fields](agent-chat-workspace.md) unchanged. New [authoring options](../contracts/custom-inbox-builder.md) are transient Identity projections (id/name), not a new persisted directory or queue table. No migration or schema ownership change.
 
 **SRC-080 physical extension2026-10-16:** [Filled dictionary/table designs](../contracts/record-pages.md) cho `record_page_view` và `record_page_team`, CRM-owned forward32. Layout JSON version1, tenant/object/surface/view keys, CAS version, priority và active Identity team logical references; không chứa business record values. Old forms/list views giữ nguyên.

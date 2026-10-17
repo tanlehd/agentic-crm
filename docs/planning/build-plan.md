@@ -1,5 +1,13 @@
 # Kế hoạch sinh source code M1–M2
 
+2026-10-17 / CHG-20261017-06: PLAN-046 exact connected Operations gate Ready; SRC-085 generalizes performance into objects/properties and existing Dashboard/Report Builder. Reporting forward005 metadata pin only; generic custom-object ingestion/durable connected runs remain separate. [Contract](../contracts/operations-reporting.md).
+
+2026-10-17 / CHG-20261017-05: user authorized PLAN-045/SRC-084. [Human routing](../contracts/human-routing.md) scoped R1 implemented/tested with screenshot acceptance; exact monolith gate completed,9new tables forward35. Broader visual/custom rule/overflow/extraction/report-builder gates remain separate; unrelated source backlog preserved.
+
+2026-10-17 / CHG-20261017-04: PLAN-044 delivers [logical Omni-style routing ERD](../data/conversation-routing-erd.md), ownership, candidate-table review and future acceptance scenarios. Design-only; no new implementation claimed. Next routing step is exact API/DDL/permissions/cutover gate; existing source backlog priority remains unchanged.
+
+2026-10-17 / PLAN-040: [Assignment research](../references/conversation-assignment.md) compares HubSpot/Salesforce/Intercom/respond.io/Zendesk and proposes employee skills, per-session routing, Human capacity queues and shared workflow dispatch. Research-only, not a Ready implementation gate; source dependencies and existing backlog priority unchanged.
+
 2026-10-17 / CHG-20261017-02: PLAN-039 tổ chức [nhóm tính năng theo mục tiêu và người sử dụng](../product/capability-map.md) làm trục cho tài liệu/UX/demo/presentation. Documentation-only; không đổi source dependency, service ownership, runtime scope hoặc backlog PLAN-028E.
 
 2026-10-17 / CHG-20261017-01: PLAN-038/SRC-083 DONE scoped [Custom Inbox builder](../contracts/custom-inbox-builder.md): saved conversation filter preview/lifecycle/share UI and additive native discovery on existing Chat storage. [Evidence](../tracking/details/SRC-083.md); no migration. Remaining full workspace release/general filters and PLAN-028E remain separate.

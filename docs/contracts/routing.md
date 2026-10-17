@@ -1,5 +1,7 @@
 # Routing và assignment — SRC-017
 
+SRC-084 additive extension: [Human routing contract](human-routing.md). Managed Human profiles now have conversation capacity across queues, with live reconciliation and shared manual/takeover/Workflow guard. Existing IDs/wire shapes remain; assignment may additionally fail HUMAN_CAPACITY_FULL/HUMAN_PROFILE_REQUIRED/NO_MATCHING_SKILL for enrolled work. Legacy unlimited description below applies only to unmanaged Human profiles.
+
 **Implemented additive slice SRC-078 / 2026-10-16:** [Thread / Conversation exact contract](thread-conversation-implementation.md), PLAN-033A DONE. Thread legacy IDs/API remain stable; Conversation episode has optional custom fields and stage, event-time ownership/contributor history, and Related Lead/Deal actions with current permissions. Cross-team transfer preserves the episode; Ticket and connected Reporting remain gated. Physical forward31 stays in the baseline monolith; service extraction rules below remain unchanged.
 
 > Microservices target ADR-017 dùng [cross-service rules](service-boundaries.md). APIs/UoW trong tài liệu này là baseline implementation hiện tại; exact remote contracts và sagas cần PLAN-006 trước extraction.
