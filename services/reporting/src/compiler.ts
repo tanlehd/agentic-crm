@@ -146,6 +146,8 @@ export function compileDefinition(registry: Registry, input: unknown, ctx: Acces
     const f = registry.field(filter.field);
     if (f && readable(registry, c, ctx, binding, f.id) && !validFilter(f, filter)) add('FILTER_TYPE_UNSUPPORTED', `/filters/${i}`);
   }
+  if(d.time.horizonDays!==undefined&&(!model.id.startsWith('cv_')||model.mode!=='acquisition_cohort'))add('HORIZON_UNSUPPORTED','/time/horizonDays');
+  if(d.goal){const m=metrics.find(m=>m.id===d.goal!.metricId);if(!m||d.metrics.length!==1||d.dimensions.length||!['count','percent','currency'].includes(m.unit)||m.unit==='percent'&&Number(d.goal.target)>100)add('GOAL_SCOPE_INVALID','/goal');}
   if (d.time.mode !== model.mode) add('TIME_MODE_UNSUPPORTED', '/time/mode');
   if (![d.time.from, d.time.to, d.time.asOf].every(timestamp) || Date.parse(d.time.from) >= Date.parse(d.time.to) || Date.parse(d.time.asOf) < Date.parse(d.time.to)) add('INVALID_WINDOW', '/time');
   try { if (/^[+-]/.test(d.time.timezone)) throw new Error(); new Intl.DateTimeFormat('en', { timeZone: d.time.timezone }); } catch { add('INVALID_TIMEZONE', '/time/timezone'); }

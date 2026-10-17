@@ -1,0 +1,36 @@
+[
+  {
+    "database": "crm_reporting",
+    "version": 6,
+    "applied": 1,
+    "totalSteps": 22,
+    "repeat": {
+      "version": 6,
+      "applied": 0,
+      "totalSteps": 22
+    },
+    "businessTables": 20,
+    "preservedTables": 20,
+    "crmBefore": "35",
+    "crmAfter": "35",
+    "backup": "artifacts/reporting-database/crm_reporting-2026-10-17T14-02-40-302Z.sql",
+    "backupSha256": "d4a78456bd233c253a10b46127b559fc93276f6708da2548c51def834bd53eb7"
+  },
+  {
+    "database": "test_crm_reporting",
+    "version": 6,
+    "applied": 1,
+    "totalSteps": 22,
+    "repeat": {
+      "version": 6,
+      "applied": 0,
+      "totalSteps": 22
+    },
+    "businessTables": 20,
+    "preservedTables": 20,
+    "crmBefore": "35",
+    "crmAfter": "35",
+    "backup": "artifacts/reporting-database/test_crm_reporting-2026-10-17T14-02-36-798Z.sql",
+    "backupSha256": "89d24f0f2b1f6dc04c70d1cc6797573f2dc89c8d3f728b96536c56bbd7794303"
+  }
+]

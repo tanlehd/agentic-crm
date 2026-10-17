@@ -1,5 +1,41 @@
 # Execution và change log
 
+## S-20261017-15 — Publish conversion reporting to Git
+
+User explicitly requested “Push git”, authorizing commit/push of PLAN-047/048 and SRC-086 code, contracts, documentation and public acceptance evidence. Initial main62b1b02; fetched origin/main matches HEAD (0ahead/0behind). Publication inventory67files/1,560,077bytes before this log update; no private .env/.local/artifacts paths or credential signatures found. Normal git diff --check PASS. Final documentation check runs after this entry; no source/runtime/DB changes in this publication session.
+
+411unit/59files,9native,6storage,8browser,12dashboard regression and builds remain the verified S-20261017-14 evidence; not rerun for Git publication. SRC-086 remains DONE, no new active implementation. Services not freshly checked. Publication snapshot is the commit containing this entry; push result and remote hash are verified after commit. No force-push, deploy, reset, subagents or schedule.
+
+Publication checks: docs331Markdown/3020links/86acyclic source tasks PASS; staged git diff --check PASS. Staged scope67files,910insertions/42deletions before this final result note, including5public synthetic screenshots. Private SQL backups and local configuration remain ignored.
+
+## S-20261017-14 — Conversion source, goal and actionable dashboard completed
+
+Final validation: `node scripts/check-docs.mjs` PASS331Markdown/3020links/6JSON examples/40Mermaid headers/86acyclic source tasks; `node scripts/lint.mjs` PASS754JS/TS; `node scripts/check-schemas.mjs` PASS36strict schemas; `node scripts/generate-contracts.mjs --check` PASS. Normal `git diff --check` exit0;31untracked files scanned with no trailing whitespace. CRLF conversion notices are Git normalization warnings, not test failures. Artifact manifest SHA256 covers5screenshots and6logs/JSON; migration backup SHA256 saved in upgrade.json. No source changes after final unit/native/browser/build checks.
+
+User “Code luôn” authorized PLAN-048/SRC-086 after review. Exact contract/table review docs328/2976links/86DAG PASS before source, then SRC-086 claimed Codex2026-10-17 IN_PROGRESS; now DONE scoped local slice. CHG-20261017-08 resolved by additive adapter/definitions/forward006. [Evidence](details/SRC-086.md) · [Runbook](../development/conversion-reporting.md) · [Acceptance](../quality/conversion-reporting-acceptance.md).5objects/6models/10reports, origin/direct/raw-canonical/cohort/goal/current attention; no source rewrite.
+
+Windows/Node24.21.0/MySQL8/Redis:411unit/59files,9native producer/ACL groups,6DB groups,8browser groups/5screenshots,12dashboard native regression PASS. Backend/Reporting build, Web types and isolated Next production build PASS. Final screenshots visually inspected. Native test provesS1origin/S2create/S3closing, won value once; partial initial-owner history null. Need mapping logic inspected; no new claim for full Need lifecycle. Browser25.5 target restored after save/reopen; immutable test version retained. First harness/expectation failures fixed, passing reruns saved. Final static/docs/whitespace results appended below.
+
+Reporting local/test5→6:1applied each,repeat0,22total steps,20old tables preserved. CRM35 unchanged. Backup paths/hashes in evidence artifacts; forward006 immutable after apply. Existing runtime append-only catalog grants retained. API/Reporting stop/start through local monitor after build; MySQL/Redis healthy, API3001/worker3002/web18080/Reporting3004 ready; Connector configuration-required. No production activation/data reset.
+
+Main/base62b1b02 dirty with code/generated contracts/scripts/docs/assets plus prior review preserved. Working-tree reference, no commit/push/deploy/subagents/schedule. No active implementation or slice blocker. Current snapshot1…365days/5000facts/10000projected rows, horizon<=90days; per-widget asOf and manual refresh; no automatic goal alerts/history replay/durable connected runs. No pending business target chosen. Next existing backlog PLAN-028E; PLAN-041 screenshot gaps and broader Reporting gates remain unchanged.
+
+## CHG-20261017-08 — Conversion implementation authorized
+
+User requested coding after PLAN-047. PLAN-048 claimed Codex2026-10-17, exact bounded [contract](../contracts/conversion-reporting.md) and table review written before source. C2 additive source/model/goal definition and Reporting forward006 CHECK expansion; raw and canonical models explicitly separate, no Sales source rewrite. Existing dirty review docs preserved. SRC-086 waits for documentation gate; one implementation at a time, no subagents/schedules. Runtime acceptance pending.
+
+## S-20261017-13 — Conversion base and operations dashboard review
+
+PLAN-047 claimed Codex2026-10-17 IN_PROGRESS before review, now DONE review-only. [Findings / DOC-CV-01…04](../planning/conversion-operations-review.md): preserve Session/Lead/Deal origin and context base; connected business producer, distinct/branch/cohort/merge/actor semantics and goal/actionable dashboard remain gaps. Existing behavioral/organic/mock/Operations implementations are distinct; no production conversion claim. PLAN-048 TODO records proposed exact gate, other implementation backlog unchanged.
+
+CHG-20261017-07: documentation clarification and proposed additive scope (C2); direct Deal prevents assuming all Session→Won pass through Lead; Lead merge retains old Deal lineage. Updated module/semantic model/operations boundary/build plan/tracker. Clarification resolved; implementation semantics/payload/goal/DDL/ACL remain pending PLAN-048, no C3 business policy silently selected. Compatibility: existing reports/metrics/IDs/pins unchanged, future versions additive; no migration this turn.
+
+Fresh Windows/pinned Node24.21.0 focused Vitest command in review evidence:59tests/7files PASS exit0 (organic money/date, Customer360 contract, need follow-up, behavioral reducer, Reporting query/operations/dashboard). Native/MySQL/browser/full build and future CV-01…07 NOT_RUN. No persistent fixture mutation or runtime restart. Initial shell searches with Windows path wildcards failed and were rerun with concrete files/directories; one documentation patch context mismatch made no changes and was corrected. No product test failure.
+
+Workspace initially clean main62b1b02; deliverable is working-tree docs, no new commit/push/deploy/reset/subagent/schedule. Services not freshly inspected; previous health is historical. No review blocker. Suggested next action: PLAN-048 exact connected CRM conversion/goal/drilldown contract, before source.
+
+Final validation: pinned Node `scripts/check-docs.mjs` PASS327Markdown/2974local links/6JSON/40Mermaid headers/85acyclic source tasks. Normal `git diff --check` PASS; new review file trailing-whitespace scan returned no matches (rg exit1 means no matches), confirmed by PowerShell scan exit0. A subsequent check overriding core.autocrlf=false reported existing CRLF line endings as trailing whitespace; discarded that nonstandard override and normal configured Git check passed again. No line-ending rewrite performed. Eight documentation files changed/added, no source edits.
+
 ## S-20261017-12 — User-authorized Git publication
 
 User requested push after SRC-085 completion. Scope: accumulated SRC-084/085 source, forward migrations, contracts, assignment research/ERD, quality screenshots and tracking. Base8455fac on main, fetched origin/main identical (ahead0/behind0). Fresh399unit/57files PASS,docs326/2943links/DAG85 PASS,36schemas/generated contracts/AST742 PASS,whitespace PASS; inventory142files/~5.4MiB with private-path/credential-signature checks clean. Local secrets/backups remain ignored. Native/browser/build suites retain prior evidence; not rerun for this publication. No feature status/DB/runtime change or new source task. Commit is the snapshot containing this record; remote outcome checked after push. No force push or deployment.

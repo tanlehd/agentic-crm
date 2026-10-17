@@ -258,6 +258,10 @@
               ]
             }
           }
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
         }
       },
       "required": [
@@ -1044,6 +1048,10 @@
                       ]
                     }
                   }
+                },
+                "currency": {
+                  "type": "string",
+                  "pattern": "^[A-Z]{3}$"
                 }
               },
               "required": [

@@ -1,5 +1,7 @@
 # Reporting & Analytics
 
+SRC-086 / 2026-10-17: [Connected conversion](../contracts/conversion-reporting.md) implemented:5objects/6models,10saved reports, goal/horizon và native record drilldown qua core chung. Chat/Sales/CRM giữ facts qua monolith application ports; Reporting giữ catalog/definition JSON trong own schema6. Immutable origin, direct branch, raw/canonical merge và current backlog tách biệt. [Evidence](../tracking/details/SRC-086.md). Các đoạn PLAN-047/048 chưa triển khai bên dưới là lịch sử trước lượt code.
+
 SRC-085 / 2026-10-17: [Operations Reporting](../contracts/operations-reporting.md) cung cấp 6 read objects, 7 model và template dashboard trên core chung. Routing/Chat/Identity giữ quyền sở hữu facts, producer qua authorized monolith ports; Reporting chỉ lưu definitions/catalog metadata trong own schema5, không SQL/FK xuyên service. UI phân tích ở Dashboards/Reports; Routing giữ cấu hình và hành động điều phối. [Runbook](../development/operations-reporting.md).
 
 PLAN-028: Reporting compile canonical CRM refs thành own versioned models/projections theo [contract direction](../contracts/no-code-object-platform.md); connected source distinct from mock, producer qua authorized API/events, no cross-schema reads. PLAN-028B chốt physical tables/refresh/ACL/grain trước SRC-075; không đổi delivered scope.

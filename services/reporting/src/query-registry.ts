@@ -1,3 +1,4 @@
+import {conversionCatalog} from './conversion-catalog.js';
 import {operationsCatalog} from './operations-catalog.js';
 import {summaryExtensions} from './summary-catalog.js';
 import {inboxDemoExtensions} from './inbox-demo.js';
@@ -23,5 +24,6 @@ export function builtInExecutions(){
  for(const item of summaryExtensions())registry.registerMetric({...catalogV1,metrics:[item.descriptor]},item.descriptor,item.operator);
  const demo=inboxDemoExtensions();for(const model of demo.catalog.models)registry.registerModel(demo.catalog,model);for(const {descriptor,operator}of demo.operators)registry.registerMetric(demo.catalog,descriptor,operator);
  const operations=operationsCatalog();for(const model of operations.catalog.models)registry.registerModel(operations.catalog,model);for(const {descriptor,operator}of operations.operators)registry.registerMetric(operations.catalog,descriptor,operator);
+ const conversion=conversionCatalog();for(const model of conversion.catalog.models)registry.registerModel(conversion.catalog,model,conversion.collections[model.id]);for(const {descriptor,operator}of conversion.operators)registry.registerMetric(conversion.catalog,descriptor,operator);
  return registry;
 }

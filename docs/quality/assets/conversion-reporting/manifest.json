@@ -1,0 +1,57 @@
+[
+  {
+    "name": "01-template.png",
+    "bytes": 114204,
+    "sha256": "e88307bec7c3bad8503467290ecc2525bcd9f84aae23d1f0bb1408e677a5c29d"
+  },
+  {
+    "name": "02-dashboard.png",
+    "bytes": 99818,
+    "sha256": "1b267d9262784bb4ef6ae9d3b481c88ba9c83c2d610f3613df26e787548d8cfc"
+  },
+  {
+    "name": "03-goal-editor.png",
+    "bytes": 144331,
+    "sha256": "20c2bd518d8ef325f6d425dcdbaac91129c3365841deb064cfd323d0bfa85c5d"
+  },
+  {
+    "name": "04-attention.png",
+    "bytes": 111657,
+    "sha256": "bc8a9d254e2b2a39a8f37fbbd3c17a0eace16c661784a37f064b0bef1bcfe463"
+  },
+  {
+    "name": "05-mobile.png",
+    "bytes": 42834,
+    "sha256": "f44759ac6fe2df139f99fcb83d5d1fe0ab29a0aa379781dd604f3cd38f809f41"
+  },
+  {
+    "name": "browser.json",
+    "bytes": 1175,
+    "sha256": "230fd2266e755d25ff50e356c9db703058e657443f49cd8513baa01b2e5a11b7"
+  },
+  {
+    "name": "native.json",
+    "bytes": 1081,
+    "sha256": "aa152957e6e74d6858f77f068448b789b53e1e1d463657ef56a396176e020d15"
+  },
+  {
+    "name": "storage.json",
+    "bytes": 418,
+    "sha256": "90abee59f54caf6784bf2a2d0c943ff20924ec0efe56c5eb665aa2abfc8070d2"
+  },
+  {
+    "name": "unit.log",
+    "bytes": 498,
+    "sha256": "bfa865507b7af732d85841e36d9ae4a42fc4a2ed5c3540ff9a3b659784f1f39e"
+  },
+  {
+    "name": "web-build.log",
+    "bytes": 546,
+    "sha256": "504eeaf967712064fabe7cf5dfe6ba96da34c7759974edb1493ac5e5cb5786ce"
+  },
+  {
+    "name": "dashboard-regression.log",
+    "bytes": 953,
+    "sha256": "36b2eb24042aaf6072ce17092c5ad89bfce243fa75e7931bebb1c3cd80b45bf5"
+  }
+]

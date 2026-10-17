@@ -14,10 +14,11 @@ export const definitionSchema = {
       properties: { field: identifier, op: { enum: ['eq', 'in', 'gte', 'lte', 'is_null'] }, value: { anyOf: [...scalar.anyOf, { type: 'array', minItems: 1, maxItems: 50, uniqueItems: true, items: scalar }] } },
     } },
     time: { type: 'object', additionalProperties: false, required: ['mode', 'from', 'to', 'asOf', 'timezone', 'bucket'], properties: {
-      rollingDays: {type:'integer',minimum:1,maximum:30}, mode: { enum: ['activity', 'acquisition_cohort'] }, from: timestamp, to: timestamp, asOf: timestamp,
+      rollingDays: {type:'integer',minimum:1,maximum:365}, horizonDays:{type:'integer',minimum:1,maximum:90}, mode: { enum: ['activity', 'acquisition_cohort'] }, from: timestamp, to: timestamp, asOf: timestamp,
       timezone: { type: 'string', minLength: 1, maxLength: 80 }, bucket: { enum: ['day', 'week', 'month'] },
     } },
     currency: { type: 'string', pattern: '^[A-Z]{3}$' },
+    goal:{type:'object',additionalProperties:false,required:['metricId','target'],properties:{metricId:identifier,target:{type:'string',pattern:'^(0|[1-9][0-9]{0,13})(\\.[0-9]{1,6})?$'}}},
     visualization: { oneOf: [
       { type: 'object', additionalProperties: false, required: ['type'], properties: { type: { enum: ['table', 'kpi'] } } },
       { type: 'object', additionalProperties: false, required: ['type', 'x', 'y'], properties: { type: { enum: ['bar', 'line', 'horizontal_bar', 'stacked_bar', 'area', 'pie', 'donut'] }, x: identifier, y: list(8, 1), series: identifier } },

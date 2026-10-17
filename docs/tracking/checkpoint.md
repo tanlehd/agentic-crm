@@ -1,3 +1,33 @@
+# Git publication — conversion reporting — 2026-10-17
+
+S-20261017-15: user explicitly authorized commit/push of PLAN-047/048 and SRC-086 source, contracts, documentation and public acceptance evidence to origin/main. Base62b1b02; fetched remote matches before commit. Publication snapshot is the commit containing this checkpoint; push result and remote hash verified after commit.
+
+Inventory67files/~1.49MiB before publication log update; private-path/credential-signature and whitespace checks PASS. Final docs check after this update. Prior411unit/59files,9native,6storage,8browser,12dashboard regression and builds remain S-20261017-14 evidence, not rerun this Git-only turn. No runtime/DB changes, services not freshly checked. SRC-086 DONE; no active implementation. Next backlog PLAN-028E; PLAN-041 gaps unchanged.
+
+## Previous checkpoint
+
+# Conversion reporting and goal dashboard completed — 2026-10-17
+
+PLAN-048/SRC-086 DONE bounded CV-01…07; CHG-20261017-08 resolved. [Dashboard local](http://localhost:18080/?dashboards=1&dashboard=231b1486-4a14-588a-adb9-2dba107dea79) · [Runbook](../development/conversion-reporting.md) · [Acceptance/5screenshots](../quality/conversion-reporting-acceptance.md) · [Evidence](details/SRC-086.md).5objects/6models/10saved reports through shared Reporting core; immutable origin/direct branch/raw-canonical merge, goal/horizon and current actionable links. Refresh preserves pins; upgrade report version explicitly.
+
+411unit/59files,9native,6storage,8browser and12dashboard regression groups PASS. Backend/Reporting builds, Web types and isolated production build PASS; next-env/tsconfig restored. Final static/docs/whitespace in S-20261017-14. Need mapping inspection boundary explicit in acceptance; no full Need lifecycle claim. Synthetic target test restored; fixtures retained.
+
+Reporting local/test6,forward006CHECK only;1applied/repeat0,20old business tables preserved,CRM35 unchanged. Private SQL backups in artifacts/reporting-database, public evidence in docs/quality/assets/conversion-reporting. API/Reporting restarted, API3001/worker3002/web18080/Reporting3004 ready; MySQL13306/Redis16379 healthy,monitor3020; Connector unconfigured.
+
+Main/base62b1b02 dirty source/docs/scripts/generated contracts/assets, prior review preserved. No commit/push/deploy/reset/subagents/schedule. No active source implementation/blocker/unresolved decision for this slice. Current snapshot bounded1…365days/5000source facts/10000projection rows/horizon90days, no historical state replay/automatic alerts/generic custom-object ingestion/durable connected runs. Next existing backlog PLAN-028E; PLAN-041 gaps unchanged.
+
+## Previous checkpoint
+
+# Conversion performance review completed — 2026-10-17
+
+PLAN-047 DONE review-only, CHG-20261017-07 clarification resolved. [Review and proposed dashboard](../planning/conversion-operations-review.md). Base lineage/context can be reused; missing connected business funnel, explicit direct-Deal/merge/cohort/actor metrics, target and actionable drilldown. SRC-085 remains DONE for Operations workload/queue scope; no business conversion implementation inferred.
+
+Fresh59tests/7files PASS on Windows/Node24.21.0; command in review evidence. DOC-CV-01…04 inspected. Future CV-01…07/native/MySQL/browser/full build NOT_RUN. Final docs/whitespace in S-20261017-13. Source/schema/runtime untouched; services not freshly checked. Initial main62b1b02 clean, now documentation-only dirty tree; no commit/push/deploy/reset/subagents/schedule or new active source task.
+
+One next action for this topic: PLAN-048 TODO exact connected business conversion, goal and drilldown gate, coordinating PLAN-028B/SRC-075/SRC-049. Goal values, horizon and canonical-merge policy are proposals requiring exact design, not approved defaults. Existing PLAN-028E and PLAN-041 backlog retained. No blocker for completed review.
+
+## Previous checkpoint
+
 # Git publication session — 2026-10-17
 
 S-20261017-12: user explicitly authorized commit/push of accumulated Human Routing (SRC-084), shared operations Dashboard/Report Builder (SRC-085), assignment research/ERD and acceptance screenshots to origin/main. Base8455fac; fetched origin/main matches before commit. Publication snapshot is the commit containing this checkpoint; push result and remote hash are verified after commit.

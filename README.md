@@ -1,5 +1,7 @@
 # Agentic CRM
 
+**Chuyển đổi kinh doanh (2026-10-17):** Dashboard10reports đo hội thoại → Lead → Won, tách Deal trực tiếp/Lead gộp trùng, đặt mục tiêu KPI và mở việc cần xử lý. [Mở local](http://localhost:18080/?dashboards=1&dashboard=231b1486-4a14-588a-adb9-2dba107dea79) · [Hướng dẫn](docs/development/conversion-reporting.md) · [Nghiệm thu/ảnh](docs/quality/conversion-reporting-acceptance.md). Snapshot hiện tại, refresh thủ công; không tự đặt target hoặc phát cảnh báo.
+
 **Dashboard vận hành (2026-10-17):** Giám sát workload, hàng chờ và hiệu suất qua 6 đối tượng/thuộc tính kết nối, 7 saved reports dùng chung Report Builder. Template có biểu đồ, KPI và bảng; sửa nhóm/lọc/kỳ/bố cục, dùng lại report. [Mở Dashboards](http://localhost:18080/?dashboards=1) · [Hướng dẫn](docs/development/operations-reporting.md) · [Nghiệm thu và ảnh](docs/quality/operations-reporting-acceptance.md). Tab hiệu suất riêng của Routing được thay bằng lối vào dashboard; các bản ghi dưới là lịch sử.
 
 **Phân bổ hội thoại Human (2026-10-17):** Admin gán kỹ năng cho team, cấu hình queue/capacity, theo dõi và phân lại. Agent close giải phóng workload để engine phân việc tiếp; báo cáo ghi nhận hoàn tất/chuyển giao/phản hồi. [Mở local](http://localhost:18080/?screen=routing) · [Hướng dẫn](docs/development/human-routing.md) · [Nghiệm thu và ảnh](docs/quality/human-routing-acceptance.md). SRC-084 scoped monolith R1; mock transport trong demo.

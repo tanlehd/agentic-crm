@@ -1,0 +1,12 @@
+
+ RUN  v5.0.3 D:/Work/Labs/agentic-crm
+
+
+ Test Files  59 passed (59)
+      Tests  411 passed (411)
+   Start at  21:13:21
+   Duration  13.38s (import 54%, tests 30%, transform 14%, worker 2%)
+
+     Import  210 modules were evaluated 731 times · 28.22s total, 54% of tracked time
+             ~948ms faster with isolate: false — shared modules are evaluated once per worker instead of once per file
+             learn more: https://vitest.dev/guide/improving-performance#test-isolation

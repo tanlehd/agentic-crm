@@ -1,5 +1,9 @@
 # Kế hoạch sinh source code M1–M2
 
+2026-10-17 / CHG-20261017-08: user authorized coding; PLAN-048 exact contract DONE before source, SRC-086 now DONE bounded connected conversion/goal/dashboard slice. [Evidence](../tracking/details/SRC-086.md). Reporting forward006 CHECK only, shared Reporting core and owner ports. Historical PLAN-048 TODO below superseded; broad SRC-049/SRC-075/PLAN-028B and other backlog unchanged.
+
+2026-10-17 / PLAN-047 / CHG-20261017-07: [Conversion and operations review](conversion-operations-review.md) xác minh base lineage/context hiện có; connected Operations chưa cung cấp business funnel hoặc goal. Review-only, không đổi source/DDL. PLAN-048 TODO là đề xuất exact scoped CRM conversion/goal/drilldown gate; phối hợp PLAN-028B/SRC-075 và SRC-049, không buộc CRM funnel chờ Meta Insights. Chưa claim implementation; các backlog khác giữ nguyên.
+
 2026-10-17 / CHG-20261017-06: PLAN-046 exact connected Operations gate Ready; SRC-085 generalizes performance into objects/properties and existing Dashboard/Report Builder. Reporting forward005 metadata pin only; generic custom-object ingestion/durable connected runs remain separate. [Contract](../contracts/operations-reporting.md).
 
 2026-10-17 / CHG-20261017-05: user authorized PLAN-045/SRC-084. [Human routing](../contracts/human-routing.md) scoped R1 implemented/tested with screenshot acceptance; exact monolith gate completed,9new tables forward35. Broader visual/custom rule/overflow/extraction/report-builder gates remain separate; unrelated source backlog preserved.

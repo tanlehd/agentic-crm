@@ -2,7 +2,7 @@ import {createRegistry,digest} from './registry.js';
 import type {Catalog,Binding} from './types.js';
 import {systemTenant} from './storage-security.js';
 export class ProjectionError extends Error {constructor(readonly code:string){super(code);}}
-export interface ProjectionContext {tenantId:string;bindingId:string;environment:'mock'|'connected';adapterId:'synthetic_g1_v1'|'native_operations_v1'}
+export interface ProjectionContext {tenantId:string;bindingId:string;environment:'mock'|'connected';adapterId:'synthetic_g1_v1'|'native_operations_v1'|'native_conversion_v1'}
 export type Scalar=string|number|boolean|null;
 export interface Observation {object:string;id:string;revision:string;deleted:boolean;observedAt:string;values:Record<string,Scalar>}
 export interface SnapshotManifest extends ProjectionContext {schemaVersion:1;snapshotId:string;catalog:Catalog;catalogHash:string;observedThrough:string;historyFrom:string;availableFields:string[];pageHashes:string[];observationCount:number}
@@ -13,7 +13,7 @@ const uuid=/^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/,sha=/^[a-f0-9]{64}$/;
 export function requireProjection(ok:unknown,code='INVALID_PROJECTION'):asserts ok{if(!ok)throw new ProjectionError(code);}
 function exact(v:unknown,keys:string[]):asserts v is Record<string,unknown>{requireProjection(v!==null&&typeof v==='object'&&!Array.isArray(v)&&Object.keys(v).length===keys.length&&Object.keys(v).every(k=>keys.includes(k)));}
 export function validUtc(v:unknown):v is string{return typeof v==='string'&&/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/.test(v)&&Number.isFinite(Date.parse(v))&&new Date(v).toISOString()===v;}
-export function validateContext(c:ProjectionContext){requireProjection(c&&uuid.test(c.tenantId)&&![systemTenant,'00000000-0000-0000-0000-000000000000'].includes(c.tenantId)&&uuid.test(c.bindingId)&&c.bindingId!=='00000000-0000-0000-0000-000000000000'&&((c.environment==='mock'&&c.adapterId==='synthetic_g1_v1')||(c.environment==='connected'&&c.adapterId==='native_operations_v1')),'INVALID_PROJECTION_CONTEXT');}
+export function validateContext(c:ProjectionContext){requireProjection(c&&uuid.test(c.tenantId)&&![systemTenant,'00000000-0000-0000-0000-000000000000'].includes(c.tenantId)&&uuid.test(c.bindingId)&&c.bindingId!=='00000000-0000-0000-0000-000000000000'&&((c.environment==='mock'&&c.adapterId==='synthetic_g1_v1')||(c.environment==='connected'&&['native_operations_v1','native_conversion_v1'].includes(c.adapterId))),'INVALID_PROJECTION_CONTEXT');}
 export function validateManifest(c:ProjectionContext,m:SnapshotManifest){
  validateContext(c);exact(m,['tenantId','bindingId','environment','adapterId','schemaVersion','snapshotId','catalog','catalogHash','observedThrough','historyFrom','availableFields','pageHashes','observationCount']);
  requireProjection(['tenantId','bindingId','environment','adapterId'].every(k=>m[k as keyof ProjectionContext]===c[k as keyof ProjectionContext]),'PROJECTION_CONTEXT_MISMATCH');

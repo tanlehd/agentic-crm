@@ -14,6 +14,16 @@ Git sync S-20261015-01: user authorized commit/push of all accumulated source/do
 
 Git sync S-20261017-12: user authorized publishing accumulated SRC-084/SRC-085, assignment research/ERD and evidence to origin/main. Feature states unchanged; PLAN-041 remains IN_PROGRESS. See execution log for checks.
 
+Git sync S-20261017-15: user authorized commit/push of PLAN-047/048 and SRC-086 conversion reporting/dashboard and evidence to origin/main. Feature states unchanged; no new source task. See execution log for publication checks.
+
+## Conversion performance review — 2026-10-17
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-047 | Review Conversation → Lead → Deal won base and goal-oriented operational dashboard gaps | SRC-068; SRC-069; SRC-078; SRC-085 | DONE | Codex 2026-10-17 | [Review / DOC-CV-01…04](../planning/conversion-operations-review.md); source/design inspection and59focused tests PASS; review-only, CV-01…07 runtime NOT_RUN |
+| PLAN-048 | Exact connected business conversion, goal and operational drilldown gate | PLAN-047; SRC-081; SRC-085 | DONE | Codex 2026-10-17 | [Exact bounded contract/table review](../contracts/conversion-reporting.md); docs328/2976links/86DAG PASS before source |
+| SRC-086 | Connected conversion source, cohort metrics, goals and actionable dashboard | PLAN-048; SRC-081; SRC-085 | DONE | Codex 2026-10-17 | [Evidence](details/SRC-086.md); bounded CV-01…07,411unit/9native/6storage/8browser/12regression groups, builds PASS; Reporting6/CRM35 preserved |
+
 ## Operational reporting generalization — 2026-10-17
 
 | ID | Deliverable | Deps | Status | Owner | Gate / evidence |

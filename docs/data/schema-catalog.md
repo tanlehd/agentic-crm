@@ -1,5 +1,7 @@
 # Schema catalog — nơi đặt bảng mới
 
+SRC-086 forward006 expands report_connected_catalog adapter CHECK for native_conversion_v1; no new columns/tables. Local/test Reporting6,CRM35,20old business tables preserved. Goal stays in versioned definition JSON; source facts remain request-local. [Filled table review](../contracts/conversion-reporting.md) · [Evidence](../tracking/details/SRC-086.md).
+
 SRC-084 / forward35: [9 physical Human routing tables](../contracts/human-routing.md) now added to baseline monolith; target owner crm_routing. No target schema extraction. All tenant_id NOT NULL, own-Routing FK only, AI execution slots unchanged.104old tables preserved at local upgrade; [evidence](../tracking/details/SRC-084.md). Earlier PLAN-044 logical-only statements below remain historical.
 
 PLAN-044: [17 logical Routing candidates and table review](conversation-routing-erd.md), all tenant-scoped, target crm_routing. Not physical tables or Ready DDL; no schema provision/migration. Human allocation is separate from AI agent_capacity_slot. Exact types/indexes/permissions/cutover require the next gate.

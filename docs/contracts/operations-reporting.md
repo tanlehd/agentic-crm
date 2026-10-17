@@ -1,5 +1,7 @@
 # Operations reporting — đối tượng, thuộc tính và dashboard dùng chung
 
+Review PLAN-0472026-10-17: [Conversion/goal gap review](../planning/conversion-operations-review.md) xác nhận phạm vi dưới đây chỉ là vận hành Routing/Chat/Identity. Lead/Deal business funnel, target/actual và conversion drilldown cần exact gate PLAN-048; không đổi OR-01…08 hoặc tự mở rộng connected payload/permissions hiện hữu.
+
 PLAN-046 / SRC-085 · 2026-10-17 · CHG-20261017-06. **Ready for bounded on-demand connected source.** Thiết kế mở rộng theo yêu cầu đưa giám sát vận hành vào Report Builder/Dashboard core. Không dựng một renderer hoặc bộ tính KPI riêng cho Routing.
 
 ## Quyết định sản phẩm và phạm vi

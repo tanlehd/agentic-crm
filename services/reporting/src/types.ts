@@ -32,8 +32,8 @@ export type Visualization =
 export interface Definition {
   schemaVersion: 1; model: MetricRef; bindingId: string; relations: string[]; dimensions: string[];
   metrics: MetricRef[]; filters: Filter[];
-  time: { mode: 'activity' | 'acquisition_cohort'; from: string; to: string; asOf: string; timezone: string; bucket: 'day' | 'week' | 'month'; rollingDays?: number };
-  currency?: string; visualization: Visualization;
+  time: { mode: 'activity' | 'acquisition_cohort'; from: string; to: string; asOf: string; timezone: string; bucket: 'day' | 'week' | 'month'; rollingDays?: number; horizonDays?: number };
+  currency?: string; goal?: {metricId:string;target:string}; visualization: Visualization;
 }
 export interface Issue { code: string; path: string }
 export interface SemanticPlan {

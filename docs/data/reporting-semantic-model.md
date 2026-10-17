@@ -1,5 +1,9 @@
 # Reporting semantic catalog — objects, links, attributes và metrics
 
+SRC-086 / 2026-10-17: [Connected conversion](../contracts/conversion-reporting.md) implemented:5objects/6models,10saved reports, goal/horizon và native record drilldown qua core chung. Chat/Sales/CRM giữ facts qua monolith application ports; Reporting giữ catalog/definition JSON trong own schema6. Immutable origin, direct branch, raw/canonical merge và current backlog tách biệt. [Evidence](../tracking/details/SRC-086.md). Các đoạn PLAN-047/048 chưa triển khai bên dưới là lịch sử trước lượt code.
+
+PLAN-047 review2026-10-17: [Conversion semantics gaps](../planning/conversion-operations-review.md) làm rõ direct Deal không cần qua Lead: Session→Lead và Session→Won tổng là các KPI song song, không mặc định là nested funnel. Funnel tuần tự qua Lead cần numerator cùng lineage; Lead cohort riêng và raw/canonical merge policy phải được pin. Đây là clarification của target design, chưa thay đổi catalog/executor đã lưu; exact connected gate PLAN-048 TODO.
+
 PLAN-028: [Connected custom-object extension](../contracts/no-code-object-platform.md) compile stable CRM object/property/association refs thành Reporting model versions; explicit root/collection/optional/exists grain, current ACL và source watermark. PLAN-028B/SRC-075 chưa implemented; existing synthetic catalog giữ nguyên, không auto-upgrade mock reports.
 
 PLAN-0272026-10-14 refines [Dashboard/Report/Template data](dashboard-workspace.md) for design review: widget references an immutable saved edit version plus source generation, template recipes materialize ordinary reports, no duplicate metric engine or per-widget embedded query. Published/shared/parameterized target below stays broader future scope. Current schema/source unchanged; exact new artifacts gated by PLAN-027A.

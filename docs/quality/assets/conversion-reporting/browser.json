@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "at": "2026-10-17T14:14:41.092Z",
+  "checks": [
+    "native discovery retains mock and Operations while independently admitting conversion",
+    "template creates ten saved reports and every connected widget executes",
+    "native conversation → Lead → won plus direct Deal; dashboard refresh adds two won with report/catalog pins unchanged",
+    "goal and horizon preview/save/reopen preserve decimal target and report scope",
+    "synthetic target is removed from current report after verification; immutable test version remains",
+    "editing goal creates report version; existing dashboard pin is not silently upgraded",
+    "attention table opens native record workspace with destination authorization",
+    "desktop/mobile390px render without overflow or page errors"
+  ],
+  "shots": [
+    "artifacts/conversion-reporting/01-template.png",
+    "artifacts/conversion-reporting/02-dashboard.png",
+    "artifacts/conversion-reporting/03-goal-editor.png",
+    "artifacts/conversion-reporting/04-attention.png",
+    "artifacts/conversion-reporting/05-mobile.png"
+  ],
+  "dashboardId": "231b1486-4a14-588a-adb9-2dba107dea79",
+  "retained": true
+}

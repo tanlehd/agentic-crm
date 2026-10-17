@@ -28,7 +28,7 @@ export class DashboardService {
  private async source(c:PoolConnection,a:DashboardAdmission,id:string,generation?:string,lock=false){
   if(!a.canRun)throw new StorageError(403,'FORBIDDEN');
   if(typeof id!=='string'||!/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(id))throw new StorageError(422,'REPORT_NOT_PICKABLE');
-  const connected=connectedSnapshot(id,generation);if(connected){if(lock)await c.execute('INSERT IGNORE INTO report_connected_catalog(tenant_id,binding_id,catalog_hash,catalog,adapter_id,created_at) VALUES (?,?,?,?,?,UTC_TIMESTAMP(6))',[a.tenantId,id,sourcePin(connected.manifest),JSON.stringify(connected.manifest.catalog),'native_operations_v1']);return connected.manifest;}requireMockSource();
+  const connected=connectedSnapshot(id,generation);if(connected){if(lock)await c.execute('INSERT IGNORE INTO report_connected_catalog(tenant_id,binding_id,catalog_hash,catalog,adapter_id,created_at) VALUES (?,?,?,?,?,UTC_TIMESTAMP(6))',[a.tenantId,id,sourcePin(connected.manifest),JSON.stringify(connected.manifest.catalog),connected.manifest.adapterId]);return connected.manifest;}requireMockSource();
   const [b]=await rows(c,`SELECT * FROM report_source_binding WHERE tenant_id=? AND id=?${lock?' FOR UPDATE':''}`,[a.tenantId,id]);
   if(!b||b.environment!=='mock'||b.adapter_id!=='synthetic_g1_v1')throw new StorageError(404,'NOT_FOUND');
   if(!b.active_generation||generation&&b.active_generation!==generation)throw new StorageError(422,'SNAPSHOT_PIN_UNAVAILABLE');
@@ -84,7 +84,7 @@ export class DashboardService {
    if(op.kind==='from_template'){
     const t=dashboardTemplates().find(t=>t.key===body.templateKey);if(!t||t.version!==body.templateVersion||t.contentHash!==body.templateHash)throw new StorageError(409,'TEMPLATE_CHANGED');origin={key:t.key,version:t.version,hash:t.contentHash};
     if(Object.keys(body.sourceBindings).length!==1||!body.sourceBindings[t.sourceSlot])throw new StorageError(400,'INVALID_REQUEST');
-    recipes=body.selectedRecipeKeys.map((key:string)=>{const r=t.recipes.find(r=>r.key===key);if(!r)throw new StorageError(400,'INVALID_REQUEST');return {...r,generation:body.sourceBindings[t.sourceSlot].generationId,definition:{...r.definition,bindingId:body.sourceBindings[t.sourceSlot].bindingId}};});
+    recipes=body.selectedRecipeKeys.map((key:string)=>{const r=t.recipes.find(r=>r.key===key);if(!r)throw new StorageError(400,'INVALID_REQUEST');const definition:Definition={...r.definition,bindingId:body.sourceBindings[t.sourceSlot].bindingId};if(t.key==='business_conversion_v1'&&r.key==='won_value'){if(!body.currency)throw new StorageError(422,'CURRENCY_REQUIRED');definition.currency=body.currency;definition.filters=definition.filters.map(f=>f.field==='cv_deal.currency'?{...f,value:body.currency}:f);}return {...r,generation:body.sourceBindings[t.sourceSlot].generationId,definition};});
    }else{
     const r=await this.report(c,a,body.legacyReportId,body.legacyVersion,true);if(String(r.revision)!==op.expectedRevision||String(r.latest_version)!==body.legacyVersion)throw new StorageError(409,'VERSION_CONFLICT');
     const d=r.definition;if(d.kind!=='dashboard'||d.schemaVersion!==1||typeof d.description!=='string'||d.description.length>4000||!Array.isArray(d.widgets)||d.widgets.length>12)throw new StorageError(422,'REPORT_NOT_PICKABLE');

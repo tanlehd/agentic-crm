@@ -1,5 +1,9 @@
 # MOD-10 — Reporting & Dashboard
 
+SRC-086 / 2026-10-17: [Connected conversion](../contracts/conversion-reporting.md) implemented:5objects/6models,10saved reports, goal/horizon và native record drilldown qua core chung. Chat/Sales/CRM giữ facts qua monolith application ports; Reporting giữ catalog/definition JSON trong own schema6. Immutable origin, direct branch, raw/canonical merge và current backlog tách biệt. [Evidence](../tracking/details/SRC-086.md). Các đoạn PLAN-047/048 chưa triển khai bên dưới là lịch sử trước lượt code.
+
+PLAN-047 / 2026-10-17: [Business conversion review](../planning/conversion-operations-review.md) phân biệt behavioral funnel SRC-069, organic won activity, mock acquisition kernel và connected Operations SRC-085. Business conversion/goal/drilldown còn exact gate PLAN-048; không suy dashboard workload là funnel Lead→Won. Proposed extensions giữ core saved report/model/metric versions, không đổi các contract implemented.
+
 SRC-085 / 2026-10-17: [Operations Reporting](../contracts/operations-reporting.md) cung cấp 6 read objects, 7 model và template dashboard trên core chung. Routing/Chat/Identity giữ quyền sở hữu facts, producer qua authorized monolith ports; Reporting chỉ lưu definitions/catalog metadata trong own schema5, không SQL/FK xuyên service. UI phân tích ở Dashboards/Reports; Routing giữ cấu hình và hành động điều phối. [Runbook](../development/operations-reporting.md).
 
 PLAN-028: [Connected custom-object Reporting contract direction](../contracts/no-code-object-platform.md) thiết kế dynamic source/model từ canonical CRM objects/properties/relations, current ACL và grain-safe aggregation. Exact PLAN-028B/SRC-075; mock bindings và dashboard report refs giữ nguyên, không claim connected adapter đã chạy.
