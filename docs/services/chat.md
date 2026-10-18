@@ -89,3 +89,6 @@ PLAN-025 / SRC-069: [Ready session progress contract](../contracts/session-progr
 2026-10-16 / CHG-20261016-04: User authorized per-need AI enrichment and follow-up workflow; SRC-082 restores canonical conversation_id per CHG-20261016-05. PLAN-035/SRC-081 DONE; [runtime evidence](../tracking/details/SRC-081.md). See [contract](../contracts/need-follow-up.md). Forward34 renames four physical relationship columns; compatibility preserves immutable v1/graphs/receipts; real adapter configured explicitly; no invented provider result.
 
 SRC-082 / CHG-20261016-05: [Conversation identity alignment](../contracts/conversation-identity.md) makes conversation_id canonical and preserves session_id episode semantics. Forward34 renames session_contribution/need_assessment/need_follow_up/sales_need_outcome.thread_id without changing IDs, grants, tenant ownership or cross-service boundaries. New need.assessed/classification events use v2; v1 artifacts stay readable. CI-01…03 validation tracked separately from SRC-081 history.
+
+
+SRC-089: Chat owns the [external Conversation/message read application port](../contracts/external-conversations.md). Current monolith uses the CRM registry port within the supplied transaction; extraction must replace it with versioned ACL/record APIs. No facade-owned Chat SQL or provider credential exposure.

@@ -1,3 +1,4 @@
+import {stageCatalog} from './stage-catalog.js';
 import { createPool,type PoolConnection,type RowDataPacket } from 'mysql2/promise';
 import { randomUUID } from 'node:crypto';
 import { canonical } from './registry.js';
@@ -52,7 +53,7 @@ export class ReportingStore {
   let revision=String(head.revision),version=String(head.latest_version);
   if(op.kind!=='create'){revision=next(revision);if(op.kind==='update')version=next(version);}
   if(op.kind!=='archive'){
-   const selected=operationsCatalog().catalog;const definition=op.body!.definition as any;const catalog=canonical(selected.models.some(m=>m.id===definition?.model?.id)?selected:catalogV1),catalogHash=hash(catalog);
+   const selected=operationsCatalog().catalog,stage=stageCatalog();const definition=op.body!.definition as any;const catalog=canonical(stage.models.some(m=>m.id===definition?.model?.id)?stage:selected.models.some(m=>m.id===definition?.model?.id)?selected:catalogV1),catalogHash=hash(catalog);
    await c.execute('INSERT IGNORE INTO report_catalog_version (tenant_id,hash,payload,created_at) VALUES (?,?,?,UTC_TIMESTAMP(6))',[a.tenantId,catalogHash,catalog]);
    await c.execute('INSERT INTO report_version (tenant_id,report_id,version,name,definition,catalog_hash,created_by,created_at) VALUES (?,?,?,?,?,?,?,UTC_TIMESTAMP(6))',[a.tenantId,id,version,op.body!.name!,JSON.stringify(op.body!.definition),catalogHash,a.principalId]);
   }

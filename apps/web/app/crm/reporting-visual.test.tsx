@@ -11,10 +11,11 @@ const d=initialReport(source,catalogV1.models.find(m=>m.id==='marketing_base')!)
 const result=():ReportResult=>({environment:'mock',snapshotId:'test',dimensions:['insights_base.date_start'],metrics:['base_spend'],rows:[{dimensions:['2026-09-01'],metrics:{base_spend:'100.000000'}},{dimensions:['2026-09-02'],metrics:{base_spend:'50.000000'}}],totals:{base_spend:'150.000000'},warnings:[]});
 const chart=(type:Chart['type']):Chart=>({type,x:'insights_base.date_start',y:['base_spend']});
 describe('common visualization safety and presets',()=>{
- it.each(Object.keys(visualLabels) as (keyof typeof visualLabels)[])('builds compatible %s preset without losing filters/time',type=>{
+ it.each(Object.keys(visualLabels).filter(x=>x!=='funnel') as (keyof typeof visualLabels)[])('builds compatible %s preset without losing filters/time',type=>{
   const current={...d,filters:[{field:'insights_base.currency',op:'eq' as const,value:'USD'}]};
   const p=reportPreset(source,current,type);expect(p.reason).toBeUndefined();expect(p.definition).toBeDefined();expect(p.definition!.filters).toEqual(current.filters);expect(p.definition!.time).toEqual(current.time);expect(editableReport(p.definition)).toBe(true);expect(visualizationError(p.definition!,source)).toBe('');
  });
+ it('rejects funnel on a non-stage source',()=>{expect(reportPreset(source,d,'funnel').definition).toBeUndefined();expect(reportPreset(source,d,'funnel').reason).toBeTruthy();});
  it('does not force a preset by discarding unavailable filter constraints',()=>{expect(reportPreset(source,{...d,filters:[{field:'unknown',op:'eq',value:'x'}]},'pie').reason).toBeTruthy();});
  it.each(['bar','horizontal_bar','line','area','pie','donut'] as const)('renders %s and retains exact table',type=>{const markup=renderToStaticMarkup(<ReportingVisual result={result()} definition={{...d,visualization:chart(type)}} catalog={source.catalog}/>);expect(markup).toContain('<svg');expect(markup).toContain('<table');expect(markup).toContain('150');expect(markup).toContain('USD');});
  it('blocks nonadditive, null, negative, zero, excessive and mismatched composition data',()=>{

@@ -94,3 +94,9 @@ ADR-019 / PLAN-006B: [Contact resolution, Connector cache and required Chat cont
 - [Session stages, scoped evidence and connected funnel](contracts/session-progress.md) · [Runbook](development/session-progress.md) · [SRC-069 evidence](tracking/details/SRC-069.md).
 
 - [50-inbox operations and advertising dashboards](contracts/inbox-demo-dashboards.md) · [Runbook](development/inbox-demo-dashboards.md) · [SRC-070 evidence](tracking/details/SRC-070.md) — Alpha Reporting activation pending.
+
+## Developer integrations
+[External API guide](developer/README.md) · [OpenAPI](developer/openapi.json) · [Module](modules/external-api.md) · [Runbook](development/external-api.md). Runtime scope/evidence follow SRC-088, read-only private apps; OAuth and write commands remain PLAN-052.
+
+
+SRC-089: [Conversation/message API](contracts/external-conversations.md) · [Evidence](tracking/details/SRC-089.md); four read endpoints, separate metadata/content scopes and current parent/team limits.

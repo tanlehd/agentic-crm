@@ -1,0 +1,16 @@
+import {describe,it,expect} from 'vitest';
+import {parseAppToken,tokenDigest,validateAppConfig} from '../identity/external-apps.js';
+import {externalOpenApi} from './openapi.js';
+import {externalAppMigration} from '../../kernel/database/external-app-migration.js';
+const catalog=[{key:'contact',label:'Contact',scope:'crm.objects.contact.read',properties:[{key:'display_name',label:'Name',type:'string',sensitive:false}]}];
+const grant={object:'contact',scope:'crm.objects.contact.read',properties:['display_name'],record_scope:'all',team_ids:[]};
+const config={name:'App',description:'Synthetic',status:'active',grants:[grant]};
+describe('external app least privilege boundary',()=>{
+  it('accepts exact declared object/fields and trims only the app name',()=>expect(validateAppConfig({...config,name:' App '},catalog,[])).toEqual(config));
+  for(const patch of [{scope:'*'},{scope:'crm.objects.contact.write'},{object:'activity'},{properties:['*']},{properties:[]},{properties:['normalized_email']},{properties:['display_name','display_name']},{record_scope:'own'},{record_scope:'teams',team_ids:[]},{record_scope:'all',team_ids:['untrusted']},{extra:true}])it('denies unsafe grant '+JSON.stringify(patch),()=>expect(()=>validateAppConfig({...config,grants:[{...grant,...patch}]},catalog,[])).toThrow());
+  it('denies duplicate scopes and unknown config keys',()=>{expect(()=>validateAppConfig({...config,grants:[grant,grant]},catalog,[])).toThrow();expect(()=>validateAppConfig({...config,token:'injected'},catalog,[])).toThrow();});
+  it('team grants require current active identities',()=>{const t='01900000-0000-7000-8000-000000000099';expect(validateAppConfig({...config,grants:[{...grant,record_scope:'teams',team_ids:[t]}]},catalog,[t]).grants[0]!.record_scope).toBe('teams');expect(()=>validateAppConfig({...config,grants:[{...grant,record_scope:'teams',team_ids:[t]}]},catalog,[])).toThrow();});
+  it('requires bearer shape and never accepts a system tenant',()=>{const tenant='01900000-0000-7000-8000-000000000099',id='01900000-0000-7000-8000-000000000098',token=`eapi_${tenant}_${id}_${'A'.repeat(43)}`;expect(parseAppToken('Bearer '+token).tenant).toBe(tenant);expect(tokenDigest(token)).toMatch(/^[a-f0-9]{64}$/);for(const header of [undefined,token,'Bearer '+token+' extra','Bearer '+token.replace(tenant,'01900000-0000-7000-8000-000000000001'),'Basic '+token])expect(()=>parseAppToken(header)).toThrow();});
+  it('documents every scoped read and keeps management authentication separate',()=>{const paths=externalOpenApi.paths;for(const key of ['/external/crm/properties/{object}','/external/crm/objects/{object}','/external/crm/objects/{object}/{id}'] as const){expect(paths[key].get.security).toEqual([{appToken:[]}]);expect(paths[key].get['x-required-scope']).toBe('crm.objects.{object}.read');}expect(paths['/external-apps'].post.security).toEqual([{nativeSession:[]}]);expect(Object.keys(paths['/external/crm/objects/{object}'])).toEqual(['get']);});
+  it('adds a new forward migration with tenant-bound credential and no cross-owner FK',()=>{expect(externalAppMigration.version).toBe(37);expect(externalAppMigration.statements[0]).toContain('PRIMARY KEY(tenant_id,id)');expect(externalAppMigration.statements[0]).not.toContain('FOREIGN KEY');});
+});

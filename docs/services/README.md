@@ -34,3 +34,5 @@ Connector nhận Facebook webhook; Chat là chatserver. Media xử lý binary/ex
 ## Marketing addition — CHG-20261007-13
 
 [Marketing](marketing.md) owns Facebook Ad Account/Campaign/Ad Set/Ad synchronization and hierarchy in crm_marketing. Product ownership accepted; exact contracts PLAN-011 and source SRC-051 pending. Reporting consumes API/events/projections, never cross-service SQL.
+
+[External API facade](external-api.md): private app transport in the baseline monolith; Identity-owned credentials, owner-service reads; no new independent deployment.

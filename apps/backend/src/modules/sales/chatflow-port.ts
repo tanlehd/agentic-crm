@@ -1,3 +1,4 @@
+import {recordStage} from './stage-events.js';
 import { captureLeadSource } from './source.js';
 import { ChannelReferences } from '../channels/ports.js';
 import type { TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
@@ -23,9 +24,11 @@ export class ChatflowLeads {
     let [lead]=await s.query('SELECT * FROM `lead` WHERE tenant_id=? AND qualification_session_id=? FOR UPDATE',[s.context.tenantId,input.sessionId]);
     let record;if(lead){if(lead.contact_id!==input.contactId||lead.conversation_id!==input.conversationId||!['new','qualifying','qualified'].includes(lead.status))throw new CommandError(409,'INVALID_TRANSITION');record=await registry.get(s,lead.record_id,true);if(record.archived)throw new CommandError(409,'INVALID_TRANSITION');}
     else {const source=await new ChannelReferences().firstTouchpoint(s,input.conversationId);record=await createSessionLeadRecord(s,a,input.ownerId,input.teamId,input.sessionId,kind);await s.query("INSERT INTO `lead`(tenant_id,record_id,contact_id,conversation_id,qualification_session_id,source_touchpoint_id,status,qualification) VALUES (?,?,?,?,?,?,'new',JSON_OBJECT())",[s.context.tenantId,record.id,input.contactId,input.conversationId,input.sessionId,source??null]);await captureLeadSource(s,a,record.id,input.contactId,input.conversationId);await commands.automationEvent(s,'lead.created',record.id,record.version,{lead_id:record.id,contact_id:input.contactId,conversation_id:input.conversationId},{kind,id:a.principalId},input.sessionId);}
+    if(!lead)await recordStage(s,'lead',record.id,null,'new',a.principalId,input.sessionId,kind);
     if(!allows(a,'lead','qualify',record))throw new CommandError(403,'FORBIDDEN');
     if(lead?.status==='qualified'){if(input.complete&&canonical(typeof lead.qualification==='string'?JSON.parse(lead.qualification):lead.qualification)===canonical(q))return record.id;throw new CommandError(409,'INVALID_TRANSITION');}
     await registry.bump(s,record,record.version);await s.query("UPDATE `lead` SET qualification=?,status=?,qualified_at=IF(?,UTC_TIMESTAMP(6),NULL) WHERE tenant_id=? AND record_id=?",[JSON.stringify(q),input.disqualified?'disqualified':input.complete?'qualified':'qualifying',input.complete,s.context.tenantId,record.id]);
+    await recordStage(s,'lead',record.id,lead?.status??'new',input.disqualified?'disqualified':input.complete?'qualified':'qualifying',a.principalId,input.sessionId,kind);
     if(kind==='human')await commands.audit(s,a.principalId,input.sessionId,'lead',record.id,'chatflow.qualification',['qualification','status']);else await commands.systemAudit(s,input.sessionId,'lead',record.id,'chatflow.qualification',['qualification','status'],{kind,id:a.principalId});
     if(input.complete){const [captured]=await s.query('SELECT source_touchpoint_id FROM `lead` WHERE tenant_id=? AND record_id=?',[s.context.tenantId,record.id]);await commands.automationEvent(s,'lead.qualified',record.id,String(BigInt(record.version)+1n),{lead_id:record.id,qualified_at:new Date().toISOString(),source_touchpoint_id:captured.source_touchpoint_id},{kind,id:a.principalId},input.sessionId);}return record.id;
   }

@@ -2,6 +2,8 @@ import {encodeReport,reportOptions,type ReportDefinition,type ReportSource,type 
 
 export function visualizationError(d:ReportDefinition,s:ReportSource):string {
  const v=d.visualization;
+ if(d.model.id.startsWith('sf_'))return !d.stageFunnel||d.stageFunnel.stages.length<2?'Chọn ít nhất hai stage.':!['table','funnel'].includes(v.type)?'Nguồn stage hỗ trợ Funnel hoặc bảng.':'';
+ if(v.type==='funnel')return 'Funnel cần nguồn Tiến trình stage.';
  if(v.type==='kpi'&&(d.dimensions.length||d.metrics.length!==1))return 'KPI card cần một metric và không có group by.';
  if(!('x' in v))return '';
  if(d.dimensions.length<1||d.dimensions.length>2||d.dimensions.length===2&&!v.series||v.x===v.series)return 'Biểu đồ cần một trục X và tối đa một chiều Series khác X.';
@@ -14,6 +16,8 @@ export function visualizationError(d:ReportDefinition,s:ReportSource):string {
 }
 
 export function reportPreset(source:ReportSource,d:ReportDefinition,type:ReportVisualization['type']):{definition?:ReportDefinition;reason?:string}{
+ if(d.stageFunnel)return ['funnel','table'].includes(type)?{definition:encodeReport(d,type)}:{reason:'Nguồn stage dùng Funnel hoặc bảng.'};
+ if(type==='funnel')return {reason:'Chọn nguồn Tiến trình stage.'};
  if(type==='table')return {definition:encodeReport(d,type)};
  const additive=['pie','donut','stacked_bar'].includes(type),base={...d,dimensions:[],metrics:[]};
  const available=reportOptions(source,base).metrics.filter(m=>!additive||['sum','count'].includes(m.aggregation));

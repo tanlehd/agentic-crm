@@ -100,6 +100,9 @@ export function compileDefinition(registry: Registry, input: unknown, ctx: Acces
   if (d.currency && !currencies.has(d.currency)) return fail('CURRENCY_UNSUPPORTED', '/currency');
   const model = c.models.find(m => refKey(m) === refKey(d.model));
   if (!model || !binding.models.some(m => refKey(m) === refKey(d.model))) return fail('REFERENCE_UNAVAILABLE', '/model');
+  if(model.id.startsWith('sf_')){
+    if(!d.stageFunnel||d.dimensions.length!==1||d.dimensions[0]!=='sf_subject.stage'||d.relations.length||!['table','funnel'].includes(d.visualization.type)||d.goal||d.time.horizonDays!==undefined||!d.metrics.some(m=>m.id==='sf_count')||d.filters.some(f=>!['sf_subject.id','sf_subject.record_id','sf_subject.stage','sf_subject.owner_id','sf_subject.team_id'].includes(f.field)))return fail('STAGE_CONFIGURATION_REQUIRED');
+  }else if(d.stageFunnel||d.visualization.type==='funnel')return fail('STAGE_MODEL_REQUIRED');
   const requiredFields = new Set<string>();
   const useField = (id: string, path: string): FieldDescriptor | undefined => {
     if (!readable(registry, c, ctx, binding, id)) { add('REFERENCE_UNAVAILABLE', path); return undefined; }

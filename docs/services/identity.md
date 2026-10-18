@@ -57,3 +57,9 @@ Rollback/cutover tuân [migration plan](../planning/microservices-migration.md):
 ## Acceptance trước service Ready
 
 Own DB credentials không đọc được DB khác; API/consumer schemas và tenant ACL negative tests; duplicate/out-of-order/lost ACK; crash sau remote effect; permission/owner revoked; broker/downstream outage; poison event/DLQ replay; migrate/restore và compatibility với client/run phiên bản cũ. Thêm domain cases ở module hiện hữu; với Draft module phải chốt domain AC trước code. Chưa test service phân tán, tất cả gates này NOT_RUN.
+
+## External API private apps — SRC-088
+[Exact contract and filled table design](../contracts/external-api.md): Identity owns external_app configuration, explicit object/property/team grants, token verifier/expiry and durable quota; target crm_identity, baseline monolith forward37. CRM/Sales own record reads through authorized application ports. No Human impersonation, record ownership change or cross-service SQL/FK. [Developer guide](../developer/README.md) and [evidence](../tracking/details/SRC-088.md).
+
+
+SRC-089: App catalog includes conversation and conversation.messages with exact conversations.read / conversations.messages.read scopes. Message grants require a parent Conversation grant; [contract](../contracts/external-conversations.md). No credential/schema change.

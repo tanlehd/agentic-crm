@@ -1,0 +1,16 @@
+{
+  "database": "crm_reporting",
+  "version": 7,
+  "applied": 1,
+  "totalSteps": 23,
+  "repeat": {
+    "version": 7,
+    "applied": 0,
+    "totalSteps": 23
+  },
+  "businessTables": 20,
+  "preservedTables": 20,
+  "crmBefore": "36",
+  "crmAfter": "36",
+  "backup": "artifacts/reporting-database/crm_reporting-2026-10-18T03-43-28-167Z.sql"
+}

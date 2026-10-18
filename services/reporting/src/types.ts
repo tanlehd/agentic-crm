@@ -26,13 +26,14 @@ export interface Binding {
 }
 export interface Filter { field: string; op: 'eq' | 'in' | 'gte' | 'lte' | 'is_null'; value?: string | number | boolean | (string | number | boolean)[] }
 export type Visualization =
-  | { type: 'table' | 'kpi' }
+  | { type: 'table' | 'kpi' | 'funnel' }
   | { type: 'bar' | 'line' | 'horizontal_bar' | 'stacked_bar' | 'area' | 'pie' | 'donut'; x: string; y: string[]; series?: string }
   | { type: 'pivot'; rows: string[]; columns: string[]; values: string[] };
 export interface Definition {
   schemaVersion: 1; model: MetricRef; bindingId: string; relations: string[]; dimensions: string[];
   metrics: MetricRef[]; filters: Filter[];
   time: { mode: 'activity' | 'acquisition_cohort'; from: string; to: string; asOf: string; timezone: string; bucket: 'day' | 'week' | 'month'; rollingDays?: number; horizonDays?: number };
+  stageFunnel?: {processVersion:string;stages:string[];mode:'event_window'|'entry_cohort'};
   currency?: string; goal?: {metricId:string;target:string}; visualization: Visualization;
 }
 export interface Issue { code: string; path: string }

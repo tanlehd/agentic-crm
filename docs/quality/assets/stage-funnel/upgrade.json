@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-18T03:42:24.644Z",
+  "applied": 1,
+  "repeat": 0,
+  "previousVersion": 35,
+  "preservedTables": 113,
+  "backup": "artifacts/stage-funnel/before-2026-10-18T03-42-20-824Z.sql",
+  "backupSha256": "02e9e887724e7a4ae5284aa2d78111606a27fccfa9bc82e329d738163d05aa51"
+}

@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "checks": [
+    "Lead create/draft/qualify ledger records exact transitions and same-state no-op",
+    "handoff/accept participate atomically and replay never adds stage events",
+    "disqualify is an observed terminal branch",
+    "Deal forward/backward/reentry/won, CAS rollback and outbox correlate to ledger",
+    "Chat stage events preserve episode/process and do not use milestones",
+    "Chatflow producer service port records new/qualifying/qualified with real FK fixtures",
+    "native producer to shared Reporting query returns all three event funnels",
+    "wrong tenant source denied, ledger uniqueness/CHECK and tenant index enforced",
+    "native current source grant/scope revocation removes whole correlated population",
+    "native field filter deny prevents stage field correlation",
+    "native export authority independent from preview"
+  ],
+  "at": "2026-10-18T03:53:25.786Z",
+  "retained": {
+    "thread": "7cf5a8a0-c0bc-492f-9fe6-b4549dbfce1c",
+    "session": "41a0f472-9388-4ed4-9b19-2b415fdba759",
+    "lead": "01a14d24-89ba-7480-9b3c-1edaf0906701",
+    "deal": "01a14d24-8c3b-75bb-be66-425b0b643099"
+  }
+}

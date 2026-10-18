@@ -1,5 +1,7 @@
 # Data ownership — monolith to service databases
 
+SRC-087 / 2026-10-18: [Stage funnel](../contracts/stage-funnel-reporting.md) implemented in the bounded monolith slice: Conversation/Lead/Deal event source, ordered distinct funnel, entry/exit visits and paired duration/current age; eight metrics and six saved-report widgets. Sales owns append-only `sales_stage_event` (physical agentic_crm, target crm_sales), Chat owns process/progress/history, CRM owns record metadata; Reporting owns definitions/catalog pins in schema7. No business facts persisted in Reporting. [Runbook](../development/stage-funnel-reporting.md) · [Evidence](../tracking/details/SRC-087.md). Earlier PLAN-049 proposal-only statements remain historical; exact exclusions follow the implemented contract.
+
 SRC-086 / 2026-10-17: [Connected conversion](../contracts/conversion-reporting.md) implemented:5objects/6models,10saved reports, goal/horizon và native record drilldown qua core chung. Chat/Sales/CRM giữ facts qua monolith application ports; Reporting giữ catalog/definition JSON trong own schema6. Immutable origin, direct branch, raw/canonical merge và current backlog tách biệt. [Evidence](../tracking/details/SRC-086.md). Các đoạn PLAN-047/048 chưa triển khai bên dưới là lịch sử trước lượt code.
 
 SRC-085 / 2026-10-17: [Operations Reporting](../contracts/operations-reporting.md) cung cấp 6 read objects, 7 model và template dashboard trên core chung. Routing/Chat/Identity giữ quyền sở hữu facts, producer qua authorized monolith ports; Reporting chỉ lưu definitions/catalog metadata trong own schema5, không SQL/FK xuyên service. UI phân tích ở Dashboards/Reports; Routing giữ cấu hình và hành động điều phối. [Runbook](../development/operations-reporting.md).
@@ -117,3 +119,9 @@ PLAN-025 / SRC-069: [Ready session progress contract](../contracts/session-progr
 2026-10-16 / CHG-20261016-04: User authorized per-need AI enrichment and follow-up workflow; SRC-082 restores canonical conversation_id per CHG-20261016-05. PLAN-035/SRC-081 DONE; [runtime evidence](../tracking/details/SRC-081.md). See [contract](../contracts/need-follow-up.md). Forward34 renames four physical relationship columns; compatibility preserves immutable v1/graphs/receipts; real adapter configured explicitly; no invented provider result.
 
 SRC-082 / CHG-20261016-05: [Conversation identity alignment](../contracts/conversation-identity.md) makes conversation_id canonical and preserves session_id episode semantics. Forward34 renames session_contribution/need_assessment/need_follow_up/sales_need_outcome.thread_id without changing IDs, grants, tenant ownership or cross-service boundaries. New need.assessed/classification events use v2; v1 artifacts stay readable. CI-01…03 validation tracked separately from SRC-081 history.
+
+## External API private apps — SRC-088
+[Exact contract and filled table design](../contracts/external-api.md): Identity owns external_app configuration, explicit object/property/team grants, token verifier/expiry and durable quota; target crm_identity, baseline monolith forward37. CRM/Sales own record reads through authorized application ports. No Human impersonation, record ownership change or cross-service SQL/FK. [Developer guide](../developer/README.md) and [evidence](../tracking/details/SRC-088.md).
+
+
+SRC-089: Chat owns [external Conversation/message reads](../contracts/external-conversations.md); Identity composes independent app grants. No table ownership or physical schema change.

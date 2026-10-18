@@ -1,3 +1,4 @@
+import { stageEventMigration } from './stage-event-migration.js';
 import { humanRoutingMigration } from './human-routing-migration.js';
 import { conversationIdentityMigration } from './conversation-identity-migration.js';
 import { needFollowUpMigration } from './need-follow-up-migration.js';
@@ -31,6 +32,7 @@ import { deliveryMigration } from './delivery-migration.js';
 import { adminReliabilityMigration } from './admin-reliability-migration.js';
 import { identityMigration } from './identity-migration.js';
 import { createHash } from 'node:crypto';
+import { externalAppMigration } from './external-app-migration.js';
 import { workspaceMigration } from './workspace-migration.js';
 export interface Migration { version: number; name: string; statements: readonly string[] }
 const id = 'CHAR(36) CHARACTER SET ascii COLLATE ascii_bin';
@@ -45,5 +47,5 @@ export const migrations: readonly Migration[] = [{
   version: 4, name: 'outbox_positive_versions', statements: [
     'ALTER TABLE outbox_event ADD CONSTRAINT ck_outbox_schema_version CHECK (schema_version >= 1), ADD CONSTRAINT ck_outbox_aggregate_version CHECK (aggregate_version >= 1)',
   ],
-}, deliveryMigration, registryMigration, propertiesMigration, crmCoreMigration, conversationMigration, intakeMigration, routingMigration, agentRuntimeMigration, workflowMigration, chatflowMigration, chatflowBindingMigration, chatflowProposalMigration, salesHandoffMigration, messageContentMigration, facebookMigration, workspaceMigration, workspaceCatalogMigration, workspaceActivityMigration, nativeAuthMigration, leadSourceMigration, dealMigration, acquisitionSessionMigration, marketingAuthorityMigration, customer360Migration, sessionProgressMigration, objectWorkspaceMigration, conversationClassificationMigration, recordPagesMigration, needFollowUpMigration, conversationIdentityMigration, humanRoutingMigration];
+}, deliveryMigration, registryMigration, propertiesMigration, crmCoreMigration, conversationMigration, intakeMigration, routingMigration, agentRuntimeMigration, workflowMigration, chatflowMigration, chatflowBindingMigration, chatflowProposalMigration, salesHandoffMigration, messageContentMigration, facebookMigration, workspaceMigration, workspaceCatalogMigration, workspaceActivityMigration, nativeAuthMigration, leadSourceMigration, dealMigration, acquisitionSessionMigration, marketingAuthorityMigration, customer360Migration, sessionProgressMigration, objectWorkspaceMigration, conversationClassificationMigration, recordPagesMigration, needFollowUpMigration, conversationIdentityMigration, humanRoutingMigration, stageEventMigration, externalAppMigration];
 export const checksum = (m: Migration) => createHash('sha256').update(JSON.stringify([m.version, m.name, m.statements])).digest('hex');

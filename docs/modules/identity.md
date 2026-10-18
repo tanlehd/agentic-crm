@@ -56,3 +56,9 @@ Sub-scope A ban đầu chỉ có migration/library; B/C đã nối admin HTTP v�
 Exact DTO, last-admin guard và revision semantics: [Identity admin contract](../contracts/identity-admin.md).
 
 SRC-009 Identity fixture scope và repeat/credential policy: [bootstrap contract](../contracts/bootstrap.md). Registry và dữ liệu ngành chưa thuộc seed này.
+
+## External API private apps — SRC-088
+[Exact contract and filled table design](../contracts/external-api.md): Identity owns external_app configuration, explicit object/property/team grants, token verifier/expiry and durable quota; target crm_identity, baseline monolith forward37. CRM/Sales own record reads through authorized application ports. No Human impersonation, record ownership change or cross-service SQL/FK. [Developer guide](../developer/README.md) and [evidence](../tracking/details/SRC-088.md).
+
+
+SRC-089: App catalog includes conversation and conversation.messages with exact conversations.read / conversations.messages.read scopes. Message grants require a parent Conversation grant; [contract](../contracts/external-conversations.md). No credential/schema change.

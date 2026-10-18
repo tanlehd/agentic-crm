@@ -1,3 +1,4 @@
+import {recordStage} from './stage-events.js';
 import { randomUUID } from 'node:crypto';
 import type { DataSource } from 'typeorm';
 import { UnitOfWork,type TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
@@ -35,6 +36,7 @@ export class SalesHandoffs {
   const owner=await selectSalesHuman(s,r,team),hid=randomUUID();
   await s.query("INSERT INTO lead_handoff(id,tenant_id,lead_id,target_team_id,requested_by_kind,requested_by_id,status,parent_run_id,start_action_key,due_at,attention) VALUES (?,?,?,?,?,?,'pending',?,?,TIMESTAMPADD(MINUTE,15,UTC_TIMESTAMP(6)),?)",[hid,s.context.tenantId,id,team,kind,a.principalId,context?.runId??null,context?.actionKey??null,owner===null?1:0]);
   await s.query("UPDATE `lead` SET status='handed_off' WHERE tenant_id=? AND record_id=?",[s.context.tenantId,id]);
+  await recordStage(s,'lead',id,l.status,'handed_off',a.principalId,correlation,kind);
   await this.crm.shareContact(s,l.contact_id,team);const current=await this.crm.ownership(s,a,r,version,owner,team,correlation,kind,'handoff'),h=await this.handoff(s,hid);
   await this.audit(s,a,id,'lead.handoff',correlation,kind);await this.commands.automationEvent(s,'lead.handoff_requested',id,current.version,{lead_id:id,handoff_id:hid,target_team_id:team,due_at:stamp(h.due_at)},{kind,id:a.principalId},correlation);return this.output(current,h);
  }
@@ -53,6 +55,7 @@ export class SalesHandoffs {
     const current=await this.crm.ownership(s,a,r,version,a.principalId,h.target_team_id,correlation,'human','accept');
     await s.query("UPDATE lead_handoff SET status='accepted',accepted_by_principal_id=?,accepted_at=UTC_TIMESTAMP(6),attention=0 WHERE tenant_id=? AND id=?",[a.principalId,tenant,h.id]);
     await s.query("UPDATE `lead` SET status='accepted',accepted_at=UTC_TIMESTAMP(6) WHERE tenant_id=? AND record_id=?",[tenant,id]);
+    await recordStage(s,'lead',id,l.status,'accepted',a.principalId,correlation);
     const saved=await this.handoff(s,h.id);await this.audit(s,a,id,'lead.accept',correlation,'human');await this.commands.automationEvent(s,'lead.accepted',id,current.version,{lead_id:id,handoff_id:h.id,accepted_by:a.principalId,accepted_at:stamp(saved.accepted_at)},{kind:'human',id:a.principalId},correlation);data=this.output(current,saved);
    }
    const response={status:200,body:{data,meta:{correlation_id:correlation}}};await this.commands.complete(s,command,response);return response;

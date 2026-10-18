@@ -16,6 +16,26 @@ Git sync S-20261017-12: user authorized publishing accumulated SRC-084/SRC-085, 
 
 Git sync S-20261017-15: user authorized commit/push of PLAN-047/048 and SRC-086 conversion reporting/dashboard and evidence to origin/main. Feature states unchanged; no new source task. See execution log for publication checks.
 
+## External API — 2026-10-18
+
+Git sync S-20261018-05: user authorized commit/push of completed SRC-087/088/089 and associated plans/docs/evidence to origin/main. No feature status change or new implementation task. Publication checks recorded in [execution log](log.md).
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-051 | HubSpot-inspired private-app access, data and developer contract | SRC-038; SRC-074 | DONE | Codex 2026-10-18 | [Ready contract](../contracts/external-api.md); official auth/scopes/private-app sources reviewed; bounded read API |
+| SRC-088 | Private app management, scoped data API and Developer Portal/reference | PLAN-051; SRC-038; SRC-074; SRC-050 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-088.md); EA-01…08 bounded read API,12MySQL/9browser/3HTTP-fault/445unit; forward37 preserves114local tables; Developer Portal/OpenAPI |
+| PLAN-052 | External write commands, service ownership, OAuth distribution and webhooks gate | SRC-088 | TODO | unassigned | Separate exact domain/security contracts before implementation |
+| PLAN-053 | External Conversation read scopes and Chat port contract | SRC-088; SRC-082 | DONE | Codex 2026-10-18 | [Ready contract](../contracts/external-conversations.md); EC-01…05, no schema changes |
+| SRC-089 | Scoped Conversation and message reads for private apps | PLAN-053; SRC-088; SRC-082 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-089.md); EC-01…05,9MySQL/HTTP+6browser groups,457unit; OpenAPI14operations; no schema change |
+
+## Stage funnel audit and HubSpot research — 2026-10-18
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-049 | Audit Report Builder funnel chart/templates and Conversation/Lead/Deal stage event coverage; research HubSpot and propose bounded semantics | SRC-069; SRC-072; SRC-086 | DONE | Codex 2026-10-18 | [Review / DOC-SF-01…04](../planning/stage-funnel-reporting.md); source inspection +3official HubSpot sources, docs/whitespace PASS; research-only, SF-01…08 runtime NOT_RUN |
+| PLAN-050 | Exact stage-event producer coverage, funnel/visit semantics, saved report/widget compatibility and acceptance gate | PLAN-049 | DONE | Codex 2026-10-18 | [Ready bounded contract/table review](../contracts/stage-funnel-reporting.md); fixed lifecycle, required ordered stages, event window/entry cohort |
+| SRC-087 | Stage transition ledger, connected funnel reporting and reusable dashboard widgets | PLAN-050; SRC-069; SRC-072; SRC-086 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-087.md); bounded SF-01…08,428unit/11native/7storage/8browser +34regression groups, builds/static checks PASS; CRM36/Reporting7 preserve prior data |
+
 ## Conversion performance review — 2026-10-17
 
 | ID | Deliverable | Deps | Status | Owner | Gate / evidence |

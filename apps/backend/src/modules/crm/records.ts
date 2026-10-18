@@ -58,6 +58,15 @@ export class CrmRecords {
     }
     throw new CommandError(400,'INVALID_REQUEST');
   });}
+  // Trusted baseline application port: caller supplies live, tenant-bound service access.
+  // No HTTP caller may construct Access directly. External facade only uses read routes.
+  async readForService(scope:TransactionScope,access:Access,key:string,id:string|undefined,query:Record<string,unknown>,cursorBinding:string){
+    if(scope.context.tenantId!==access.tenantId||access.superAdmin)throw new CommandError(403,'FORBIDDEN');
+    const type=await this.type(scope,key),defs=await properties(scope,type.id);
+    if(!this.supportsRecords(key,type.kind==='custom'))throw new CommandError(404,'NOT_FOUND');
+    if(id){const record=await this.record(scope,access,key,id);if(record.archived)throw new CommandError(404,'NOT_FOUND');return {data:await this.output(scope,access,record)};}
+    return this.list(scope,access,type,[...(standardFields[key]??[]),...defs],cursorBinding,query);
+  }
   private configOutput(kind:'forms'|'views',row:any,defs:Property[],access:Access,key:string){
     const fields=(json(kind==='forms'?row.fields:row.columns) as string[]).filter(k=>fieldAllowed(access,key,k,'read'));
     return {id:row.id,key:row.key,version:String(row.version),...(kind==='forms'?{fields}:{columns:fields,filter:queryPlan(defs,access,key,json(row.filter),row.sort===null?null:json(row.sort)).predicates,sort:row.sort===null?null:json(row.sort)})};

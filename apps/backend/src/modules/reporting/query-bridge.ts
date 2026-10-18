@@ -38,12 +38,12 @@ export class ReportingQueryBridge {
   if(!this.config)throw new CommandError(503,'REPORTING_NOT_CONFIGURED');const source=await connectedPolicy(this.source,accountId,tenantId,csv);if(path==='runs'&&!source.policy.allowMock)throw new CommandError(403,'FORBIDDEN');
   const body=JSON.stringify(path==='runs'?operation:{operation,sourcePolicy:source.policy});
   if(Buffer.byteLength(body)>4194304)throw new CommandError(400,'REQUEST_TOO_LARGE');
-  const access=await this.authorization.runHuman(accountId,tenantId,async(_s,a)=>{const access=queryPermission(a,csv,(source.policy.operations!==null||source.policy.conversion!==null));if(a.revision!==source.authRevision)throw new CommandError(403,'AUTHORITY_CHANGED');return access;}),issuedAt=Date.now();
+  const access=await this.authorization.runHuman(accountId,tenantId,async(_s,a)=>{const access=queryPermission(a,csv,(source.policy.operations!==null||source.policy.conversion!==null||source.policy.stage!==null));if(a.revision!==source.authRevision)throw new CommandError(403,'AUTHORITY_CHANGED');return access;}),issuedAt=Date.now();
   const payload=Buffer.from(JSON.stringify({audience,...access,bodyHash:createHash('sha256').update(body).digest('hex'),issuedAt,expiresAt:issuedAt+5000})).toString('base64url');
   const token=payload+'.'+createHmac('sha256',Buffer.from(this.config.key,'hex')).update(payload).digest('hex');
   const response=await this.request(this.config.url+'/internal/v1/reporting/'+(path==='runs'?'runs':'connected/'+path),{method:'POST',redirect:'error',headers:{'content-type':'application/json','x-reporting-admission':token},body,signal:AbortSignal.timeout(4500)});
   const raw=await boundedResponse(response);let result:Record<string,any>;try{result=JSON.parse(raw);if(!result||typeof result!=='object'||Array.isArray(result))throw new Error();}catch{throw new CommandError(503,'REPORTING_RESPONSE_INVALID');}
-  await this.authorization.runHuman(accountId,tenantId,async(_s,a)=>queryPermission(a,csv,(source.policy.operations!==null||source.policy.conversion!==null)),{tenantId,principalId:access.principalId,revision:access.authRevision});
+  await this.authorization.runHuman(accountId,tenantId,async(_s,a)=>queryPermission(a,csv,(source.policy.operations!==null||source.policy.conversion!==null||source.policy.stage!==null)),{tenantId,principalId:access.principalId,revision:access.authRevision});
   if(!response.ok){const code=result.error?.code;if(typeof code!=='string'||!/^[A-Z_]{1,64}$/.test(code))throw new CommandError(503,'REPORTING_UNAVAILABLE');throw new CommandError([400,401,403,404,409,410,422,429,503,504].includes(response.status)?response.status:503,code);}
   if(csv?typeof result.data!=='string':!result.data||typeof result.data!=='object'||Array.isArray(result.data)||!['mock','connected'].includes(result.data.environment))throw new CommandError(503,'REPORTING_RESPONSE_INVALID');
   return result.data;

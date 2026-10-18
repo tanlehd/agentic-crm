@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "at": "2026-10-18T03:52:26.532Z",
+  "checks": [
+    "stage widget persists catalog pin with NULL mock generation",
+    "stage adapter persisted; unknown adapter rejected",
+    "missing catalog pin rejected by database CHECK",
+    "unknown catalog rejected by same-tenant binding FK",
+    "catalog exact lookup uses primary key",
+    "Reporting runtime cannot update/delete immutable catalogs",
+    "Sales runtime reads ledger but cannot update/delete history"
+  ]
+}

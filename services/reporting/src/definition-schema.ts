@@ -17,10 +17,11 @@ export const definitionSchema = {
       rollingDays: {type:'integer',minimum:1,maximum:365}, horizonDays:{type:'integer',minimum:1,maximum:90}, mode: { enum: ['activity', 'acquisition_cohort'] }, from: timestamp, to: timestamp, asOf: timestamp,
       timezone: { type: 'string', minLength: 1, maxLength: 80 }, bucket: { enum: ['day', 'week', 'month'] },
     } },
+    stageFunnel:{type:'object',additionalProperties:false,required:['processVersion','stages','mode'],properties:{processVersion:{type:'string',pattern:'^[1-9][0-9]{0,15}$'},stages:{...list(20,2),items:{type:'string',pattern:'^[a-z][a-z0-9_]{0,63}$'}},mode:{enum:['event_window','entry_cohort']}}},
     currency: { type: 'string', pattern: '^[A-Z]{3}$' },
     goal:{type:'object',additionalProperties:false,required:['metricId','target'],properties:{metricId:identifier,target:{type:'string',pattern:'^(0|[1-9][0-9]{0,13})(\\.[0-9]{1,6})?$'}}},
     visualization: { oneOf: [
-      { type: 'object', additionalProperties: false, required: ['type'], properties: { type: { enum: ['table', 'kpi'] } } },
+      { type: 'object', additionalProperties: false, required: ['type'], properties: { type: { enum: ['table', 'kpi', 'funnel'] } } },
       { type: 'object', additionalProperties: false, required: ['type', 'x', 'y'], properties: { type: { enum: ['bar', 'line', 'horizontal_bar', 'stacked_bar', 'area', 'pie', 'donut'] }, x: identifier, y: list(8, 1), series: identifier } },
       { type: 'object', additionalProperties: false, required: ['type', 'rows', 'columns', 'values'], properties: { type: { const: 'pivot' }, rows: list(3), columns: list(2), values: list(8, 1) } },
     ] },

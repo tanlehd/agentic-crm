@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "at": "2026-10-18T03:52:30.803Z",
+  "checks": [
+    "native intake → multiple Leads → multiple won/direct Deal; origin and exact money",
+    "merge retains original Deal FK and canonical group won denominator",
+    "native goals use same filtered cohort and exact percentage-point difference",
+    "native source tenant isolation",
+    "initial owner requires complete opened history and never substitutes current handling",
+    "source S1, created context S2 and closing S3 retain origin and one won value",
+    "native current source grant/scope revocation removes whole correlated population",
+    "native field filter deny prevents monetary/source correlation",
+    "native export authority independent from preview"
+  ],
+  "retained": true,
+  "session": "8a1a84e6-0341-4df7-b73a-aa0ad5269895",
+  "leads": [
+    "01a14d23-b4b7-7cea-8dbf-98f3768a63df",
+    "01a14d23-b528-772c-aa73-eb7d95f8bb82"
+  ],
+  "deals": [
+    "01a14d23-b57d-7a9b-ab34-569c29645cad",
+    "01a14d23-b5c6-71b5-907e-d31a4a5c9671",
+    "01a14d23-b618-7566-b31a-fc556ff1eb39"
+  ]
+}

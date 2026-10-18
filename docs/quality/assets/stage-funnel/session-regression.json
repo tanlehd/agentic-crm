@@ -1,0 +1,75 @@
+{
+  "at": "2026-10-18T03:53:37.923Z",
+  "database": "native_seed_test",
+  "results": [
+    {
+      "name": "forward29 rerun, tenant constraints and reusable native fixtures",
+      "result": "PASS"
+    },
+    {
+      "name": "new session pins process; stage has no milestone side effect; CAS and idempotency",
+      "result": "PASS"
+    },
+    {
+      "name": "publish immutable version only affects subsequent sessions; new Ad retains stage",
+      "result": "PASS"
+    },
+    {
+      "name": "subject-scoped evidence and native connected funnel do not combine unrelated needs",
+      "result": "PASS"
+    },
+    {
+      "name": "replacement and retraction preserve historical as_of, support correction chains",
+      "result": "PASS"
+    },
+    {
+      "name": "reject forged message/need, future/outside-session evidence and strict unknown fields",
+      "result": "PASS"
+    },
+    {
+      "name": "current authorization on replay and field-denied reads/funnel, tenant negatives",
+      "result": "PASS"
+    },
+    {
+      "name": "closed session accepts late attestation and correction but rejects stage; reopen pins latest",
+      "result": "PASS"
+    },
+    {
+      "name": "preexisting session coverage stays explicit and enrollment is partial",
+      "result": "PASS"
+    },
+    {
+      "name": "stage race and revision history pagination retain one successful CAS effect",
+      "result": "PASS"
+    },
+    {
+      "name": "concurrent close/stage serializes and cannot append a stage after closure",
+      "result": "PASS"
+    },
+    {
+      "name": "snapshot waits for in-flight evidence commit and has a closed reproducible cutoff",
+      "result": "PASS"
+    },
+    {
+      "name": "durable recorded-time watermark survives a regressing database session clock",
+      "result": "PASS"
+    }
+  ],
+  "plans": [
+    {
+      "id": "1",
+      "select_type": "SIMPLE",
+      "table": "session_milestone_event",
+      "partitions": null,
+      "type": "ref",
+      "possible_keys": "PRIMARY,uq_milestone_session,uq_milestone_revision,uq_milestone_correction,ix_milestone_asof,fk_milestone_need,fk_milestone_parent",
+      "key": "uq_milestone_session",
+      "key_len": "72",
+      "ref": "const,const",
+      "rows": "8",
+      "filtered": 33.33,
+      "Extra": "Using where; Using filesort"
+    }
+  ],
+  "fixturesRetained": true
+}

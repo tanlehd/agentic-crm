@@ -1,3 +1,4 @@
+import {executeStage,type StageResult} from './stage-query.js';
 import {compileDefinition} from './compiler.js';
 import {canonical,createRegistry,digest,refKey} from './registry.js';
 import {validateManifest,validateObservations,type Observation,type ProjectionSnapshot,type Scalar} from './projection-contract.js';
@@ -8,7 +9,7 @@ export class QueryError extends Error {constructor(readonly code:string){super(c
 export interface QueryAccess extends AccessContext {rows:Record<string,'all'|readonly string[]>;expiresAt:number}
 export interface QueryLimits {maxRows?:number;maxGroups?:number;maxCells?:number;maxOperations?:number;timeoutMs?:number;signal?:AbortSignal;now?:()=>number}
 export interface QueryRow {dimensions:Scalar[];metrics:Record<string,string|null>}
-export interface QueryResult {environment:'mock'|'connected';asOf?:string;snapshotId:string;catalogHash:string;fingerprint:string;dimensions:string[];metrics:string[];rows:QueryRow[];totals:Record<string,string|null>;warnings:string[];cohort?:{eligible:number;immature:number;horizonDays:number|null};goal?:{metricId:string;target:string;actual:string|null;gap:string|null;attainment:string|null;unit:string};pivot?:{rows:Scalar[][];columns:Scalar[][];cells:{row:number;column:number;metrics:Record<string,string|null>}[];rowTotals:Record<string,string|null>[];columnTotals:Record<string,string|null>[];grandTotal:Record<string,string|null>}}
+export interface QueryResult {stage?:StageResult;environment:'mock'|'connected';asOf?:string;snapshotId:string;catalogHash:string;fingerprint:string;dimensions:string[];metrics:string[];rows:QueryRow[];totals:Record<string,string|null>;warnings:string[];cohort?:{eligible:number;immature:number;horizonDays:number|null};goal?:{metricId:string;target:string;actual:string|null;gap:string|null;attainment:string|null;unit:string};pivot?:{rows:Scalar[][];columns:Scalar[][];cells:{row:number;column:number;metrics:Record<string,string|null>}[];rowTotals:Record<string,string|null>[];columnTotals:Record<string,string|null>[];grandTotal:Record<string,string|null>}}
 const requireQuery=(ok:unknown,code:string):void=>{if(!ok)throw new QueryError(code);};
 export function accessFingerprint(a:QueryAccess){return digest({tenant:a.tenantId,principal:a.principalId,revision:a.authRevision,scope:a.scopeFingerprint,permissions:a.permissions,objects:a.objects,fields:a.fields,bindings:a.bindings,rows:a.rows});}
 export function assertQueryAccess(a:QueryAccess,now=Date.now()){requireQuery(!!a&&a.permissions.includes('report.run')&&Number.isFinite(a.expiresAt)&&a.expiresAt>now&&!!a.rows,'QUERY_FORBIDDEN');}
@@ -35,7 +36,9 @@ export function executeQuery(snapshot:ProjectionSnapshot,input:unknown,access:Qu
  requireQuery(snapshot.binding.revision===snapshot.manifest.snapshotId&&digest(snapshot.manifest.catalog)===snapshot.manifest.catalogHash,'SNAPSHOT_MISMATCH');
  const registry=createRegistry(snapshot.manifest.catalog),catalog=registry.snapshot();
  const compiled=compileDefinition(registry,input,{...access,permissions:[...access.permissions,'report.design']},snapshot.binding);if(!compiled.ok)throw new QueryError(compiled.issues.some(i=>i.code==='REFERENCE_UNAVAILABLE')?'QUERY_FORBIDDEN':compiled.issues[0]!.code);
- const d=compiled.plan.definition,model=catalog.models.find(m=>refKey(m)===refKey(d.model))!,modelExecution=executions.model(d.model);
+ const d=compiled.plan.definition;
+ if(d.stageFunnel){requireQuery(snapshot.records.length<=Math.min(limits.maxRows??10000,10000),'QUERY_ROW_LIMIT');const result=executeStage(snapshot,d,access,compiled.plan,()=>budget.tick());budget.tick();assertQueryAccess(access,budget.now());requireQuery(Buffer.byteLength(JSON.stringify(result))<=2097152,'QUERY_RESULT_LIMIT');return result;}
+ const model=catalog.models.find(m=>refKey(m)===refKey(d.model))!,modelExecution=executions.model(d.model);
  requireQuery(modelExecution&&modelExecution.descriptorHash===digest(model),'EXECUTION_UNSUPPORTED');
  requireQuery(Date.parse(d.time.asOf)===Date.parse(snapshot.manifest.observedThrough)&&Date.parse(d.time.from)>=Date.parse(snapshot.manifest.historyFrom),'SNAPSHOT_ASOF_REQUIRED');
  requireQuery(snapshot.records.length<=Math.min(limits.maxRows??10000,10000),'QUERY_ROW_LIMIT');

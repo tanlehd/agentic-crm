@@ -1,5 +1,54 @@
 # Execution và change log
 
+## S-20261018-05 — Git publication
+
+User explicitly requested “Push git”. Scope is accumulated completed Stage Funnel SRC-087, External API SRC-088 and Conversation extension SRC-089, with plans, developer docs, migrations, tests and reviewed evidence. Branch main, origin https://github.com/tanlehd/agentic-crm.git; fetch confirmed HEAD/base e370532 and origin/main identical before commit (0 ahead/0 behind). No implementation status changes.
+
+Fresh pre-publication checks on Windows/pinned Node24.21.0: check-docs.mjs PASS345Markdown/3208links/89source DAG; lint.mjs PASS787JS/TS; external-api-contract.mjs --check PASS14operations/artifact match. Staged130files (~3.99MB) include source/docs/reviewed assets, no .env/.local/ignored runtime artifacts or usable app token/private-key matches. Staged whitespace check identified only trailing blank lines in three existing Stage Funnel evidence logs; trimmed those empty lines without changing results. Full builds,457unit, native/browser results remain the executed evidence from SRC-087/088/089; not rerun for this Git-only action. Commit/push target origin/main, no force push or deployment.
+
+## S-20261018-04 — External Conversation read extension completed
+
+PLAN-053/SRC-089 DONE for EC-01…05; CHG-20261018-04 resolved. [Evidence](details/SRC-089.md). Four external Conversation/message list/detail routes, independent metadata/content grants with current parent/team intersection, selected text, signed cursors, Developer Portal and OpenAPI1.1 implemented. No schema/migration or owner/write commands. Initial OpenAPI edit caused a TypeScript syntax error; corrected before build/tests. No unresolved implementation failures.
+
+Executed Windows/pinned Node24.21.0 commands: `node_modules/typescript/bin/tsc -p apps/backend/tsconfig.json` PASS; `node_modules/vitest/vitest.mjs run --exclude '**/*.integration.test.ts'` PASS457/63files; `scripts/external-conversations-test.mjs` PASS9MySQL/real ephemeral HTTP groups, repeated including cross-app cursor replay; `scripts/external-conversations-browser.mjs` PASS6local Alpha/Edge groups,2reviewed screenshots. Backend managed API restarted and all four routes exercised using native-admin-configured grants. Existing token immediately stops returning text when property removed. All Conversation synthetic apps retained disabled.
+
+Next production build with `NEXT_BUILD_DIR=.next-external-api` PASS; `node_modules/typescript/bin/tsc -p apps/web/tsconfig.json --noEmit` PASS; generated next-env imports restored, no diff. `scripts/external-api-native-test.mjs` PASS12regression groups/115existing tables preserved/migrate0; `scripts/external-api-http-fault-test.mjs` PASS3; `scripts/external-api-contract.mjs --check` PASS14operations and artifact match. Strict36schemas/generated contracts PASS; lint787JS/TS PASS; docs345Markdown/3204links/89acyclic source tasks before final entries, whitespace exit0. Artifacts under ignored artifacts/external-conversations; reviewed public screenshots under docs/quality/assets/external-conversations. No tokens or real transcripts stored in evidence.
+
+Fresh runtime: MySQL/Redis healthy; API3001/worker3002/web18080/Reporting3004 ready; monitor3020 responds; Connector requires configuration. Workspace main/e370532 dirty with prior SRC-087/088 and this slice; no commit/push/deploy/reset/agents/schedule. No active source task or blocker. Next External API action: separately gate PLAN-052 writes/service ownership/OAuth/webhooks. Production load/distributed outage/retention remains NOT_RUN.
+
+## CHG-20261018-04 — External Conversation read extension
+
+User requested “Làm nốt” after identifying missing external Conversation access. C2 additive read extension; PLAN-053 exact [contract](../contracts/external-conversations.md) Ready/DONE before code; SRC-089 claimed Codex 2026-10-18 IN_PROGRESS, dependencies DONE. Separate metadata/message-content grants with parent/team intersection, safe Chat DTOs, cursor policy binding. No schema/migration, Human impersonation, send/owner command, OAuth or webhook expansion. Prior SRC-087/088 dirty workspace preserved on main/e370532. EC-01…05 NOT_RUN at claim; runtime evidence follows. No commit/push/deploy or agents.
+
+## S-20261018-02 — Stage funnel implementation completed
+
+CHG-20261018-02 resolved, PLAN-050/SRC-087 DONE scoped; user authorized code after research. [Evidence](details/SRC-087.md), [runbook](../development/stage-funnel-reporting.md), [acceptance](../quality/stage-funnel-reporting-acceptance.md). Sales append-only transitions, Chat owner port, three stage models/eight metrics, ordered funnel/visit/duration/coverage and six saved-report widgets delivered. Exact fixed-lifecycle/current-cutoff bounds preserved; broader research correction/replay/optional/horizon/opening-closing proposals excluded explicitly.
+
+Actual Windows/Node24.21.0/pnpm10.33/MySQL/Redis/Edge verification: pnpm test:unit PASS428/61files; stage-funnel-native-test.mjs PASS11groups; stage-funnel-storage-test.mjs PASS7; stage-funnel-browser.mjs PASS8/6screenshots; conversion-reporting-test.mjs PASS9, session-progress-test.mjs PASS13, dashboard-native-test.mjs PASS12. Backend/Reporting build, Web typecheck and isolated Next production build PASS; tsconfig/next-env restored. Browser edit/preview/save/reopen/CSV/native links/widget pins and mobile390/320 all pass. Synthetic retained dashboard29c1f190-a541-54fb-a045-da276950d18f. Public evidence copied without SQL backup or secrets.
+
+Initial native admission enum and browser status-selector problems fixed. Dashboard regression found unsafe startsWith on future opaque model IDs in catalog selection; changed to membership check, all12groups rerun PASS. Migration runner initially omitted007; fixed manifest before successful application, never modified applied history. Chatflow test calls producer port with service actor and real synthetic FK fixtures, not full Workflow/AI execution.
+
+CRM35→36 applied1/repeat0 preserves113old tables and private backup SHA256 in upgrade.json. Reporting local/test6→7 applied1 each/repeat0,20old business tables preserved. Native fixtures retained. API/worker restarted for CRM migration; Reporting restarted after build. Fresh monitor: MySQL/Redis healthy, API/worker/web/Reporting ready; Connector configuration-required. No reset/production activation/commit/push/deploy/subagents/schedule.
+
+Static checks: check-docs.mjs PASS336Markdown/3108links/87acyclic source tasks before final checkpoint; check-schemas.mjs PASS36, generate-contracts.mjs --check PASS, lint.mjs PASS768JS/TS; git diff --check exit0. Final documentation/whitespace verification follows final entries. Working tree main/base e370532 dirty, prior research changes preserved; no active source implementation, no blocker for completed bounded task. Existing PLAN-028E backlog and PLAN-041 screenshot research remain unchanged.
+
+
+## CHG-20261018-02 — Implement stage funnel reporting
+
+User authorized “Triển khai code”. PLAN-050 exact bounded contract/table design completed before source, SRC-087 claimed Codex 2026-10-18 IN_PROGRESS with DONE dependencies. C2 additive owner ledger/connected adapter/definition/chart/template extension; fixed Sales lifecycle unchanged. [Contract](../contracts/stage-funnel-reporting.md). CRM forward36 and Reporting007 planned; no migration history edits/reset. Existing PLAN-049 documentation dirty tree preserved on main/e370532. SF-01…08 NOT_RUN at claim. No commit/push/deploy or parallel agents authorized.
+
+## S-20261018-01 — Stage funnel audit and HubSpot research
+
+User requested checking funnel chart/templates and Conversation/Lead/Deal stage in/out events, with HubSpot research if unclear. Initial main `e370532` clean; PLAN-049 claimed Codex 2026-10-18 IN_PROGRESS, dependencies SRC-069/072/086 DONE. [Review/proposal](../planning/stage-funnel-reporting.md). Confirmed ten supported displays exclude funnel; SRC-086 template is KPI/table, SRC-069 reducer consumes same-need milestone evidence. Chat has from/to stage ledger; Lead/Deal lack complete transition coverage. Read three official HubSpot pages; distinguish new Beta journey/event windows from legacy and calculated duration properties.
+
+DOC-SF-01…03 manual source/document review completed; PLAN-049 DONE research-only. Windows/project Node24.21.0: `. ./scripts/dev-shell.ps1` then `node scripts/check-docs.mjs` PASS332Markdown/3047local links/6JSON examples/40Mermaid headers/86acyclic source tasks before completion references. `git diff --check` exit0 (Git LF/CRLF notices only). Final docs/new-file whitespace check below. Runtime SF-01…08, builds/native/browser/vendor-account tests NOT_RUN (research-only). Source/schema/DB/runtime unchanged; services not freshly checked. Working-tree documentation reference, no commit/push/deploy/reset/subagents/schedule. Existing PLAN-041 incomplete screenshot research and PLAN-028E backlog retained. Next topic action: PLAN-050 TODO exact design gate.
+
+Final DOC-SF-04: `node scripts/check-docs.mjs` PASS332Markdown/3050local links/6JSON examples/40Mermaid headers/86source DAG after tracker/checkpoint updates; `git -c core.safecrlf=false diff --check` exit0; explicit PowerShell trailing-whitespace scan of new stage-funnel-reporting.md PASS. Nine documentation files modified/added; no runtime tests rerun or application changes.
+
+## CHG-20261018-01 — Clarify missing stage-event funnel capability
+
+Task PLAN-049. Classification C2 design clarification/extension proposal. Evidence: chart capability/schema lacks funnel; stage history coverage differs by object; existing milestone and conversion reports do not implement stage-entry/exit funnel. Decision: document separate ordered funnel, stage movement/duration and current-state distribution; preserve stage/milestone/outcome and raw/canonical/direct-Deal semantics. Affected: stage-funnel review, Reporting module/service/visual contract/semantic catalog, build plan/tracker/log/checkpoint. Compatibility/migration: none in this session; future exact event/definition versions and any forward DDL/table templates gated by PLAN-050. Clarification resolved; implementation proposal pending exact gate, no Ready runtime contract changed.
+
 ## S-20261017-15 — Publish conversion reporting to Git
 
 User explicitly requested “Push git”, authorizing commit/push of PLAN-047/048 and SRC-086 code, contracts, documentation and public acceptance evidence. Initial main62b1b02; fetched origin/main matches HEAD (0ahead/0behind). Publication inventory67files/1,560,077bytes before this log update; no private .env/.local/artifacts paths or credential signatures found. Normal git diff --check PASS. Final documentation check runs after this entry; no source/runtime/DB changes in this publication session.
@@ -1465,3 +1514,31 @@ User explicitly reverses thread_id to conversation_id for platform consistency. 
 CHG-20261016-05 resolved; PLAN-036/SRC-082 DONE, owner Codex. [Evidence](details/SRC-082.md). Canonical conversation_id restored across APIs/UI/schema34 and new workflow/v2 events, session_id and need/AI/recovery unchanged. Scoped legacy adapters preserve old clients/receipts/graphs/context/steps/results.389unit/54files,14native +11classification regression,10native/browser,backend + isolated Next builds/workspace types/generated contracts/35schemas/docs/lint/whitespace PASS. Local forward34 applied1/repeat0 preserves104tables and private backup; retained native test rows preserved. Initial browser5s panel timeout resolved on rerun; no page exceptions. No reset/commit/push/deploy/live provider activation. Working tree main base99130b2 includes prior SRC-081 dirty work; no active source task.
 
 SRC-082 final static recheck:310 Markdown/2692links/82-source-task DAG,715 AST-linted JS/TS files and tracked/untracked whitespace checks PASS. Final monitor: API/worker/web/Reporting ready; MySQL/Redis healthy; Connector configuration-required.
+
+SRC-087 final verification: check-docs.mjs PASS336Markdown/3114local links/6JSON examples/40Mermaid headers/87source DAG; git diff --check exit0 and explicit new-file whitespace scan PASS. Public manifest records SHA256 for screenshots/logs/JSON; source unchanged after final tests/builds.
+
+## S-20261018-03 / CHG-20261018-03 — External API
+User requested external API module packaged by app/scope, with HubSpot-style developer docs. C2 additive: PLAN-051 reviewed official HubSpot auth/scopes/private-app documentation and existing Identity/CRM ports; Ready contract created before code. SRC-088 claimed Codex2026-10-18, only active implementation. Prior SRC-087 dirty changes preserved. Forward37 Identity-owned app table designed; no changes to historical migrations. R1 private read apps; service-actor write ownership/OAuth/webhooks need PLAN-052. No commit/push/deploy/subagents/schedule. Validation pending.
+
+### S-20261018-03 completion — External API
+
+CHG-20261018-03 resolved. PLAN-051/SRC-088 DONE scoped EA-01…08. Read-only private app lifecycle/data API and Developer Portal with HubSpot official source links; explicit object/property/team scope, independent service identity, one-time finite tokens, durable quota and actual owner read ports. Identity target crm_identity, physical additive forward37. PLAN-052 preserves write/OAuth/webhook gates. Existing SRC-087 source/docs left intact; main e370532 dirty, no new commit or push/deploy/reset/parallel agent/schedule.
+
+Commands, Windows Node24.21.0:
+- node node_modules/typescript/bin/tsc -p apps/backend/tsconfig.json — PASS.
+- node node_modules/typescript/bin/tsc -p apps/web/tsconfig.json --noEmit — PASS; final isolated Next production build includes TypeScript PASS after accessible-label fix.
+- node node_modules/vitest/vitest.mjs run --exclude **/*.integration.test.ts — PASS445tests/62files;17new focused tests.
+- node scripts/external-api-native-test.mjs — PASS12groups; retained native_seed_test and named synthetic fixtures; artifacts/external-api/native.json. Final repeat compares115tables; migration rerun0.
+- node scripts/external-api-local-upgrade.mjs — PASS36→37,one migration,rerun0,114existing local tables fingerprint-preserved; private SQL backup/hash and granted SELECT/INSERT/UPDATE in artifacts/external-api/upgrade.json. API/worker restarted ready.
+- node scripts/external-api-browser.mjs — final PASS9groups/6screenshots; real bearer requests, native management/CSRF, explicit scope/property/team UI, rotate/disable, actual API restart retaining token, desktop1440/mobile390/320 and no browser errors/storage secrets. artifacts/external-api/browser.json; public reviewed images under docs/quality/assets/external-api. Synthetic app retained disabled. Failed-run cleanup added to script afterward; no further product change.
+- node scripts/external-api-http-fault-test.mjs — PASS3isolated HTTP groups: injected dependency-init503, malformed/oversized JSON400, no credential echo; artifacts/external-api/http-faults.json. No actual production database outage induced.
+- node scripts/external-api-contract.mjs --check — PASS10operations and all schema compilation; live API OpenAPI JSON equals artifact after process restart.
+- NEXT_BUILD_DIR=.next-external-api node node_modules/next/dist/bin/next build (apps/web cwd) — final PASS. Generated next-env imports restored to original dev paths, no unrelated generated diff.
+- node scripts/lint.mjs — PASS782files; node scripts/check-schemas.mjs — PASS36strict schemas; node scripts/generate-contracts.mjs --check — PASS main/Workflow/record-page/Human-routing generated contracts.
+- node scripts/check-docs.mjs — PASS343Markdown/3172local links/88source DAG before final checkpoint/log; final rerun below. git diff --check PASS.
+
+Resolved failures recorded rather than counted as PASS: migration-return and sync-rejection test-helper mistakes; missing reusable Beta Contact fixture; Web TypeScript inference; browser locator semantics and prefilled textarea accessible label; actual expiry verifier string-zero bug fixed with numeric comparison and native regression. Initial browser failures left synthetic app active briefly; final successful run leaves it disabled. Production load, distributed/real DB outage recovery, retention, writes, OAuth and webhooks NOT_RUN.
+
+Fresh service check: MySQL/Redis healthy; API3001/worker3002/web18080/Reporting3004 ready; Connector API/worker configuration-required; monitor3020 active. artifacts/external-api/services-final.json. No outstanding issue for completed R1. Next PLAN-052 exact gate; PLAN-041 research remains independent and unchanged.
+
+Final closure check: docs343/3175local links/88source DAG PASS; tracked whitespace PASS; literal app-credential scan across new code/docs/scripts found none. Developer Portal tab requested in Codex (queued). No new commit.

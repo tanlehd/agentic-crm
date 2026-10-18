@@ -20,10 +20,11 @@ import { NestFactory } from '@nestjs/core';
 import { ApplicationModule } from './health.js';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { safeJsonBody } from './kernel/http/json-body.js';
+import { ExternalApiModule } from './modules/external-api/http.js';
 
 export async function bootstrap(role: 'api' | 'worker'): Promise<void> {
   process.env.SERVICE_ROLE = role;
-  @Module({ imports: role === 'api' && process.env.MYSQL_HOST ? [ApplicationModule, FacebookModule, MarketingAuthorityModule, ReportingDefinitionsModule, AuthModule, IdentityModule, CrmModule, ConversationModule, WorkspaceModule, ChannelsModule, RoutingModule, HumanRoutingModule, WorkflowModule, ChatflowModule, OperationsModule] : process.env.MYSQL_HOST && role === 'worker' ? [ApplicationModule, ReliabilityWorkerModule] : [ApplicationModule] })
+  @Module({ imports: role === 'api' && process.env.MYSQL_HOST ? [ApplicationModule, ExternalApiModule, FacebookModule, MarketingAuthorityModule, ReportingDefinitionsModule, AuthModule, IdentityModule, CrmModule, ConversationModule, WorkspaceModule, ChannelsModule, RoutingModule, HumanRoutingModule, WorkflowModule, ChatflowModule, OperationsModule] : process.env.MYSQL_HOST && role === 'worker' ? [ApplicationModule, ReliabilityWorkerModule] : [ApplicationModule] })
   class RuntimeModule {}
   const app = await NestFactory.create<NestExpressApplication>(RuntimeModule, { logger: ['error', 'warn', 'log'],bodyParser:false });
   safeJsonBody(app);

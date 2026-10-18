@@ -1,3 +1,4 @@
+import {stageTemplate} from './stage-template.js';
 import {conversionTemplate} from './conversion-template.js';
 import {operationsTemplate} from './operations-template.js';
 import {inboxDemoDashboards} from './inbox-demo.js';
@@ -8,4 +9,4 @@ const catalog=inboxDemoDashboards(slot,'a'.repeat(64)).map((item,i)=>{
  const manifest={key:i===0?'inbox_operations_v1':'ad_inbox_quality_v1',version:1,name:item.name,description:item.definition.description,category:i===0?'Vận hành inbox':'Marketing',environment:'mock',sourceSlot:'demo',recipes};
  return {...manifest,contentHash:digest(manifest),reportCount:recipes.length};
 });
-export function dashboardTemplates(){return structuredClone([...catalog,operationsTemplate(),conversionTemplate()]);}
+export function dashboardTemplates(){return structuredClone([...catalog,operationsTemplate(),conversionTemplate(),stageTemplate()]);}

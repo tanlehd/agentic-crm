@@ -1,3 +1,53 @@
+# Git publication — 2026-10-18
+
+User authorized commit/push of completed SRC-087/088/089 to origin/main in S-20261018-05. Source states remain DONE within documented scope; PLAN-052 remains the next External API design gate. Publication includes the source/docs/evidence below, with no new implementation or deployment. The commit containing this entry identifies the published snapshot; Git remote status is verified after push. Pre-publication checks and base e370532 recorded in [execution log](log.md).
+
+## Previous checkpoint
+
+# External Conversation API completed — 2026-10-18
+
+PLAN-053/SRC-089 DONE for EC-01…05; CHG-20261018-04 resolved. [Evidence](details/SRC-089.md) · [Contract](../contracts/external-conversations.md) · [Developer Portal](http://localhost:18080/developer). Private apps can read Conversation list/detail and message list/detail. Separate conversations.read / conversations.messages.read scopes, selected fields including opt-in text, current parent/team intersection, tenant/archive protection and app/policy/parent-bound signed cursors. No schema change. Canonical Conversation means persistent channel thread; sessions, notes, rich attachments and external write commands remain excluded.
+
+Executed:457unit/63files;9retained MySQL/real HTTP groups;6browser/live local groups with2reviewed screenshots;12existing External API native regression groups/115tables preserved/rerun0;3fault HTTP groups. Backend/Web types/isolated Next build, OpenAPI14operations/artifact match, strict36schemas/generated contracts/lint/docs/whitespace PASS. Evidence/log contain exact commands. All Conversation synthetic apps disabled; no token/screenshots with credentials.
+
+Fresh services: MySQL/Redis healthy; API3001/worker3002/web18080/Reporting3004 ready; monitor3020; Connector configuration-required. API restarted to load routes. main/base e370532 dirty with prior SRC-087/088 plus SRC-089; no commit/push/deploy/reset/agents/background schedule. next-env generated changes restored. No active source task, no blocker; PLAN-041 research gaps unchanged.
+
+One next action: PLAN-052 exact external write ownership/domain commands and OAuth/webhook gate. No further work required for delivered read scope; production load/outage/retention acceptance remains separate.
+
+## Previous checkpoint
+
+# External API private apps completed — 2026-10-18
+
+PLAN-051 / SRC-088 DONE for bounded EA-01…08; CHG-20261018-03 resolved. [Developer Portal](http://localhost:18080/developer) · [Developer guide/OpenAPI](../developer/README.md) · [Evidence](details/SRC-088.md) · [Runbook](../development/external-api.md). Native admin creates private apps with exact object/property/team read grants; finite bearer token generation/rotation/disable/revoke; durable quota120/minute, live tenant/credential/grant verification, signed cursors, Contact/Company/Lead/Deal/custom reads. App is service identity, never Human impersonation or record owner. Write/OAuth/webhooks remain PLAN-052 TODO.
+
+Verification:445unit/62files,12retained MySQL groups,9browser/native HTTP groups (including real API restart),3isolated HTTP fault groups,6screenshots; backend and isolated Next production build, types, OpenAPI10operations/live artifact match, strict36schemas/generated contracts/lint/docs/whitespace PASS. Final results in log/evidence. Native comparison115existing tables; local forward36→37 adds external_app and preserves114old tables after private SQL backup,rerun0. Synthetic browser app retained disabled; test app revoked. No secrets in source/evidence/screenshots.
+
+Workspace main/base e370532 remains dirty with prior SRC-087 plus this slice; no commit/push/deploy/reset/subagent/background schedule. Auto-generated next-env.d.ts build-path changes restored to original dev imports. Fresh local MySQL/Redis healthy; API3001/worker3002/web18080/Reporting3004 ready; monitor3020 responds; Connector configuration-required. No source task active. PLAN-041 research gaps remain unchanged.
+
+One next action: PLAN-052 exact external write ownership/domain commands and OAuth distribution/webhook gate before any further External API source. No unresolved decision or blocker for delivered R1. Production load/distributed outage/retention acceptance NOT_RUN.
+
+## Previous checkpoint
+
+# Stage funnel completed — 2026-10-18
+
+PLAN-050/SRC-087 DONE scoped; CHG-20261018-02 resolved. [Task/evidence](details/SRC-087.md) · [Runbook](../development/stage-funnel-reporting.md) · [Acceptance](../quality/stage-funnel-reporting-acceptance.md). Funnel chart + six report templates for Conversation/Lead/Deal use stage-entry/exit history. Sales forward36 ledger, Reporting schema7, source ACL, coverage, distinct/visits/durations, stage controls/save/CSV/native links all implemented. No historical reconstruction for legacy records; partial/none excluded from conversion denominator.
+
+428unit,11native,7storage,8browser groups/6screenshots; conversion9/SessionProgress13/dashboard12 regressions PASS. Backend/Reporting build, Web typecheck/isolated Next production build and generated/schema/lint/docs checks PASS; final command results in execution log. CRM113old tables and Reporting20old tables per local/test preserved; private SQL backups remain ignored. No commit/push/deploy/reset/subagent/background schedule.
+
+Main/base e370532, working tree dirty (source, forward migrations, tests/scripts, docs/public artifacts); no new commit. Native Alpha dashboard [Funnel theo stage](http://localhost:18080/?dashboards=1&dashboard=29c1f190-a541-54fb-a045-da276950d18f), fixture reference .local/stage-dashboard.json. MySQL/Redis healthy, API3001/worker3002/web18080/Reporting3004 ready; Connector configuration-required. No blocker or active source task. Next: choose separately gated backlog (PLAN-028E remains; PLAN-041 screenshot gaps unchanged). Stage optional/horizon/correction/import/historical replay/opening-closing/custom Sales pipelines remain outside delivered R1.
+
+## Previous checkpoint
+
+# Stage funnel research completed — 2026-10-18
+
+PLAN-049 DONE research-only; CHG-20261018-01 clarification resolved, extension remains PLAN-050 TODO. [Review, HubSpot sources and templates](../planning/stage-funnel-reporting.md). Report Builder has10displays but no funnel chart/template. SRC-069 is same-need milestone funnel; SRC-086 is snapshot conversion KPI/table. Chat stage ledger exists; Lead/Deal lack full transition history. Proposal separates ordered distinct-subject funnel, visit in/out/duration and current distribution, with event-window versus entry-cohort policies.
+
+DOC-SF-01…03 manually reviewed; docs check PASS332Markdown/3047links/86source DAG before completion references, tracked whitespace exit0; final checks in S-20261018-01. Runtime SF-01…08/build/native/browser/vendor-account tests NOT_RUN. Main/base `e370532` initially clean, now documentation-only dirty tree (review + Reporting module/service/visual/semantic references + build plan/tasks/log/checkpoint). No source/schema/DB/runtime changes, commit/push/deploy/reset/subagents/schedule. Services not freshly checked; last recorded runtime state remains previous checkpoint below. No blocker for completed research, no active source implementation. Exact initial/close/merge/history/time-mode/retention/compatibility decisions remain design work, not approved runtime behavior.
+
+Next action for this topic: PLAN-050 exact bounded implementation gate before source. Existing PLAN-028E backlog and PLAN-041 screenshot gaps unchanged.
+
+## Previous checkpoint
+
 # Git publication — conversion reporting — 2026-10-17
 
 S-20261017-15: user explicitly authorized commit/push of PLAN-047/048 and SRC-086 source, contracts, documentation and public acceptance evidence to origin/main. Base62b1b02; fetched remote matches before commit. Publication snapshot is the commit containing this checkpoint; push result and remote hash verified after commit.

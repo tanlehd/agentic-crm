@@ -1,0 +1,5 @@
+import type {Migration} from './migrations.js';
+const id='CHAR(36) CHARACTER SET ascii COLLATE ascii_bin';
+export const stageEventMigration:Migration={version:36,name:'sales_stage_events',statements:[
+ `CREATE TABLE sales_stage_event (tenant_id ${id} NOT NULL,id ${id} NOT NULL,object_kind VARCHAR(16) NOT NULL,subject_id ${id} NOT NULL,sequence BIGINT UNSIGNED NOT NULL,from_stage VARCHAR(64) NULL,to_stage VARCHAR(64) NOT NULL,actor_kind VARCHAR(16) NOT NULL,actor_id ${id} NOT NULL,correlation_id VARCHAR(128) NOT NULL,occurred_at DATETIME(6) NOT NULL,recorded_at DATETIME(6) NOT NULL,PRIMARY KEY(tenant_id,id),UNIQUE KEY uq_sales_stage_sequence(tenant_id,object_kind,subject_id,sequence),CONSTRAINT ck_sales_stage_kind CHECK(object_kind IN ('lead','deal')),CONSTRAINT ck_sales_stage_actor CHECK(actor_kind IN ('human','service')),CONSTRAINT ck_sales_stage_sequence CHECK(sequence>=1),CONSTRAINT ck_sales_stage_change CHECK(from_stage IS NULL OR from_stage<>to_stage)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_as_cs COMMENT='Sales; immutable business tenant stage transitions'`,
+]};

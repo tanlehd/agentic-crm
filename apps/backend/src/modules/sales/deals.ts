@@ -1,3 +1,4 @@
+import {recordStage} from './stage-events.js';
 import type { TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
 import { CommandError,DurableCommands } from '../../kernel/reliability/commands.js';
 import { CrmRecords,type RecordDomain } from '../crm/records.js';
@@ -35,6 +36,7 @@ export function dealDomain():RecordDomain{return {
       origin=Object.fromEntries(sourceKeys.map(k=>[k,row[k]]));
     }
     await s.query(`INSERT INTO deal(tenant_id,record_id,contact_id,lead_id,title,amount,currency,${sourceKeys.join(',')}) VALUES (${Array(7+sourceKeys.length).fill('?').join(',')})`,[s.context.tenantId,id,b.contact_id,b.lead_id??null,name,amount,currency,...sourceKeys.map(k=>origin[k])]);
+    await recordStage(s,'deal',id,null,'open',a.principalId,correlation);
     if(context?.source_conversation_session_id)await appendSalesContext(s,id,b.conversation_id,context.source_conversation_session_id,a.principalId,'created');
     await new DurableCommands().domainEvent(s,a.principalId,correlation,'deal.created',id,'1',{deal_id:id,contact_id:b.contact_id,lead_id:b.lead_id??null});
   },exists:async(s,id)=>!!(await s.query('SELECT record_id FROM deal WHERE tenant_id=? AND record_id=?',[s.context.tenantId,id]))[0],eligible:async()=>{},assigned:async()=>{}},
@@ -48,6 +50,7 @@ export function dealDomain():RecordDomain{return {
     if(!dealStages.includes(stage))fieldError('stage');if(stage==='won'&&BigInt(amount.replace('.',''))<=0n)fieldError('amount');
     if(stage==='won')for(const field of ['amount','currency','stage']){checkField(a,'deal',field,'read');checkField(a,'deal',field,'write');}
     await s.query("UPDATE deal SET title=?,amount=?,currency=?,stage=?,closed_at=IF(? IN ('won','lost'),UTC_TIMESTAMP(6),NULL) WHERE tenant_id=? AND record_id=?",[name,amount,currency,stage,stage,s.context.tenantId,r.id]);
+    await recordStage(s,'deal',r.id,row.stage,stage,a.principalId,correlation);
     if(stage==='won'){
       if(b.conversation_id)await appendSalesContext(s,r.id,b.conversation_id,b.conversation_session_id,a.principalId,'closing');
       await new SalesCrmPort().markCustomer(s,a,row.contact_id,correlation);

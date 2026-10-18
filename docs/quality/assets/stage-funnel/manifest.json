@@ -1,0 +1,95 @@
+{
+  "at": "2026-10-18T03:59:23.808Z",
+  "files": [
+    {
+      "file": "01-template.png",
+      "bytes": 124215,
+      "sha256": "3aad2732b040901047b80a59dcce3c248245c0ab5546fca269bc084a54777616"
+    },
+    {
+      "file": "02-dashboard.png",
+      "bytes": 117063,
+      "sha256": "e21bb19b31456bd85cabdf5befda460c4f5b74fbebd0708eb7b3e26a306e3f87"
+    },
+    {
+      "file": "03-editor.png",
+      "bytes": 153894,
+      "sha256": "516d3917857b4006fd71c1fc93f564f6621437f80c60d7205fd65ac3bee578a4"
+    },
+    {
+      "file": "04-populated.png",
+      "bytes": 117032,
+      "sha256": "2c523f9f8e2eca0566d63f6cca19c56de37e87fd5fc232803e08357f5c5283b0"
+    },
+    {
+      "file": "05-mobile-320.png",
+      "bytes": 36270,
+      "sha256": "9105ffbb0cfb640bdda8f529735f294a0bc9d059300ea450180925ed096c7608"
+    },
+    {
+      "file": "05-mobile-390.png",
+      "bytes": 42458,
+      "sha256": "5c3a2dc82799b9ce6979ef08170cdde2c7679b658d04ecd0acec2d02adf180f8"
+    },
+    {
+      "file": "backend-build.log",
+      "bytes": 102,
+      "sha256": "2f58692ae18e60e2f0e11fb832a785b1c3b68138bd5b29387c4492a9cb5e655c"
+    },
+    {
+      "file": "browser.json",
+      "bytes": 1082,
+      "sha256": "d95ae371b5e60cb8ae749218bf880f733eb42f67183c3d996cab2f9c6a9132ab"
+    },
+    {
+      "file": "conversion-regression.json",
+      "bytes": 1081,
+      "sha256": "14ec853ae0fed1f586974be913521006ab6960f28271624fb910541a31bec7a9"
+    },
+    {
+      "file": "dashboard-regression.json",
+      "bytes": 1142,
+      "sha256": "bcf9aa7882b3f5d3471ee1d25d24d3705470af1bff95872ee1b64e6fdba8b6b9"
+    },
+    {
+      "file": "native.json",
+      "bytes": 1155,
+      "sha256": "e83008ff33849d9c647dddd1be27c9a5cfaef9bfb925f829006ac47fb0228c15"
+    },
+    {
+      "file": "reporting-test-upgrade.json",
+      "bytes": 348,
+      "sha256": "7598cc5e9648a0df7bfe8613b42286bf9d01c7d9b3834a40f49dea634e2c8036"
+    },
+    {
+      "file": "reporting-upgrade.json",
+      "bytes": 338,
+      "sha256": "2773c941c076898de8a65dbb3c937666179447d6ffbaa17d0331d4d998685e14"
+    },
+    {
+      "file": "session-regression.json",
+      "bytes": 2338,
+      "sha256": "a63aaa6ea2d3738ef3aee809e19b78aea4d2ad60f1c7a628ac66375383a27a03"
+    },
+    {
+      "file": "storage.json",
+      "bytes": 489,
+      "sha256": "2d8f0da78fac120c5afe36b526377e6201dc791cf3973955bf07383171c82a47"
+    },
+    {
+      "file": "unit.log",
+      "bytes": 605,
+      "sha256": "323f33c747bf6c02b7682541efe23da44eaefc5919ecf17db495aaf541a6826f"
+    },
+    {
+      "file": "upgrade.json",
+      "bytes": 280,
+      "sha256": "1e991bfa0eeb07db1edf82988171258802e086aefb590e50d71fc1589ea6562d"
+    },
+    {
+      "file": "web-build.log",
+      "bytes": 625,
+      "sha256": "9fdfac48c9a3232894afabeffeab7bcd3ac9f329ea4be38dc76177877b9f0a81"
+    }
+  ]
+}

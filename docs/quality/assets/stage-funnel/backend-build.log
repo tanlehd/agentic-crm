@@ -1,0 +1,3 @@
+
+> @agentic-crm/backend@0.0.1 build D:\Work\Labs\agentic-crm\apps\backend
+> tsc -p tsconfig.json

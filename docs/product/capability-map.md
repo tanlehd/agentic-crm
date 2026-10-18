@@ -66,3 +66,8 @@ Tài liệu module/service/contract hiện hữu giữ cấu trúc chuyên môn 
 - DOC-G02: Filter/list view/record layout/routing có ranh giới; agent/team/admin và sharing có phạm vi rõ.
 - DOC-G03: README, vision, doc index, UX hub và quy tắc thay đổi dẫn tới cùng bản đồ; mẫu presentation dùng cùng mã nhóm.
 - DOC-G04: kiểm tra liên kết/Markdown và whitespace; ghi evidence trong execution log. Runtime NOT_RUN vì chỉ sửa tài liệu.
+
+External integrations belong to Platform administration: tenant admin configures app object/property/team grants; integration developer consumes the [External API](../developer/README.md). Bounded read-only private apps; [SRC-088 evidence](../tracking/details/SRC-088.md). OAuth distribution and business writes remain separate gates.
+
+
+External Conversation/message reads extend Platform administration in SRC-089: tenant admin selects metadata/content scopes and properties; developers retrieve authorized history. [Evidence](../tracking/details/SRC-089.md). Sending and ownership changes remain separately gated.

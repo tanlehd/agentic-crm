@@ -1,5 +1,7 @@
 # Schema catalog — nơi đặt bảng mới
 
+SRC-087 forward36 adds `sales_stage_event`, Sales-owned in baseline agentic_crm / target crm_sales, tenant-scoped append-only with unique tenant/kind/subject/sequence and no remote FK. Reporting007 expands adapter CHECK for native_stage_v1, no new business columns. CRM113old tables and Reporting20old business tables preserved. [Filled table review](../contracts/stage-funnel-reporting.md) · [Evidence](../tracking/details/SRC-087.md). This bounded ledger now supplies Lead/Deal stage history; configurable Sales pipeline remains separately gated.
+
 SRC-086 forward006 expands report_connected_catalog adapter CHECK for native_conversion_v1; no new columns/tables. Local/test Reporting6,CRM35,20old business tables preserved. Goal stays in versioned definition JSON; source facts remain request-local. [Filled table review](../contracts/conversion-reporting.md) · [Evidence](../tracking/details/SRC-086.md).
 
 SRC-084 / forward35: [9 physical Human routing tables](../contracts/human-routing.md) now added to baseline monolith; target owner crm_routing. No target schema extraction. All tenant_id NOT NULL, own-Routing FK only, AI execution slots unchanged.104old tables preserved at local upgrade; [evidence](../tracking/details/SRC-084.md). Earlier PLAN-044 logical-only statements below remain historical.
@@ -83,7 +85,7 @@ Mỗi schema có journal riêng `schema_migration` và, khi cần, `audit_entry`
 |---|---|
 | Thêm priority cho Conversation | Cột/sidecar trong `crm_chat`, same tenant và version của Conversation |
 | Tag cho Contact | `crm_core.contact_tag` + link tenant-bound; không reuse Chat tag table bằng cross-schema SQL |
-| Lịch sử đổi stage Deal | `crm_sales.deal_stage_history`, chỉ sau scope M4 Ready |
+| Lịch sử đổi stage Lead/Deal | `crm_sales.sales_stage_event`; SRC-087 forward36 trong baseline monolith. Configurable pipeline/reopen M4 vẫn có gate riêng |
 | Note hiển thị trong Chat | Nội dung Activity ở Core, Chat chỉ activity reference projection + authorized hydration |
 | Bảng export dashboard | `crm_reporting` giữ metadata/job/authorized snapshot; không đọc trực tiếp Chat DB |
 | Đặt lại mật khẩu CRM | Credential/reset token trong `crm_identity`; không ở Core Contact |
@@ -110,3 +112,6 @@ PLAN-025 / SRC-069: [Ready session progress contract](../contracts/session-progr
 2026-10-16 / CHG-20261016-04: User authorized per-need AI enrichment and follow-up workflow; SRC-082 restores canonical conversation_id per CHG-20261016-05. PLAN-035/SRC-081 DONE; [runtime evidence](../tracking/details/SRC-081.md). See [contract](../contracts/need-follow-up.md). Forward34 renames four physical relationship columns; compatibility preserves immutable v1/graphs/receipts; real adapter configured explicitly; no invented provider result.
 
 SRC-082 / CHG-20261016-05: [Conversation identity alignment](../contracts/conversation-identity.md) makes conversation_id canonical and preserves session_id episode semantics. Forward34 renames session_contribution/need_assessment/need_follow_up/sales_need_outcome.thread_id without changing IDs, grants, tenant ownership or cross-service boundaries. New need.assessed/classification events use v2; v1 artifacts stay readable. CI-01…03 validation tracked separately from SRC-081 history.
+
+## External API private apps — SRC-088
+[Exact contract and filled table design](../contracts/external-api.md): Identity owns external_app configuration, explicit object/property/team grants, token verifier/expiry and durable quota; target crm_identity, baseline monolith forward37. CRM/Sales own record reads through authorized application ports. No Human impersonation, record ownership change or cross-service SQL/FK. [Developer guide](../developer/README.md) and [evidence](../tracking/details/SRC-088.md).

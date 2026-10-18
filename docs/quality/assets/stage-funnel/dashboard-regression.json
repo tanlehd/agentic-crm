@@ -1,0 +1,19 @@
+{
+  "at": "2026-10-18T03:54:21.316Z",
+  "groups": [
+    "template creates six saved reports and one dashboard atomically, concurrent key replays",
+    "saved reference query returns expected cohort without embedded client definition",
+    "failed template rolls back dashboard and every created report",
+    "CAS race, immutable layout, malformed refs and overlap rejected",
+    "report version edit does not change widget pin; archive unavailable, restore compatible",
+    "native tenant/cookie/CSRF and current permission revocation fail closed",
+    "future report shapes remain listed safely and cannot execute",
+    "list/report picker cursor tampering and scoped usage",
+    "archive restore increments revision but preserves content version; duplicate keeps refs",
+    "explicit legacy conversion preserves original bytes, reports and pins; retry stable",
+    "mid-conversion failure rolls back reports already created inside transaction",
+    "storage tenant compound keys and append-only grant constraints"
+  ],
+  "fixture": "retained native Identity and test_crm_reporting",
+  "dashboardId": "801e579d-cb42-59f9-adf2-9b2642dba8b4"
+}

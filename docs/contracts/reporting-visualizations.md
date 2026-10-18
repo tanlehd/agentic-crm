@@ -1,5 +1,9 @@
 # Common report visualizations — SRC-064
 
+SRC-087 adds the eleventh display, `funnel`, only for configured stage models. Three funnel/table pairs are available as ordinary saved-report templates. Conversion geometry uses ordered distinct subjects; in/out/durations stay exact table metrics. [Definition/semantics](stage-funnel-reporting.md) · [Evidence](../tracking/details/SRC-087.md). Earlier ten-display inventory describes the pre-SRC-087 release.
+
+Audit 2026-10-18 / PLAN-049: `funnel` vẫn chưa có trong discovery/schema/types; dashboard SRC-086 dùng KPI/table. [Nghiên cứu stage funnel và HubSpot](../planning/stage-funnel-reporting.md) đề xuất model ordered stage events + template widgets; PLAN-050 exact gate TODO. Không thay đổi Ready scope/encoding hiện hữu dưới đây.
+
 2026-10-12 · CHG-20261012-08 · Ready. User requested audit and implementation of missing common visuals/templates. Owner Codex 2026-10-12; SRC-064 remains the only IN_PROGRESS implementation task with its existing DONE dependencies.
 
 ## Audit and bounded scope

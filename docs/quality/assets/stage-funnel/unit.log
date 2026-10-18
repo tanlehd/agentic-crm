@@ -1,0 +1,16 @@
+
+> agentic-crm@ test:unit D:\Work\Labs\agentic-crm
+> vitest run --exclude **/*.integration.test.ts
+
+
+ RUN  v5.0.3 D:/Work/Labs/agentic-crm
+
+
+ Test Files  61 passed (61)
+      Tests  428 passed (428)
+   Start at  10:55:00
+   Duration  13.66s (import 51%, tests 32%, transform 15%, worker 2%)
+
+     Import  219 modules were evaluated 777 times · 26.88s total, 51% of tracked time
+             ~899ms faster with isolate: false — shared modules are evaluated once per worker instead of once per file
+             learn more: https://vitest.dev/guide/improving-performance#test-isolation

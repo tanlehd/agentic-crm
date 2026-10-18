@@ -7,6 +7,7 @@ export interface MeasureOption extends MetricRef {
  numerator?:string;denominator?:string;multiplier?:number;
 }
 export function describeMeasures(catalog:Catalog,availableFields:string[],executions:ExecutionRegistry=builtInExecutions()):MeasureOption[]{
+ if(catalog.models.every(m=>m.id.startsWith('sf_')))return catalog.models.flatMap(model=>catalog.metrics.filter(m=>m.inputs.every(f=>availableFields.includes(f))).map(m=>({id:m.id,version:m.version,model:refKey(model),operation:'stage_event',population:'ordered stage events',nullPolicy:'skip' as const})));
  const registry=createRegistry(catalog),available=new Set(availableFields),result:MeasureOption[]=[];
  for(const model of catalog.models){
   const registeredModel=executions.model(model);if(!registeredModel||registeredModel.descriptorHash!==digest(model))continue;

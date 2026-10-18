@@ -1,5 +1,7 @@
 # Agentic CRM
 
+**Funnel theo stage (2026-10-18):** Report Builder có chart funnel và template6reports cho Conversation, Lead, Deal, tính từ sự kiện vào/ra stage. Có distinct conversion, lượt vào/ra, thời gian, coverage, CSV và native record links. [Mở Dashboards](http://localhost:18080/?dashboards=1) · [Hướng dẫn](docs/development/stage-funnel-reporting.md) · [Nghiệm thu](docs/quality/stage-funnel-reporting-acceptance.md). Dữ liệu cũ thiếu history được công bố, không suy lịch sử từ trạng thái hiện tại.
+
 **Chuyển đổi kinh doanh (2026-10-17):** Dashboard10reports đo hội thoại → Lead → Won, tách Deal trực tiếp/Lead gộp trùng, đặt mục tiêu KPI và mở việc cần xử lý. [Mở local](http://localhost:18080/?dashboards=1&dashboard=231b1486-4a14-588a-adb9-2dba107dea79) · [Hướng dẫn](docs/development/conversion-reporting.md) · [Nghiệm thu/ảnh](docs/quality/conversion-reporting-acceptance.md). Snapshot hiện tại, refresh thủ công; không tự đặt target hoặc phát cảnh báo.
 
 **Dashboard vận hành (2026-10-17):** Giám sát workload, hàng chờ và hiệu suất qua 6 đối tượng/thuộc tính kết nối, 7 saved reports dùng chung Report Builder. Template có biểu đồ, KPI và bảng; sửa nhóm/lọc/kỳ/bố cục, dùng lại report. [Mở Dashboards](http://localhost:18080/?dashboards=1) · [Hướng dẫn](docs/development/operations-reporting.md) · [Nghiệm thu và ảnh](docs/quality/operations-reporting-acceptance.md). Tab hiệu suất riêng của Routing được thay bằng lối vào dashboard; các bản ghi dưới là lịch sử.
@@ -110,3 +112,9 @@ SRC-039 triển khai shell không tab và Inbox trên API hiện có: [evidence]
 Marketing database-only local setup: [runbook](docs/development/marketing-database.md). Separate `crm_marketing` schema; periodic Meta synchronization is not enabled.
 
 Inbox now includes versioned session stages, need-scoped behavioral evidence/corrections and a connected session funnel. [Usage and local verification](docs/development/session-progress.md).
+
+## External API / Developer Portal
+[Open Developer Portal](http://localhost:18080/developer) · [Developer guide](docs/developer/README.md) · [OpenAPI](docs/developer/openapi.json) · [Evidence](docs/tracking/details/SRC-088.md). Private apps with explicit object/property/team read grants, finite bearer tokens, rotate/disable/revoke and durable quota. Contact/Company/Lead/Deal/custom read APIs; external writes, multi-tenant OAuth and webhooks are future gates.
+
+
+**Conversation External API (2026-10-18):** Private app đọc danh sách/chi tiết hội thoại và tin nhắn, scope riêng cho metadata/nội dung, chọn field và giới hạn team. [Developer Portal](http://localhost:18080/developer) · [API guide](docs/developer/README.md) · [Evidence](docs/tracking/details/SRC-089.md). Chưa có API gửi tin/đổi owner/đóng hội thoại bằng app token.

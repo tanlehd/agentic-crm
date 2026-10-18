@@ -79,3 +79,6 @@ SRC-034 adds CRM-owned note create/update/archive notifications in the note tran
 ## CRM base outcome scope — PLAN-010
 
 CRM base trong [kế hoạch mới](../planning/crm-base-outcomes.md) là scope sản phẩm xuyên CRM/Sales/Ticket/Reporting; không chuyển ownership Lead/Deal/Ticket về generic CRM. System attribution fields là reserved/read-only và không được custom property shadow; generic PATCH/import không được bypass business command. Declared source là thuộc tính chọn/sửa có quyền tách khỏi system channel/Page/ad. Exact catalog/ACL/DTO thuộc PLAN-011; runtime baseline chưa thay đổi.
+
+## External API private apps — SRC-088
+[Exact contract and filled table design](../contracts/external-api.md): Identity owns external_app configuration, explicit object/property/team grants, token verifier/expiry and durable quota; target crm_identity, baseline monolith forward37. CRM/Sales own record reads through authorized application ports. No Human impersonation, record ownership change or cross-service SQL/FK. [Developer guide](../developer/README.md) and [evidence](../tracking/details/SRC-088.md).

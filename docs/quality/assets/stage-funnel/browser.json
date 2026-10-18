@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "at": "2026-10-18T03:56:10.767Z",
+  "checks": [
+    "native stage source discovers three models and process definitions",
+    "template atomically creates six saved reports; all widgets run with coverage disclosure",
+    "deployed native Lead/Deal mutations including backward/reentry appear once per funnel step and twice as visits",
+    "builder stage order/mode preview save and reopen retain exact configuration",
+    "native stage CSV export succeeds",
+    "saved edit creates a version without silently upgrading existing widget pins",
+    "authorized stage members open native record workspace",
+    "desktop and mobile390/320 render with no page errors or page overflow"
+  ],
+  "shots": [
+    "artifacts/stage-funnel/01-template.png",
+    "artifacts/stage-funnel/02-dashboard.png",
+    "artifacts/stage-funnel/03-editor.png",
+    "artifacts/stage-funnel/04-populated.png",
+    "artifacts/stage-funnel/05-mobile-390.png",
+    "artifacts/stage-funnel/05-mobile-320.png"
+  ],
+  "dashboardId": "29c1f190-a541-54fb-a045-da276950d18f",
+  "retained": true
+}
