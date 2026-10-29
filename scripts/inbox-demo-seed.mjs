@@ -4,7 +4,7 @@ import {readFile,writeFile,mkdir,rename} from 'node:fs/promises';
 import {parseEnv} from 'node:util';
 import {randomUUID} from 'node:crypto';
 import {chromium} from '@playwright/test';
-import {fixtureId} from '../apps/backend/dist/modules/identity/seed.js';
+import {fixtureId} from '../services/core-baseline/dist/modules/identity/seed.js';
 import {inboxDemoEpisodes} from '../services/reporting/dist/inbox-demo.js';
 const env=parseEnv(await readFile('.env','utf8')),origin=env.APP_ORIGIN,tenant=fixtureId('clinic_alpha');
 assert.equal(env.APP_ENV,'development');assert.equal(origin,'http://localhost:18080');assert.equal(env.MYSQL_DATABASE,'agentic_crm');

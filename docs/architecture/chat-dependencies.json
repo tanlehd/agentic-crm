@@ -1,0 +1,2428 @@
+{
+  "version": 1,
+  "scope": "services/core-baseline/src/modules/conversation/",
+  "edges": [
+    {
+      "from": "services/core-baseline/src/bootstrap.ts",
+      "to": "services/core-baseline/src/modules/conversation/http.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:ConversationModule"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/bootstrap.ts",
+      "to": "services/core-baseline/src/modules/conversation/thread-boundary.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:threadBoundary"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/bootstrap.ts",
+      "to": "services/core-baseline/src/modules/conversation/workspace-http.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:WorkspaceModule"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/dispatch-server.ts",
+      "to": "services/core-baseline/src/modules/conversation/dispatch-claim.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:ChatClaimPorts",
+        "value:NativeChatClaims"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/dispatch-server.ts",
+      "to": "services/core-baseline/src/modules/conversation/dispatch-result.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:NativeChatResults"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/kernel/database/cli.ts",
+      "to": "services/core-baseline/src/modules/conversation/activity-storage.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:backfillActivity"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/kernel/database/cli.ts",
+      "to": "services/core-baseline/src/modules/conversation/workspace-storage.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:backfillWorkspace"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/kernel/reliability/worker.ts",
+      "to": "services/core-baseline/src/modules/conversation/activity.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:activityConsumers"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/kernel/reliability/worker.ts",
+      "to": "services/core-baseline/src/modules/conversation/outbound.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:OutboundDispatcher"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/kernel/reliability/worker.ts",
+      "to": "services/core-baseline/src/modules/conversation/snooze.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:ConversationSnooze"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/kernel/reliability/worker.ts",
+      "to": "services/core-baseline/src/modules/conversation/workspace-consumer.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:snoozeConsumer",
+        "value:workspaceCatalogConsumers",
+        "value:workspaceReadConsumer"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/agents/executions.ts",
+      "to": "services/core-baseline/src/modules/conversation/agent-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:AgentConversationPort"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/agents/executions.ts",
+      "to": "services/core-baseline/src/modules/conversation/domain.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:conversation"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/agents/human-routing.ts",
+      "to": "services/core-baseline/src/modules/conversation/human-routing-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:HumanRoutingChatPort"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/agents/human-workload.ts",
+      "to": "services/core-baseline/src/modules/conversation/human-routing-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:HumanRoutingChatPort"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/agents/operations-port.ts",
+      "to": "services/core-baseline/src/modules/conversation/domain.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:conversation",
+        "value:requirePermission"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/agents/operations-source.ts",
+      "to": "services/core-baseline/src/modules/conversation/human-routing-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:HumanRoutingChatPort"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/agents/routing.ts",
+      "to": "services/core-baseline/src/modules/conversation/ownership-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:OwnershipChanged",
+        "value:conversationOwnership"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/channels/intake.ts",
+      "to": "services/core-baseline/src/modules/conversation/contact-cache.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:ChatContactCache"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/channels/intake.ts",
+      "to": "services/core-baseline/src/modules/conversation/content.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:legacyContentText"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/channels/intake.ts",
+      "to": "services/core-baseline/src/modules/conversation/domain.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:Conversations"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/channels/normalized.ts",
+      "to": "services/core-baseline/src/modules/conversation/content.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:messageContent"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/channels/normalized.ts",
+      "to": "services/core-baseline/src/modules/conversation/domain.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:messageText"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/chatflow/engine.ts",
+      "to": "services/core-baseline/src/modules/conversation/chatflow-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:ChatflowConversationPort"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/acquisition-storage.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:SystemActor",
+        "value:CommandError",
+        "value:DurableCommands"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/acquisition-storage.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/acquisition-storage.ts",
+      "to": "services/core-baseline/src/modules/channels/ports.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:ChannelReferences"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/acquisition-storage.ts",
+      "to": "services/core-baseline/src/modules/crm/core.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:stamp"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/acquisition-storage.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:randomUUID"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity-reference-port.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity-storage.ts",
+      "to": "services/core-baseline/src/kernel/reliability/activity-notification.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:ActivityActor",
+        "value:activitySupported"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity-storage.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope",
+        "value:UnitOfWork"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity-storage.ts",
+      "to": "services/core-baseline/src/modules/crm/activity-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CrmActivityPort"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity-storage.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:randomUUID"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity-storage.ts",
+      "to": "package:typeorm",
+      "syntax": "import",
+      "bindings": [
+        "type:DataSource"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity.ts",
+      "to": "services/core-baseline/src/kernel/reliability/activity-notification.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:notificationFreshness"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError",
+        "value:canonical"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity.ts",
+      "to": "services/core-baseline/src/kernel/reliability/delivery.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:Consumer",
+        "value:DeliveryError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope",
+        "value:UnitOfWork"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity.ts",
+      "to": "services/core-baseline/src/modules/channels/ports.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:ChannelReferences"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity.ts",
+      "to": "services/core-baseline/src/modules/chatflow/activity-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:ChatflowActivityPort"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity.ts",
+      "to": "services/core-baseline/src/modules/crm/access.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:withFieldPolicies"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity.ts",
+      "to": "services/core-baseline/src/modules/crm/activity-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CrmActivityPort"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity.ts",
+      "to": "services/core-baseline/src/modules/crm/core.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:stamp"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity.ts",
+      "to": "services/core-baseline/src/modules/crm/properties.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:object"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity.ts",
+      "to": "services/core-baseline/src/modules/identity/admin.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:uuid"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity.ts",
+      "to": "services/core-baseline/src/modules/identity/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:IdentityAuthorization"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity.ts",
+      "to": "services/core-baseline/src/modules/identity/domain/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:Access",
+        "value:fieldAllowed"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity.ts",
+      "to": "services/core-baseline/src/modules/workflow/activity-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:WorkflowActivityPort"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:createCipheriv",
+        "value:createDecipheriv",
+        "value:createHash",
+        "value:randomBytes"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/activity.ts",
+      "to": "package:typeorm",
+      "syntax": "import",
+      "bindings": [
+        "type:DataSource"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/agent-port.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/agent-port.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/agent-port.ts",
+      "to": "services/core-baseline/src/modules/crm/conversation-ports.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:ConversationCrmPort"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/agent-port.ts",
+      "to": "services/core-baseline/src/modules/identity/domain/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:Access"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/agent-port.ts",
+      "to": "services/core-baseline/src/modules/identity/domain/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:fieldAllowed",
+        "value:permits"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/chatflow-port.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError",
+        "value:DurableCommands"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/chatflow-port.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/chatflow-port.ts",
+      "to": "services/core-baseline/src/modules/channels/ports.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:ChannelReferences"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/chatflow-port.ts",
+      "to": "services/core-baseline/src/modules/identity/domain/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:Access"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/chatflow-port.ts",
+      "to": "services/core-baseline/src/modules/identity/domain/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:fieldAllowed"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/chatflow-port.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:randomUUID"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/classification.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError",
+        "value:DurableCommands"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/classification.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/classification.ts",
+      "to": "services/core-baseline/src/modules/crm/access.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:withFieldPolicies"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/classification.ts",
+      "to": "services/core-baseline/src/modules/crm/activity-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CrmActivityPort"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/classification.ts",
+      "to": "services/core-baseline/src/modules/crm/core.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:contactReferences",
+        "value:stamp"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/classification.ts",
+      "to": "services/core-baseline/src/modules/crm/properties.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:Property",
+        "value:checkField",
+        "value:json",
+        "value:mergeValues",
+        "value:object",
+        "value:properties"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/classification.ts",
+      "to": "services/core-baseline/src/modules/identity/domain/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:Access",
+        "value:fieldAllowed",
+        "value:permits"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/classification.ts",
+      "to": "services/core-baseline/src/modules/sales/contribution-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:visibleSalesContribution"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/classification.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:randomUUID"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/contact-cache.ts",
+      "to": "services/core-baseline/src/modules/crm/contact-identity.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:ContactMapping"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/content.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/content.ts",
+      "to": "package:@agentic-crm/contracts",
+      "syntax": "import",
+      "bindings": [
+        "type:MessageContent",
+        "value:messageContentSchema"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/content.ts",
+      "to": "package:ajv",
+      "syntax": "import",
+      "bindings": [
+        "value:Ajv"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/contribution-storage.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/contribution-storage.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:randomUUID"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/conversion-port.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/dispatch-claim.ts",
+      "to": "services/core-baseline/src/kernel/database/system-scope.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:PLATFORM_TENANT_ID"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/dispatch-claim.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError",
+        "value:DurableCommands",
+        "value:canonical"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/dispatch-claim.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope",
+        "value:UnitOfWork"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/dispatch-claim.ts",
+      "to": "package:@agentic-crm/contracts",
+      "syntax": "import",
+      "bindings": [
+        "type:ChatClaimProofRead",
+        "type:ChatClaimProofReply",
+        "type:DispatchBinding",
+        "type:DispatchReply",
+        "type:DispatchRequest",
+        "value:chatDispatchV1Schema"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/dispatch-claim.ts",
+      "to": "package:ajv",
+      "syntax": "import",
+      "bindings": [
+        "value:Ajv"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/dispatch-claim.ts",
+      "to": "package:ajv-formats",
+      "syntax": "import",
+      "bindings": [
+        "value:default"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/dispatch-claim.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:createHash",
+        "value:randomUUID"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/dispatch-result.ts",
+      "to": "services/core-baseline/src/kernel/database/system-scope.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:PLATFORM_TENANT_ID"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/dispatch-result.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError",
+        "value:DurableCommands",
+        "value:canonical"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/dispatch-result.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope",
+        "value:UnitOfWork"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/dispatch-result.ts",
+      "to": "package:@agentic-crm/contracts",
+      "syntax": "import",
+      "bindings": [
+        "type:DispatchReply",
+        "type:DispatchRequest",
+        "value:chatDispatchV1Schema"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/dispatch-result.ts",
+      "to": "package:ajv",
+      "syntax": "import",
+      "bindings": [
+        "value:Ajv"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/dispatch-result.ts",
+      "to": "package:ajv-formats",
+      "syntax": "import",
+      "bindings": [
+        "value:default"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/dispatch-result.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:createHash",
+        "value:randomUUID"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/domain.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:SystemActor",
+        "value:CommandError",
+        "value:DurableCommands",
+        "value:canonical"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/domain.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope",
+        "value:UnitOfWork"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/domain.ts",
+      "to": "services/core-baseline/src/modules/agents/cancellation.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:cancelAgentExecutions"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/domain.ts",
+      "to": "services/core-baseline/src/modules/channels/ports.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:ChannelReferences"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/domain.ts",
+      "to": "services/core-baseline/src/modules/chatflow/lifecycle.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:stopSessions"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/domain.ts",
+      "to": "services/core-baseline/src/modules/crm/access.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:withFieldPolicies"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/domain.ts",
+      "to": "services/core-baseline/src/modules/crm/conversation-ports.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:ConversationCrmPort"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/domain.ts",
+      "to": "services/core-baseline/src/modules/crm/core.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:ArchiveGuard",
+        "value:stamp"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/domain.ts",
+      "to": "services/core-baseline/src/modules/crm/properties.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:checkField",
+        "value:object"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/domain.ts",
+      "to": "services/core-baseline/src/modules/crm/registry.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:RegistryRecord",
+        "value:RecordRegistry"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/domain.ts",
+      "to": "services/core-baseline/src/modules/identity/admin.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:uuid"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/domain.ts",
+      "to": "services/core-baseline/src/modules/identity/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:IdentityAuthorization",
+        "value:conversationOwnerKind",
+        "value:requireActiveTenant"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/domain.ts",
+      "to": "services/core-baseline/src/modules/identity/domain/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:Access",
+        "value:fieldAllowed",
+        "value:permits"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/domain.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:createHmac",
+        "value:randomUUID",
+        "value:timingSafeEqual"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/domain.ts",
+      "to": "package:typeorm",
+      "syntax": "import",
+      "bindings": [
+        "type:DataSource"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/external-port.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError",
+        "value:canonical"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/external-port.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/external-port.ts",
+      "to": "services/core-baseline/src/modules/crm/core.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:stamp"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/external-port.ts",
+      "to": "services/core-baseline/src/modules/crm/external-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:ExternalObject"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/external-port.ts",
+      "to": "services/core-baseline/src/modules/crm/registry.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:RecordRegistry"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/external-port.ts",
+      "to": "services/core-baseline/src/modules/identity/admin.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:uuid"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/external-port.ts",
+      "to": "services/core-baseline/src/modules/identity/domain/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:Access",
+        "value:permits"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/external-port.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:createHmac",
+        "value:timingSafeEqual"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/http.ts",
+      "to": "services/core-baseline/src/kernel/database/data-source.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:databaseSource"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/http.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/http.ts",
+      "to": "services/core-baseline/src/modules/identity/admin.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:uuid"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/http.ts",
+      "to": "services/core-baseline/src/modules/identity/auth/http.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:AuthModule",
+        "value:AuthRuntime",
+        "value:cookie"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/http.ts",
+      "to": "services/core-baseline/src/modules/identity/auth/security.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:AuthError",
+        "value:hash"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/http.ts",
+      "to": "services/core-baseline/src/modules/identity/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:AccessError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/http.ts",
+      "to": "services/core-baseline/src/modules/identity/dispatch-enrollment.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:HumanDispatchEnrollment"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/http.ts",
+      "to": "package:@nestjs/common",
+      "syntax": "import",
+      "bindings": [
+        "type:OnModuleDestroy",
+        "value:Controller",
+        "value:Get",
+        "value:Inject",
+        "value:Module",
+        "value:Post",
+        "value:Req",
+        "value:Res"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/http.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:createHmac",
+        "value:randomUUID"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/http.ts",
+      "to": "package:node:http",
+      "syntax": "import",
+      "bindings": [
+        "type:IncomingMessage",
+        "type:ServerResponse"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/human-routing-port.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/human-routing-port.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/lead-source-port.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/lead-source-port.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/lead-source-port.ts",
+      "to": "services/core-baseline/src/modules/channels/ports.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:ChannelReferences"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/lead-source-port.ts",
+      "to": "services/core-baseline/src/modules/crm/properties.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:checkField"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/lead-source-port.ts",
+      "to": "services/core-baseline/src/modules/crm/registry.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:RecordRegistry"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/lead-source-port.ts",
+      "to": "services/core-baseline/src/modules/identity/domain/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:Access"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-assessment.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError",
+        "value:DurableCommands"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-assessment.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-assessment.ts",
+      "to": "services/core-baseline/src/modules/crm/access.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:withFieldPolicies"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-assessment.ts",
+      "to": "services/core-baseline/src/modules/crm/core.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:contactReferences",
+        "value:stamp"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-assessment.ts",
+      "to": "services/core-baseline/src/modules/crm/properties.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:checkField",
+        "value:json",
+        "value:object",
+        "value:properties"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-assessment.ts",
+      "to": "services/core-baseline/src/modules/identity/admin.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:uuid"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-assessment.ts",
+      "to": "services/core-baseline/src/modules/identity/domain/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:fieldAllowed",
+        "value:permits"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-assessment.ts",
+      "to": "services/core-baseline/src/modules/sales/need-outcome-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:linkNeedOutcome",
+        "value:listNeedOutcomes"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-assessment.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:createHash"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-events.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-events.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:randomUUID"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-provider.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-receipt.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:CommandResponse"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-recovery.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError",
+        "value:DurableCommands"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-recovery.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-recovery.ts",
+      "to": "services/core-baseline/src/modules/agents/routing.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:Routing"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-recovery.ts",
+      "to": "services/core-baseline/src/modules/channels/ports.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:ChannelReferences"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-recovery.ts",
+      "to": "services/core-baseline/src/modules/crm/core.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:contactReferences"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-recovery.ts",
+      "to": "services/core-baseline/src/modules/crm/properties.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:checkField",
+        "value:json"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-recovery.ts",
+      "to": "services/core-baseline/src/modules/crm/registry.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:RecordRegistry"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-recovery.ts",
+      "to": "services/core-baseline/src/modules/identity/domain/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:Access"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-recovery.ts",
+      "to": "services/core-baseline/src/modules/sales/need-outcome-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:needOutcomeState"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-recovery.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:randomUUID"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-recovery.ts",
+      "to": "package:typeorm",
+      "syntax": "import",
+      "bindings": [
+        "type:DataSource"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-values.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-values.ts",
+      "to": "services/core-baseline/src/modules/crm/need-fields.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:needBuiltins"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/need-values.ts",
+      "to": "services/core-baseline/src/modules/crm/properties.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:Property",
+        "value:object",
+        "value:value"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/outbound-coordinator.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:UnitOfWork"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/outbound-coordinator.ts",
+      "to": "package:@agentic-crm/contracts",
+      "syntax": "import",
+      "bindings": [
+        "type:DispatchBinding",
+        "value:chatDispatchV1Schema",
+        "value:chatExchangeV1Schema"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/outbound-coordinator.ts",
+      "to": "package:@agentic-crm/workload-transport",
+      "syntax": "import",
+      "bindings": [
+        "type:TlsMaterial",
+        "value:remoteRegistryAuthority",
+        "value:workloadRequest"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/outbound-coordinator.ts",
+      "to": "package:ajv",
+      "syntax": "import",
+      "bindings": [
+        "value:Ajv"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/outbound-coordinator.ts",
+      "to": "package:ajv-formats",
+      "syntax": "import",
+      "bindings": [
+        "value:default"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/outbound-coordinator.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:randomUUID"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/outbound-coordinator.ts",
+      "to": "package:typeorm",
+      "syntax": "import",
+      "bindings": [
+        "type:DataSource"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/outbound-job.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError",
+        "value:canonical"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/outbound-job.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/outbound-job.ts",
+      "to": "package:@agentic-crm/contracts",
+      "syntax": "import",
+      "bindings": [
+        "type:DispatchBinding",
+        "type:DispatchRequest"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/outbound-job.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:createHash",
+        "value:randomUUID"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/outbound.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError",
+        "value:DurableCommands"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/outbound.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:UnitOfWork"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/outbound.ts",
+      "to": "services/core-baseline/src/modules/channels/ports.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:SendInput",
+        "type:SendResult",
+        "type:Sender",
+        "value:ChannelReferences"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/outbound.ts",
+      "to": "services/core-baseline/src/modules/chatflow/outbound-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:chatflowOutboundAccess"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/outbound.ts",
+      "to": "services/core-baseline/src/modules/crm/access.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:withFieldPolicies"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/outbound.ts",
+      "to": "services/core-baseline/src/modules/identity/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:AccessError",
+        "value:IdentityAuthorization"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/outbound.ts",
+      "to": "services/core-baseline/src/modules/identity/domain/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:fieldAllowed",
+        "value:permits"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/outbound.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:randomUUID"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/outbound.ts",
+      "to": "package:typeorm",
+      "syntax": "import",
+      "bindings": [
+        "type:DataSource"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/ownership-port.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/ownership-port.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/ownership-port.ts",
+      "to": "services/core-baseline/src/modules/crm/registry.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:RegistryRecord",
+        "type:SubtypeAdapter"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/sales-context-port.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/sales-context-port.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/sales-context-port.ts",
+      "to": "services/core-baseline/src/modules/crm/core.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:contactReferences"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/sales-context-port.ts",
+      "to": "services/core-baseline/src/modules/crm/properties.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:checkField"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/sales-context-port.ts",
+      "to": "services/core-baseline/src/modules/identity/domain/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:Access"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/session-process-storage.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/session-process-storage.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/session-process-storage.ts",
+      "to": "services/core-baseline/src/modules/crm/properties.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:object"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/session-progress.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError",
+        "value:DurableCommands"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/session-progress.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/session-progress.ts",
+      "to": "services/core-baseline/src/modules/crm/access.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:allows",
+        "value:withFieldPolicies"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/session-progress.ts",
+      "to": "services/core-baseline/src/modules/crm/core.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:contactReferences",
+        "value:stamp"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/session-progress.ts",
+      "to": "services/core-baseline/src/modules/crm/properties.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:checkField",
+        "value:object"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/session-progress.ts",
+      "to": "services/core-baseline/src/modules/identity/admin.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:uuid"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/session-progress.ts",
+      "to": "services/core-baseline/src/modules/identity/domain/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:Access"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/session-progress.ts",
+      "to": "services/core-baseline/src/modules/identity/domain/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:fieldAllowed",
+        "value:permits"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/session-progress.ts",
+      "to": "services/core-baseline/src/modules/reporting/session-funnel.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:FunnelSession",
+        "type:MilestoneFact",
+        "value:sessionFunnel"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/session-progress.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:randomUUID"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/snooze.ts",
+      "to": "services/core-baseline/src/kernel/reliability/activity-notification.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:ActivityActor",
+        "value:activityNotification",
+        "value:activitySupported"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/snooze.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError",
+        "value:DurableCommands"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/snooze.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope",
+        "value:UnitOfWork"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/snooze.ts",
+      "to": "services/core-baseline/src/modules/crm/access.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:withFieldPolicies"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/snooze.ts",
+      "to": "services/core-baseline/src/modules/crm/core.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:stamp"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/snooze.ts",
+      "to": "services/core-baseline/src/modules/crm/properties.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:object"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/snooze.ts",
+      "to": "services/core-baseline/src/modules/identity/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:IdentityAuthorization"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/snooze.ts",
+      "to": "services/core-baseline/src/modules/identity/domain/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:Access",
+        "value:permits"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/snooze.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:randomUUID"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/snooze.ts",
+      "to": "package:typeorm",
+      "syntax": "import",
+      "bindings": [
+        "type:DataSource"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/stage-reporting-port.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/thread-boundary.ts",
+      "to": "package:@nestjs/platform-express",
+      "syntax": "import",
+      "bindings": [
+        "type:NestExpressApplication"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-activity-http.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-activity-http.ts",
+      "to": "services/core-baseline/src/modules/identity/admin.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:uuid"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-activity-http.ts",
+      "to": "services/core-baseline/src/modules/identity/auth/http.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:AuthRuntime",
+        "value:cookie"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-activity-http.ts",
+      "to": "services/core-baseline/src/modules/identity/auth/security.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:AuthError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-activity-http.ts",
+      "to": "services/core-baseline/src/modules/identity/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:AccessError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-activity-http.ts",
+      "to": "package:@nestjs/common",
+      "syntax": "import",
+      "bindings": [
+        "value:Controller",
+        "value:Get",
+        "value:Inject",
+        "value:Post",
+        "value:Put",
+        "value:Req",
+        "value:Res"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-activity-http.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:randomUUID"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-activity-http.ts",
+      "to": "package:node:http",
+      "syntax": "import",
+      "bindings": [
+        "type:IncomingMessage",
+        "type:ServerResponse"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-catalog-http.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-catalog-http.ts",
+      "to": "services/core-baseline/src/modules/crm/properties.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:object"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-catalog-http.ts",
+      "to": "services/core-baseline/src/modules/identity/admin.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:uuid"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-catalog-http.ts",
+      "to": "services/core-baseline/src/modules/identity/auth/http.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:AuthRuntime",
+        "value:cookie"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-catalog-http.ts",
+      "to": "services/core-baseline/src/modules/identity/auth/security.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:AuthError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-catalog-http.ts",
+      "to": "services/core-baseline/src/modules/identity/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:AccessError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-catalog-http.ts",
+      "to": "package:@nestjs/common",
+      "syntax": "import",
+      "bindings": [
+        "value:Controller",
+        "value:Delete",
+        "value:Get",
+        "value:Inject",
+        "value:Patch",
+        "value:Post",
+        "value:Put",
+        "value:Req",
+        "value:Res"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-catalog-http.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:randomUUID"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-catalog-http.ts",
+      "to": "package:node:http",
+      "syntax": "import",
+      "bindings": [
+        "type:IncomingMessage",
+        "type:ServerResponse"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-catalogs.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError",
+        "value:DurableCommands",
+        "value:canonical"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-catalogs.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope",
+        "value:UnitOfWork"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-catalogs.ts",
+      "to": "services/core-baseline/src/modules/channels/ports.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:ChannelReferences"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-catalogs.ts",
+      "to": "services/core-baseline/src/modules/crm/access.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:withFieldPolicies"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-catalogs.ts",
+      "to": "services/core-baseline/src/modules/crm/properties.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:json",
+        "value:object"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-catalogs.ts",
+      "to": "services/core-baseline/src/modules/identity/admin.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:uuid"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-catalogs.ts",
+      "to": "services/core-baseline/src/modules/identity/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:IdentityAuthorization"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-catalogs.ts",
+      "to": "services/core-baseline/src/modules/identity/domain/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:Access",
+        "value:fieldAllowed",
+        "value:permits"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-catalogs.ts",
+      "to": "services/core-baseline/src/modules/identity/workspace-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:WorkspaceIdentityPort"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-catalogs.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:createHmac",
+        "value:randomUUID",
+        "value:timingSafeEqual"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-catalogs.ts",
+      "to": "package:typeorm",
+      "syntax": "import",
+      "bindings": [
+        "type:DataSource"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-consumer.ts",
+      "to": "services/core-baseline/src/kernel/reliability/delivery.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:Consumer",
+        "value:DeliveryError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-consumer.ts",
+      "to": "services/core-baseline/src/modules/identity/admin.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:uuid"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-http.ts",
+      "to": "services/core-baseline/src/kernel/database/data-source.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:databaseSource"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-http.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-http.ts",
+      "to": "services/core-baseline/src/modules/identity/admin.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:uuid"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-http.ts",
+      "to": "services/core-baseline/src/modules/identity/auth/http.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:AuthModule",
+        "value:AuthRuntime",
+        "value:cookie"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-http.ts",
+      "to": "services/core-baseline/src/modules/identity/auth/security.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:AuthError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-http.ts",
+      "to": "services/core-baseline/src/modules/identity/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:AccessError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-http.ts",
+      "to": "package:@nestjs/common",
+      "syntax": "import",
+      "bindings": [
+        "type:OnModuleDestroy",
+        "value:Controller",
+        "value:Get",
+        "value:Inject",
+        "value:Module",
+        "value:Post",
+        "value:Req",
+        "value:Res"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-http.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:createHmac",
+        "value:randomUUID"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-http.ts",
+      "to": "package:node:http",
+      "syntax": "import",
+      "bindings": [
+        "type:IncomingMessage",
+        "type:ServerResponse"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-storage.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-storage.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope",
+        "value:UnitOfWork"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace-storage.ts",
+      "to": "package:typeorm",
+      "syntax": "import",
+      "bindings": [
+        "type:DataSource"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace.ts",
+      "to": "services/core-baseline/src/kernel/reliability/commands.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:CommandError",
+        "value:DurableCommands",
+        "value:canonical"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace.ts",
+      "to": "services/core-baseline/src/kernel/tenancy/unit-of-work.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:TransactionScope",
+        "value:UnitOfWork"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace.ts",
+      "to": "services/core-baseline/src/modules/channels/ports.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:ChannelReferences"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace.ts",
+      "to": "services/core-baseline/src/modules/crm/access.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:withFieldPolicies"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace.ts",
+      "to": "services/core-baseline/src/modules/crm/conversation-ports.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:ConversationCrmPort"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace.ts",
+      "to": "services/core-baseline/src/modules/crm/core.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:stamp"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace.ts",
+      "to": "services/core-baseline/src/modules/crm/properties.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:object"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace.ts",
+      "to": "services/core-baseline/src/modules/identity/admin.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:uuid"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace.ts",
+      "to": "services/core-baseline/src/modules/identity/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:IdentityAuthorization"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace.ts",
+      "to": "services/core-baseline/src/modules/identity/domain/authorization.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:Access",
+        "value:fieldAllowed",
+        "value:permits"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace.ts",
+      "to": "package:node:crypto",
+      "syntax": "import",
+      "bindings": [
+        "value:createHmac",
+        "value:randomUUID",
+        "value:timingSafeEqual"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/conversation/workspace.ts",
+      "to": "package:typeorm",
+      "syntax": "import",
+      "bindings": [
+        "type:DataSource"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/crm/activity-port.ts",
+      "to": "services/core-baseline/src/modules/conversation/contribution-storage.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:contribute"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/crm/http.ts",
+      "to": "services/core-baseline/src/modules/conversation/domain.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:conversationArchiveGuard"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/external-api/catalog.ts",
+      "to": "services/core-baseline/src/modules/conversation/external-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:conversationExternalCatalog"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/external-api/http.ts",
+      "to": "services/core-baseline/src/modules/conversation/external-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:ConversationReadKind",
+        "value:ExternalConversations"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/external-api/service.ts",
+      "to": "services/core-baseline/src/modules/conversation/external-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "type:ConversationReadKind",
+        "type:ExternalConversations"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/reporting/conversion-source.ts",
+      "to": "services/core-baseline/src/modules/conversation/conversion-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:conversionChatFacts"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/reporting/stage-source.ts",
+      "to": "services/core-baseline/src/modules/conversation/stage-reporting-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:chatStageFacts"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/sales/deals.ts",
+      "to": "services/core-baseline/src/modules/conversation/lead-source-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:conversationLeadSource"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/sales/deals.ts",
+      "to": "services/core-baseline/src/modules/conversation/sales-context-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:requireSalesSession"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/sales/session-context.ts",
+      "to": "services/core-baseline/src/modules/conversation/contribution-storage.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:contribute"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/sales/session-context.ts",
+      "to": "services/core-baseline/src/modules/conversation/sales-context-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:requireSalesSession"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/sales/source.ts",
+      "to": "services/core-baseline/src/modules/conversation/lead-source-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:conversationLeadSource"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/workflow/activity-port.ts",
+      "to": "services/core-baseline/src/modules/conversation/activity-reference-port.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:verifyActivityConversation"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/workflow/application.ts",
+      "to": "services/core-baseline/src/modules/conversation/domain.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:conversation",
+        "value:requirePermission"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/modules/workflow/engine.ts",
+      "to": "services/core-baseline/src/modules/conversation/need-recovery.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:readNeedForWorkflow",
+        "value:recoverNeed"
+      ]
+    },
+    {
+      "from": "services/core-baseline/src/outbound-main.ts",
+      "to": "services/core-baseline/src/modules/conversation/outbound-coordinator.ts",
+      "syntax": "import",
+      "bindings": [
+        "value:HumanOutboundCoordinator"
+      ]
+    }
+  ]
+}

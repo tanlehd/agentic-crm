@@ -1,5 +1,8 @@
 # Physical schema baseline M1
 
+ADR-027: one Workflow service owns business automation. CHG-20261021-08 removes legacy Chatflow code, routes and data; historical identifiers in evidence are not supported runtime APIs. Current removal scope is documented in the retirement contract.
+
+
 **ADR-021:** file này giữ lịch sử physical baseline, không sửa DDL/checksum đã áp dụng. Thiết kế mới theo [guideline](database-guidelines.md), [catalog](schema-catalog.md), [retrofit inventory](table-placement-inventory.md); SRC-038 forward migration23 và journal bootstrap đã thêm tenant_id, giữ DDL/checksum cũ. [Exact native DDL](../contracts/native-auth-implementation.md). Bảng baseline bên dưới là lịch sử trước retrofit.
 
 > Baseline monolith hiện có, không phải physical schema của các microservice đích. Xem [data ownership ADR-017](service-ownership.md); FK/UoW cross-module dưới đây chỉ áp dụng trong DB hiện tại. Extraction không sửa applied migrations1–18.
@@ -96,7 +99,7 @@ Additive sau v8. channel_connection: tenant+id, external_account_id varchar255 u
 
 conversation subtype: contact/identity/connection tuple FK; active_identity_key generated identity khi open/pending, NULL khi closed; unique tenant+active_identity_key. status check, opened/closed datetime6, closed consistency check. message: UUID PK, tenant FK qua Conversation+connection tuple; text max4000 application+CHECK, direction/status checks, occurred/received datetime6, index tenant+conversation+received_at+id; provider ID varchar255 unique tenant+connection+provider; outbound_intent nullable unique tenant+intent. outbound_intent: actor principal/account refs qua tenant, owner_revision bigint, text, status check, idempotency_key varchar128 ascii, unique tenant+actor+key, dispatch_token UUID nullable, sending_at datetime6 nullable, sanitized error_code varchar64/provider ID varchar255. message→intent FK sau khi intent table tồn tại; intent→message tham chiếu bằng message unique intent lookup (không cột vòng dư). mock_outbound_receipt tenant+intent PK FK, provider ID unique tenant+provider; chỉ synthetic provider persistence. Không token/payload thật.
 
-CRM Contact archive guard chặn active Conversation qua module port; v8 Lead reference CHECK giữ nguyên tới task Sales M2. Upgrade không rewrite M1 data; rollback ứng dụng cần version tương thích v9, không drop dữ liệu để downgrade.
+Legacy v9 source có Contact archive guard; đây là [compatibility inventory](../contracts/legacy-record-archive.md), không là yêu cầu mới; v8 Lead reference CHECK giữ nguyên tới task Sales M2. Upgrade không rewrite M1 data; rollback ứng dụng cần version tương thích v9, không drop dữ liệu để downgrade.
 
 ## v10 — SRC-015 inbound
 
@@ -116,20 +119,9 @@ Additive agent_execution: id UUID PK; tenant UUID; session_id UUID (port-validat
 
 Add workflow_definition/version/run/step_run/wait/action/trigger_selection. UUID tenant composite FK throughout; version definition/number unique, run version/event and definition/event unique, step/wait/action keyed tenant/run/node. Definition active_version FK includes definition; immutable snapshots enforced by application. Run pins actor, version and current node; JSON only validated graph/IDs/scalars. Step leases/token and next_attempt_at indexed; waits resume_at indexed; trigger selection retained without TTL. Role/actor FK same tenant; parent run owns child references verified via ports. No historical migration edits or schema auto-sync.
 
-## SRC-020 v14–v16 Chatflow
+## Retired conversational storage
 
-V14 adds definition/version/session/node_run/turn and session-bound outbound intent FK. Tenant composite FKs, immutable graph snapshots, unique active Conversation and start key; node lease/token and prompt attempt, turn session/message dedup; variables/draft/provenance JSON. Lead null-only v8 guards lifted for Conversation/session/touchpoint and replaced with tenant FKs; unique session Lead retained. V15 CHECK prevents null conversation bypassing the composite session FK. V16 stores a private proposed reply on node; only successful runtime completion creates outbound. Source SQL files are separate immutable migrations; v1–v13 unchanged. Details: [dictionary](dictionary.md), [Chatflow contract](../contracts/chatflow.md). Runtime execution session is an application-port-bound reference; private legacy runtime harness rows are not retroactively converted into production sessions.
-
-SRC-021 migration17: additive lead_handoff as specified in [Sales contract](../contracts/sales-handoff.md); v1–16 preserved.
-
-
-SRC-026 legacy projection không migration/backfill: giữ schema17, text NOT NULL, unique tenant+connection+provider_message_id và toàn bộ journal.
-
-
-v18 Ready: message_content composite PK/FK tenant+message, JSON OBJECT CHECK và OCTET_LENGTH<=65536. Immutable1–17; legacy message không ALTER/backfill. [Migration/rollback policy](../contracts/rich-messages.md).
-
-
-SRC-028 independent Connector schema1 per [contract](../contracts/connector-bridge.md). Monolith schema18 unchanged; no implicit migration19.
+Forward43 removes Chatflow tables and Lead/outbound references. Historical migrations14–16 remain immutable; see [retirement dictionary](chatflow-retirement.md).
 
 ## Independent Connector lineage2
 
@@ -143,7 +135,7 @@ ADR-019 [target identity/cache/contact message contract](../contracts/contact-re
 
 ## SRC-032 — schema20 physical delta
 
-Exact immutable DDL in apps/backend/src/kernel/database/workspace-migration.ts adds conversation_workspace, message_workspace, conversation_read_state, chat_read_rollout_principal and chat_read_rollout_conversation. Local composite FK/index/checks and required rollout/backfill policy follow [workspace contract](../contracts/agent-chat-workspace.md). No old migration or message/status table modified; snooze/tag/activity tables remain later tasks. Source dual-writes atomic under existing Conversation registry lock; operator quiesces writers for migration cutoff and runs resumable backfill before enabling reads.
+Exact immutable DDL in services/core-baseline/src/kernel/database/workspace-migration.ts adds conversation_workspace, message_workspace, conversation_read_state, chat_read_rollout_principal and chat_read_rollout_conversation. Local composite FK/index/checks and required rollout/backfill policy follow [workspace contract](../contracts/agent-chat-workspace.md). No old migration or message/status table modified; snooze/tag/activity tables remain later tasks. Source dual-writes atomic under existing Conversation registry lock; operator quiesces writers for migration cutoff and runs resumable backfill before enabling reads.
 
 ## SRC-033 schema21 — workspace catalogs
 

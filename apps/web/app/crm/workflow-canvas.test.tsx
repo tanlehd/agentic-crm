@@ -2,7 +2,7 @@ import {describe,it,expect} from 'vitest';
 import {randomUUID} from 'node:crypto';
 import {addCanvasNode,autoLayout,connectGraph,ports,triggerId} from './workflow-canvas-model';
 import {initialWorkflow,insertNode} from './workflow-model';
-import {validateGraph} from '../../../backend/src/modules/workflow/graph';
+import {validateGraph} from '../../../../services/core-baseline/src/modules/workflow/graph';
 describe('Workflow canvas execution graph compatibility',()=>{
  it('replaces only the selected branch, removes it and keeps the saved graph immutable',()=>{
   const g=insertNode(insertNode(initialWorkflow(randomUUID()),'wait_timer','end'),'condition','step_1'),before=structuredClone(g);

@@ -1,5 +1,9 @@
 # Local service manager — ENV-003
 
+SRC-107: Connector containers serve native local ingress. `pnpm connector:rollout --status` reads direct probes + current-registry snapshot; [runbook](connector-local.md). Long-lived3020 predates worker probe and may show `unknown (no readiness probe)`; source snapshot/Docker health are ready. Do not restart3020 solely to refresh registry because it owns API/worker/web children. Compose manages Connector, not host Start/Stop buttons.
+
+2026-10-18: host registry and Docker packaging are distinct. Reporting can also run via its [independent container runbook](reporting-container.md); the monitor does not manage that container. [Fresh topology](../system/deployment-topology.md) shows actual host/Compose boundaries. Main traffic is not automatically switched.
+
 SRC-038: native MySQL authentication đã cutover; Keycloak đã bỏ khỏi registry. [Setup/upgrade/recovery](native-auth.md).
 
 Status: Ready for implementation, 2026-10-07. Scope: developer tooling, không phải Operations production service.
@@ -10,7 +14,7 @@ Status: Ready for implementation, 2026-10-07. Scope: developer tooling, không p
 - Node24/pnpm10 chạy application source trên Windows/macOS/Linux. Registry chỉ gồm deploy units đã có: API, worker, web, Connector API/worker; không biến module monolith thành microservice giả.
 - Mỗi unit đọc `.local/services/<id>.env`; file không được gửi lên UI/log. Các DB/Redis ports và remote origins cấu hình được. `KAFKA_BROKERS` là reserved configuration, chưa có producer/consumer; ADR-017 broker gate giữ nguyên.
 - Monitor độc lập trên loopback, xem trạng thái khi DB/app chết. GET status trả id, env path, process ownership và readiness; POST start/stop chỉ dùng allowlist, same-origin và token phiên. Không nhận arbitrary command/path. Stop chỉ process manager đã tạo; process ngoài manager chỉ quan sát. Khi đóng manager, dừng app con; infra vẫn tồn tại.
-- Health endpoint đọc port từ env; Connector worker chỉ báo process running (không có readiness HTTP), không gọi đó là healthy. Lỗi probe/config/action hiển thị sanitized. Không expose secret/raw stderr.
+- Health endpoint đọc PORT từ env; SRC-091 bổ sung readiness HTTP của Connector worker sau own schema-check/tick thành công. Khi đặt CONNECTOR_WORKER_PORT phải khớp PORT để monitor probe đúng. Monitor đang chạy không hot reload registry; áp dụng phiên sau, không restart toàn bộ app chỉ để đổi probe. Lỗi probe/config/action hiển thị sanitized. Không expose secret/raw stderr.
 - Startup không migrate. Schema23 nâng riêng bằng operator runbook native; startup không tự migrate. Production Linux dùng container/supervisor ở deployment gate riêng, không publish monitor local lên mạng.
 - Test/manual QA dùng tenant/user synthetic riêng, dữ liệu có thể giữ và dùng lại; không reset MySQL/Redis mặc định. Legacy regression yêu cầu DB trống vẫn là explicit isolated command, không được trỏ vào persistent dev DB hoặc tự đổi assertion thành PASS. Không flush shared Redis.
 

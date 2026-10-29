@@ -23,7 +23,7 @@ export async function conversationClassificationContracts(spec){
   ['get','conversations/{conversation}/sessions/{session}/contributions',null,'conversation-contributions-response',['before_revision']],
   ['get','records/{id}/assignment-teams',null,'conversation-assignment-teams-response',[]],
  ]){
-  const parameters=[{name:'X-Tenant-Id',in:'header',required:true,schema:uuid},...Array.from(path.matchAll(/\{(\w+)\}/g),m=>({name:m[1],in:'path',required:true,schema:uuid})),...queries.map(name=>({name,in:'query',schema:revision})),...(input?['Origin','X-CSRF-Token','Idempotency-Key','If-Match'].map(name=>({name,in:'header',required:true,schema:str})):[])];
+  const parameters=[{name:'X-Tenant-Id',in:'header',required:true,schema:uuid},...Array.from(path.matchAll(/\{(\w+)\}/g),m=>({name:m[1],in:'path',required:true,schema:uuid})),...queries.map(name=>({name,in:'query',schema:{type:'string',pattern:'^[1-9][0-9]{0,19}$'}})),...(input?['Origin','X-CSRF-Token','Idempotency-Key','If-Match'].map(name=>({name,in:'header',required:true,schema:str})):[])];
   (spec.paths['/api/v1/'+path]??={})[method]={operationId:'conversation-classification-'+method+'-'+path.replaceAll(/[{}]/g,'').replaceAll('/','-'),security:[{sessionCookie:[]}],parameters,...(input?{requestBody:{required:true,content:{'application/json':{schema:{$ref:'#/components/schemas/'+input}}}}}:{}),responses:{200:{description:'Authorized episode result',content:{'application/json':{schema:{$ref:'#/components/schemas/'+output}}}},...Object.fromEntries([400,401,403,404,409,422,428,503].map(code=>[code,{description:'Sanitized failure'}]))}};
  }
  spec.paths['/api/v1/records/{id}/assignment-targets'].get.parameters.push({name:'team_id',in:'query',schema:uuid});

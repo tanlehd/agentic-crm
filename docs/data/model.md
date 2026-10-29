@@ -85,12 +85,6 @@ erDiagram
   WORKFLOW_VERSION ||--o{ WORKFLOW_RUN : starts
   WORKFLOW_RUN ||--o{ WORKFLOW_STEP_RUN : executes
   WORKFLOW_RUN ||--o{ WORKFLOW_WAIT : suspends
-  CHATFLOW_DEFINITION ||--o{ CHATFLOW_VERSION : versions
-  CHATFLOW_VERSION ||--o{ CHATFLOW_SESSION : starts
-  CONVERSATION ||--o{ CHATFLOW_SESSION : hosts
-  CHATFLOW_SESSION ||--o{ CHATFLOW_TURN : receives
-  CHATFLOW_SESSION ||--o{ CHATFLOW_NODE_RUN : persists
-  CHATFLOW_SESSION ||--o{ AGENT_EXECUTION : invokes
   AGENT_EXECUTION ||--o{ TOOL_EXECUTION : requests
   AUDIT_ENTRY }o--|| TENANT : records
   OUTBOX_EVENT }o--|| TENANT : publishes
@@ -117,7 +111,7 @@ External identity unique theo `(tenant_id,connection_id,external_subject_id)`. M
 
 Một Conversation active cho mỗi contact identity. `conversation.active_identity_key` bằng identity ID khi open/pending, NULL khi closed; unique `(tenant_id,active_identity_key)` cho phép lịch sử closed. Lock identity khi tìm/tạo conversation để tránh race; new message sau closed tạo Conversation mới.
 
-Một Lead từ một Chatflow qualification session: unique `(tenant_id,qualification_session_id)` khi có session; Lead thủ công dùng Idempotency-Key. Không dùng contact ID làm unique Lead vì một người có nhiều nhu cầu.
+Lead dùng Idempotency-Key và owner validation. Không dùng Contact ID làm unique Lead vì một người có nhiều nhu cầu; không còn ràng buộc qualification session.
 
 Touchpoint giữ nguồn provider, campaign/ad IDs nullable, thời điểm xảy ra/nhận và metadata đã allowlist. Không suy diễn ad ID khi thiếu. Lead chốt `source_touchpoint_id` từ touchpoint CTM sớm nhất trong Conversation tại lúc qualify; nếu không có thì NULL/unknown. Touchpoint đến muộn không viết lại snapshot ngầm.
 
@@ -141,9 +135,9 @@ SRC-017 physical v11: routing_cursor references team/principal by tenant; agent_
 
 SRC-018 physical v12: agent_execution has same-tenant Conversation/principal/service_actor/policy references; tool_execution references execution by tenant. Session binding uses an application port until SRC-020 adds its table/FK. Capacity slot reservation/release is atomic with execution state. No cross-module direct session/Contact writes.
 
-SRC-019 physical v13 adds Workflow definition/version/run/step/wait/action/trigger_selection with same-tenant FKs; immutable version and service role pinning, stable action ledger and durable child-cancel request. Children stay behind owning-module UoW ports; production Chatflow/Sales integration follows SRC-020/021.
+SRC-019 physical v13 adds Workflow definition/version/run/step/wait/action/trigger_selection with same-tenant FKs; immutable version and service role pinning, stable action ledger and durable child-cancel request. Children stay behind owning-module UoW ports; Sales integration follows SRC-021; standalone conversational runtime is retired.
 
-SRC-020: Chatflow physical session/turn/node state and Lead session binding are implemented by v14–v16; see [dictionary](dictionary.md) and [Chatflow contract](../contracts/chatflow.md). Workflow/Runtime use owning-module ports; Human completion commits Lead+session+event together.
+CHG-20261021-08 removes legacy conversational storage through forward43. Business Lead/Conversation/Message records remain; [retirement](chatflow-retirement.md).
 
 SRC-021 migration17 implements lead_handoff with composite tenant FKs, generated pending active_lead_key, parent/action replay binding, accepted principal/time state checks and durable attention. [Exact Sales contract](../contracts/sales-handoff.md).
 
@@ -186,7 +180,7 @@ erDiagram
 
 ## UX-002 — Workspace logical extension
 
-[Workspace ERD và keys](agent-chat-workspace.md) bổ sung Chat-owned per-Human read state, saved inbox/share, tags links, snooze schedule, activity refs và message coverage. Conversation lifecycle vẫn open/pending/closed; snooze là overlay, tags là của Conversation. Contact/note vẫn CRM, Human/team vẫn Identity, run vẫn Workflow/Chatflow. Không cross-service FK; chưa tạo database objects. Đọc contract cùng ERD trước SRC-032…037.
+[Workspace ERD và keys](agent-chat-workspace.md) bổ sung Chat-owned per-Human read state, saved inbox/share, tags links, snooze schedule, activity refs và message coverage. Conversation lifecycle vẫn open/pending/closed; snooze là overlay, tags là của Conversation. Contact/note vẫn CRM, Human/team vẫn Identity, run vẫn Workflow. Không cross-service FK; chưa tạo database objects. Đọc contract cùng ERD trước SRC-032…037.
 
 SRC-053 acquisition session source is implemented on schema26: [exact model](../contracts/acquisition-session-implementation.md) and [runtime evidence](../tracking/details/SRC-053.md). Long-lived Conversation contains immutable acquisition episodes; Lead/Deal store validated session lineage. Marketing objects in the combined ERD remain design-only.
 

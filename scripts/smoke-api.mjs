@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { setTimeout as sleep } from 'node:timers/promises';
 
 const port = 38081;
-const child = spawn(process.execPath, ['apps/backend/dist/main.js'], { env: { ...process.env, PORT: String(port), MYSQL_HOST: '', REDIS_HOST: '' }, stdio: ['ignore', 'pipe', 'pipe'] });
+const child = spawn(process.execPath, ['services/core-baseline/dist/main.js'], { env: { ...process.env, PORT: String(port), MYSQL_HOST: '', REDIS_HOST: '' }, stdio: ['ignore', 'pipe', 'pipe'] });
 let output = '';
 child.stdout.on('data', data => { output += data; });
 child.stderr.on('data', data => { output += data; });

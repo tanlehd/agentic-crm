@@ -2,7 +2,7 @@ import {readFile,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
-import {externalOpenApi} from '../apps/backend/dist/modules/external-api/openapi.js';
+import {externalOpenApi} from '../services/core-baseline/dist/modules/external-api/openapi.js';
 const file='docs/developer/openapi.json',text=JSON.stringify(externalOpenApi,null,2)+'\n';
 if(process.argv.includes('--check'))assert.equal(await readFile(file,'utf8'),text,'OpenAPI artifact drift');else await writeFile(file,text);
 const ajv=addFormats(new Ajv2020({strict:false,allErrors:true}));

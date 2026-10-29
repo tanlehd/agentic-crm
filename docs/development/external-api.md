@@ -11,12 +11,12 @@ Source: NestJS `modules/external-api` transport, Identity `external-apps` author
 Use pinned Node24 (`.local/node-v24.21.0-win-x64/node.exe` on this Windows workspace). Build backend before scripts importing `dist`.
 
 ```sh
-node node_modules/typescript/bin/tsc -p apps/backend/tsconfig.json
-node node_modules/vitest/vitest.mjs run apps/backend/src/modules/external-api/external-api.test.ts
+node node_modules/typescript/bin/tsc -p services/core-baseline/tsconfig.json
+node node_modules/vitest/vitest.mjs run services/core-baseline/src/modules/external-api/external-api.test.ts
 node scripts/external-api-native-test.mjs
 node scripts/external-api-contract.mjs --check
 node scripts/external-api-browser.mjs
-node scripts/external-conversations-test.mjs
+node scripts/identity-owner-native-test.mjs --focus="Chat external"
 node scripts/external-conversations-browser.mjs
 ```
 
@@ -30,4 +30,4 @@ App config uses CAS; rotation invalidates old token immediately and does not res
 
 R1 is read integration. External writes require proper service actor ownership/domain audit, not the Human generic writer. OAuth distribution/consent/refresh, webhooks/signing/replay and bulk writes remain PLAN-052, independently of this bounded delivery.
 
-SRC-089 adds Chat `conversation/external-port.ts` and four Conversation/message read routes; no database migration. Select Conversation first, then Conversation messages and text only when needed. Both team grants restrict the parent. Tests reuse named synthetic teams/closed conversations/messages/apps in native_seed_test and leave apps disabled. Only the named test app's quota is reset for repeatability; existing customer/user records are untouched. The browser script uses local Alpha and leaves its app disabled. [Contract](../contracts/external-conversations.md) · [Evidence](../tracking/details/SRC-089.md).
+T09 replaces the former SQL `conversation/external-port.ts` with `gateway/chat-external-read.ts` and the four independent Chat owner reads. Identity keeps admission, quota and app administration; current catalog lives in `external-api/conversation-catalog.ts`. The old SQL reader and its monolith test runner were removed; the retained native owner suite covers the replacement. Main activation remains pending T09. Select Conversation first, then Conversation messages and text only when needed. Both team grants restrict the parent. The native Chat suite uses retained native_identity_test/test_crm_chat_owner fixtures; generic CRM native tests continue using their own documented fixture. The browser script uses local Alpha and leaves its app disabled. [Contract](../contracts/external-conversations.md) · [Evidence](../tracking/details/SRC-089.md).

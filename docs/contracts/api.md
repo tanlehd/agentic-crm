@@ -1,5 +1,8 @@
 # REST API contract — M1–M2
 
+ADR-027: one Workflow service owns business automation. CHG-20261021-08 removes legacy Chatflow code, routes and data; historical identifiers in evidence are not supported runtime APIs. Current removal scope is documented in the retirement contract.
+
+
 SRC-083 / CHG-20261017-01: [Custom Inbox builder](custom-inbox-builder.md) adds native GET `/api/v1/chat-workspace/inbox-options` for authorized filter/team/share-target discovery. Existing catalog/query/mutation v1 semantics remain; no database/event change.
 
 CHG-20261016-04 / SRC-081: [Thread identity, need enrichment and recovery](need-follow-up.md) supersedes earlier exclusions for this bounded scope. Current canonical Chat APIs use conversation_id (SRC-082 / CHG-20261016-05); deprecated thread_id artifacts remain readable through scoped compatibility. Need-scoped default/custom values, on-demand provider protocol, Human pins and read_need/recover_need workflow actions are implemented separately from general autonomous Agent Runtime or live channel delivery. See task evidence for actual validation.
@@ -83,7 +86,7 @@ Các config entity mutable có `version` và If-Match như record. M1 provision 
 
 Create field bắt buộc: Contact `display_name`; Company `name`; Activity `kind,subject,related_record_id`; custom record theo property required/default. Owner không được gán qua generic API; default owner là principal caller nếu có, hoặc NULL với service. Team phải caller được phép create vào; scope own không cho tự chọn team ngoài membership.
 
-PATCH `custom_values` là merge theo key; explicit null xóa giá trị optional, required field không được null. Field không khai báo bị reject, không bỏ qua. `status`, `owner`, `tenant`, `version`, lifecycle Customer và source attribution không nằm trong editable fields. Archive chỉ hỗ trợ Contact/Company/Activity/custom ở M1, reject nếu còn active conversation/lead hoặc run tham chiếu; unarchive/merge là backlog.
+PATCH `custom_values` là merge theo key; explicit null xóa giá trị optional, required field không được null. Field không khai báo bị reject, không bỏ qua. `status`, `owner`, `tenant`, `version`, lifecycle Customer và source attribution không nằm trong editable fields. Archive wire của baseline được kê tại [legacy compatibility](legacy-record-archive.md); không dùng nó làm lifecycle hoặc prerequisite chung của service.
 
 Filter M1 là AND của tối đa 10 predicate `{field,op,value}`; op `eq,in,gte,lte`, `in` tối đa 50 giá trị. Standard field allowlist và indexed custom field mới được dùng; type phải khớp; datetime UTC. Sort tối đa một field + ID tie-breaker. Enum/string eq case-sensitive; không full-text, relation traversal hoặc arbitrary SQL.
 
@@ -144,15 +147,10 @@ Contact team access được grant cùng transaction handoff; service actor ch�
 
 | Method + path | Input → output | Permission |
 |---|---|---|
-| POST `/workflows` và `/chatflows` | key,name → definition | automation.design/all |
-| POST `/workflows/{id}/versions` và `/chatflows/{id}/versions` | graph → draft version | automation.design/all |
-| POST `/workflows/{id}/versions/{version}/publish` và tương tự chatflows | validated graph → immutable version | automation.publish/all |
-| GET `/workflow-runs/{id}` và `/chatflow-sessions/{id}` | status, sanitized steps/variables | automation.read scoped theo related record |
-| POST `/chatflow-sessions/{id}/complete-qualification` | qualification,consent_message_id,owner_revision → qualified Lead + completed session | current Human Conversation owner + lead.create/qualify; If-Match là session version |
 | POST `/workflow-runs/{id}/cancel` | reason → cancelled | automation.operate/all |
 | POST `/operations/deliveries/{id}/retry` | reason → retry scheduled | integration.retry/all |
 
-M2 graph schema và primitive nằm trong [Workflow](../modules/workflow.md), [Chatflow](../modules/chatflow.md). Workflow enable/pause qua `PATCH /workflows/{id}` `{enabled:boolean}`; cần automation.publish và If-Match. Pause definition chỉ chặn run mới, cancel run là command riêng. Khởi chạy từ event, không có arbitrary execute endpoint M2. Deal/Ticket/report builder API sẽ đặc tả trước M4–M5, không coi endpoint generic là đường vòng.
+M2 graph schema và primitive nằm trong [Workflow](../modules/workflow.md), [Workflow](../modules/workflow.md). Workflow enable/pause qua `PATCH /workflows/{id}` `{enabled:boolean}`; cần automation.publish và If-Match. Pause definition chỉ chặn run mới, cancel run là command riêng. Khởi chạy từ event, không có arbitrary execute endpoint M2. Deal/Ticket/report builder API sẽ đặc tả trước M4–M5, không coi endpoint generic là đường vòng.
 
 `GET /operations/audit` và `/operations/failed-deliveries` dùng pagination chung; quyền lần lượt audit.read/all và integration.read/all. Chat agent đọc qualification panel/session liên quan qua conversation.read và field permissions; quyền automation.read dành cho chi tiết engine, không bắt chat agent có quyền quản trị automation.
 
@@ -168,7 +166,7 @@ SRC-017 exact assignment/takeover DTO, eligible target/history reads, capability
 
 SRC-019 exact Workflow transport: [contract](workflow.md); definition creation includes configured service_actor_id, version includes execution_role_id.
 
-SRC-020 implements Chatflow definition/version/publish/list, session detail and GET `/conversations/{id}/chatflow-session` (latest retained session or null), plus Human completion. Exact DTOs/guards at [Chatflow contract](chatflow.md); generated OpenAPI includes these routes. SRC-021 adds handoff/acceptance and GET `/leads/{id}/handoffs`; exact DTOs, read scope and errors follow [Sales contract](sales-handoff.md).
+CHG-20261021-08 removes Chatflow definition/session/qualification routes and generated schemas. Manual Lead qualification and Sales handoff APIs remain supported; see [Sales contract](sales-handoff.md).
 
 SRC-022 adds `/sales/leads` list/detail, Operations failed inbound/read-only Workflow and Agent Runtime lists and reason-coded retry. Exact DTOs, bounded cursors and authorization at [M2 workspace contract](workspaces-m2.md). Existing intake retry remains compatible; no unknown outbound resend.
 

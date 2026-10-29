@@ -3,7 +3,7 @@ import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {parseEnv} from 'node:util';
 import {randomUUID} from 'node:crypto';
 import {chromium} from '@playwright/test';
-import {fixtureId} from '../apps/backend/dist/modules/identity/seed.js';
+import {fixtureId} from '../services/core-baseline/dist/modules/identity/seed.js';
 import {ReportingStore} from '../services/reporting/dist/storage.js';
 import {ProjectionStore,ingestSnapshot} from '../services/reporting/dist/projections.js';
 import {inboxDemoAdapter,inboxDemoDashboards} from '../services/reporting/dist/inbox-demo.js';

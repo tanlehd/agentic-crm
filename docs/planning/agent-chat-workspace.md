@@ -8,7 +8,7 @@ Status: Ready scoped design; SRC-032/033/034 DONE backend (SRC-038 final regress
 |---|---|---|---|
 | SRC-032 | Sidecars/sequence/coverage/read markers, queue server search/sort/sidebar metrics, capabilities | UX-002; SRC-031 | Forward migrations + exact JSON Schema/OpenAPI/generated client; backfill/catch-up; UX-CHAT-13/14/15/19/22 |
 | SRC-033 | Personal/shared inbox, conversation tags, snippets catalog và permissions | SRC-032 | Migrations/strict DTO/events; share/revoke/transfer, quota/ACL/concurrency; UX-CHAT-16/17/21 |
-| SRC-034 | Durable snooze + activity feed, CRM note/Workflow/Chatflow notifications | SRC-033 | Producer outbox + consumer dedup/source ACL, worker CAS/restart/Redis outage, legacy writers regression; UX-CHAT-18/20/22 |
+| SRC-034 | Durable snooze + activity feed, CRM note/Workflow notifications | SRC-033 | Producer outbox + consumer dedup/source ACL, worker CAS/restart/Redis outage, legacy writers regression; UX-CHAT-18/20/22 |
 | SRC-035 | CRM address/language metadata và contact channel identities/navigation APIs | SRC-034 | Exact schema/property seed, field ACL/Contact+Conversation scope, no secret/identity leak; UX-CHAT-21 |
 | SRC-036 | Rebuild app shell/grouped nav và Inbox theo UX-003, tích hợp UX-002 contracts | SRC-035; UX-004 | UX-APP-01…08 + UX-CHAT-01…22; tenant/error/draft/keyboard/responsive; không dummy controls hoặc search toàn CRM chưa có contract |
 | SRC-037 | Upgrade/restart/regression và release gate workspace | SRC-036 | Existing data preserved, rollout watermark/flags, no unknown resend, rollback drill và synthetic demo; không live Meta claim |
@@ -30,7 +30,7 @@ CHG-20261007-06: user requested implementation of approved no-tab layout. SRC-03
 [UX-005 product scope](../ux/agent-assist-response.md) splits the use case into two independently scoped parts:
 
 1. Conversation assessment/Next action attributes and a narrowly authorized update action, independent of AI. Exact persistence/schema/API/ACL/migration and rule-only tests first.
-2. Workflow/Chatflow triggers, conditions and result application. Fixed rules or a configured skill/permission-limited Agent Assist produce input for the same action. Assist proposes only; no direct CRM writes or public replies. Orchestrator service actor performs the authorized update of suggestion fields.
+2. Workflow triggers, conditions and result application. Fixed rules or a configured skill/permission-limited Agent Assist produce input for the same action. Assist proposes only; no direct CRM writes or public replies. Orchestrator service actor performs the authorized update of suggestion fields.
 
 PLAN-008 remains TODO for exact contracts, including false-vs-no-reply distinction, provenance, revision fences, idempotency and action registration. Part1 must not depend on a provider adapter; Part2 must not activate unavailable triggers/actions or inherit owner-agent write tools. Source tasks are scoped after the exact design gate, no implicit expansion of M2 runtime.
 

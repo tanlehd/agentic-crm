@@ -1,0 +1,3995 @@
+{
+  "version": 1,
+  "runtimeImplemented": false,
+  "operations": [
+    {
+      "key": "crm-ingress-verdict",
+      "owner": "crm",
+      "name": "ingress-verdict",
+      "callers": [
+        "chat"
+      ],
+      "capability": 1,
+      "mode": "recovery",
+      "input": "Request_crm-ingress-verdict",
+      "output": "Reply_crm-ingress-verdict",
+      "publicRoute": null,
+      "acceptance": "CO-01"
+    },
+    {
+      "key": "connector-ingress-verdict",
+      "owner": "connector",
+      "name": "ingress-verdict",
+      "callers": [
+        "chat"
+      ],
+      "capability": 1,
+      "mode": "recovery",
+      "input": "Request_connector-ingress-verdict",
+      "output": "Reply_connector-ingress-verdict",
+      "publicRoute": null,
+      "acceptance": "CO-01"
+    },
+    {
+      "key": "identity-ingress-verdict",
+      "owner": "identity",
+      "name": "ingress-verdict",
+      "callers": [
+        "chat"
+      ],
+      "capability": 1,
+      "mode": "recovery",
+      "input": "Request_identity-ingress-verdict",
+      "output": "Reply_identity-ingress-verdict",
+      "publicRoute": null,
+      "acceptance": "CO-01"
+    },
+    {
+      "key": "connector-touchpoint-prepare",
+      "owner": "connector",
+      "name": "touchpoint-prepare",
+      "callers": [
+        "chat"
+      ],
+      "capability": 1,
+      "mode": "recovery",
+      "input": "Request_connector-touchpoint-prepare",
+      "output": "Reply_connector-touchpoint-prepare",
+      "publicRoute": null,
+      "acceptance": "CO-01"
+    },
+    {
+      "key": "connector-touchpoint-finalize",
+      "owner": "connector",
+      "name": "touchpoint-finalize",
+      "callers": [
+        "chat"
+      ],
+      "capability": 1,
+      "mode": "recovery",
+      "input": "Request_connector-touchpoint-finalize",
+      "output": "Reply_connector-touchpoint-finalize",
+      "publicRoute": null,
+      "acceptance": "CO-01"
+    },
+    {
+      "key": "chat-command-proof",
+      "owner": "chat",
+      "name": "command-proof",
+      "callers": [
+        "identity",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_chat-command-proof",
+      "output": "Reply_chat-command-proof",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "chat-command-abort",
+      "owner": "chat",
+      "name": "command-abort",
+      "callers": [
+        "identity",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_chat-command-abort",
+      "output": "Reply_chat-command-abort",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "crm-command-proof",
+      "owner": "crm",
+      "name": "command-proof",
+      "callers": [
+        "identity",
+        "chat",
+        "identity",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_crm-command-proof",
+      "output": "Reply_crm-command-proof",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "crm-command-abort",
+      "owner": "crm",
+      "name": "command-abort",
+      "callers": [
+        "identity",
+        "chat",
+        "identity",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_crm-command-abort",
+      "output": "Reply_crm-command-abort",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "connector-command-proof",
+      "owner": "connector",
+      "name": "command-proof",
+      "callers": [
+        "identity",
+        "chat",
+        "identity",
+        "crm",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_connector-command-proof",
+      "output": "Reply_connector-command-proof",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "connector-command-abort",
+      "owner": "connector",
+      "name": "command-abort",
+      "callers": [
+        "identity",
+        "chat",
+        "identity",
+        "crm",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_connector-command-abort",
+      "output": "Reply_connector-command-abort",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "routing-command-proof",
+      "owner": "routing",
+      "name": "command-proof",
+      "callers": [
+        "identity",
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_routing-command-proof",
+      "output": "Reply_routing-command-proof",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "routing-command-abort",
+      "owner": "routing",
+      "name": "command-abort",
+      "callers": [
+        "identity",
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_routing-command-abort",
+      "output": "Reply_routing-command-abort",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "sales-command-proof",
+      "owner": "sales",
+      "name": "command-proof",
+      "callers": [
+        "identity",
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_sales-command-proof",
+      "output": "Reply_sales-command-proof",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "sales-command-abort",
+      "owner": "sales",
+      "name": "command-abort",
+      "callers": [
+        "identity",
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_sales-command-abort",
+      "output": "Reply_sales-command-abort",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "ai-runtime-command-proof",
+      "owner": "ai-runtime",
+      "name": "command-proof",
+      "callers": [
+        "identity",
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_ai-runtime-command-proof",
+      "output": "Reply_ai-runtime-command-proof",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "ai-runtime-command-abort",
+      "owner": "ai-runtime",
+      "name": "command-abort",
+      "callers": [
+        "identity",
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_ai-runtime-command-abort",
+      "output": "Reply_ai-runtime-command-abort",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "workflow-command-proof",
+      "owner": "workflow",
+      "name": "command-proof",
+      "callers": [
+        "identity",
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_workflow-command-proof",
+      "output": "Reply_workflow-command-proof",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "workflow-command-abort",
+      "owner": "workflow",
+      "name": "command-abort",
+      "callers": [
+        "identity",
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_workflow-command-abort",
+      "output": "Reply_workflow-command-abort",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "reporting-command-proof",
+      "owner": "reporting",
+      "name": "command-proof",
+      "callers": [
+        "identity",
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_reporting-command-proof",
+      "output": "Reply_reporting-command-proof",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "reporting-command-abort",
+      "owner": "reporting",
+      "name": "command-abort",
+      "callers": [
+        "identity",
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_reporting-command-abort",
+      "output": "Reply_reporting-command-abort",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "identity-admit",
+      "owner": "identity",
+      "name": "admit",
+      "callers": [
+        "chat",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 4,
+      "mode": "recovery",
+      "input": "Request_identity-admit",
+      "output": "Reply_identity-admit",
+      "publicRoute": null,
+      "acceptance": "CO-04"
+    },
+    {
+      "key": "identity-admission-read",
+      "owner": "identity",
+      "name": "admission-read",
+      "callers": [
+        "chat",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 4,
+      "mode": "recovery",
+      "input": "Request_identity-admission-read",
+      "output": "Reply_identity-admission-read",
+      "publicRoute": null,
+      "acceptance": "CO-04"
+    },
+    {
+      "key": "identity-admission-cursor-subject",
+      "owner": "identity",
+      "name": "admission-cursor-subject",
+      "callers": [
+        "chat"
+      ],
+      "capability": 2,
+      "mode": "recovery",
+      "input": "Request_identity-admission-cursor-subject",
+      "output": "Reply_identity-admission-cursor-subject",
+      "publicRoute": null,
+      "acceptance": "CO-02"
+    },
+    {
+      "key": "identity-admission-catalog-policy",
+      "owner": "identity",
+      "name": "admission-catalog-policy",
+      "callers": [
+        "chat"
+      ],
+      "capability": 8,
+      "mode": "recovery",
+      "input": "Request_identity-admission-catalog-policy",
+      "output": "Reply_identity-admission-catalog-policy",
+      "publicRoute": null,
+      "acceptance": "CO-08"
+    },
+    {
+      "key": "identity-admission-conversation-policy",
+      "owner": "identity",
+      "name": "admission-conversation-policy",
+      "callers": [
+        "chat"
+      ],
+      "capability": 2,
+      "mode": "recovery",
+      "input": "Request_identity-admission-conversation-policy",
+      "output": "Reply_identity-admission-conversation-policy",
+      "publicRoute": null,
+      "acceptance": "CO-02"
+    },
+    {
+      "key": "identity-admission-assignment-directory",
+      "owner": "identity",
+      "name": "admission-assignment-directory",
+      "callers": [
+        "chat",
+        "routing"
+      ],
+      "capability": 4,
+      "mode": "recovery",
+      "input": "Request_identity-admission-assignment-directory",
+      "output": "Reply_identity-admission-assignment-directory",
+      "publicRoute": null,
+      "acceptance": "CO-04"
+    },
+    {
+      "key": "identity-admission-routing-view",
+      "owner": "identity",
+      "name": "admission-routing-view",
+      "callers": [
+        "chat",
+        "routing",
+        "connector"
+      ],
+      "capability": 5,
+      "mode": "recovery",
+      "input": "Request_identity-admission-routing-view",
+      "output": "Reply_identity-admission-routing-view",
+      "publicRoute": null,
+      "acceptance": "CO-05"
+    },
+    {
+      "key": "identity-routing-view-directory",
+      "owner": "identity",
+      "name": "routing-view-directory",
+      "callers": [
+        "routing"
+      ],
+      "capability": 5,
+      "mode": "recovery",
+      "input": "Request_identity-routing-view-directory",
+      "output": "Reply_identity-routing-view-directory",
+      "publicRoute": null,
+      "acceptance": "CO-05"
+    },
+    {
+      "key": "chat-routing-view",
+      "owner": "chat",
+      "name": "routing-view",
+      "callers": [
+        "routing"
+      ],
+      "capability": 5,
+      "mode": "recovery",
+      "input": "Request_chat-routing-view",
+      "output": "Reply_chat-routing-view",
+      "publicRoute": null,
+      "acceptance": "CO-05"
+    },
+    {
+      "key": "connector-routing-view-connections",
+      "owner": "connector",
+      "name": "routing-view-connections",
+      "callers": [
+        "routing"
+      ],
+      "capability": 5,
+      "mode": "recovery",
+      "input": "Request_connector-routing-view-connections",
+      "output": "Reply_connector-routing-view-connections",
+      "publicRoute": null,
+      "acceptance": "CO-05"
+    },
+    {
+      "key": "routing-assignment-directory-capacity",
+      "owner": "routing",
+      "name": "assignment-directory-capacity",
+      "callers": [
+        "chat"
+      ],
+      "capability": 5,
+      "mode": "recovery",
+      "input": "Request_routing-assignment-directory-capacity",
+      "output": "Reply_routing-assignment-directory-capacity",
+      "publicRoute": null,
+      "acceptance": "CO-05"
+    },
+    {
+      "key": "chat-routing-proposal",
+      "owner": "chat",
+      "name": "routing-proposal",
+      "callers": [
+        "routing"
+      ],
+      "capability": 5,
+      "mode": "read",
+      "input": "Request_chat-routing-proposal",
+      "output": "Reply_chat-routing-proposal",
+      "publicRoute": null,
+      "acceptance": "CO-05"
+    },
+    {
+      "key": "chat-routing-dispatch",
+      "owner": "chat",
+      "name": "routing-dispatch",
+      "callers": [
+        "routing"
+      ],
+      "capability": 5,
+      "mode": "command",
+      "input": "Request_chat-routing-dispatch",
+      "output": "Reply_chat-routing-dispatch",
+      "publicRoute": null,
+      "acceptance": "CO-05"
+    },
+    {
+      "key": "chat-routing-reroute-source",
+      "owner": "chat",
+      "name": "routing-reroute-source",
+      "callers": [
+        "routing"
+      ],
+      "capability": 5,
+      "mode": "read",
+      "input": "Request_chat-routing-reroute-source",
+      "output": "Reply_chat-routing-reroute-source",
+      "publicRoute": null,
+      "acceptance": "CO-05"
+    },
+    {
+      "key": "chat-routing-reroute",
+      "owner": "chat",
+      "name": "routing-reroute",
+      "callers": [
+        "routing"
+      ],
+      "capability": 5,
+      "mode": "command",
+      "input": "Request_chat-routing-reroute",
+      "output": "Reply_chat-routing-reroute",
+      "publicRoute": null,
+      "acceptance": "CO-05"
+    },
+    {
+      "key": "identity-admission-workspace-policy",
+      "owner": "identity",
+      "name": "admission-workspace-policy",
+      "callers": [
+        "chat"
+      ],
+      "capability": 7,
+      "mode": "recovery",
+      "input": "Request_identity-admission-workspace-policy",
+      "output": "Reply_identity-admission-workspace-policy",
+      "publicRoute": null,
+      "acceptance": "CO-07"
+    },
+    {
+      "key": "identity-admission-contact-batch-policy",
+      "owner": "identity",
+      "name": "admission-contact-batch-policy",
+      "callers": [
+        "crm"
+      ],
+      "capability": 11,
+      "mode": "recovery",
+      "input": "Request_identity-admission-contact-batch-policy",
+      "output": "Reply_identity-admission-contact-batch-policy",
+      "publicRoute": null,
+      "acceptance": "CO-11"
+    },
+    {
+      "key": "crm-contact-summary-batch",
+      "owner": "crm",
+      "name": "contact-summary-batch",
+      "callers": [
+        "chat"
+      ],
+      "capability": 11,
+      "mode": "recovery",
+      "input": "Request_crm-contact-summary-batch",
+      "output": "Reply_crm-contact-summary-batch",
+      "publicRoute": null,
+      "acceptance": "CO-11"
+    },
+    {
+      "key": "identity-admission-contact-policy",
+      "owner": "identity",
+      "name": "admission-contact-policy",
+      "callers": [
+        "crm"
+      ],
+      "capability": 11,
+      "mode": "recovery",
+      "input": "Request_identity-admission-contact-policy",
+      "output": "Reply_identity-admission-contact-policy",
+      "publicRoute": null,
+      "acceptance": "CO-11"
+    },
+    {
+      "key": "crm-contact-summary-read",
+      "owner": "crm",
+      "name": "contact-summary-read",
+      "callers": [
+        "chat"
+      ],
+      "capability": 11,
+      "mode": "recovery",
+      "input": "Request_crm-contact-summary-read",
+      "output": "Reply_crm-contact-summary-read",
+      "publicRoute": null,
+      "acceptance": "CO-11"
+    },
+    {
+      "key": "connector-detail-channel-read",
+      "owner": "connector",
+      "name": "detail-channel-read",
+      "callers": [
+        "chat"
+      ],
+      "capability": 2,
+      "mode": "recovery",
+      "input": "Request_connector-detail-channel-read",
+      "output": "Reply_connector-detail-channel-read",
+      "publicRoute": null,
+      "acceptance": "CO-02"
+    },
+    {
+      "key": "connector-detail-channel-batch",
+      "owner": "connector",
+      "name": "detail-channel-batch",
+      "callers": [
+        "chat"
+      ],
+      "capability": 2,
+      "mode": "recovery",
+      "input": "Request_connector-detail-channel-batch",
+      "output": "Reply_connector-detail-channel-batch",
+      "publicRoute": null,
+      "acceptance": "CO-02"
+    },
+    {
+      "key": "connector-source-channel-read",
+      "owner": "connector",
+      "name": "source-channel-read",
+      "callers": [
+        "chat"
+      ],
+      "capability": 12,
+      "mode": "recovery",
+      "input": "Request_connector-source-channel-read",
+      "output": "Reply_connector-source-channel-read",
+      "publicRoute": null,
+      "acceptance": "CO-12"
+    },
+    {
+      "key": "identity-admission-inbox-policy",
+      "owner": "identity",
+      "name": "admission-inbox-policy",
+      "callers": [
+        "chat"
+      ],
+      "capability": 7,
+      "mode": "recovery",
+      "input": "Request_identity-admission-inbox-policy",
+      "output": "Reply_identity-admission-inbox-policy",
+      "publicRoute": null,
+      "acceptance": "CO-07"
+    },
+    {
+      "key": "connector-catalog-connection-read",
+      "owner": "connector",
+      "name": "catalog-connection-read",
+      "callers": [
+        "chat"
+      ],
+      "capability": 7,
+      "mode": "recovery",
+      "input": "Request_connector-catalog-connection-read",
+      "output": "Reply_connector-catalog-connection-read",
+      "publicRoute": null,
+      "acceptance": "CO-07"
+    },
+    {
+      "key": "connector-history-platform-read",
+      "owner": "connector",
+      "name": "history-platform-read",
+      "callers": [
+        "chat"
+      ],
+      "capability": 2,
+      "mode": "recovery",
+      "input": "Request_connector-history-platform-read",
+      "output": "Reply_connector-history-platform-read",
+      "publicRoute": null,
+      "acceptance": "CO-02"
+    },
+    {
+      "key": "crm-contact-binding-read",
+      "owner": "crm",
+      "name": "contact-binding-read",
+      "callers": [
+        "chat"
+      ],
+      "capability": 1,
+      "mode": "recovery",
+      "input": "Request_crm-contact-binding-read",
+      "output": "Reply_crm-contact-binding-read",
+      "publicRoute": null,
+      "acceptance": "CO-01"
+    },
+    {
+      "key": "connector-connection-binding-read",
+      "owner": "connector",
+      "name": "connection-binding-read",
+      "callers": [
+        "chat"
+      ],
+      "capability": 1,
+      "mode": "recovery",
+      "input": "Request_connector-connection-binding-read",
+      "output": "Reply_connector-connection-binding-read",
+      "publicRoute": null,
+      "acceptance": "CO-01"
+    },
+    {
+      "key": "connector-connection-ingress-read",
+      "owner": "connector",
+      "name": "connection-ingress-read",
+      "callers": [
+        "chat"
+      ],
+      "capability": 1,
+      "mode": "recovery",
+      "input": "Request_connector-connection-ingress-read",
+      "output": "Reply_connector-connection-ingress-read",
+      "publicRoute": null,
+      "acceptance": "CO-01"
+    },
+    {
+      "key": "connector-transport-disable",
+      "owner": "connector",
+      "name": "transport-disable",
+      "callers": [
+        "connector"
+      ],
+      "capability": 3,
+      "mode": "recovery",
+      "input": "Request_connector-transport-disable",
+      "output": "Reply_connector-transport-disable",
+      "publicRoute": null,
+      "acceptance": "CO-03"
+    },
+    {
+      "key": "connector-transport-enable",
+      "owner": "connector",
+      "name": "transport-enable",
+      "callers": [
+        "connector"
+      ],
+      "capability": 3,
+      "mode": "recovery",
+      "input": "Request_connector-transport-enable",
+      "output": "Reply_connector-transport-enable",
+      "publicRoute": null,
+      "acceptance": "CO-03"
+    },
+    {
+      "key": "connector-transport-status",
+      "owner": "connector",
+      "name": "transport-status",
+      "callers": [
+        "connector"
+      ],
+      "capability": 3,
+      "mode": "recovery",
+      "input": "Request_connector-transport-status",
+      "output": "Reply_connector-transport-status",
+      "publicRoute": null,
+      "acceptance": "CO-03"
+    },
+    {
+      "key": "identity-settle",
+      "owner": "identity",
+      "name": "settle",
+      "callers": [
+        "chat",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_identity-settle",
+      "output": "Reply_identity-settle",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "identity-target-read",
+      "owner": "identity",
+      "name": "target-read",
+      "callers": [
+        "chat"
+      ],
+      "capability": 4,
+      "mode": "recovery",
+      "input": "Request_identity-target-read",
+      "output": "Reply_identity-target-read",
+      "publicRoute": null,
+      "acceptance": "CO-04"
+    },
+    {
+      "key": "identity-principal-kind-read",
+      "owner": "identity",
+      "name": "principal-kind-read",
+      "callers": [
+        "chat"
+      ],
+      "capability": 4,
+      "mode": "recovery",
+      "input": "Request_identity-principal-kind-read",
+      "output": "Reply_identity-principal-kind-read",
+      "publicRoute": null,
+      "acceptance": "CO-04"
+    },
+    {
+      "key": "identity-barrier-status",
+      "owner": "identity",
+      "name": "barrier-status",
+      "callers": [
+        "bff"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_identity-barrier-status",
+      "output": "Reply_identity-barrier-status",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "identity-directory",
+      "owner": "identity",
+      "name": "directory",
+      "callers": [
+        "chat",
+        "routing"
+      ],
+      "capability": 7,
+      "mode": "read",
+      "input": "Request_identity-directory",
+      "output": "Reply_identity-directory",
+      "publicRoute": null,
+      "acceptance": "CO-07"
+    },
+    {
+      "key": "routing-capacity-reserve",
+      "owner": "routing",
+      "name": "capacity-reserve",
+      "callers": [
+        "chat"
+      ],
+      "capability": 5,
+      "mode": "recovery",
+      "input": "Request_routing-capacity-reserve",
+      "output": "Reply_routing-capacity-reserve",
+      "publicRoute": null,
+      "acceptance": "CO-05"
+    },
+    {
+      "key": "routing-capacity-confirm",
+      "owner": "routing",
+      "name": "capacity-confirm",
+      "callers": [
+        "chat"
+      ],
+      "capability": 5,
+      "mode": "recovery",
+      "input": "Request_routing-capacity-confirm",
+      "output": "Reply_routing-capacity-confirm",
+      "publicRoute": null,
+      "acceptance": "CO-05"
+    },
+    {
+      "key": "routing-capacity-release",
+      "owner": "routing",
+      "name": "capacity-release",
+      "callers": [
+        "chat"
+      ],
+      "capability": 5,
+      "mode": "recovery",
+      "input": "Request_routing-capacity-release",
+      "output": "Reply_routing-capacity-release",
+      "publicRoute": null,
+      "acceptance": "CO-05"
+    },
+    {
+      "key": "routing-capacity-status",
+      "owner": "routing",
+      "name": "capacity-status",
+      "callers": [
+        "chat"
+      ],
+      "capability": 5,
+      "mode": "recovery",
+      "input": "Request_routing-capacity-status",
+      "output": "Reply_routing-capacity-status",
+      "publicRoute": null,
+      "acceptance": "CO-05"
+    },
+    {
+      "key": "crm-reference-reserve",
+      "owner": "crm",
+      "name": "reference-reserve",
+      "callers": [
+        "chat",
+        "sales"
+      ],
+      "capability": 1,
+      "mode": "recovery",
+      "input": "Request_crm-reference-reserve",
+      "output": "Reply_crm-reference-reserve",
+      "publicRoute": null,
+      "acceptance": "CO-01"
+    },
+    {
+      "key": "crm-reference-status",
+      "owner": "crm",
+      "name": "reference-status",
+      "callers": [
+        "chat",
+        "sales"
+      ],
+      "capability": 1,
+      "mode": "recovery",
+      "input": "Request_crm-reference-status",
+      "output": "Reply_crm-reference-status",
+      "publicRoute": null,
+      "acceptance": "CO-01"
+    },
+    {
+      "key": "crm-reference-release",
+      "owner": "crm",
+      "name": "reference-release",
+      "callers": [
+        "chat",
+        "sales"
+      ],
+      "capability": 1,
+      "mode": "recovery",
+      "input": "Request_crm-reference-release",
+      "output": "Reply_crm-reference-release",
+      "publicRoute": null,
+      "acceptance": "CO-01"
+    },
+    {
+      "key": "connector-reference-reserve",
+      "owner": "connector",
+      "name": "reference-reserve",
+      "callers": [
+        "chat",
+        "sales"
+      ],
+      "capability": 1,
+      "mode": "recovery",
+      "input": "Request_connector-reference-reserve",
+      "output": "Reply_connector-reference-reserve",
+      "publicRoute": null,
+      "acceptance": "CO-01"
+    },
+    {
+      "key": "connector-reference-status",
+      "owner": "connector",
+      "name": "reference-status",
+      "callers": [
+        "chat",
+        "sales"
+      ],
+      "capability": 1,
+      "mode": "recovery",
+      "input": "Request_connector-reference-status",
+      "output": "Reply_connector-reference-status",
+      "publicRoute": null,
+      "acceptance": "CO-01"
+    },
+    {
+      "key": "connector-reference-release",
+      "owner": "connector",
+      "name": "reference-release",
+      "callers": [
+        "chat",
+        "sales"
+      ],
+      "capability": 1,
+      "mode": "recovery",
+      "input": "Request_connector-reference-release",
+      "output": "Reply_connector-reference-release",
+      "publicRoute": null,
+      "acceptance": "CO-01"
+    },
+    {
+      "key": "chat-contact-archive-guard",
+      "owner": "chat",
+      "name": "contact-archive-guard",
+      "callers": [
+        "crm"
+      ],
+      "capability": 11,
+      "mode": "recovery",
+      "input": "Request_chat-contact-archive-guard",
+      "output": "Reply_chat-contact-archive-guard",
+      "publicRoute": null,
+      "acceptance": "CO-11"
+    },
+    {
+      "key": "crm-contact-lookup",
+      "owner": "crm",
+      "name": "contact-lookup",
+      "callers": [
+        "chat",
+        "connector"
+      ],
+      "capability": 1,
+      "mode": "read",
+      "input": "Request_crm-contact-lookup",
+      "output": "Reply_crm-contact-lookup",
+      "publicRoute": null,
+      "acceptance": "CO-01"
+    },
+    {
+      "key": "crm-contact-resolve",
+      "owner": "crm",
+      "name": "contact-resolve",
+      "callers": [
+        "connector"
+      ],
+      "capability": 1,
+      "mode": "command",
+      "input": "Request_crm-contact-resolve",
+      "output": "Reply_crm-contact-resolve",
+      "publicRoute": null,
+      "acceptance": "CO-01"
+    },
+    {
+      "key": "crm-contact-batch",
+      "owner": "crm",
+      "name": "contact-batch",
+      "callers": [
+        "chat",
+        "sales"
+      ],
+      "capability": 11,
+      "mode": "read",
+      "input": "Request_crm-contact-batch",
+      "output": "Reply_crm-contact-batch",
+      "publicRoute": null,
+      "acceptance": "CO-11"
+    },
+    {
+      "key": "crm-metadata-read",
+      "owner": "crm",
+      "name": "metadata-read",
+      "callers": [
+        "chat",
+        "routing",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 9,
+      "mode": "read",
+      "input": "Request_crm-metadata-read",
+      "output": "Reply_crm-metadata-read",
+      "publicRoute": null,
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "crm-metadata-schema-read",
+      "owner": "crm",
+      "name": "metadata-schema-read",
+      "callers": [
+        "chat"
+      ],
+      "capability": 9,
+      "mode": "recovery",
+      "input": "Request_crm-metadata-schema-read",
+      "output": "Reply_crm-metadata-schema-read",
+      "publicRoute": null,
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "connector-channel-batch",
+      "owner": "connector",
+      "name": "channel-batch",
+      "callers": [
+        "chat",
+        "routing",
+        "sales"
+      ],
+      "capability": 2,
+      "mode": "read",
+      "input": "Request_connector-channel-batch",
+      "output": "Reply_connector-channel-batch",
+      "publicRoute": null,
+      "acceptance": "CO-02"
+    },
+    {
+      "key": "identity-admission-note-child",
+      "owner": "identity",
+      "name": "admission-note-child",
+      "callers": [
+        "crm"
+      ],
+      "capability": 11,
+      "mode": "recovery",
+      "input": "Request_identity-admission-note-child",
+      "output": "Reply_identity-admission-note-child",
+      "publicRoute": null,
+      "acceptance": "CO-11"
+    },
+    {
+      "key": "crm-note-create",
+      "owner": "crm",
+      "name": "note-create",
+      "callers": [
+        "chat"
+      ],
+      "capability": 11,
+      "mode": "recovery",
+      "input": "Request_crm-note-create",
+      "output": "Reply_crm-note-create",
+      "publicRoute": null,
+      "acceptance": "CO-11"
+    },
+    {
+      "key": "crm-note-abort",
+      "owner": "crm",
+      "name": "note-abort",
+      "callers": [
+        "chat"
+      ],
+      "capability": 11,
+      "mode": "recovery",
+      "input": "Request_crm-note-abort",
+      "output": "Reply_crm-note-abort",
+      "publicRoute": null,
+      "acceptance": "CO-11"
+    },
+    {
+      "key": "identity-admission-session-progress-policy",
+      "owner": "identity",
+      "name": "admission-session-progress-policy",
+      "callers": [
+        "chat"
+      ],
+      "capability": 9,
+      "mode": "recovery",
+      "input": "Request_identity-admission-session-progress-policy",
+      "output": "Reply_identity-admission-session-progress-policy",
+      "publicRoute": null,
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "identity-admission-funnel-policy",
+      "owner": "identity",
+      "name": "admission-funnel-policy",
+      "callers": [
+        "chat"
+      ],
+      "capability": 9,
+      "mode": "recovery",
+      "input": "Request_identity-admission-funnel-policy",
+      "output": "Reply_identity-admission-funnel-policy",
+      "publicRoute": null,
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "identity-admission-funnel-contact-policy",
+      "owner": "identity",
+      "name": "admission-funnel-contact-policy",
+      "callers": [
+        "crm"
+      ],
+      "capability": 9,
+      "mode": "recovery",
+      "input": "Request_identity-admission-funnel-contact-policy",
+      "output": "Reply_identity-admission-funnel-contact-policy",
+      "publicRoute": null,
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "crm-funnel-contact-read",
+      "owner": "crm",
+      "name": "funnel-contact-read",
+      "callers": [
+        "chat"
+      ],
+      "capability": 9,
+      "mode": "recovery",
+      "input": "Request_crm-funnel-contact-read",
+      "output": "Reply_crm-funnel-contact-read",
+      "publicRoute": null,
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "identity-admission-classification-policy",
+      "owner": "identity",
+      "name": "admission-classification-policy",
+      "callers": [
+        "chat"
+      ],
+      "capability": 9,
+      "mode": "recovery",
+      "input": "Request_identity-admission-classification-policy",
+      "output": "Reply_identity-admission-classification-policy",
+      "publicRoute": null,
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "crm-classification-metadata-read",
+      "owner": "crm",
+      "name": "classification-metadata-read",
+      "callers": [
+        "chat"
+      ],
+      "capability": 9,
+      "mode": "recovery",
+      "input": "Request_crm-classification-metadata-read",
+      "output": "Reply_crm-classification-metadata-read",
+      "publicRoute": null,
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "crm-need-metadata-read",
+      "owner": "crm",
+      "name": "need-metadata-read",
+      "callers": [
+        "chat"
+      ],
+      "capability": 10,
+      "mode": "recovery",
+      "input": "Request_crm-need-metadata-read",
+      "output": "Reply_crm-need-metadata-read",
+      "publicRoute": null,
+      "acceptance": "CO-10"
+    },
+    {
+      "key": "identity-admission-need-policy",
+      "owner": "identity",
+      "name": "admission-need-policy",
+      "callers": [
+        "chat"
+      ],
+      "capability": 10,
+      "mode": "recovery",
+      "input": "Request_identity-admission-need-policy",
+      "output": "Reply_identity-admission-need-policy",
+      "publicRoute": null,
+      "acceptance": "CO-10"
+    },
+    {
+      "key": "identity-admission-need-outcomes-policy",
+      "owner": "identity",
+      "name": "admission-need-outcomes-policy",
+      "callers": [
+        "sales"
+      ],
+      "capability": 10,
+      "mode": "recovery",
+      "input": "Request_identity-admission-need-outcomes-policy",
+      "output": "Reply_identity-admission-need-outcomes-policy",
+      "publicRoute": null,
+      "acceptance": "CO-10"
+    },
+    {
+      "key": "identity-admission-outcome-link-policy",
+      "owner": "identity",
+      "name": "admission-outcome-link-policy",
+      "callers": [
+        "sales"
+      ],
+      "capability": 10,
+      "mode": "recovery",
+      "input": "Request_identity-admission-outcome-link-policy",
+      "output": "Reply_identity-admission-outcome-link-policy",
+      "publicRoute": null,
+      "acceptance": "CO-10"
+    },
+    {
+      "key": "sales-outcome-link-inspect",
+      "owner": "sales",
+      "name": "outcome-link-inspect",
+      "callers": [
+        "chat"
+      ],
+      "capability": 10,
+      "mode": "recovery",
+      "input": "Request_sales-outcome-link-inspect",
+      "output": "Reply_sales-outcome-link-inspect",
+      "publicRoute": null,
+      "acceptance": "CO-10"
+    },
+    {
+      "key": "sales-outcome-link-apply",
+      "owner": "sales",
+      "name": "outcome-link-apply",
+      "callers": [
+        "chat"
+      ],
+      "capability": 10,
+      "mode": "recovery",
+      "input": "Request_sales-outcome-link-apply",
+      "output": "Reply_sales-outcome-link-apply",
+      "publicRoute": null,
+      "acceptance": "CO-10"
+    },
+    {
+      "key": "sales-outcome-link-abort",
+      "owner": "sales",
+      "name": "outcome-link-abort",
+      "callers": [
+        "chat"
+      ],
+      "capability": 10,
+      "mode": "recovery",
+      "input": "Request_sales-outcome-link-abort",
+      "output": "Reply_sales-outcome-link-abort",
+      "publicRoute": null,
+      "acceptance": "CO-10"
+    },
+    {
+      "key": "sales-need-outcomes-list",
+      "owner": "sales",
+      "name": "need-outcomes-list",
+      "callers": [
+        "chat"
+      ],
+      "capability": 10,
+      "mode": "recovery",
+      "input": "Request_sales-need-outcomes-list",
+      "output": "Reply_sales-need-outcomes-list",
+      "publicRoute": null,
+      "acceptance": "CO-10"
+    },
+    {
+      "key": "crm-contribution-sources-read",
+      "owner": "crm",
+      "name": "contribution-sources-read",
+      "callers": [
+        "chat"
+      ],
+      "capability": 9,
+      "mode": "recovery",
+      "input": "Request_crm-contribution-sources-read",
+      "output": "Reply_crm-contribution-sources-read",
+      "publicRoute": null,
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "sales-contribution-sources-read",
+      "owner": "sales",
+      "name": "contribution-sources-read",
+      "callers": [
+        "chat"
+      ],
+      "capability": 9,
+      "mode": "recovery",
+      "input": "Request_sales-contribution-sources-read",
+      "output": "Reply_sales-contribution-sources-read",
+      "publicRoute": null,
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "identity-admission-contribution-sales-policy",
+      "owner": "identity",
+      "name": "admission-contribution-sales-policy",
+      "callers": [
+        "sales"
+      ],
+      "capability": 9,
+      "mode": "recovery",
+      "input": "Request_identity-admission-contribution-sales-policy",
+      "output": "Reply_identity-admission-contribution-sales-policy",
+      "publicRoute": null,
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "identity-admission-session-contact-policy",
+      "owner": "identity",
+      "name": "admission-session-contact-policy",
+      "callers": [
+        "crm"
+      ],
+      "capability": 9,
+      "mode": "recovery",
+      "input": "Request_identity-admission-session-contact-policy",
+      "output": "Reply_identity-admission-session-contact-policy",
+      "publicRoute": null,
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "crm-session-contact-read",
+      "owner": "crm",
+      "name": "session-contact-read",
+      "callers": [
+        "chat"
+      ],
+      "capability": 9,
+      "mode": "recovery",
+      "input": "Request_crm-session-contact-read",
+      "output": "Reply_crm-session-contact-read",
+      "publicRoute": null,
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "identity-admission-activity-policy",
+      "owner": "identity",
+      "name": "admission-activity-policy",
+      "callers": [
+        "chat",
+        "workflow"
+      ],
+      "capability": 13,
+      "mode": "recovery",
+      "input": "Request_identity-admission-activity-policy",
+      "output": "Reply_identity-admission-activity-policy",
+      "publicRoute": null,
+      "acceptance": "CO-13"
+    },
+    {
+      "key": "crm-activity-notes",
+      "owner": "crm",
+      "name": "activity-notes",
+      "callers": [
+        "chat"
+      ],
+      "capability": 13,
+      "mode": "recovery",
+      "input": "Request_crm-activity-notes",
+      "output": "Reply_crm-activity-notes",
+      "publicRoute": null,
+      "acceptance": "CO-13"
+    },
+    {
+      "key": "workflow-activity-runs",
+      "owner": "workflow",
+      "name": "activity-runs",
+      "callers": [
+        "chat"
+      ],
+      "capability": 13,
+      "mode": "recovery",
+      "input": "Request_workflow-activity-runs",
+      "output": "Reply_workflow-activity-runs",
+      "publicRoute": null,
+      "acceptance": "CO-13"
+    },
+    {
+      "key": "identity-admission-note-policy",
+      "owner": "identity",
+      "name": "admission-note-policy",
+      "callers": [
+        "crm"
+      ],
+      "capability": 11,
+      "mode": "recovery",
+      "input": "Request_identity-admission-note-policy",
+      "output": "Reply_identity-admission-note-policy",
+      "publicRoute": null,
+      "acceptance": "CO-11"
+    },
+    {
+      "key": "crm-note-list",
+      "owner": "crm",
+      "name": "note-list",
+      "callers": [
+        "chat"
+      ],
+      "capability": 11,
+      "mode": "recovery",
+      "input": "Request_crm-note-list",
+      "output": "Reply_crm-note-list",
+      "publicRoute": null,
+      "acceptance": "CO-11"
+    },
+    {
+      "key": "crm-note-read",
+      "owner": "crm",
+      "name": "note-read",
+      "callers": [
+        "chat"
+      ],
+      "capability": 11,
+      "mode": "read",
+      "input": "Request_crm-note-read",
+      "output": "Reply_crm-note-read",
+      "publicRoute": null,
+      "acceptance": "CO-11"
+    },
+    {
+      "key": "crm-activity-binding",
+      "owner": "crm",
+      "name": "activity-binding",
+      "callers": [
+        "chat"
+      ],
+      "capability": 13,
+      "mode": "read",
+      "input": "Request_crm-activity-binding",
+      "output": "Reply_crm-activity-binding",
+      "publicRoute": null,
+      "acceptance": "CO-13"
+    },
+    {
+      "key": "workflow-activity-binding",
+      "owner": "workflow",
+      "name": "activity-binding",
+      "callers": [
+        "chat"
+      ],
+      "capability": 13,
+      "mode": "read",
+      "input": "Request_workflow-activity-binding",
+      "output": "Reply_workflow-activity-binding",
+      "publicRoute": null,
+      "acceptance": "CO-13"
+    },
+    {
+      "key": "crm-activity-notification-binding",
+      "owner": "crm",
+      "name": "activity-notification-binding",
+      "callers": [
+        "chat"
+      ],
+      "capability": 13,
+      "mode": "recovery",
+      "input": "Request_crm-activity-notification-binding",
+      "output": "Reply_crm-activity-notification-binding",
+      "publicRoute": null,
+      "acceptance": "CO-13"
+    },
+    {
+      "key": "workflow-activity-notification-binding",
+      "owner": "workflow",
+      "name": "activity-notification-binding",
+      "callers": [
+        "chat"
+      ],
+      "capability": 13,
+      "mode": "recovery",
+      "input": "Request_workflow-activity-notification-binding",
+      "output": "Reply_workflow-activity-notification-binding",
+      "publicRoute": null,
+      "acceptance": "CO-13"
+    },
+    {
+      "key": "chat-session-source",
+      "owner": "chat",
+      "name": "session-source",
+      "callers": [
+        "sales",
+        "workflow"
+      ],
+      "capability": 12,
+      "mode": "read",
+      "input": "Request_chat-session-source",
+      "output": "Reply_chat-session-source",
+      "publicRoute": null,
+      "acceptance": "CO-12"
+    },
+    {
+      "key": "sales-session-link",
+      "owner": "sales",
+      "name": "session-link",
+      "callers": [
+        "chat",
+        "workflow",
+        "crm"
+      ],
+      "capability": 12,
+      "mode": "command",
+      "input": "Request_sales-session-link",
+      "output": "Reply_sales-session-link",
+      "publicRoute": null,
+      "acceptance": "CO-12"
+    },
+    {
+      "key": "sales-need-outcome-link",
+      "owner": "sales",
+      "name": "need-outcome-link",
+      "callers": [
+        "chat"
+      ],
+      "capability": 10,
+      "mode": "command",
+      "input": "Request_sales-need-outcome-link",
+      "output": "Reply_sales-need-outcome-link",
+      "publicRoute": null,
+      "acceptance": "CO-10"
+    },
+    {
+      "key": "sales-need-outcome-read",
+      "owner": "sales",
+      "name": "need-outcome-read",
+      "callers": [
+        "chat",
+        "workflow"
+      ],
+      "capability": 10,
+      "mode": "read",
+      "input": "Request_sales-need-outcome-read",
+      "output": "Reply_sales-need-outcome-read",
+      "publicRoute": null,
+      "acceptance": "CO-10"
+    },
+    {
+      "key": "sales-outcome-reserve",
+      "owner": "sales",
+      "name": "outcome-reserve",
+      "callers": [
+        "chat"
+      ],
+      "capability": 10,
+      "mode": "recovery",
+      "input": "Request_sales-outcome-reserve",
+      "output": "Reply_sales-outcome-reserve",
+      "publicRoute": null,
+      "acceptance": "CO-10"
+    },
+    {
+      "key": "sales-outcome-release",
+      "owner": "sales",
+      "name": "outcome-release",
+      "callers": [
+        "chat"
+      ],
+      "capability": 10,
+      "mode": "recovery",
+      "input": "Request_sales-outcome-release",
+      "output": "Reply_sales-outcome-release",
+      "publicRoute": null,
+      "acceptance": "CO-10"
+    },
+    {
+      "key": "sales-outcome-status",
+      "owner": "sales",
+      "name": "outcome-status",
+      "callers": [
+        "chat"
+      ],
+      "capability": 10,
+      "mode": "recovery",
+      "input": "Request_sales-outcome-status",
+      "output": "Reply_sales-outcome-status",
+      "publicRoute": null,
+      "acceptance": "CO-10"
+    },
+    {
+      "key": "chat-recover-need",
+      "owner": "chat",
+      "name": "recover-need",
+      "callers": [
+        "workflow"
+      ],
+      "capability": 10,
+      "mode": "command",
+      "input": "Request_chat-recover-need",
+      "output": "Reply_chat-recover-need",
+      "publicRoute": null,
+      "acceptance": "CO-10"
+    },
+    {
+      "key": "chat-record-batch",
+      "owner": "chat",
+      "name": "record-batch",
+      "callers": [
+        "crm",
+        "routing",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 15,
+      "mode": "read",
+      "input": "Request_chat-record-batch",
+      "output": "Reply_chat-record-batch",
+      "publicRoute": null,
+      "acceptance": "CO-15"
+    },
+    {
+      "key": "chat-custom-values-patch",
+      "owner": "chat",
+      "name": "custom-values-patch",
+      "callers": [
+        "crm"
+      ],
+      "capability": 9,
+      "mode": "command",
+      "input": "Request_chat-custom-values-patch",
+      "output": "Reply_chat-custom-values-patch",
+      "publicRoute": null,
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "chat-record-get",
+      "owner": "chat",
+      "name": "record-get",
+      "callers": [
+        "crm"
+      ],
+      "capability": 15,
+      "mode": "read",
+      "input": "Request_chat-record-get",
+      "output": "Reply_chat-record-get",
+      "publicRoute": null,
+      "acceptance": "CO-15"
+    },
+    {
+      "key": "chat-record-patch",
+      "owner": "chat",
+      "name": "record-patch",
+      "callers": [
+        "crm"
+      ],
+      "capability": 15,
+      "mode": "command",
+      "input": "Request_chat-record-patch",
+      "output": "Reply_chat-record-patch",
+      "publicRoute": null,
+      "acceptance": "CO-15"
+    },
+    {
+      "key": "chat-record-archive",
+      "owner": "chat",
+      "name": "record-archive",
+      "callers": [
+        "crm"
+      ],
+      "capability": 15,
+      "mode": "command",
+      "input": "Request_chat-record-archive",
+      "output": "Reply_chat-record-archive",
+      "publicRoute": null,
+      "acceptance": "CO-15"
+    },
+    {
+      "key": "chat-routing-facts",
+      "owner": "chat",
+      "name": "routing-facts",
+      "callers": [
+        "reporting",
+        "routing"
+      ],
+      "capability": 14,
+      "mode": "read",
+      "input": "Request_chat-routing-facts",
+      "output": "Reply_chat-routing-facts",
+      "publicRoute": null,
+      "acceptance": "CO-14"
+    },
+    {
+      "key": "chat-conversion-facts",
+      "owner": "chat",
+      "name": "conversion-facts",
+      "callers": [
+        "reporting",
+        "routing"
+      ],
+      "capability": 14,
+      "mode": "read",
+      "input": "Request_chat-conversion-facts",
+      "output": "Reply_chat-conversion-facts",
+      "publicRoute": null,
+      "acceptance": "CO-14"
+    },
+    {
+      "key": "chat-stage-facts",
+      "owner": "chat",
+      "name": "stage-facts",
+      "callers": [
+        "reporting",
+        "routing"
+      ],
+      "capability": 14,
+      "mode": "read",
+      "input": "Request_chat-stage-facts",
+      "output": "Reply_chat-stage-facts",
+      "publicRoute": null,
+      "acceptance": "CO-14"
+    },
+    {
+      "key": "chat-progress-facts",
+      "owner": "chat",
+      "name": "progress-facts",
+      "callers": [
+        "reporting",
+        "routing"
+      ],
+      "capability": 14,
+      "mode": "read",
+      "input": "Request_chat-progress-facts",
+      "output": "Reply_chat-progress-facts",
+      "publicRoute": null,
+      "acceptance": "CO-14"
+    },
+    {
+      "key": "chat-routing-active",
+      "owner": "chat",
+      "name": "routing-active",
+      "callers": [
+        "routing"
+      ],
+      "capability": 5,
+      "mode": "read",
+      "input": "Request_chat-routing-active",
+      "output": "Reply_chat-routing-active",
+      "publicRoute": null,
+      "acceptance": "CO-05"
+    },
+    {
+      "key": "chat-routing-sync-snapshot",
+      "owner": "chat",
+      "name": "routing-sync-snapshot",
+      "callers": [
+        "routing"
+      ],
+      "capability": 5,
+      "mode": "read",
+      "input": "Request_chat-routing-sync-snapshot",
+      "output": "Reply_chat-routing-sync-snapshot",
+      "publicRoute": null,
+      "acceptance": "CO-05"
+    },
+    {
+      "key": "chat-routing-reply-facts",
+      "owner": "chat",
+      "name": "routing-reply-facts",
+      "callers": [
+        "routing"
+      ],
+      "capability": 5,
+      "mode": "read",
+      "input": "Request_chat-routing-reply-facts",
+      "output": "Reply_chat-routing-reply-facts",
+      "publicRoute": null,
+      "acceptance": "CO-05"
+    },
+    {
+      "key": "chat-runtime-capabilities",
+      "owner": "chat",
+      "name": "runtime-capabilities",
+      "callers": [
+        "bff",
+        "crm"
+      ],
+      "capability": 16,
+      "mode": "read",
+      "input": "Request_chat-runtime-capabilities",
+      "output": "Reply_chat-runtime-capabilities",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "chat-agent-context",
+      "owner": "chat",
+      "name": "agent-context",
+      "callers": [
+        "ai-runtime"
+      ],
+      "capability": 6,
+      "mode": "read",
+      "input": "Request_chat-agent-context",
+      "output": "Reply_chat-agent-context",
+      "publicRoute": null,
+      "acceptance": "CO-06"
+    },
+    {
+      "key": "chat-inbound-next",
+      "owner": "chat",
+      "name": "inbound-next",
+      "callers": [
+        "workflow"
+      ],
+      "capability": 6,
+      "mode": "read",
+      "input": "Request_chat-inbound-next",
+      "output": "Reply_chat-inbound-next",
+      "publicRoute": null,
+      "acceptance": "CO-06"
+    },
+    {
+      "key": "chat-prompt-submit",
+      "owner": "chat",
+      "name": "prompt-submit",
+      "callers": [
+        "ai-runtime"
+      ],
+      "capability": 6,
+      "mode": "command",
+      "input": "Request_chat-prompt-submit",
+      "output": "Reply_chat-prompt-submit",
+      "publicRoute": null,
+      "acceptance": "CO-06"
+    },
+    {
+      "key": "chat-read-need",
+      "owner": "chat",
+      "name": "read-need",
+      "callers": [
+        "workflow"
+      ],
+      "capability": 10,
+      "mode": "read",
+      "input": "Request_chat-read-need",
+      "output": "Reply_chat-read-need",
+      "publicRoute": null,
+      "acceptance": "CO-10"
+    },
+    {
+      "key": "sales-contribution-visible",
+      "owner": "sales",
+      "name": "contribution-visible",
+      "callers": [
+        "chat"
+      ],
+      "capability": 12,
+      "mode": "read",
+      "input": "Request_sales-contribution-visible",
+      "output": "Reply_sales-contribution-visible",
+      "publicRoute": null,
+      "acceptance": "CO-12"
+    },
+    {
+      "key": "chat-contribution-apply",
+      "owner": "chat",
+      "name": "contribution-apply",
+      "callers": [
+        "sales"
+      ],
+      "capability": 12,
+      "mode": "recovery",
+      "input": "Request_chat-contribution-apply",
+      "output": "Reply_chat-contribution-apply",
+      "publicRoute": null,
+      "acceptance": "CO-12"
+    },
+    {
+      "key": "chat-snapshot-prepare",
+      "owner": "chat",
+      "name": "snapshot-prepare",
+      "callers": [
+        "reporting",
+        "routing"
+      ],
+      "capability": 14,
+      "mode": "read",
+      "input": "Request_chat-snapshot-prepare",
+      "output": "Reply_chat-snapshot-prepare",
+      "publicRoute": null,
+      "acceptance": "CO-14"
+    },
+    {
+      "key": "chat-snapshot-validate",
+      "owner": "chat",
+      "name": "snapshot-validate",
+      "callers": [
+        "reporting",
+        "routing"
+      ],
+      "capability": 14,
+      "mode": "recovery",
+      "input": "Request_chat-snapshot-validate",
+      "output": "Reply_chat-snapshot-validate",
+      "publicRoute": null,
+      "acceptance": "CO-14"
+    },
+    {
+      "key": "chat-snapshot-release",
+      "owner": "chat",
+      "name": "snapshot-release",
+      "callers": [
+        "reporting",
+        "routing"
+      ],
+      "capability": 14,
+      "mode": "recovery",
+      "input": "Request_chat-snapshot-release",
+      "output": "Reply_chat-snapshot-release",
+      "publicRoute": null,
+      "acceptance": "CO-14"
+    },
+    {
+      "key": "chat-snapshot-page",
+      "owner": "chat",
+      "name": "snapshot-page",
+      "callers": [
+        "reporting",
+        "routing"
+      ],
+      "capability": 14,
+      "mode": "read",
+      "input": "Request_chat-snapshot-page",
+      "output": "Reply_chat-snapshot-page",
+      "publicRoute": null,
+      "acceptance": "CO-14"
+    },
+    {
+      "key": "sales-child-start",
+      "owner": "sales",
+      "name": "child-start",
+      "callers": [
+        "workflow"
+      ],
+      "capability": 13,
+      "mode": "command",
+      "input": "Request_sales-child-start",
+      "output": "Reply_sales-child-start",
+      "publicRoute": null,
+      "acceptance": "CO-13"
+    },
+    {
+      "key": "sales-child-status",
+      "owner": "sales",
+      "name": "child-status",
+      "callers": [
+        "workflow"
+      ],
+      "capability": 13,
+      "mode": "read",
+      "input": "Request_sales-child-status",
+      "output": "Reply_sales-child-status",
+      "publicRoute": null,
+      "acceptance": "CO-13"
+    },
+    {
+      "key": "chat-session-progress-get-session-process",
+      "owner": "chat",
+      "name": "session-progress-get-session-process",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 9,
+      "mode": "read",
+      "input": "Request_chat-session-progress-get-session-process",
+      "output": "Reply_chat-session-progress-get-session-process",
+      "publicRoute": "GET /api/v1/session-process",
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "chat-session-progress-post-session-process",
+      "owner": "chat",
+      "name": "session-progress-post-session-process",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 9,
+      "mode": "command",
+      "input": "Request_chat-session-progress-post-session-process",
+      "output": "Reply_chat-session-progress-post-session-process",
+      "publicRoute": "POST /api/v1/session-process",
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "chat-session-progress-get-conversations-conversation-sessions-session-progress",
+      "owner": "chat",
+      "name": "session-progress-get-conversations-conversation-sessions-session-progress",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 9,
+      "mode": "read",
+      "input": "Request_chat-session-progress-get-conversations-conversation-sessions-session-progress",
+      "output": "Reply_chat-session-progress-get-conversations-conversation-sessions-session-progress",
+      "publicRoute": "GET /api/v1/conversations/{conversation}/sessions/{session}/progress",
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "chat-session-progress-post-conversations-conversation-sessions-session-progress",
+      "owner": "chat",
+      "name": "session-progress-post-conversations-conversation-sessions-session-progress",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 9,
+      "mode": "command",
+      "input": "Request_chat-session-progress-post-conversations-conversation-sessions-session-progress",
+      "output": "Reply_chat-session-progress-post-conversations-conversation-sessions-session-progress",
+      "publicRoute": "POST /api/v1/conversations/{conversation}/sessions/{session}/progress",
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "chat-session-progress-get-session-funnel",
+      "owner": "chat",
+      "name": "session-progress-get-session-funnel",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 9,
+      "mode": "read",
+      "input": "Request_chat-session-progress-get-session-funnel",
+      "output": "Reply_chat-session-progress-get-session-funnel",
+      "publicRoute": "GET /api/v1/session-funnel",
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "chat-conversation-get-conversations",
+      "owner": "chat",
+      "name": "conversation-get-conversations",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 2,
+      "mode": "read",
+      "input": "Request_chat-conversation-get-conversations",
+      "output": "Reply_chat-conversation-get-conversations",
+      "publicRoute": "GET /api/v1/conversations",
+      "acceptance": "CO-02"
+    },
+    {
+      "key": "chat-conversation-get-conversations-id",
+      "owner": "chat",
+      "name": "conversation-get-conversations-id",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 2,
+      "mode": "read",
+      "input": "Request_chat-conversation-get-conversations-id",
+      "output": "Reply_chat-conversation-get-conversations-id",
+      "publicRoute": "GET /api/v1/conversations/{id}",
+      "acceptance": "CO-02"
+    },
+    {
+      "key": "chat-conversation-get-conversations-id-messages",
+      "owner": "chat",
+      "name": "conversation-get-conversations-id-messages",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 2,
+      "mode": "read",
+      "input": "Request_chat-conversation-get-conversations-id-messages",
+      "output": "Reply_chat-conversation-get-conversations-id-messages",
+      "publicRoute": "GET /api/v1/conversations/{id}/messages",
+      "acceptance": "CO-02"
+    },
+    {
+      "key": "chat-conversation-post-conversations-id-messages",
+      "owner": "chat",
+      "name": "conversation-post-conversations-id-messages",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 3,
+      "mode": "command",
+      "input": "Request_chat-conversation-post-conversations-id-messages",
+      "output": "Reply_chat-conversation-post-conversations-id-messages",
+      "publicRoute": "POST /api/v1/conversations/{id}/messages",
+      "acceptance": "CO-03"
+    },
+    {
+      "key": "chat-conversation-get-conversations-id-message-envelopes",
+      "owner": "chat",
+      "name": "conversation-get-conversations-id-message-envelopes",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 2,
+      "mode": "read",
+      "input": "Request_chat-conversation-get-conversations-id-message-envelopes",
+      "output": "Reply_chat-conversation-get-conversations-id-message-envelopes",
+      "publicRoute": "GET /api/v1/conversations/{id}/message-envelopes",
+      "acceptance": "CO-02"
+    },
+    {
+      "key": "chat-conversation-get-conversations-id-message-envelopes-v3",
+      "owner": "chat",
+      "name": "conversation-get-conversations-id-message-envelopes-v3",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 2,
+      "mode": "read",
+      "input": "Request_chat-conversation-get-conversations-id-message-envelopes-v3",
+      "output": "Reply_chat-conversation-get-conversations-id-message-envelopes-v3",
+      "publicRoute": "GET /api/v1/conversations/{id}/message-envelopes-v3",
+      "acceptance": "CO-02"
+    },
+    {
+      "key": "chat-conversation-get-conversations-id-outbound-intents-intentId",
+      "owner": "chat",
+      "name": "conversation-get-conversations-id-outbound-intents-intentId",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 3,
+      "mode": "read",
+      "input": "Request_chat-conversation-get-conversations-id-outbound-intents-intentId",
+      "output": "Reply_chat-conversation-get-conversations-id-outbound-intents-intentId",
+      "publicRoute": "GET /api/v1/conversations/{id}/outbound-intents/{intentId}",
+      "acceptance": "CO-03"
+    },
+    {
+      "key": "chat-conversation-get-conversations-id-acquisition-sessions",
+      "owner": "chat",
+      "name": "conversation-get-conversations-id-acquisition-sessions",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 9,
+      "mode": "read",
+      "input": "Request_chat-conversation-get-conversations-id-acquisition-sessions",
+      "output": "Reply_chat-conversation-get-conversations-id-acquisition-sessions",
+      "publicRoute": "GET /api/v1/conversations/{id}/acquisition-sessions",
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "chat-conversation-get-conversations-id-notes",
+      "owner": "chat",
+      "name": "conversation-get-conversations-id-notes",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 11,
+      "mode": "read",
+      "input": "Request_chat-conversation-get-conversations-id-notes",
+      "output": "Reply_chat-conversation-get-conversations-id-notes",
+      "publicRoute": "GET /api/v1/conversations/{id}/notes",
+      "acceptance": "CO-11"
+    },
+    {
+      "key": "chat-conversation-post-conversations-id-notes",
+      "owner": "chat",
+      "name": "conversation-post-conversations-id-notes",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 11,
+      "mode": "command",
+      "input": "Request_chat-conversation-post-conversations-id-notes",
+      "output": "Reply_chat-conversation-post-conversations-id-notes",
+      "publicRoute": "POST /api/v1/conversations/{id}/notes",
+      "acceptance": "CO-11"
+    },
+    {
+      "key": "chat-conversation-post-conversations-id-transition",
+      "owner": "chat",
+      "name": "conversation-post-conversations-id-transition",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 4,
+      "mode": "command",
+      "input": "Request_chat-conversation-post-conversations-id-transition",
+      "output": "Reply_chat-conversation-post-conversations-id-transition",
+      "publicRoute": "POST /api/v1/conversations/{id}/transition",
+      "acceptance": "CO-04"
+    },
+    {
+      "key": "chat-routing-assignment",
+      "owner": "chat",
+      "name": "routing-assignment",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 4,
+      "mode": "command",
+      "input": "Request_chat-routing-assignment",
+      "output": "Reply_chat-routing-assignment",
+      "publicRoute": "POST /api/v1/records/{id}/assignment",
+      "acceptance": "CO-04"
+    },
+    {
+      "key": "chat-routing-takeover",
+      "owner": "chat",
+      "name": "routing-takeover",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 4,
+      "mode": "command",
+      "input": "Request_chat-routing-takeover",
+      "output": "Reply_chat-routing-takeover",
+      "publicRoute": "POST /api/v1/conversations/{id}/takeover",
+      "acceptance": "CO-04"
+    },
+    {
+      "key": "chat-routing-targets",
+      "owner": "chat",
+      "name": "routing-targets",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 4,
+      "mode": "read",
+      "input": "Request_chat-routing-targets",
+      "output": "Reply_chat-routing-targets",
+      "publicRoute": "GET /api/v1/records/{id}/assignment-targets",
+      "acceptance": "CO-04"
+    },
+    {
+      "key": "chat-routing-history",
+      "owner": "chat",
+      "name": "routing-history",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 4,
+      "mode": "read",
+      "input": "Request_chat-routing-history",
+      "output": "Reply_chat-routing-history",
+      "publicRoute": "GET /api/v1/records/{id}/ownership-history",
+      "acceptance": "CO-04"
+    },
+    {
+      "key": "chat-contact-bound-send",
+      "owner": "chat",
+      "name": "contact-bound-send",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 3,
+      "mode": "command",
+      "input": "Request_chat-contact-bound-send",
+      "output": "Reply_chat-contact-bound-send",
+      "publicRoute": "POST /api/v1/conversations/{id}/messages-v2",
+      "acceptance": "CO-03"
+    },
+    {
+      "key": "chat-conversation-channels",
+      "owner": "chat",
+      "name": "conversation-channels",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 2,
+      "mode": "read",
+      "input": "Request_chat-conversation-channels",
+      "output": "Reply_chat-conversation-channels",
+      "publicRoute": "GET /api/v1/conversation-channels",
+      "acceptance": "CO-02"
+    },
+    {
+      "key": "chat-workspace-capabilities",
+      "owner": "chat",
+      "name": "workspace-capabilities",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 7,
+      "mode": "read",
+      "input": "Request_chat-workspace-capabilities",
+      "output": "Reply_chat-workspace-capabilities",
+      "publicRoute": "GET /api/v1/chat-workspace/capabilities",
+      "acceptance": "CO-07"
+    },
+    {
+      "key": "chat-workspace-sidebar",
+      "owner": "chat",
+      "name": "workspace-sidebar",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 7,
+      "mode": "read",
+      "input": "Request_chat-workspace-sidebar",
+      "output": "Reply_chat-workspace-sidebar",
+      "publicRoute": "GET /api/v1/chat-workspace/sidebar",
+      "acceptance": "CO-07"
+    },
+    {
+      "key": "chat-workspace-conversations",
+      "owner": "chat",
+      "name": "workspace-conversations",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 7,
+      "mode": "read",
+      "input": "Request_chat-workspace-conversations",
+      "output": "Reply_chat-workspace-conversations",
+      "publicRoute": "GET /api/v1/chat-workspace/conversations",
+      "acceptance": "CO-07"
+    },
+    {
+      "key": "chat-workspace-conversations-id-read-state",
+      "owner": "chat",
+      "name": "workspace-conversations-id-read-state",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 7,
+      "mode": "read",
+      "input": "Request_chat-workspace-conversations-id-read-state",
+      "output": "Reply_chat-workspace-conversations-id-read-state",
+      "publicRoute": "GET /api/v1/chat-workspace/conversations/{id}/read-state",
+      "acceptance": "CO-07"
+    },
+    {
+      "key": "chat-workspace-mark-read",
+      "owner": "chat",
+      "name": "workspace-mark-read",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 7,
+      "mode": "command",
+      "input": "Request_chat-workspace-mark-read",
+      "output": "Reply_chat-workspace-mark-read",
+      "publicRoute": "POST /api/v1/chat-workspace/conversations/{id}/read-state",
+      "acceptance": "CO-07"
+    },
+    {
+      "key": "chat-catalog-inbox-options",
+      "owner": "chat",
+      "name": "catalog-inbox-options",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 7,
+      "mode": "read",
+      "input": "Request_chat-catalog-inbox-options",
+      "output": "Reply_chat-catalog-inbox-options",
+      "publicRoute": "GET /api/v1/chat-workspace/inbox-options",
+      "acceptance": "CO-07"
+    },
+    {
+      "key": "chat-catalog-list-inboxes",
+      "owner": "chat",
+      "name": "catalog-list-inboxes",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 7,
+      "mode": "read",
+      "input": "Request_chat-catalog-list-inboxes",
+      "output": "Reply_chat-catalog-list-inboxes",
+      "publicRoute": "GET /api/v1/chat-workspace/inboxes",
+      "acceptance": "CO-07"
+    },
+    {
+      "key": "chat-catalog-create-inbox",
+      "owner": "chat",
+      "name": "catalog-create-inbox",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 7,
+      "mode": "command",
+      "input": "Request_chat-catalog-create-inbox",
+      "output": "Reply_chat-catalog-create-inbox",
+      "publicRoute": "POST /api/v1/chat-workspace/inboxes",
+      "acceptance": "CO-07"
+    },
+    {
+      "key": "chat-catalog-get-inbox",
+      "owner": "chat",
+      "name": "catalog-get-inbox",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 7,
+      "mode": "read",
+      "input": "Request_chat-catalog-get-inbox",
+      "output": "Reply_chat-catalog-get-inbox",
+      "publicRoute": "GET /api/v1/chat-workspace/inboxes/{id}",
+      "acceptance": "CO-07"
+    },
+    {
+      "key": "chat-catalog-patch-inbox",
+      "owner": "chat",
+      "name": "catalog-patch-inbox",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 7,
+      "mode": "command",
+      "input": "Request_chat-catalog-patch-inbox",
+      "output": "Reply_chat-catalog-patch-inbox",
+      "publicRoute": "PATCH /api/v1/chat-workspace/inboxes/{id}",
+      "acceptance": "CO-07"
+    },
+    {
+      "key": "chat-catalog-delete-inbox",
+      "owner": "chat",
+      "name": "catalog-delete-inbox",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 7,
+      "mode": "command",
+      "input": "Request_chat-catalog-delete-inbox",
+      "output": "Reply_chat-catalog-delete-inbox",
+      "publicRoute": "DELETE /api/v1/chat-workspace/inboxes/{id}",
+      "acceptance": "CO-07"
+    },
+    {
+      "key": "chat-catalog-list-tags",
+      "owner": "chat",
+      "name": "catalog-list-tags",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 8,
+      "mode": "read",
+      "input": "Request_chat-catalog-list-tags",
+      "output": "Reply_chat-catalog-list-tags",
+      "publicRoute": "GET /api/v1/chat-workspace/tags",
+      "acceptance": "CO-08"
+    },
+    {
+      "key": "chat-catalog-create-tag",
+      "owner": "chat",
+      "name": "catalog-create-tag",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 8,
+      "mode": "command",
+      "input": "Request_chat-catalog-create-tag",
+      "output": "Reply_chat-catalog-create-tag",
+      "publicRoute": "POST /api/v1/chat-workspace/tags",
+      "acceptance": "CO-08"
+    },
+    {
+      "key": "chat-catalog-get-tag",
+      "owner": "chat",
+      "name": "catalog-get-tag",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 8,
+      "mode": "read",
+      "input": "Request_chat-catalog-get-tag",
+      "output": "Reply_chat-catalog-get-tag",
+      "publicRoute": "GET /api/v1/chat-workspace/tags/{id}",
+      "acceptance": "CO-08"
+    },
+    {
+      "key": "chat-catalog-patch-tag",
+      "owner": "chat",
+      "name": "catalog-patch-tag",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 8,
+      "mode": "command",
+      "input": "Request_chat-catalog-patch-tag",
+      "output": "Reply_chat-catalog-patch-tag",
+      "publicRoute": "PATCH /api/v1/chat-workspace/tags/{id}",
+      "acceptance": "CO-08"
+    },
+    {
+      "key": "chat-catalog-delete-tag",
+      "owner": "chat",
+      "name": "catalog-delete-tag",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 8,
+      "mode": "command",
+      "input": "Request_chat-catalog-delete-tag",
+      "output": "Reply_chat-catalog-delete-tag",
+      "publicRoute": "DELETE /api/v1/chat-workspace/tags/{id}",
+      "acceptance": "CO-08"
+    },
+    {
+      "key": "chat-catalog-list-snippets",
+      "owner": "chat",
+      "name": "catalog-list-snippets",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 8,
+      "mode": "read",
+      "input": "Request_chat-catalog-list-snippets",
+      "output": "Reply_chat-catalog-list-snippets",
+      "publicRoute": "GET /api/v1/chat-workspace/snippets",
+      "acceptance": "CO-08"
+    },
+    {
+      "key": "chat-catalog-create-snippet",
+      "owner": "chat",
+      "name": "catalog-create-snippet",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 8,
+      "mode": "command",
+      "input": "Request_chat-catalog-create-snippet",
+      "output": "Reply_chat-catalog-create-snippet",
+      "publicRoute": "POST /api/v1/chat-workspace/snippets",
+      "acceptance": "CO-08"
+    },
+    {
+      "key": "chat-catalog-get-snippet",
+      "owner": "chat",
+      "name": "catalog-get-snippet",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 8,
+      "mode": "read",
+      "input": "Request_chat-catalog-get-snippet",
+      "output": "Reply_chat-catalog-get-snippet",
+      "publicRoute": "GET /api/v1/chat-workspace/snippets/{id}",
+      "acceptance": "CO-08"
+    },
+    {
+      "key": "chat-catalog-patch-snippet",
+      "owner": "chat",
+      "name": "catalog-patch-snippet",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 8,
+      "mode": "command",
+      "input": "Request_chat-catalog-patch-snippet",
+      "output": "Reply_chat-catalog-patch-snippet",
+      "publicRoute": "PATCH /api/v1/chat-workspace/snippets/{id}",
+      "acceptance": "CO-08"
+    },
+    {
+      "key": "chat-catalog-delete-snippet",
+      "owner": "chat",
+      "name": "catalog-delete-snippet",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 8,
+      "mode": "command",
+      "input": "Request_chat-catalog-delete-snippet",
+      "output": "Reply_chat-catalog-delete-snippet",
+      "publicRoute": "DELETE /api/v1/chat-workspace/snippets/{id}",
+      "acceptance": "CO-08"
+    },
+    {
+      "key": "chat-catalog-inbox-shares",
+      "owner": "chat",
+      "name": "catalog-inbox-shares",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 7,
+      "mode": "command",
+      "input": "Request_chat-catalog-inbox-shares",
+      "output": "Reply_chat-catalog-inbox-shares",
+      "publicRoute": "PUT /api/v1/chat-workspace/inboxes/{id}/shares",
+      "acceptance": "CO-07"
+    },
+    {
+      "key": "chat-catalog-put-conversation-tag",
+      "owner": "chat",
+      "name": "catalog-put-conversation-tag",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 8,
+      "mode": "command",
+      "input": "Request_chat-catalog-put-conversation-tag",
+      "output": "Reply_chat-catalog-put-conversation-tag",
+      "publicRoute": "PUT /api/v1/chat-workspace/conversations/{id}/tags/{tagId}",
+      "acceptance": "CO-08"
+    },
+    {
+      "key": "chat-catalog-delete-conversation-tag",
+      "owner": "chat",
+      "name": "catalog-delete-conversation-tag",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 8,
+      "mode": "command",
+      "input": "Request_chat-catalog-delete-conversation-tag",
+      "output": "Reply_chat-catalog-delete-conversation-tag",
+      "publicRoute": "DELETE /api/v1/chat-workspace/conversations/{id}/tags/{tagId}",
+      "acceptance": "CO-08"
+    },
+    {
+      "key": "chat-workspace-get-snooze",
+      "owner": "chat",
+      "name": "workspace-get-snooze",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 8,
+      "mode": "read",
+      "input": "Request_chat-workspace-get-snooze",
+      "output": "Reply_chat-workspace-get-snooze",
+      "publicRoute": "GET /api/v1/chat-workspace/conversations/{id}/snooze",
+      "acceptance": "CO-08"
+    },
+    {
+      "key": "chat-workspace-put-snooze",
+      "owner": "chat",
+      "name": "workspace-put-snooze",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 8,
+      "mode": "command",
+      "input": "Request_chat-workspace-put-snooze",
+      "output": "Reply_chat-workspace-put-snooze",
+      "publicRoute": "PUT /api/v1/chat-workspace/conversations/{id}/snooze",
+      "acceptance": "CO-08"
+    },
+    {
+      "key": "chat-workspace-post-wake",
+      "owner": "chat",
+      "name": "workspace-post-wake",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 8,
+      "mode": "command",
+      "input": "Request_chat-workspace-post-wake",
+      "output": "Reply_chat-workspace-post-wake",
+      "publicRoute": "POST /api/v1/chat-workspace/conversations/{id}/wake",
+      "acceptance": "CO-08"
+    },
+    {
+      "key": "chat-workspace-get-activity",
+      "owner": "chat",
+      "name": "workspace-get-activity",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 11,
+      "mode": "read",
+      "input": "Request_chat-workspace-get-activity",
+      "output": "Reply_chat-workspace-get-activity",
+      "publicRoute": "GET /api/v1/chat-workspace/conversations/{id}/activity",
+      "acceptance": "CO-11"
+    },
+    {
+      "key": "chat-conversation-classification-get-conversations-conversation-sessions-session-classification",
+      "owner": "chat",
+      "name": "conversation-classification-get-conversations-conversation-sessions-session-classification",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 9,
+      "mode": "read",
+      "input": "Request_chat-conversation-classification-get-conversations-conversation-sessions-session-classification",
+      "output": "Reply_chat-conversation-classification-get-conversations-conversation-sessions-session-classification",
+      "publicRoute": "GET /api/v1/conversations/{conversation}/sessions/{session}/classification",
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "chat-conversation-classification-post-conversations-conversation-sessions-session-classification",
+      "owner": "chat",
+      "name": "conversation-classification-post-conversations-conversation-sessions-session-classification",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 9,
+      "mode": "command",
+      "input": "Request_chat-conversation-classification-post-conversations-conversation-sessions-session-classification",
+      "output": "Reply_chat-conversation-classification-post-conversations-conversation-sessions-session-classification",
+      "publicRoute": "POST /api/v1/conversations/{conversation}/sessions/{session}/classification",
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "chat-conversation-classification-get-conversations-conversation-sessions-session-contributions",
+      "owner": "chat",
+      "name": "conversation-classification-get-conversations-conversation-sessions-session-contributions",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 9,
+      "mode": "read",
+      "input": "Request_chat-conversation-classification-get-conversations-conversation-sessions-session-contributions",
+      "output": "Reply_chat-conversation-classification-get-conversations-conversation-sessions-session-contributions",
+      "publicRoute": "GET /api/v1/conversations/{conversation}/sessions/{session}/contributions",
+      "acceptance": "CO-09"
+    },
+    {
+      "key": "chat-conversation-classification-get-records-id-assignment-teams",
+      "owner": "chat",
+      "name": "conversation-classification-get-records-id-assignment-teams",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 4,
+      "mode": "read",
+      "input": "Request_chat-conversation-classification-get-records-id-assignment-teams",
+      "output": "Reply_chat-conversation-classification-get-records-id-assignment-teams",
+      "publicRoute": "GET /api/v1/records/{id}/assignment-teams",
+      "acceptance": "CO-04"
+    },
+    {
+      "key": "chat-need-get-assessment",
+      "owner": "chat",
+      "name": "need-get-assessment",
+      "callers": [
+        "bff",
+        "ai-runtime",
+        "workflow"
+      ],
+      "capability": 10,
+      "mode": "read",
+      "input": "Request_chat-need-get-assessment",
+      "output": "Reply_chat-need-get-assessment",
+      "publicRoute": "GET /api/v1/conversations/{conversation}/sessions/{session}/needs/{need}/assessment",
+      "acceptance": "CO-10"
+    },
+    {
+      "key": "chat-need-post-assessment",
+      "owner": "chat",
+      "name": "need-post-assessment",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 10,
+      "mode": "command",
+      "input": "Request_chat-need-post-assessment",
+      "output": "Reply_chat-need-post-assessment",
+      "publicRoute": "POST /api/v1/conversations/{conversation}/sessions/{session}/needs/{need}/assessment",
+      "acceptance": "CO-10"
+    },
+    {
+      "key": "chat-need-post-enrich",
+      "owner": "chat",
+      "name": "need-post-enrich",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 10,
+      "mode": "command",
+      "input": "Request_chat-need-post-enrich",
+      "output": "Reply_chat-need-post-enrich",
+      "publicRoute": "POST /api/v1/conversations/{conversation}/sessions/{session}/needs/{need}/enrich",
+      "acceptance": "CO-10"
+    },
+    {
+      "key": "chat-need-post-outcome",
+      "owner": "chat",
+      "name": "need-post-outcome",
+      "callers": [
+        "bff",
+        "workflow",
+        "routing"
+      ],
+      "capability": 10,
+      "mode": "command",
+      "input": "Request_chat-need-post-outcome",
+      "output": "Reply_chat-need-post-outcome",
+      "publicRoute": "POST /api/v1/conversations/{conversation}/sessions/{session}/needs/{need}/outcome",
+      "acceptance": "CO-10"
+    },
+    {
+      "key": "chat-external-conversations",
+      "owner": "chat",
+      "name": "external-conversations",
+      "callers": [
+        "bff"
+      ],
+      "capability": 15,
+      "mode": "read",
+      "input": "Request_chat-external-conversations",
+      "output": "Reply_chat-external-conversations",
+      "publicRoute": "GET /external/conversations",
+      "acceptance": "CO-15"
+    },
+    {
+      "key": "chat-external-conversations-id",
+      "owner": "chat",
+      "name": "external-conversations-id",
+      "callers": [
+        "bff"
+      ],
+      "capability": 15,
+      "mode": "read",
+      "input": "Request_chat-external-conversations-id",
+      "output": "Reply_chat-external-conversations-id",
+      "publicRoute": "GET /external/conversations/{id}",
+      "acceptance": "CO-15"
+    },
+    {
+      "key": "chat-external-conversations-id-messages",
+      "owner": "chat",
+      "name": "external-conversations-id-messages",
+      "callers": [
+        "bff"
+      ],
+      "capability": 15,
+      "mode": "read",
+      "input": "Request_chat-external-conversations-id-messages",
+      "output": "Reply_chat-external-conversations-id-messages",
+      "publicRoute": "GET /external/conversations/{id}/messages",
+      "acceptance": "CO-15"
+    },
+    {
+      "key": "chat-external-conversations-id-messages-messageId",
+      "owner": "chat",
+      "name": "external-conversations-id-messages-messageId",
+      "callers": [
+        "bff"
+      ],
+      "capability": 15,
+      "mode": "read",
+      "input": "Request_chat-external-conversations-id-messages-messageId",
+      "output": "Reply_chat-external-conversations-id-messages-messageId",
+      "publicRoute": "GET /external/conversations/{id}/messages/{messageId}",
+      "acceptance": "CO-15"
+    },
+    {
+      "key": "chat-external-prepare",
+      "owner": "chat",
+      "name": "external-prepare",
+      "callers": [
+        "bff"
+      ],
+      "capability": 15,
+      "mode": "recovery",
+      "input": "Request_chat-external-prepare",
+      "output": "Reply_chat-external-prepare",
+      "publicRoute": null,
+      "acceptance": "CO-15"
+    },
+    {
+      "key": "identity-external-policy",
+      "owner": "identity",
+      "name": "external-policy",
+      "callers": [
+        "chat"
+      ],
+      "capability": 15,
+      "mode": "recovery",
+      "input": "Request_identity-external-policy",
+      "output": "Reply_identity-external-policy",
+      "publicRoute": null,
+      "acceptance": "CO-15"
+    },
+    {
+      "key": "chat-event-deliver",
+      "owner": "chat",
+      "name": "event-deliver",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_chat-event-deliver",
+      "output": "Reply_chat-event-deliver",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "chat-event-status",
+      "owner": "chat",
+      "name": "event-status",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_chat-event-status",
+      "output": "Reply_chat-event-status",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "chat-event-replay",
+      "owner": "chat",
+      "name": "event-replay",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_chat-event-replay",
+      "output": "Reply_chat-event-replay",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "chat-event-read",
+      "owner": "chat",
+      "name": "event-read",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_chat-event-read",
+      "output": "Reply_chat-event-read",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "identity-event-deliver",
+      "owner": "identity",
+      "name": "event-deliver",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_identity-event-deliver",
+      "output": "Reply_identity-event-deliver",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "identity-event-status",
+      "owner": "identity",
+      "name": "event-status",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_identity-event-status",
+      "output": "Reply_identity-event-status",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "identity-event-replay",
+      "owner": "identity",
+      "name": "event-replay",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_identity-event-replay",
+      "output": "Reply_identity-event-replay",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "identity-event-read",
+      "owner": "identity",
+      "name": "event-read",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_identity-event-read",
+      "output": "Reply_identity-event-read",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "crm-event-deliver",
+      "owner": "crm",
+      "name": "event-deliver",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_crm-event-deliver",
+      "output": "Reply_crm-event-deliver",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "crm-event-status",
+      "owner": "crm",
+      "name": "event-status",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_crm-event-status",
+      "output": "Reply_crm-event-status",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "crm-event-replay",
+      "owner": "crm",
+      "name": "event-replay",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_crm-event-replay",
+      "output": "Reply_crm-event-replay",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "crm-event-read",
+      "owner": "crm",
+      "name": "event-read",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_crm-event-read",
+      "output": "Reply_crm-event-read",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "connector-event-deliver",
+      "owner": "connector",
+      "name": "event-deliver",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_connector-event-deliver",
+      "output": "Reply_connector-event-deliver",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "connector-event-status",
+      "owner": "connector",
+      "name": "event-status",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_connector-event-status",
+      "output": "Reply_connector-event-status",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "connector-event-replay",
+      "owner": "connector",
+      "name": "event-replay",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_connector-event-replay",
+      "output": "Reply_connector-event-replay",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "connector-event-read",
+      "owner": "connector",
+      "name": "event-read",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_connector-event-read",
+      "output": "Reply_connector-event-read",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "routing-event-deliver",
+      "owner": "routing",
+      "name": "event-deliver",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_routing-event-deliver",
+      "output": "Reply_routing-event-deliver",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "routing-event-status",
+      "owner": "routing",
+      "name": "event-status",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_routing-event-status",
+      "output": "Reply_routing-event-status",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "routing-event-replay",
+      "owner": "routing",
+      "name": "event-replay",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_routing-event-replay",
+      "output": "Reply_routing-event-replay",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "routing-event-read",
+      "owner": "routing",
+      "name": "event-read",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_routing-event-read",
+      "output": "Reply_routing-event-read",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "sales-event-deliver",
+      "owner": "sales",
+      "name": "event-deliver",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_sales-event-deliver",
+      "output": "Reply_sales-event-deliver",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "sales-event-status",
+      "owner": "sales",
+      "name": "event-status",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_sales-event-status",
+      "output": "Reply_sales-event-status",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "sales-event-replay",
+      "owner": "sales",
+      "name": "event-replay",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_sales-event-replay",
+      "output": "Reply_sales-event-replay",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "sales-event-read",
+      "owner": "sales",
+      "name": "event-read",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_sales-event-read",
+      "output": "Reply_sales-event-read",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "ai-runtime-event-deliver",
+      "owner": "ai-runtime",
+      "name": "event-deliver",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_ai-runtime-event-deliver",
+      "output": "Reply_ai-runtime-event-deliver",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "ai-runtime-event-status",
+      "owner": "ai-runtime",
+      "name": "event-status",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_ai-runtime-event-status",
+      "output": "Reply_ai-runtime-event-status",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "ai-runtime-event-replay",
+      "owner": "ai-runtime",
+      "name": "event-replay",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_ai-runtime-event-replay",
+      "output": "Reply_ai-runtime-event-replay",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "ai-runtime-event-read",
+      "owner": "ai-runtime",
+      "name": "event-read",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_ai-runtime-event-read",
+      "output": "Reply_ai-runtime-event-read",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "workflow-event-deliver",
+      "owner": "workflow",
+      "name": "event-deliver",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_workflow-event-deliver",
+      "output": "Reply_workflow-event-deliver",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "workflow-event-status",
+      "owner": "workflow",
+      "name": "event-status",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_workflow-event-status",
+      "output": "Reply_workflow-event-status",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "workflow-event-replay",
+      "owner": "workflow",
+      "name": "event-replay",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_workflow-event-replay",
+      "output": "Reply_workflow-event-replay",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "workflow-event-read",
+      "owner": "workflow",
+      "name": "event-read",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_workflow-event-read",
+      "output": "Reply_workflow-event-read",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "reporting-event-deliver",
+      "owner": "reporting",
+      "name": "event-deliver",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_reporting-event-deliver",
+      "output": "Reply_reporting-event-deliver",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "reporting-event-status",
+      "owner": "reporting",
+      "name": "event-status",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_reporting-event-status",
+      "output": "Reply_reporting-event-status",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "reporting-event-replay",
+      "owner": "reporting",
+      "name": "event-replay",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_reporting-event-replay",
+      "output": "Reply_reporting-event-replay",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    },
+    {
+      "key": "reporting-event-read",
+      "owner": "reporting",
+      "name": "event-read",
+      "callers": [
+        "chat",
+        "identity",
+        "crm",
+        "connector",
+        "routing",
+        "sales",
+        "ai-runtime",
+        "workflow",
+        "reporting"
+      ],
+      "capability": 16,
+      "mode": "recovery",
+      "input": "Request_reporting-event-read",
+      "output": "Reply_reporting-event-read",
+      "publicRoute": null,
+      "acceptance": "CO-16"
+    }
+  ],
+  "subscriptions": [
+    {
+      "consumer": "chat.read-marker.v1",
+      "producer": "chat",
+      "event_type": "chat.read_marker.updated"
+    },
+    {
+      "consumer": "chat.snooze.v1",
+      "producer": "chat",
+      "event_type": "chat.snooze.changed"
+    },
+    {
+      "consumer": "chat.inbox.changed.v1",
+      "producer": "chat",
+      "event_type": "chat.inbox.changed"
+    },
+    {
+      "consumer": "chat.snippet.changed.v1",
+      "producer": "chat",
+      "event_type": "chat.snippet.changed"
+    },
+    {
+      "consumer": "chat.tag_definition.changed.v1",
+      "producer": "chat",
+      "event_type": "chat.tag_definition.changed"
+    },
+    {
+      "consumer": "chat.conversation-tag.v1",
+      "producer": "chat",
+      "event_type": "chat.conversation_tag.changed"
+    },
+    {
+      "consumer": "chat.activity.note.v1",
+      "producer": "crm",
+      "event_type": "crm.conversation_note.changed"
+    },
+    {
+      "consumer": "chat.activity.automation.v1",
+      "producer": "workflow",
+      "event_type": "automation.conversation_activity.v1"
+    }
+  ]
+}

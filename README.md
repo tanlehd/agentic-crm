@@ -1,120 +1,50 @@
 # Agentic CRM
 
-**Funnel theo stage (2026-10-18):** Report Builder có chart funnel và template6reports cho Conversation, Lead, Deal, tính từ sự kiện vào/ra stage. Có distinct conversion, lượt vào/ra, thời gian, coverage, CSV và native record links. [Mở Dashboards](http://localhost:18080/?dashboards=1) · [Hướng dẫn](docs/development/stage-funnel-reporting.md) · [Nghiệm thu](docs/quality/stage-funnel-reporting-acceptance.md). Dữ liệu cũ thiếu history được công bố, không suy lịch sử từ trạng thái hiện tại.
+Nền tảng giúp doanh nghiệp quản trị dữ liệu khách hàng và vận hành marketing, bán hàng, customer service trong một không gian số hóa thống nhất, có kiểm soát. Nhân viên, Workflow và AI Agent cùng xử lý công việc theo dữ liệu, quyền hạn và mô hình tổ chức của doanh nghiệp.
 
-**Chuyển đổi kinh doanh (2026-10-17):** Dashboard10reports đo hội thoại → Lead → Won, tách Deal trực tiếp/Lead gộp trùng, đặt mục tiêu KPI và mở việc cần xử lý. [Mở local](http://localhost:18080/?dashboards=1&dashboard=231b1486-4a14-588a-adb9-2dba107dea79) · [Hướng dẫn](docs/development/conversion-reporting.md) · [Nghiệm thu/ảnh](docs/quality/conversion-reporting-acceptance.md). Snapshot hiện tại, refresh thủ công; không tự đặt target hoặc phát cảnh báo.
+[Tổng quan sản phẩm](docs/product/vision.md) · [Nhóm tính năng](docs/product/capability-map.md) · [Tài liệu các service](docs/services/README.md)
 
-**Dashboard vận hành (2026-10-17):** Giám sát workload, hàng chờ và hiệu suất qua 6 đối tượng/thuộc tính kết nối, 7 saved reports dùng chung Report Builder. Template có biểu đồ, KPI và bảng; sửa nhóm/lọc/kỳ/bố cục, dùng lại report. [Mở Dashboards](http://localhost:18080/?dashboards=1) · [Hướng dẫn](docs/development/operations-reporting.md) · [Nghiệm thu và ảnh](docs/quality/operations-reporting-acceptance.md). Tab hiệu suất riêng của Routing được thay bằng lối vào dashboard; các bản ghi dưới là lịch sử.
+## Kiến trúc
 
-**Phân bổ hội thoại Human (2026-10-17):** Admin gán kỹ năng cho team, cấu hình queue/capacity, theo dõi và phân lại. Agent close giải phóng workload để engine phân việc tiếp; báo cáo ghi nhận hoàn tất/chuyển giao/phản hồi. [Mở local](http://localhost:18080/?screen=routing) · [Hướng dẫn](docs/development/human-routing.md) · [Nghiệm thu và ảnh](docs/quality/human-routing-acceptance.md). SRC-084 scoped monolith R1; mock transport trong demo.
+Hệ thống phát triển theo ranh giới service: mỗi service sở hữu dữ liệu và quy tắc nghiệp vụ trong phạm vi của mình, giao tiếp qua API và events có phiên bản. Việc tách runtime được thực hiện từng bước từ nền modular monolith; hiện trạng triển khai nằm trong [deployment topology](docs/system/deployment-topology.md).
 
-**Đọc theo mục tiêu và người sử dụng:** [Bản đồ nhóm tính năng](docs/product/capability-map.md) là trục chung cho tài liệu sản phẩm, UX, demo và presentation. Các cập nhật theo ngày bên dưới là lịch sử triển khai; trạng thái chính thức ở task tracker.
+- **CRM, Sales, Chat, Ticket:** hồ sơ khách hàng và các nghiệp vụ tương tác, bán hàng, hỗ trợ.
+- **Identity, Routing:** danh tính/quyền truy cập và phân bổ công việc.
+- **Workflow, AI Runtime:** điều phối business flow và thực thi tác vụ AI. Workflow dùng chung cho thay đổi CRM và Chat; service sở hữu đối tượng vẫn kiểm quyền và điều kiện nghiệp vụ.
+- **Connector, Media, Marketing, Reporting, Operations, Gateway/BFF:** tích hợp, nội dung, dữ liệu marketing, báo cáo, vận hành và truy cập ứng dụng.
 
-**Hộp thư tùy biến (2026-10-17):** Agent Chat Workspace có tạo bộ lọc, xem trước, lưu/sửa/nhân bản, chia sẻ user/team và lưu trữ inbox. Bộ lọc theo phạm vi, trạng thái, kênh/Page, nhãn, chưa đọc và tạm ẩn; không tự đổi phân công. [Mở Inbox](http://localhost:18080/) · [Hướng dẫn](docs/development/custom-inbox.md) · [Evidence](docs/tracking/details/SRC-083.md). Dùng storage hiện có, không migration.
+Stack: Next.js, NestJS, TypeScript, MySQL và Redis/BullMQ. Dữ liệu được cô lập theo tenant; authentication/session/authorization do Identity quản lý.
 
-**Need enrichment & follow-up (2026-10-16):** Canonical Chat API dùng `conversation_id` ([đồng bộ tên](docs/tracking/details/SRC-082.md)); Inbox có đánh giá nhu cầu theo phiên, Human pins và adapter AI cấu hình được. Workflow đọc thuộc tính, kiểm tra lại outcome và mở phiên mới để phân công follow-up. [Hướng dẫn](docs/development/need-follow-up.md) · [Evidence](docs/tracking/details/SRC-081.md). Provider thật chưa cấu hình; không tự bật workflow/gửi tin.
+[Kiến trúc hệ thống](docs/system/architecture.md) · [Ranh giới và trách nhiệm](docs/services/README.md) · [Sở hữu dữ liệu](docs/data/service-ownership.md)
 
-**Record pages (2026-10-16):** Object & Properties có **Record detail page** và **Record preview page**, mỗi loại gồm Default view và view riêng theo team. Builder card dùng metadata hiện có; Contact preview áp dụng trong Inbox. [Mở cấu hình](http://localhost:18080/?screen=schema) · [Hướng dẫn](docs/development/record-pages.md) · [Evidence](docs/tracking/details/SRC-080.md).
+## Phát triển theo service
 
-**Thread / Conversation (2026-10-16):** Đã triển khai thuộc tính phân loại theo lượt, lịch sử đóng góp khi chuyển owner/team và Related Lead/Deal theo quyền. Đóng Thread kết thúc lượt; tin hợp lệ tiếp mở lượt mới với fields trống. [Mở Inbox](http://localhost:18080/) · [Hướng dẫn](docs/development/thread-conversation.md) · [Evidence](docs/tracking/details/SRC-078.md). Ticket/connected Reporting còn gate riêng; ID/API cũ giữ tương thích.
+Bắt đầu từ [service catalog](docs/services/README.md). Tài liệu của từng service xác định trách nhiệm, dữ liệu sở hữu, phần ngoài phạm vi và các contract liên quan. Chi tiết nghiệp vụ, API, dữ liệu và acceptance nằm trong tài liệu chuyên trách được service liên kết.
 
-**Kế hoạch tiếp theo 2026-10-15:** [No-code Object Platform — PLAN-028](docs/planning/no-code-object-platform.md): Object & Properties, custom fields/associations, ERD, Agent Workspace và shared entity model cho connected Reporting/Workflow; có Salesforce references. Nền catalog/config và Object & Properties/ERD/Agent Workspace đã triển khai trong SRC-073/074. [Mở local](http://localhost:18080/?screen=schema) · [Hướng dẫn](docs/development/object-platform.md) · [Evidence](docs/tracking/details/SRC-074.md). Connected Reporting/custom-object Workflow và lifecycle nâng cao còn các gate tiếp theo.
+Khi chọn công việc:
 
-**Dashboard/Reports (2026-10-14):** Đã triển khai từ [đặc tả PLAN-027](docs/planning/dashboard-workspace.md): hai menu riêng, dashboard home, tạo từ template, widget chọn saved report, Report Library/viewer/editor. [Mở Dashboard](http://localhost:18080/?dashboards=1) · [Runbook](docs/development/dashboard-workspace.md) · [Evidence](docs/tracking/details/SRC-072.md). Native Alpha/Reporting schema4; dữ liệu DEMO giữ nguyên, không live integration. Các bản ghi phía dưới là lịch sử theo slice.
+1. Xác định service sở hữu nghiệp vụ và kết quả cần hoàn thành.
+2. Đọc thiết kế, contract, dữ liệu và acceptance của phạm vi đó; xác định service cung cấp hoặc tiêu thụ liên quan.
+3. Đối chiếu dependency và trạng thái Ready trong [kế hoạch](docs/planning/build-plan.md), [task tracker](docs/tracking/tasks.md) và [checkpoint](docs/tracking/checkpoint.md) trước khi triển khai.
 
-**2026-10-14:** alpha_admin now has tenant-super-admin access through its existing admin seat + tenant_admin role. [Report Builder](http://localhost:18080/?reporting=1) → Báo cáo đã lưu contains the two 50-inbox demo dashboards (30 accepted /20 queued). Actual native login/save/run/CSV and desktop/mobile verified. Timing/capacity/spend are explicitly synthetic. [Evidence](docs/tracking/details/SRC-070.md).
+Quy trình làm việc theo [AGENTS.md](AGENTS.md) và [change control](docs/governance/change-control.md). Phạm vi thiết kế của một service không đồng nghĩa toàn bộ tính năng đã triển khai; tiến độ và bằng chứng nghiệm thu được ghi trong tracker.
 
-**Workflow CMS local (2026-10-13):** [Automation → Workflows](http://localhost:18080/?workflows) now has create/node editor/save/reopen/publish/enable on the M2 engine. Alpha admin received the separately approved Workflow Admin role. [Runbook](docs/development/workflow-cms.md) · [Evidence](docs/tracking/details/SRC-066.md). Seven conversation primitives; generic CRM/Kafka/email remain pending.
+## Chạy và kiểm tra local
 
-**Workflow foundation (2026-10-13):** [native CRM metadata catalog + Core graph validator](docs/development/workflow-foundation.md) implemented SRC-065. Current tenant/field rights, canonical object/property/relations, typed bindings/DAG/branch/delay configuration.325 unit +8 native HTTP/MySQL groups PASS. Independent execution/Kafka/CMS still follow the plan; validator never enables side effects.
+- [Hạ tầng local và service monitor](docs/development/service-manager.md): chuẩn bị môi trường, khởi động và quản lý từng ứng dụng.
+- [Hướng dẫn chạy local](docs/development/local.md): môi trường host và lựa chọn Docker preview.
+- [Verification và CI](docs/development/verification.md), [chính sách kiểm thử](docs/development/testing-policy.md): chọn và chạy kiểm tra phù hợp với thay đổi.
 
-**Workflow architecture (2026-10-13):** engine M2 đã có trong monolith; [thiết kế Web/API/Core](docs/system/workflow-architecture.md) bổ sung CMS, Kafka CRM object changes, shared CRM metadata và các node routing/search/update/follow-up/delay/branch. [Kế hoạch thiết kế](docs/planning/workflow-platform.md) · [HubSpot/Salesforce references](docs/references/workflow-platform.md). Design-only; service extraction/canvas/Kafka chưa triển khai.
+## Điều hướng tài liệu
 
-**Report visuals (2026-10-12):** 10 display types and quick-start presets: table, KPI, column, horizontal bar, stacked column, line/area trend, pie/donut and pivot. Exact table fallback, safe additive/temporal rules and mobile layout verified. [Inventory](docs/contracts/reporting-visualizations.md) · [Evidence](docs/tracking/details/SRC-064.md). Native Alpha activation now verified under tenant-super-admin policy (2026-10-14).
+| Cần tìm | Nguồn chuẩn |
+|---|---|
+| Mục tiêu và phạm vi sản phẩm | [Vision](docs/product/vision.md), [capability map](docs/product/capability-map.md) |
+| Phạm vi phát triển từng service | [Service catalog](docs/services/README.md) |
+| Bản đồ tài liệu chuyên sâu | [Documentation index](docs/index.md) |
+| Source layout và ranh giới package/service | [Repository map](docs/architecture/repository-map.md) |
+| Kế hoạch, tiến độ và điểm tiếp tục | [Build plan](docs/planning/build-plan.md), [tasks](docs/tracking/tasks.md), [checkpoint](docs/tracking/checkpoint.md) |
+| Lịch sử thay đổi và bằng chứng triển khai | [Execution log](docs/tracking/log.md) và evidence được liên kết từ task |
+| API cho ứng dụng bên ngoài | [Developer guide](docs/developer/README.md) |
 
-**Report configuration (2026-10-12):** Field + SUM/COUNT/AVG/MIN/MAX selection and separate registered formula KPI picker now implemented with exact recomputed totals. [Salesforce/HubSpot comparison and scope](docs/contracts/reporting-measures.md).265unit + native/browser evidence; validation uses isolated test fixture, Alpha activation now verified (2026-10-14).
-
-**Report Builder early UI (2026-10-12):** Source/model/related fields, metrics/axes/AND filters, table/KPI/bar/line/pivot, private draft save/reopen and CSV now implemented. [Runbook](docs/development/reporting-builder.md) · [Evidence](docs/tracking/details/SRC-064.md). Browser validated against isolated native fixture; normal Alpha activation verified using existing tenant_admin role (2026-10-14). SRC-064 IN_PROGRESS; SRC-059 requeued READY with remaining scope preserved.
-
-**Report Builder part 6 (2026-10-12):** Native durable runs now support create/replay, execute, status, cancel and persisted JSON/CSV result with owner/current rights checks. Snapshot/executor pins and lease fences protect recovery and cancel races.248 unit,13 lifecycle MySQL and12 native HTTP groups PASS. Local/test Reporting schema3 preserves prior data; CRM27 unchanged. [Runbook](docs/development/reporting-runs.md) · [Evidence](docs/tracking/details/SRC-059.md). SRC-059 still IN_PROGRESS; drilldown/remaining KPI semantics next, UI later. Execution is caller-driven; no automatic worker or app restart.
-
-**Report Builder part 5 (2026-10-12):** Native POST /api/v1/reporting/query now runs authorized mock reports and exports aggregate CSV. Explicit run/source/export grants, signed private transport and live Identity/session rechecks protect results and cache.243 unit cases,8 new native HTTP/MySQL groups plus24 regression groups PASS. [API runbook](docs/development/reporting-query-api.md) · [Evidence](docs/tracking/details/SRC-059.md). SRC-059 remains IN_PROGRESS for durable runs/drilldown and remaining KPI semantics; UI follows. No running app restart or default grant/binding activation.
-
-**Report Builder part 4 (2026-10-12):** SRC-059 has an internal mock query core for26 metrics, group by/pivot with recomputed totals, exact decimal arithmetic, authorization ports/scoped cache and aggregate CSV.230 unit cases,7 MySQL query groups and17 draft/native regression groups PASS. [Query runbook](docs/development/reporting-query.md) · [Evidence](docs/tracking/details/SRC-059.md). SRC-059 remains IN_PROGRESS: native query/source policy, run lifecycle and drilldown come next; builder/dashboard UI follows.
-
-**Report Builder part 3 (2026-10-12):** [Reporting](services/reporting/README.md) now has private draft/version API plus a typed mock datasource and durable snapshots:25 objects/120 fields, atomic activation, revision/tombstone replay and extensible descriptors. [Mock runbook](docs/development/reporting-projections.md), [evidence](docs/tracking/details/SRC-058.md), [plan](docs/planning/report-builder.md). Local/test Reporting schema2 preserves earlier drafts; CRM remains27. Query engine, live source ACL and dashboard UI follow; drafts remain unvalidated/nonexecutable. No app process restarted or default mock datasource enabled.
-
-**Current priority CHG-20261007-14:** Lead/Deal → organic Conversation→Lead→Deal won with value → organic Page report/release (SRC-045/046/052/050); then Marketing sync/campaign reports (SRC-051/049). Ticket/receipts follow separately. CHG-20261007-15: marketing reports measure conversion performance for resource, content/message and audience strategy; won value is a funnel outcome, receipts are independent. Exact scoped design: [organic Sales base](docs/contracts/organic-sales-base.md).
-
-
-**CRM base local (2026-10-07):** đã có Lead/Deal thủ công, tạo Lead từ hội thoại với nguồn channel/Page/ad bất biến và nguồn khai báo chỉnh riêng, chuyển Lead→Deal won có giá trị, báo cáo organic theo Page/currency và mở Deal đối soát. Kiểm thử dùng dữ liệu synthetic; doanh thu ở bước này là giá trị won, chưa phải tiền đã thu. Conversation acquisition sessions đã có ở SRC-053/schema26: agent đóng phiên, tin tiếp theo mở phiên mới trên cùng thread; Lead/Deal giữ nguồn đúng phiên. Bước tiếp theo: PLAN-011 chốt Marketing sync → SRC-051 → SRC-049 báo cáo campaign; Ticket và receipts theo [kế hoạch](docs/planning/crm-base-outcomes.md).
-
-**Thiết kế mới ADR-021 (2026-10-07):** bỏ Keycloak khỏi target; CRM Identity tự quản lý đăng nhập/session/quyền trong MySQL. Mọi bảng ứng dụng có tenant_id, schema theo service. [DB guideline](docs/data/database-guidelines.md) · [Schema catalog](docs/data/schema-catalog.md) · [Native auth/cutover plan](docs/planning/native-identity-data-plan.md). SRC-038 đã cutover native local; [runbook](docs/development/native-auth.md). Physical schema extraction còn PLAN-007B.
-
-Nền tảng conversational CRM dạng SaaS multi-tenant, nơi Human Agent và AI Agent cùng xử lý hội thoại, lead, cơ hội bán hàng và yêu cầu hỗ trợ.
-
-**Kiến trúc đích:** enterprise microservices, service-owned data/API/events theo [service catalog](docs/services/README.md) và [architecture](docs/system/architecture.md). Preview đang chạy vẫn monolith; SRC-028 đã triển khai và kiểm thử independent Connector ingress theo [kế hoạch chuyển đổi](docs/planning/microservices-migration.md), chưa chuyển traffic preview.
-
-**Trạng thái:** 25/25 source tasks M1–M2 DONE; M1 và M2 local/mock release gates PASS. CRM/Identity, Conversation/Inbox, routing/Human takeover, deterministic Agent Runtime, durable Workflow/Chatflow và Sales/Operations UI đã có. Release đã qua cold start, nâng schema8→17 giữ dữ liệu, restart và demo OIDC→CTM→Lead→Sales trên ARM64 native và AMD64 emulated. [Tracker](docs/tracking/tasks.md) · [Release/runbook](docs/development/m2-release.md). Connector Meta/AI thật và M4–M5 chưa triển khai; M3 đã bắt đầu với message envelope, normalized rich mock storage/API/inbox đã có theo tracker.
-
-Mở [ứng dụng local](http://localhost:8080) sau khi khởi động theo [hướng dẫn chạy](docs/development/local.md).
-
-Host development Windows/macOS/Linux: [hướng dẫn hạ tầng và service monitor](docs/development/service-manager.md). `pnpm infra:start`, `pnpm local:init`, `pnpm local:monitor`; start/stop từng ứng dụng và giữ dữ liệu MySQL/Redis. DB local đã migration26, native login và organic flow đạt trên localhost:18080.
-
-## Bắt đầu đọc
-
-1. [Tầm nhìn và phạm vi sản phẩm](docs/product/vision.md).
-2. [Bản đồ tài liệu và mức sẵn sàng](docs/index.md), [phạm vi/kiến trúc/data từng service](docs/services/README.md).
-3. [Kiến trúc hệ thống](docs/system/architecture.md) và [data model](docs/data/model.md).
-4. [Case healthcare](docs/business/healthcare.md) và [lát cắt Messenger → Lead → Sale](docs/business/first-slice.md).
-5. [Roadmap](docs/product/roadmap.md), [ma trận nghiệm thu](docs/quality/acceptance.md) và [quy trình phát triển](docs/governance/development.md).
-6. [Kế hoạch sinh source](docs/planning/build-plan.md), [task tracker](docs/tracking/tasks.md) và [checkpoint để tiếp tục](docs/tracking/checkpoint.md).
-
-## Bắt đầu build
-
-Đợt đầu gồm 25 task M1–M2; trạng thái hiện tại ở tracker. [Docker Compose](compose.yaml) đã có web/API/worker, MySQL, Redis và native MySQL auth; test runner tách project. Migration/kernel ở SRC-004; portable verify/CI adapter ở SRC-005, seed Identity idempotent ở SRC-009; registry foundation ở SRC-010; properties/custom CRUD ở SRC-011, CRM core ở SRC-012 và Admin/CRM UI ở SRC-013.
-
-Mỗi phiên cập nhật tracker, evidence và checkpoint; thay đổi thiết kế theo [change control](docs/governance/change-control.md). [AGENTS.md](AGENTS.md) hướng dẫn các phiên triển khai sau đọc đúng tài liệu và ghi lại tiến độ.
-
-## Các quyết định nền tảng
-
-- Next.js + TypeScript; NestJS modular monolith và worker; MySQL 8.4 LTS; Redis/BullMQ. AI Runtime đi qua adapter.
-- Target database-per-service theo schema catalog; mọi application table có tenant_id và quyền do CRM kiểm tra ở backend. Shared database hiện tại là baseline chuyển đổi.
-- Contact là danh tính; Lead là nhu cầu; Deal là cơ hội; Customer là trạng thái của Contact sau một Deal thắng.
-- Conversation, Lead, Deal, Ticket có owner là Human hoặc AI; Team tổ chức hàng chờ và phạm vi quyền.
-- Standard object và custom object chia sẻ registry/metadata/association; không tạo bảng riêng cho từng tenant.
-- Tài liệu, contract và acceptance scenario phải đi trước implementation.
-
-## Phạm vi đợt khởi tạo
-
-Blueprint toàn platform; đặc tả chi tiết nền móng và case Facebook Messenger CTM giả lập → nhận diện Contact → Conversation → phân công → qualify Lead → bàn giao Sale. Connector thật, AI thật, builder nâng cao, Google Ads và custom report đầy đủ nằm ở milestone sau.
-
-Tài liệu bằng tiếng Việt; tên entity, API, event, field và requirement ID bằng tiếng Anh. CRM M1 đã có source và kiểm thử; Conversation/message domain và outbound mock SRC-014 đã có; mock Messenger intake SRC-015 đã có; inbox UI SRC-016 đã có; routing/assignment/takeover SRC-017 đã có; private mock runtime SRC-018 đã có; Workflow engine SRC-019 đã có; Chatflow/Sales handoff backend SRC-020/021 đã có; Sale/Operations UI SRC-022 đã có; healthcare fixture và metric queries SRC-023 đã có; fault/regression suite SRC-024 đạt180 integration tests; release M2 gate SRC-025 đã PASS (local/mock).
-
-Healthcare M2 fixture/query walkthrough: [test:healthcare](docs/development/healthcare-demo.md), chạy độc lập trong MySQL test trống.
-
-Hướng M3 đã chốt: AI Agent setup chọn provider (Meta Business Agent case study), CRM Connector/routing và message đa nền tảng. [Design plan](docs/planning/m3-provider-plan.md) · [Meta source snapshots](docs/references/meta/README.md). Production design vẫn Draft; PLAN-003 đã hoàn tất nghiên cứu, PLAN-004A/B chốt message foundation. Provider setup/routing/media resolver tiếp tục PLAN-004 theo capability/gap matrix.
-
-SRC-028 adds an independent [CRM Connector durable ingress](services/crm-connector/README.md), private MySQL schema/API/worker/image and mock HTTP bridge to the existing monolith. It does not switch preview traffic or implement Facebook raw webhooks. Current evidence/status remains in the tracker.
-
-SRC-029 implements optional signed Messenger webhook capture with own schema2 and atomic Page/tenant dedup; tested locally with synthetic HMAC, MySQL and release-image restart. Captured events are not yet delivered to Chat. M3 local and live release remain incomplete; [evidence](docs/tracking/details/SRC-029.md).
-
-SRC-031 adds Admin→Channels→Facebook OAuth/Page configuration with encrypted credentials, manual verified token replacement and channel/Page filters in Inbox. [Setup/runbook](docs/development/facebook-configuration.md). Local synthetic tests pass; live OAuth needs Meta App configuration, and real message ingestion/send remains pending. Preview is not automatically upgraded.
-
-Agent Chat rebuild: [workspace plan](docs/planning/agent-chat-workspace.md) và [UX](docs/ux/agent-chat-workspace.md). SRC-032 backend unread/query/metrics foundation DONE với203 MySQL tests và9 canonical gates; SRC-033 catalogs DONE với209 MySQL regression,13 final workspace cases và102 unit tests. UI rebuild và full workspace local release chưa hoàn tất; không đồng nghĩa đã nâng schema preview hoặc hoàn thành live provider integration.
-
-SRC-034 snooze/activity backend and schema22 source are implemented; SRC-038 regression now passes222 MySQL cases and local DB is23. Full workspace UI/release remains pending; task disposition is recorded in the tracker. [Evidence](docs/tracking/details/SRC-034.md).
-
-UI/UX redesign UX-003: [bộ thiết kế](docs/ux/README.md), [app shell](docs/ux/app-shell.md), [Inbox spec](docs/ux/inbox-screen.md) và [mock tương tác](docs/ux/mockups/inbox.html). Header + business navigation, UX guidelines và template đặc tả từng màn; thiết kế/mock độc lập, chưa thay UI ứng dụng đang chạy.
-
-SRC-039 triển khai shell không tab và Inbox trên API hiện có: [evidence](docs/tracking/details/SRC-039.md). Local hiện tại [localhost:18080](http://localhost:18080). Queue/search/filter, takeover, reply/note và Contact dialog đã kiểm thử; SRC-035/036/037 full workspace vẫn chưa hoàn tất.
-
-Marketing database-only local setup: [runbook](docs/development/marketing-database.md). Separate `crm_marketing` schema; periodic Meta synchronization is not enabled.
-
-Inbox now includes versioned session stages, need-scoped behavioral evidence/corrections and a connected session funnel. [Usage and local verification](docs/development/session-progress.md).
-
-## External API / Developer Portal
-[Open Developer Portal](http://localhost:18080/developer) · [Developer guide](docs/developer/README.md) · [OpenAPI](docs/developer/openapi.json) · [Evidence](docs/tracking/details/SRC-088.md). Private apps with explicit object/property/team read grants, finite bearer tokens, rotate/disable/revoke and durable quota. Contact/Company/Lead/Deal/custom read APIs; external writes, multi-tenant OAuth and webhooks are future gates.
-
-
-**Conversation External API (2026-10-18):** Private app đọc danh sách/chi tiết hội thoại và tin nhắn, scope riêng cho metadata/nội dung, chọn field và giới hạn team. [Developer Portal](http://localhost:18080/developer) · [API guide](docs/developer/README.md) · [Evidence](docs/tracking/details/SRC-089.md). Chưa có API gửi tin/đổi owner/đóng hội thoại bằng app token.
+README giữ tổng quan và điều hướng. Log theo phiên, kết quả kiểm thử và logic chi tiết được cập nhật tại nguồn chuyên trách ở trên.

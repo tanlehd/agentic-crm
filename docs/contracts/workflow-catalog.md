@@ -14,9 +14,9 @@ Capabilities distinguish existing owner APIs from Workflow integration: record_r
 
 No universal immutable before/after/change sequence API exists yet: PLAN-024B required. Association metadata provides directional cardinality, but traversal data query remains unavailable; do not treat display relation as query implementation. Runtime must obtain trusted catalog/current rights independently; accepting client-supplied catalog as authority is forbidden.
 
-## Pure Core authoring validator v1
+## Pure authoring validator v1 (Workflow internal library)
 
-New `services/workflow-core` kernel takes unknown definition and a trusted catalog snapshot as library input. It never persists, executes actions, enrolls or publishes. Output `{valid,executable:false,issues:[{code,path}],node_count,catalog_revision}`; draft-validation success is not publish acceptance. Snapshot is tenant/actor scoped; expected tenant input must match. Old M2 validator unchanged.
+Existing `packages/workflow-definition` internal Workflow library takes unknown definition and a trusted catalog snapshot as library input. It never persists, executes actions, enrolls or publishes. Output `{valid,executable:false,issues:[{code,path}],node_count,catalog_revision}`; draft-validation success is not publish acceptance. Snapshot is tenant/actor scoped; expected tenant input must match. Old M2 validator unchanged.
 
 Definition exact `{schema_version:1,catalog_revision,root_object_id,trigger:{operation:created|updated,changed_property_ids:[]},entry_node,nodes}`; max50 nodes, unique safe keys, acyclic, all reachable, every path terminates. Registry node types v1:
 

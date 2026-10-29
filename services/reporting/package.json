@@ -2,6 +2,7 @@
   "name": "@agentic-crm/reporting",
   "version": "0.0.1",
   "private": true,
+  "files": ["dist"],
   "type": "module",
   "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
   "scripts": { "build": "tsc -p tsconfig.json", "typecheck": "tsc -p tsconfig.json --noEmit", "start": "node dist/main.js" },

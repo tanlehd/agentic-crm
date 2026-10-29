@@ -1,10 +1,20 @@
 # CRM Connector — durable HTTP ingress bridge
 
+SRC-107: **local native ingress active**, own schema5/pinned image; [runbook/status/rollback](../../docs/development/connector-local.md), [5/5 evidence](../../docs/tracking/details/SRC-107.md). Existing API/worker composition now feeds native Chat, with outage/lost ACK/restart/rollback acceptance. No new outbound/provider path. Older image/schema2 test project remains untouched; dated notes below are historical.
+
+SRC-098 current source expects schema5. `attempt-store.ts` owns admission/fence/start/result/expiry audit; `attempt-executor.ts` composes required injected authority/connection/consume/send ports without defaults. `main.ts` does not wire them. [Lifecycle/DDL/restore boundary](../../docs/data/connector-attempt-ledger.md), [evidence](../../docs/tracking/details/SRC-098.md). `pnpm test:connector:attempt` builds and runs retained MySQL plus synthetic callbacks; follow with preparation/payload regression. Quiesce old writers before migration; preserve old image/schema deployment for rollback, never downgrade journal. Recover expired transient attempts per authorized business tenant (limit100), then reconcile positive evidence; never replay stored receipts as sends.
+
+SRC-097 current source expects schema4: `preparation-store.ts` and `dispatch-guard.ts` serialize stage/prepare/cancel; early cancellation blocks late payload/prepare replay. [Design/compatibility](../../docs/data/connector-preparation-ledger.md), [evidence](../../docs/tracking/details/SRC-097.md). Run `pnpm test:connector:preparation` then `pnpm test:connector:payload`; both retain fixtures. Stop old storage writers before forward4 backfill; no old library writer may bypass the guard. No HTTP/worker calls these ports. In-flight admission/start/result remains unimplemented; previously built image/schema2 is unchanged.
+
+SRC-096 adds `payload-store.ts`/`payload-schema.ts`, immutable business-tenant payload/request storage and forward3. Run `pnpm test:connector:payload` after local native test DB setup; fixtures remain in `.local`, evidence in `artifacts/connector-payload`. [Table design and compatibility](../../docs/data/connector-payload-ledger.md). No HTTP/worker uses this port yet. Source now expects schema3; existing packaged image remains schema2 until explicitly rebuilt/migrated. Do not run an old schema2 binary on an upgraded schema3 database; rollback uses the unchanged schema2 deployment, never deletes migration history.
+
+SRC-091 adds independently compiled Docker packaging, worker HTTP readiness and retained operations acceptance. [Runbook](../../docs/development/phased-service-rollout.md) · [Evidence](../../docs/tracking/details/SRC-091.md). Use `pnpm image:connector` and `pnpm test:connector:operations`; synthetic fixtures/volume are retained. Main traffic is not activated.
+
 SRC-028 implementation of [bridge v1](../../docs/contracts/connector-bridge.md). [Service design](../../docs/services/crm-connector.md) describes the broader target. This release accepts normalized mock text/rich messages. Optional signed Messenger capture is implemented separately under SRC-029; provider sends, JetStream and Chat extraction remain separate gates.
 
 ## Scope and architecture
 
-`src/http.ts` owns Nest ingress/status/health. `validation.ts` consumes shared contracts only. `store.ts` owns authentication, local transaction/audit, dedup and leases. `worker.ts` checks the remote binding before each forward/poll. `schema.ts` owns sequential immutable migration1–2/checksum journal; `grants.ts` provisions restricted local runtime grants. `main.ts` provides API/worker and explicit operator commands. No backend domain imports or cross-database queries.
+`src/http.ts` owns Nest ingress/status/health. `validation.ts` consumes shared contracts only. `store.ts` owns authentication, local transaction/audit, dedup and leases. `worker.ts` checks the remote binding before each forward/poll. `schema.ts` owns sequential immutable migration1–5/checksum journal; `grants.ts` provisions restricted local runtime grants. `main.ts` provides API/worker and explicit operator commands. No backend domain imports or cross-database queries.
 
 ```mermaid
 flowchart LR
@@ -57,7 +67,7 @@ Rollback: stop API intake, drain or retain the private queue, stop worker; leave
 
 ## Validation
 
-`node scripts/connector-smoke.mjs` builds/runs the non-root release image against a new disposable private MySQL project and cleans only that project. `pnpm verify:container` checks the workspace; `node scripts/integration.mjs` runs disposable MySQL and real HTTP Connector→monolith tests. Evidence and limitations: [SRC-028](../../docs/tracking/details/SRC-028.md).
+Recommended local operations acceptance: `pnpm test:connector:operations` uses retained synthetic fixtures and a dedicated volume, stops containers after testing and never resets data. See [SRC-091](../../docs/tracking/details/SRC-091.md). Historical `node scripts/connector-smoke.mjs` uses a disposable project and removes its volume; do not use it for routine retained operation. `pnpm verify:container` checks the workspace; `node scripts/integration.mjs` runs disposable MySQL and real HTTP Connector→monolith tests. Historical evidence and limitations: [SRC-028](../../docs/tracking/details/SRC-028.md).
 
 ## Optional Messenger capture (SRC-029)
 

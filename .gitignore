@@ -12,3 +12,4 @@ artifacts/
 .local/
 *.tsbuildinfo
 .DS_Store
+desktop.ini

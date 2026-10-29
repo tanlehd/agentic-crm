@@ -1,0 +1,47 @@
+# Opt-in Chat candidate only. Provision/import and validate retained data separately.
+name: agentic-crm-chat-candidate
+x-chat: &chat
+  image: ${CHAT_IMAGE:?Set an immutable Chat image reference}
+  env_file: ['${CHAT_ENV_FILE:?Set the private candidate environment file}']
+  volumes: ['${CHAT_CONFIG_DIR:?Set the private candidate config directory}:/run/chat:ro']
+  extra_hosts: ['host.docker.internal:host-gateway']
+  init: true
+  read_only: true
+  tmpfs: ['/tmp:size=16m,mode=1777']
+  cap_drop: [ALL]
+  security_opt: ['no-new-privileges:true']
+  pids_limit: 128
+  mem_limit: 512m
+  restart: 'no'
+  stop_grace_period: 45s
+  healthcheck:
+    test: [CMD, node, -e, "fetch('http://127.0.0.1:3021/health/ready',{signal:AbortSignal.timeout(15000)}).then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+    interval: 20s
+    timeout: 16s
+    retries: 3
+    start_period: 20s
+  logging:
+    driver: json-file
+    options: {max-size: 10m, max-file: '3'}
+services:
+  chat-api:
+    <<: *chat
+    command: [node, dist/main.js, api]
+    environment:
+      CHAT_HOST: 0.0.0.0
+      CHAT_PORT: '3020'
+      CHAT_HEALTH_HOST: 0.0.0.0
+      CHAT_HEALTH_PORT: '3021'
+      CHAT_DB_USER: ${CHAT_API_DB_USER:?Set restricted Chat API user}
+      CHAT_DB_PASSWORD: ${CHAT_API_DB_PASSWORD:?Set Chat API password}
+    ports: ['127.0.0.1:${CHAT_API_PORT:-13020}:3020', '127.0.0.1:${CHAT_API_HEALTH_PORT:-13021}:3021']
+  chat-worker:
+    <<: *chat
+    command: [node, dist/main.js, worker]
+    environment:
+      CHAT_PORT: '3020'
+      CHAT_HEALTH_HOST: 0.0.0.0
+      CHAT_HEALTH_PORT: '3021'
+      CHAT_DB_USER: ${CHAT_WORKER_DB_USER:?Set restricted Chat worker user}
+      CHAT_DB_PASSWORD: ${CHAT_WORKER_DB_PASSWORD:?Set Chat worker password}
+    ports: ['127.0.0.1:${CHAT_WORKER_HEALTH_PORT:-13022}:3021']

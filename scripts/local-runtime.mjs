@@ -8,11 +8,11 @@ export const root = fileURLToPath(new URL('../', import.meta.url));
 export const infra = ['mysql', 'redis'];
 export const units = {
   reporting: { cwd: 'services/reporting', args: ['dist/main.js'], health: '/internal/v1/reporting/health/ready' },
-  api: { cwd: 'apps/backend', args: ['--import', 'tsx', 'src/main.ts'], health: '/api/v1/health/ready' },
-  worker: { cwd: 'apps/backend', args: ['--import', 'tsx', 'src/worker.ts'], health: '/api/v1/health/ready' },
+  api: { cwd: 'services/core-baseline', args: ['--import', 'tsx', 'src/main.ts'], health: '/api/v1/health/ready' },
+  worker: { cwd: 'services/core-baseline', args: ['--import', 'tsx', 'src/worker.ts'], health: '/api/v1/health/ready' },
   web: { cwd: 'apps/web', args: ['node_modules/next/dist/bin/next', 'dev', '--hostname', '127.0.0.1'], health: '/' },
   'connector-api': { cwd: 'services/crm-connector', args: ['dist/main.js', 'api'], health: '/connector/v1/health/ready' },
-  'connector-worker': { cwd: 'services/crm-connector', args: ['dist/main.js', 'worker'] },
+  'connector-worker': { cwd: 'services/crm-connector', args: ['dist/main.js', 'worker'], health: '/connector/v1/health/ready' },
 };
 export const envPath = id => `.local/services/${id}.env`;
 export async function readEnv(path) { return parseEnv(await readFile(resolve(root, path), 'utf8')); }

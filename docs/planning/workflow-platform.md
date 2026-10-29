@@ -1,54 +1,40 @@
-# Kế hoạch thiết kế Workflow platform
+# Workflow unification and implementation plan
 
-CHG-20261013-03: [PLAN-024F](../contracts/workflow-cms-m2.md) brought forward a usable CMS on the existing M2 engine at user request. SRC-066 DONE with native/browser evidence and local activation; no new persistence or prerequisite on unavailable Kafka. The target eleven-node/CRM object CMS remains gated by B…E. Next is PLAN-024B design; no active source task.
+ADR-027 / CHG-20261021-07, user-authorized2026-10-21. One Workflow service defines all business automation, including CRM/custom objects, Ticket, Lead, Deal, User/team and Chat Conversation. Chatflow service/module and separate Workflow API/Core service schemas are removed from target architecture. API/engine/worker/editor are components of this same service.
 
-**Implementation2026-10-13 / CHG-20261013-02:** PLAN-024A DONE; SRC-065 delivers [native shared catalog + pure Core authoring validator](../development/workflow-foundation.md),325 unit/8 native groups PASS. This first slice is complete; Kafka/independent authoring/run persistence/CMS/actions remain. SRC-064 requeued READY with progress retained. PLAN-024B READY for design. Historical design-only statements below describe the preceding planning session.
+[Architecture](../system/workflow-architecture.md) · [Orchestration contract](../contracts/workflow-orchestration.md) · [Service responsibility](../services/workflow.md) · [Compatibility inventory](../contracts/legacy-chatflow.md).
 
-PLAN-024 · Codex · 2026-10-13. Yêu cầu: Workflow Web + Workflow API cho CMS, Workflow Core cho engine đa node, Kafka CRM object change, business routing/search/update related records, message/email/notification follow-up, delay/branching và shared CRM metadata. **Phiên này hoàn tất kiến trúc/kế hoạch; không triển khai source.**
+## Existing evidence and gaps
 
-[Architecture và baseline gap](../system/workflow-architecture.md) · [Metadata](../data/workflow-metadata.md) · [Acceptance](../quality/workflow-platform-acceptance.md) · [Official references](../references/workflow-platform.md).
+SRC-019 is the baseline primitive engine; SRC-020 conversational engine is removed by CHG-20261021-08. SRC-065 delivers metadata/validation library; SRC-066/067 deliver baseline CMS/canvas; SRC-081 contains need/follow-up behavior. These parts are reusable, not proof that the unified service exists. Current source task remains SRC-109/T05; no parallel source task or runtime deployment is started by this architecture update.
 
-## Quan hệ kế hoạch cũ
+## Scoped work
 
-SRC-019/020/021 DONE là primitive M2 trong monolith, không là service framework mới đã hoàn thành. PLAN-009 vẫn TODO vì bao gồm exact Workflow/Chatflow/AI Agent scopes; PLAN-024 chỉ hoàn tất phần kiến trúc Workflow của review đó. SRC-042 chưa Ready, chưa được claim. SRC-043/044 và PLAN-008 vẫn giữ dependency, không đưa Next action/AI vào scope tự động.
+| Task | Current meaning after ADR-027 | Output |
+|---|---|---|
+| PLAN-024A / SRC-065 | Completed catalog/validator slice retained | Keep v1 compatibility; add User/Ticket/owner capabilities only through versioned extension |
+| PLAN-024B | Owner change events, enrollment and replay | Actual producer coverage for CRM, Sales, Chat, Identity and Ticket when available; tenant/sequence/causation/current rights; existing Kafka direction |
+| PLAN-024C | One Workflow API/control/storage contract | One crm_workflow owner/journal; local publish/activation, component auth, retained schema/graph/receipt mapping; no API→Core installation saga |
+| PLAN-024D | Unified node/action/wait execution | Data/transition/routing/message/Human task/AI/qualification nodes using owner APIs; same run model |
+| PLAN-024E | Editor and migration/cutover | One catalog/editor, per-flow single starter, supported-version compatibility, rollback/read compatibility and operator controls |
+| PLAN-009 | Baseline Workflow/AI integration gap review | Consolidate orchestration, distinguish AI execution; no second Chatflow framework |
+| SRC-042 | Unified Workflow foundation on existing engine/library | Implement only scoped Ready adapters/persistence/enrollment |
+| SRC-043 | Implement conversational actions inside Workflow | Common waits, message evidence and Human tasks; Chatflow retirement is handled by CHG-20261021-08, not a dependency to rebuild |
+| SRC-076 | Business automation on owner APIs | Reuse unified runtime; no independent custom-object/chat engine |
 
-User đã yêu cầu thiết kế canvas CMS và Kafka: phần kiến trúc này thay hạn chế planning cũ rằng không mở rộng visual builder trong PLAN-009; implementation visual builder vẫn phải qua gate E. SRC-064 tiếp tục là source task IN_PROGRESS; không khởi tạo source thứ hai, subagent hoặc scheduler.
+Existing task dependencies and evidence remain in [tracker](../tracking/tasks.md). Rename scope does not mark source work DONE or start all tasks. No business approval remains pending for the one-service decision; exact source/DDL/API validation is implementation work.
 
-## Các bước thiết kế tiếp theo, thực hiện tuần tự
+## Implementation order
 
-| Gate / task | Dependency | Deliverable để đủ Ready cho phạm vi tương ứng | Acceptance |
-|---|---|---|---|
-| PLAN-024A — shared metadata và producer capability | PLAN-024 | Inventory canonical object/property/association IDs và ownership; typed descriptor/query/binding schema; field ACL/null/collection semantics; impact/deprecation; đánh dấu object nào thật sự query/write được | WF-01/02/07/13 |
-| PLAN-024B — Kafka object-change/enrollment | PLAN-024A | Exact event JSON Schema/topic/partition keys, producer outbox manifest, immutable before/after API/change sequence, inbox/offset/gap/DLQ/replay, activation boundary/re-enrollment/cycle budget; broker/client pin/config/retention/security | WF-04/05/06/12 |
-| PLAN-024C — CMS API và Core control/storage | PLAN-024B | OpenAPI install/activate/disable/status/run/cancel, signed service auth/native BFF/scopes/errors; graph version/capability handshake; từng table template đủ columns/indexes/tenant keys/grants/retention; forward migration + schema split/backfill/rollback | WF-02/03/09/13/15 |
-| PLAN-024D — execution/node/actions | PLAN-024C | Per-node input/output/error schemas, branch/delay/wait semantics, search limits/CAS/batch receipts, routing/transition ports, communication provider ownership/consent/unknown/reconcile; fault/contract fixtures | WF-07/08/09/10/11/12 |
-| PLAN-024E — CMS UX và release/cutover | PLAN-024D | Screen spec/canvas/keyboard/mobile, API mapping/empty/error states, run trace redaction, phased implementation tasks, single starter/drain/shadow strategy, persistent synthetic data test plan, deployment/HA/load/RPO/RTO gates | WF-14/15 và integrated WF-01…13 |
+1. Review supported graph capabilities, routing starters and effect receipts. Declare unsupported capabilities and the per-flow activation owner.
+2. Extend shared owner descriptors and events for concrete supported operations. User/team stays Identity-owned; never expose secrets or enable privilege-changing actions from event presence alone.
+3. Implement one Workflow authoring/execution schema/lineage and local activation. Reuse existing validation/runtime pieces; no unnecessary install handshake between same-owner components.
+4. Add common conversational wait/message/Human input/qualification nodes and routing action adapters. Keep Chat/Identity owner safety at effect even when events are delayed.
+5. Preserve action keys and terminal receipts, disable duplicate business starters, then enable unified enrollment after retained synthetic acceptance.
+6. Maintain the approved retirement boundary: no standalone conversational engine, old route adapter or second automation schema. Historical migrations/evidence stay immutable.
 
-READY của A nghĩa sẵn sàng làm **thiết kế A**, không là source metadata API đã Ready. Khi gate hẹp đạt, có thể tạo scoped source task với deps rõ và riêng evidence, nhưng chỉ sau khi reprioritize source active trong tracker; không đóng toàn PLAN-009 từ một gate nhỏ. Technical decisions tự chốt bằng ADR trong scope đã được user yêu cầu, không hỏi lại Kafka hoặc service decomposition.
+## Delivery boundaries
 
-## Trình tự triển khai dự kiến sau thiết kế
+Chat extraction T05 continues send/workspace work; T06 consumer integration targets one Workflow owner. Chatflow operations and clients are removed; unsupported automation must fail explicitly. Human-first scope remains; AI actions can be unavailable without blocking Human data/routing flows. Ticket/provider adapters can be unavailable until their owners expose them.
 
-Chưa gán SRC mới hoặc claim READY vì exact contracts chưa có. Tách SRC-042 thành các slice khi scope Ready; không giữ một task quá lớn rồi đánh DONE chỉ từ một phần:
-
-1. CRM shared metadata/capabilities + typed node/graph validator; reuse baseline type rules và test schemas. Chưa side effect.
-2. Workflow API own database/drafts/versions và Core artifact/control skeleton có native auth, immutable install/activation receipts.
-3. Owner transactional object-change outboxes/change-image read APIs; Kafka ingress/inbox/ordered evaluation/enrollment, shadow mode trước live enrollment.
-4. Core run/step/wait/delay/branch/retry/fence/cancel; port M2 semantics sang remote actions; local failure/restart proofs.
-5. Read/search related + bounded update/CAS + business transition/routing/task adapters; validate actual owners/capabilities, không mock production.
-6. Message/email/in-app notification adapters theo owner contract; unknown delivery/reconciliation, consent/permissions, provider test gates tách synthetic khỏi live.
-7. Workflow Web CMS trên API thật, save/reopen/publish/review/run inspection, keyboard/mobile/tenant negatives.
-8. Integrated synthetic scenarios, data preservation, shadow/cutover/single writer/drain/rollback; activation chỉ trên definition/capability đủ gate, chưa tự production deploy.
-
-Có thể trình bày JSON admin prototype trước canvas để kiểm contract; không coi prototype là Web CMS DONE. MVP đủ node base + data/routing/follow-up theo adapters thực; deferred: parallel fork/join, arbitrary code, unbounded loop, nested workflow, automatic compensation, auto-migrate active run, business-calendar recurrence, retroactive bulk enrollment. Ticket/live provider chưa có contract giữ unavailable.
-
-## Các quyết định đã chốt và phần cần xác minh
-
-Đã chốt: Next/Nest/TypeScript/MySQL; native Identity; Web/API/Core boundaries; API/Core private schemas; shared canonical CRM metadata; Kafka cho CRM change ingress; at-least-once và stable action receipts; version pin + fresh authorization; exclusive branch và persisted delay; reuse M2 semantics.
-
-Cần xác minh trong từng gate, không là câu hỏi đang chờ user: actual producer field/change coverage; query traversal support; email/notification/task owning adapter; exact auth protocol/grants; physical schema mapping; broker versions/capacity/retention; source action endpoints; load thresholds và recovery proof. Một feature phụ thuộc capability chưa có phải hiện unavailable, không fallback silent/no-op success. Không lựa chọn broker/engine mới chỉ để né compatibility.
-
-## Definition of done và bước tiếp tục
-
-PLAN-024 DONE cần kiến trúc + service descriptors + metadata ownership + node catalog + delivery plan + official references + acceptance matrix, source gap review và docs/link/DAG/whitespace checks thực chạy. Không gồm build/unit/Kafka/DB/browser/provider acceptance của source tương lai. Exact commands/evidence trong [PLAN-024](../tracking/details/PLAN-024.md).
-
-Bước tiếp tục cho thiết kế Workflow: claim PLAN-024A, chốt CRM canonical descriptors và producer capability coverage trước schema/wire mới. Không claim SRC-042 khi PLAN-009/gates tương ứng chưa DONE. Trạng thái và ưu tiên implementation khác giữ ở [tracker](../tracking/tasks.md).
+Architecture acceptance is documentation consistency. Runtime acceptance requires actual common engine, owner APIs, single starter, recovery and retained data proof in [WF-U scenarios](../quality/workflow-platform-acceptance.md). No source/runtime migration is claimed in CHG-20261021-07.

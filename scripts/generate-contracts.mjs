@@ -141,12 +141,6 @@ for(const [method,path,input,output,match] of [['get','workflows',null,'list'],[
  if(input==='validate-input')parameters.splice(parameters.findIndex(p=>p.name==='Idempotency-Key'),1);
  (spec.paths[`/api/v1/${path}`]??={})[method]={operationId:`workflow-${method}-${path.replaceAll(/[{}]/g,'').replaceAll('/','-')}`,security:[{sessionCookie:[]}],parameters,...(input?{requestBody:{required:true,content:{'application/json':{schema:{$ref:`#/components/schemas/workflow-${input}`}}}}}:{}),responses:{...adminErrors,[input==='create'||input==='version-create'?201:200]:response(`workflow-${output}`,'Authorized workflow result')}};
 }
-const chatflowApi=JSON.parse(await readFile('packages/contracts/schemas/chatflow-api.json','utf8'));
-for(const [name,definition] of Object.entries(chatflowApi.definitions))spec.components.schemas[name]=JSON.parse(JSON.stringify(definition).replaceAll('#/definitions/','#/components/schemas/'));
-for(const [method,path,input,output,match] of [['get','chatflows',null,'list'],['post','chatflows','create','mutation'],['get','chatflows/{id}/versions',null,'versions'],['post','chatflows/{id}/versions','version-create','mutation'],['post','chatflows/{id}/versions/{version}/publish','publish','mutation',true],['get','chatflow-sessions/{id}',null,'session'],['get','conversations/{id}/chatflow-session',null,'session'],['post','chatflow-sessions/{id}/complete-qualification','complete','mutation',true]]){
- const parameters=[tenantHeader,...[...path.matchAll(/\{(\w+)\}/g)].map(m=>({name:m[1],in:'path',required:true,schema:m[1]==='version'?{type:'integer',minimum:1}:{type:'string',format:'uuid'}})),...(input?mutationHeaders:[]),...(match?[{name:'If-Match',in:'header',required:true,schema:{type:'string'}}]:[]),...(['list','versions'].includes(output)?[{name:'limit',in:'query',schema:{type:'integer',minimum:1,maximum:100,default:50}}]:[])];
- (spec.paths[`/api/v1/${path}`]??={})[method]={operationId:`chatflow-${method}-${path.replaceAll(/[{}]/g,'').replaceAll('/','-')}`,security:[{sessionCookie:[]}],parameters,...(input?{requestBody:{required:true,content:{'application/json':{schema:{$ref:`#/components/schemas/chatflow-${input}`}}}}}:{}),responses:{...adminErrors,[input==='create'||input==='version-create'?201:200]:response(`chatflow-${output}`,'Authorized Chatflow result')}};
-}
 const salesHandoff=JSON.parse(await readFile('packages/contracts/schemas/sales-handoff.json','utf8'));
 for(const [name,definition] of Object.entries(salesHandoff.definitions))spec.components.schemas[name]=JSON.parse(JSON.stringify(definition).replaceAll('#/definitions/','#/components/schemas/'));
 for(const [method,path,input,output] of [['get','leads/{id}/handoffs',null,'list'],['post','leads/{id}/handoffs','request','response'],['post','leads/{id}/handoffs/{handoffId}/accept','accept','response']]){
@@ -196,7 +190,6 @@ spec.paths['/api/v1/chat-workspace/inboxes/{id}/shares']={put:{operationId:'cata
 spec.paths['/api/v1/chat-workspace/conversations/{id}/tags/{tagId}']=Object.fromEntries(['put','delete'].map(method=>[method,{operationId:'catalog-'+method+'-conversation-tag',security:[{sessionCookie:[]}],parameters:[tenantHeader,catalogId,{...catalogId,name:'tagId'},...mutationHeaders],requestBody:catalogBody('catalog-empty'),responses:{...adminErrors,200:response('catalog-tag-links','Conversation tag set')}}]));
 spec.paths['/api/v1/chat-workspace/conversations'].get.parameters.push(...['inbox_id','tag_ids'].map(name=>({name,in:'query',schema:{type:'string'}})));
 const runtime=JSON.parse(await readFile('packages/contracts/schemas/agent-runtime.json','utf8'));
-const chatflow=JSON.parse(await readFile('packages/contracts/schemas/chatflow.json','utf8'));
 const activity=JSON.parse(await readFile('packages/contracts/schemas/chat-activity.json','utf8'));
 for(const [name,definition] of Object.entries(activity.definitions))if(/^(activity|snooze)-/.test(name))spec.components.schemas[name]=JSON.parse(JSON.stringify(definition).replaceAll('#/definitions/','#/components/schemas/'));
 for(const [method,path,input,output] of [['get','snooze',null,'snooze-response'],['put','snooze','snooze-put','snooze-response'],['post','wake','snooze-empty','snooze-response'],['get','activity',null,'activity-response']]){
@@ -232,9 +225,6 @@ outputs['packages/contracts/src/generated/intake-schema.ts']='/* Generated. Do n
 outputs['packages/contracts/src/generated/message-content-schema.ts']='/* Generated. Do not edit. */\nexport const messageContentSchema = '+JSON.stringify(messageContent,null,2)+';\n';
 for(const [name,definition] of Object.entries(m2.definitions)) outputs[`packages/contracts/src/generated/${name}.ts`]=await compile({...definition,definitions:m2.definitions},name,{bannerComment:'/* Generated. Do not edit. */'});
 for(const [name,definition] of Object.entries(salesHandoff.definitions)) outputs[`packages/contracts/src/generated/${name}.ts`]=await compile({...definition,definitions:salesHandoff.definitions},name,{bannerComment:'/* Generated. Do not edit. */'});
-for(const [name,definition] of Object.entries(chatflowApi.definitions)) outputs[`packages/contracts/src/generated/${name}.ts`]=await compile({...definition,definitions:chatflowApi.definitions},name,{bannerComment:'/* Generated. Do not edit. */'});
-outputs['packages/contracts/src/generated/chatflow-graph.ts']=await compile(chatflow,'ChatflowGraph',{bannerComment:'/* Generated. Do not edit. */'});
-outputs['packages/contracts/src/generated/chatflow-schema.ts']='/* Generated. Do not edit. */\nexport const chatflowSchema = '+JSON.stringify(chatflow,null,2)+';\n';
 for(const [name,definition] of Object.entries(workflow.definitions)) outputs[`packages/contracts/src/generated/${name}.ts`]=await compile({...definition,definitions:workflow.definitions},name,{bannerComment:'/* Generated. Do not edit. */'});
 outputs['packages/contracts/src/generated/runtime-schema.ts']='/* Generated. Do not edit. */\nexport const runtimeSchema = '+JSON.stringify(runtime,null,2)+';\n';
 for(const [name,definition] of Object.entries(runtime.definitions)) outputs[`packages/contracts/src/generated/${name}.ts`]=await compile({...definition,definitions:runtime.definitions},name,{bannerComment:'/* Generated private runtime protocol. Do not edit. */'});
@@ -256,3 +246,7 @@ console.log(check ? 'Generated contracts match schemas.' : 'Generated health/aut
 await import('./generate-workflow-contracts.mjs');
 await import('./generate-record-pages-contracts.mjs');
 await import('./generate-human-routing-contracts.mjs');
+await import('./generate-dispatch-contracts.mjs');
+await import('./generate-exchange-contracts.mjs');
+await import('./generate-chat-control-contracts.mjs');
+await import('./generate-chat-owner-contracts.mjs');

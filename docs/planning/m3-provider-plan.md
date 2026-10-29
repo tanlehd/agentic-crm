@@ -41,7 +41,7 @@ CRM giữ quyền truy cập, owner/team, audit và workflow durable. Provider �
 
 Handoff cần durable operation ID, desired/observed control, revision và reconciliation. Webhook đến trễ/lặp hoặc response mất không được gán lại owner theo trạng thái cũ. Takeover dừng AI work do CRM điều khiển, hủy queued intents; side effect đã dispatch hoặc provider-hosted reply không thể hứa thu hồi. Đồng bộ external AI replies qua echo/standby theo từng platform, không tạo thêm một lần send trong CRM.
 
-Meta có thể tự trả lời khi host agent. Vì thế protocol M2 proposal→CRM send chỉ áp dụng mode CRM-managed; mode provider-managed cần contract riêng và sandbox proof chống double response, human takeover, tool revocation và release back to AI. Không tạo Workflow/Chatflow lần hai cho cùng turn. Khi không map được external human về principal cụ thể, ghi external actor/attention thay vì giả danh một Human CRM.
+Meta có thể tự trả lời khi host agent. Vì thế protocol M2 proposal→CRM send chỉ áp dụng mode CRM-managed; mode provider-managed cần contract riêng và sandbox proof chống double response, human takeover, tool revocation và release back to AI. Không tạo Workflow lần hai cho cùng turn. Khi không map được external human về principal cụ thể, ghi external actor/attention thay vì giả danh một Human CRM.
 
 ## Message đa nền tảng
 

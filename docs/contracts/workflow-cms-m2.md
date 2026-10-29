@@ -24,6 +24,6 @@ All requests use native session, X-Tenant-Id, no-store and sanitized errors. Mut
 
 ## Data, compatibility and acceptance
 
-Reuse workflow_definition/workflow_version/command_receipt/audit tables and existing owner ports. No migration or extraction; target Workflow API/Core schema ownership unchanged. No credentials in graph or UI; no change to CRM canonical models. M2 refs are typed trigger/output IDs, not arbitrary CRM properties.
+Reuse workflow_definition/workflow_version/command_receipt/audit tables and existing owner ports. No migration or extraction; target is one Workflow owner under ADR-027; this existing M2 wire remains legacy-compatible. No credentials in graph or UI; no change to CRM canonical models. M2 refs are typed trigger/output IDs, not arbitrary CRM properties.
 
 SRC-066 acceptance: real native create/save/reopen, immutable earlier graph, validation of cycles/unreachable/missing refs, save retries with same key, publish/enable CAS conflict, live grant revoke, foreign tenant negatives, discovery no secrets, seven-node fields/typed refs, menu without design rights, actual browser desktop/mobile and local reload. Retain synthetic fixtures, never reset DB; Alpha role addition only after explicit user authorization, received in this session. Kafka/object-change/action-provider/distributed cutover tests remain NOT_RUN. Commands and evidence belong in SRC-066.

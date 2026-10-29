@@ -1,0 +1,35 @@
+# Opt-in local package. Provision schema separately; no migration/startup side effects.
+name: agentic-crm-reporting
+services:
+  reporting:
+    image: agentic-crm-reporting:local
+    build: {context: ., dockerfile: infra/docker/Dockerfile, target: reporting}
+    environment:
+      REPORTING_HOST: 0.0.0.0
+      REPORTING_PORT: '3004'
+      REPORTING_DB_HOST: ${REPORTING_CONTAINER_DB_HOST:-host.docker.internal}
+      REPORTING_DB_PORT: ${REPORTING_DB_PORT:-13306}
+      REPORTING_DB_NAME: ${REPORTING_DB_NAME:?Provision Reporting first}
+      REPORTING_RUNTIME_USER: ${REPORTING_RUNTIME_USER:?Set Reporting runtime user}
+      REPORTING_RUNTIME_PASSWORD: ${REPORTING_RUNTIME_PASSWORD:?Set Reporting runtime password}
+      REPORTING_ADMISSION_KEY: ${REPORTING_ADMISSION_KEY:?Set matching BFF admission key}
+    ports: ['127.0.0.1:${REPORTING_CONTAINER_PORT:-13004}:3004']
+    extra_hosts: ['host.docker.internal:host-gateway']
+    init: true
+    read_only: true
+    tmpfs: ['/tmp:size=16m,mode=1777']
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    pids_limit: 128
+    mem_limit: 512m
+    restart: unless-stopped
+    stop_grace_period: 20s
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:3004/internal/v1/reporting/health/ready',{signal:AbortSignal.timeout(3000)}).then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 4s
+      retries: 12
+      start_period: 10s
+    logging:
+      driver: json-file
+      options: {max-size: 10m, max-file: '3'}

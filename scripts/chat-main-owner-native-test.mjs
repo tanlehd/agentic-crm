@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {randomUUID,randomBytes} from 'node:crypto';
+import {createRequire} from 'node:module';
+import {rootSQL,createPool} from './lib/chat-native.mjs';
+import {loadMainPreflight} from './lib/chat-main-preflight.mjs';
+import {selectMainSnapshot} from './lib/chat-main-selection.mjs';
+import {mainOwnerPlan} from './lib/chat-main-owner-plan.mjs';
+import {importOwnerPlan,ownerImportScope} from './lib/chat-main-owner-import.mjs';
+import {mainEvidenceDirectory} from './lib/chat-main-evidence.mjs';
+import {migrate} from '../services/core-baseline/dist/kernel/database/migration-runner.js';
+const require=createRequire(new URL('../services/core-baseline/package.json',import.meta.url)),{DataSource}=require('typeorm');
+const run=randomUUID(),database='test_t09_owner_'+run.replaceAll('-','').slice(0,16),user='t09_owner_'+run.replaceAll('-','').slice(0,16),password=randomBytes(32).toString('hex');
+await mkdir('.local/chat-cutover/owner-tests',{recursive:true});await writeFile('.local/chat-cutover/owner-tests/'+run+'.json',JSON.stringify({database,user,password}),{flag:'wx',mode:0o600});
+rootSQL(`CREATE DATABASE ${database} CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_cs; CREATE USER '${user}'@'%' IDENTIFIED BY '${password}'; GRANT ALL ON ${database}.* TO '${user}'@'%';`);
+const options={host:'127.0.0.1',port:13306,database,password,timezone:'Z',dateStrings:true,supportBigNumbers:true,bigNumberStrings:true,jsonStrings:true};
+const ds=new DataSource({type:'mysql',...options,username:user,synchronize:false}),pool=createPool({...options,user}),report={database,checks:[]};
+try{
+ await ds.initialize();await migrate(ds);await ds.destroy();
+ const snapshot=await loadMainPreflight(),chat=await selectMainSnapshot(snapshot),plan=mainOwnerPlan(snapshot,chat);
+ assert.throws(()=>ownerImportScope(snapshot,'agentic_crm'),/OWNER_FINAL_FENCE_REQUIRED/);report.checks.push('unfenced-main-denied');
+ report.first=await importOwnerPlan(pool,snapshot,plan,database);report.checks.push('actual-46-schema-bootstrap');
+ report.replay=await importOwnerPlan(pool,snapshot,plan,database);assert.equal(report.replay.inserted,0);report.checks.push('exact-replay');
+ const altered=structuredClone(plan);altered.tables.identity_owner_gate[0].state='closing';await assert.rejects(()=>importOwnerPlan(pool,snapshot,altered,database),/OWNER_PLAN_BINDING/);report.checks.push('plan-drift-denied');
+ await pool.execute("UPDATE identity_owner_gate SET state='closing' WHERE tenant_id=?",[snapshot.manifest.tenants[0]]);
+ await assert.rejects(()=>importOwnerPlan(pool,snapshot,plan,database),/OWNER_EXISTING_STATE/);report.checks.push('live-gate-not-overwritten');
+ await pool.execute("UPDATE identity_owner_gate SET state='open' WHERE tenant_id=?",[snapshot.manifest.tenants[0]]);
+ const wrong=structuredClone(snapshot),allocation=wrong.rows.routing_human_allocation.find(a=>a.released_at===null);allocation.principal_id=randomUUID();assert.throws(()=>mainOwnerPlan(wrong,chat),/ROUTING_ALLOCATION_OWNER/);report.checks.push('owner-allocation-mismatch-denied');
+ await assert.rejects(()=>pool.query('SELECT * FROM agentic_crm.tenant'),e=>['ER_DBACCESS_DENIED_ERROR','ER_TABLEACCESS_DENIED_ERROR'].includes(e.code));report.checks.push('source-access-denied');
+ report.status='PASS';
+}catch(e){report.status='FAIL';report.error=e.code??e.message;process.exitCode=1;}finally{if(ds.isInitialized)await ds.destroy();await pool.end();await writeFile((await mainEvidenceDirectory())+'/owner-bootstrap-'+run+'.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));}

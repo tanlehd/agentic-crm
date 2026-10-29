@@ -3,13 +3,13 @@ import { readFile,writeFile,mkdir } from 'node:fs/promises';
 import { parseEnv } from 'node:util';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
-import { databaseSource } from '../apps/backend/dist/kernel/database/data-source.js';
-import { migrate } from '../apps/backend/dist/kernel/database/migration-runner.js';
-import { backfillWorkspace } from '../apps/backend/dist/modules/conversation/workspace-storage.js';
-import { backfillActivity } from '../apps/backend/dist/modules/conversation/activity-storage.js';
-import { fixtureId,seedUsers,seedIdentity } from '../apps/backend/dist/modules/identity/seed.js';
-import { passwordHash } from '../apps/backend/dist/modules/identity/auth/password.js';
-import { PLATFORM_TENANT_ID as system } from '../apps/backend/dist/kernel/database/system-scope.js';
+import { databaseSource } from '../services/core-baseline/dist/kernel/database/data-source.js';
+import { format } from 'mysql2';
+import { applyRuntimeGrants,applyAuthGrants } from '../services/core-baseline/dist/kernel/database/runtime-grants.js';
+import { migrate } from '../services/core-baseline/dist/kernel/database/migration-runner.js';
+import { fixtureId,seedUsers,seedIdentity } from '../services/core-baseline/dist/modules/identity/seed.js';
+import { passwordHash } from '../services/core-baseline/dist/modules/identity/auth/password.js';
+import { PLATFORM_TENANT_ID as system } from '../services/core-baseline/dist/kernel/database/system-scope.js';
 const env=parseEnv(await readFile('.env','utf8'));
 if(env.APP_ENV!=='development'||env.MYSQL_DATABASE!=='agentic_crm'||!['localhost','127.0.0.1'].includes(new URL(env.APP_ORIGIN).hostname))throw new Error('LOCAL_UPGRADE_DENIED');
 for(const key of ['MYSQL_USER','MYSQL_AUTH_USER'])if(!/^[a-z][a-z0-9_]{0,40}$/.test(env[key]??'')||env[key]==='root')throw new Error('ROLE_INVALID');
@@ -31,7 +31,7 @@ try{
   const originalVersion=journalExists.length?Number((await source.query('SELECT COALESCE(MAX(version),0) version FROM schema_migration'))[0].version):0;
   const tables=await source.query("SELECT TABLE_NAME name FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_TYPE='BASE TABLE'");
   for(const {name} of tables){if(!/^[a-z][a-z0-9_]*$/.test(name))throw new Error('INVALID_TABLE');const columns=(await source.query('SELECT COLUMN_NAME name FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? ORDER BY ORDINAL_POSITION',[name])).map(x=>x.name);const rows=await source.query(`SELECT ${columns.map(x=>'`'+x+'`').join(',')} FROM \`${name}\`${name==='tenant'?` WHERE id<>'${system}'`:''}`);before[name]={columns,rows:rows.map(x=>JSON.stringify(x)).sort()};}
-  const applied=await migrate(source);await backfillWorkspace(source);await backfillActivity(source);
+  const applied=await migrate(source);
   const comparisons=[];
   for(const [name,{columns,rows}] of Object.entries(before)){const where=name==='tenant'?` WHERE id<>'${system}'`:name==='schema_migration'?` WHERE version<=${originalVersion}`:'';const actual=(await source.query(`SELECT ${columns.map(x=>'`'+x+'`').join(',')} FROM \`${name}\`${where}`)).map(x=>JSON.stringify(x)).sort();if(JSON.stringify(rows)!==JSON.stringify(actual))throw new Error('PRESERVATION_CHECK_FAILED:'+name);comparisons.push(name);}
   if(process.argv.includes('--seed'))await seedIdentity(source,{issuer:'urn:agentic-crm:native',subjects:Object.fromEntries(seedUsers.map(user=>[user,fixtureId(`native:${user}`)]))},{...process.env,IDENTITY_SEED_MODE:'native'});
@@ -48,13 +48,15 @@ try{
       await runner.commitTransaction();
     }catch(error){await runner.rollbackTransaction();throw error;}finally{await runner.release();}
   }
-  const names=(await source.query("SELECT TABLE_NAME name FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_TYPE='BASE TABLE'")).map(x=>x.name);
-  const authTables=['account_credential','auth_session','auth_token','auth_challenge','auth_attempt','system_audit_entry'];
-  const sql=[`CREATE USER IF NOT EXISTS '${env.MYSQL_AUTH_USER}'@'%' IDENTIFIED BY '${env.MYSQL_AUTH_PASSWORD}';`,`REVOKE ALL PRIVILEGES, GRANT OPTION FROM '${env.MYSQL_USER}'@'%';`,`REVOKE ALL PRIVILEGES, GRANT OPTION FROM '${env.MYSQL_AUTH_USER}'@'%';`];
-  for(const name of names){if(authTables.includes(name)||['channel_marketing_credential','channel_marketing_admission_receipt'].includes(name))continue;const permissions=['audit_entry','ownership_history','sales_stage_event'].includes(name)?'SELECT,INSERT':name==='external_app'?'SELECT,INSERT,UPDATE':['account','schema_migration'].includes(name)?'SELECT':'SELECT,INSERT,UPDATE,DELETE';sql.push(`GRANT ${permissions} ON agentic_crm.\`${name}\` TO '${env.MYSQL_USER}'@'%';`);}
-  sql.push(`GRANT SELECT,UPDATE(security_revision) ON agentic_crm.account TO '${env.MYSQL_AUTH_USER}'@'%';`);
-  for(const name of authTables)sql.push(`GRANT ${name==='system_audit_entry'?'INSERT':'SELECT,INSERT,UPDATE,DELETE'} ON agentic_crm.\`${name}\` TO '${env.MYSQL_AUTH_USER}'@'%';`);
-  docker(['exec','-i','agentic-crm-mysql-1','sh','-c','MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -uroot'],sql.join('\n'));
+  // Use the same reviewed table grants as every current provisioning path.
+  // Root SQL remains inside Docker; the host never reads the root credential.
+  const grantsConnection={async query(statement,values=[]){
+    if(statement.startsWith('SELECT TABLE_NAME'))return [await source.query(statement,values)];
+    docker(['exec','-i','agentic-crm-mysql-1','sh','-c','MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -uroot'],format(statement,values)+';');
+    return [];
+  }};
+  await applyRuntimeGrants(grantsConnection,'agentic_crm',env.MYSQL_USER);
+  await applyAuthGrants(grantsConnection,'agentic_crm',env.MYSQL_AUTH_USER,env.MYSQL_AUTH_PASSWORD);
   // Add missing settings to private host API config without rotating other values.
   const path='.local/services/api.env';let text=await readFile(path,'utf8');for(const key of ['MYSQL_AUTH_USER','MYSQL_AUTH_PASSWORD'])if(!new RegExp('^'+key+'=','m').test(text))text+='\n'+key+'='+JSON.stringify(env[key]);await writeFile(path,text+'\n',{mode:0o600});
   const evidence={applied,enrolled,preserved,originalTablesCompared:comparisons,backup:`pre-native-${stamp}.sql`,backupSha256:createHash('sha256').update(backup).digest('hex'),repeatApplied:await migrate(source)};

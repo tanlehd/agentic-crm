@@ -7,7 +7,7 @@ import {ImmutableSnapshotAdapter,validUtc,validateObservations,type Observation,
 import {StorageError} from './storage-security.js';
 import {hasDefinitionShape} from './compiler.js';
 import type {Definition} from './types.js';
-interface SourcePolicy {allowMock:boolean;snapshots:ProjectionSnapshot[]}
+interface SourcePolicy {tenant:string;allowMock:boolean;snapshots:ProjectionSnapshot[]}
 const context=new AsyncLocalStorage<SourcePolicy>();
 const sourceBinding=(tenant:string,adapter:string)=>{const s=digest([adapter,tenant]);return `${s.slice(0,8)}-${s.slice(8,12)}-5${s.slice(13,16)}-a${s.slice(17,20)}-${s.slice(20,32)}`;};
 export const operationsBinding=(tenant:string)=>sourceBinding(tenant,'native_operations_v1');
@@ -27,10 +27,10 @@ export async function withSourcePolicy<T>(tenant:string,policy:any,run:()=>Promi
   for(const r of records)validateObservations(manifest,[r]);
   snapshots.push({binding:{id:c.bindingId,tenantId:tenant,environment:'connected',revision:manifest.snapshotId,models:catalog.models,availableFields:manifest.availableFields},manifest,records});
  }
- return context.run({allowMock:policy.allowMock,snapshots},run);
+ return context.run({tenant,allowMock:policy.allowMock,snapshots},run);
 }
 export function connectedSnapshots(){return context.getStore()?.snapshots??[];}
-export function connectedSnapshot(id:string,pin?:string){const s=connectedSnapshots().find(s=>s.binding.id===id);if(s&&pin&&pin!==s.manifest.catalogHash)throw new StorageError(422,'SNAPSHOT_PIN_UNAVAILABLE');return s;}
+export function connectedSnapshot(id:string,pin?:string){const s=connectedSnapshots().find(s=>s.binding.id===id),policy=context.getStore();if(!s&&policy&&['native_operations_v1','native_conversion_v1','native_stage_v1'].some(adapter=>sourceBinding(policy.tenant,adapter)===id))throw new StorageError(503,'CONNECTED_SOURCE_UNAVAILABLE');if(s&&pin&&pin!==s.manifest.catalogHash)throw new StorageError(422,'SNAPSHOT_PIN_UNAVAILABLE');return s;}
 export function requireMockSource(){if(context.getStore()?.allowMock===false)throw new StorageError(403,'SOURCE_FORBIDDEN');}
 export function mockSourceAllowed(){return context.getStore()?.allowMock!==false;}
 export function sourcePin(m:SnapshotManifest){return m.environment==='connected'?m.catalogHash:m.snapshotId;}

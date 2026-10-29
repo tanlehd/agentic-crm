@@ -3,9 +3,9 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   oxc: { jsx: { runtime: 'automatic' } },
-  resolve: { alias: { '@agentic-crm/contracts': fileURLToPath(new URL('./packages/contracts/src/index.ts', import.meta.url)) } },
+  resolve: { alias: { '@agentic-crm/contracts': fileURLToPath(new URL('./packages/contracts/src/index.ts', import.meta.url)), '@agentic-crm/workload-transport': fileURLToPath(new URL('./packages/workload-transport/src/index.ts', import.meta.url)) } },
   test: {
-    include: ['services/**/*.test.ts', 'packages/**/*.test.ts', 'apps/backend/**/*.test.ts', 'apps/web/**/*.test.tsx'],
+    include: ['services/**/*.test.ts', 'packages/**/*.test.ts', 'apps/web/**/*.test.tsx'],
     environment: 'node',
   },
 });

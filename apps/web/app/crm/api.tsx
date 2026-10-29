@@ -1,12 +1,13 @@
 'use client';
-import { useRef,useState } from 'react';
+import { useRef,useState,useContext } from 'react';
+import {InboxActive,INBOX_POLL_INTERVAL_MS} from './inbox-polling';
 import { useQuery,useQueryClient } from '@tanstack/react-query';
 export interface ApiError extends Error {code?:string;status?:number;fields?:{path:string;code:string}[]}
 export async function request(tenant:string,path:string,init:RequestInit={}){
   const response=await fetch(path,{...init,cache:'no-store',headers:{'X-Tenant-Id':tenant,...init.headers}});
   const body=await response.json();if(!response.ok)throw Object.assign(new Error(body.error?.message??'Không thể kết nối.'),{status:response.status,code:body.error?.code,fields:body.error?.fields});return body;
 }
-export function useApi(tenant:string,path:string,enabled=true,poll=false){return useQuery({queryKey:[tenant,path],queryFn:({signal})=>request(tenant,path,{signal}),enabled,retry:false,refetchOnWindowFocus:false,refetchInterval:poll?5000:false,refetchIntervalInBackground:false});}
+export function useApi(tenant:string,path:string,enabled=true,poll:boolean|number=false){const inbox=useContext(InboxActive);return useQuery({queryKey:[tenant,path],queryFn:({signal})=>request(tenant,path,{signal}),enabled,retry:false,refetchOnWindowFocus:false,refetchInterval:typeof poll==='number'?poll:poll?(inbox===null?5000:inbox?INBOX_POLL_INTERVAL_MS:false):false,refetchIntervalInBackground:false});}
 export function useCommand(tenant:string,sharedKeys?:Map<string,string>){
   const [busy,setBusy]=useState(false),[error,setError]=useState<ApiError|null>(null),keys=useRef(sharedKeys??new Map<string,string>()),cache=useQueryClient(),failure=useRef<ApiError|null>(null);
   async function run(path:string,body:unknown,method='POST',version?:string){

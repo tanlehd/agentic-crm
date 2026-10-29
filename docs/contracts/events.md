@@ -44,10 +44,9 @@ Mọi field bắt buộc trừ `causation_id` nullable. Actor id là UUID typed 
 | lead.qualified | Sales | lead_id,qualified_at,source_touchpoint_id? | reporting; workflow wait tùy definition |
 | lead.handoff_requested | Sales | lead_id,handoff_id,target_team_id,due_at | Sales queue/operations |
 | lead.accepted | Sales | lead_id,handoff_id,accepted_by,accepted_at | workflow wait/reporting |
-| chatflow.completed | Chatflow | session_id,conversation_id,lead_id?,outcome | parent workflow wait |
 | chatflow.handoff_required | Chatflow | session_id,conversation_id,reason | routing Human queue |
 | workflow.completed | Workflow | run_id,version_id | operations |
-| execution.failed | Workflow/Chatflow | execution_type,execution_id,error_code | operations |
+| execution.failed | Workflow | execution_type,execution_id,error_code | operations |
 | principal.access_changed | Identity | principal_id,auth_revision | cancellation/cache invalidation |
 
 Payload không chứa message body, phone hoặc raw runtime prompt. Consumer cần nội dung phải fetch qua authorized tenant-scoped interface. Nullable field liệt kê `?` vẫn có thể xuất hiện với null; không suy ra record đã xóa.
@@ -73,9 +72,9 @@ SRC-010 internal ownership port ghi `record.assigned` cùng history/CAS/audit tr
 
 SRC-017: `record.assigned` now emitted by real assignment/takeover/routing (actor Human or service), with reason codes manual/handoff/human_takeover/routed/no_eligible_principal. Queued outbound cancellation is synchronous in the ownership UoW, not dependent on delivery. `routing.access.v1` consumes principal.access_changed through durable inbox and marks/reconciles owner eligibility attention using current DB state. record.assigned downstream runtime/session/queue consumers remain SRC-018…022 per ADR-014; no fake ACK for unimplemented consumers.
 
-SRC-019 registers workflow.starter.v1 for conversation.created and predicate wake consumers for chatflow.completed/lead.accepted. Starter stores definition/event selection including disabled/no-match; run version remains pinned across publish/replay. Workflow completed/failed transitions write sanitized catalog payloads and audit in the same transaction. Signals are hints; persisted child predicate polling handles missed/early delivery. Child producers remain SRC-020/021.
+SRC-019 registers workflow.starter.v1 for conversation.created and predicate wake consumers for lead.accepted. Starter stores definition/event selection including disabled/no-match; run version remains pinned across publish/replay. Workflow completed/failed transitions write sanitized catalog payloads and audit in the same transaction. Signals are hints; persisted child predicate polling handles missed/early delivery. Sales remains the supported child producer.
 
-SRC-020 emits `chatflow.completed` schema1 with session_id,parent_run_id,outcome,lead_id (nullable) from the same terminal transaction; aggregate type chatflow_session, actual persisted version. Parent verifies exact durable child predicate even if event arrives before wait. Lead.created/qualified from Chatflow use actual service/Human actor; payload never copies transcript/draft.
+CHG-20261021-08 retires Chatflow events and consumers. Legacy queued events are removed during maintenance; historical business effects are not replayed.
 
 SRC-021 emits lead.handoff_requested and lead.accepted atomically with ownership/share/state and receipt or Workflow action. Payloads follow the catalog above; no qualification/phone/consent text. Existing workflow.lead.accepted.v1 wakes the exact handoff predicate; missed/early signals recover by persisted polling.
 

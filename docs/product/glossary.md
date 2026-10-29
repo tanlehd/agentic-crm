@@ -4,6 +4,9 @@ Status: Ready for implementation.
 
 | Thuật ngữ | Định nghĩa chuẩn |
 |---|---|
+| Agentic CRM | Nền tảng quản trị dữ liệu khách hàng và hoạt động Marketing/Sales/Customer Service, với nhân viên, Workflow và AI Agent phối hợp trong phạm vi quyền và quy trình doanh nghiệp |
+| Tương tác khách hàng | Đơn vị dữ liệu về tiếp xúc/phản hồi như hội thoại, cuộc gọi hoặc form submission; gắn với hồ sơ và công việc liên quan, có trạng thái xử lý theo từng nghiệp vụ; không bắt buộc là Conversation |
+| Gói nghiệp vụ | Tập năng lực, dữ liệu, workspace và quy tắc phối hợp/phân bổ phù hợp mô hình vận hành team; không mặc định là gói giá hoặc một service riêng |
 | Tenant | Doanh nghiệp sử dụng platform, đơn vị cô lập dữ liệu/cấu hình |
 | Account | Danh tính người đăng nhập toàn platform; có thể tham gia nhiều tenant |
 | Membership | Quan hệ Account–Tenant, trạng thái active/invited/suspended |
@@ -18,9 +21,8 @@ Status: Ready for implementation.
 | Lead | Một nhu cầu của Contact đang được qualify; không phải bản sao Contact |
 | Opportunity / Deal | Cùng một khái niệm; dùng tên chuẩn Deal |
 | Customer | Trạng thái lifecycle của Contact sau khi có Deal thắng |
-| Conversation | Phiên xử lý hội thoại trên một channel account; chứa nhiều Message |
-| Chatflow | Quy trình thu thập dữ liệu/đối thoại trong Conversation |
-| Workflow | Quy trình điều phối nghiệp vụ xuyên object/module |
+| Conversation | Luồng hội thoại bền vững trên kênh, chứa Message; các lượt xử lý được phân biệt bằng session/episode theo contract Chat |
+| Workflow | Định nghĩa và thực thi luồng tự động hóa nghiệp vụ trên các đối tượng CRM, User và Chat; một service điều phối chung, effect được kiểm tra tại owner |
 | CTM | Click-to-message; case chuẩn là Facebook Messenger message ads |
 | Touchpoint | Một tương tác nguồn marketing; không đồng nghĩa Message hoặc Lead |
 | Qualification | Thu thập dữ liệu tối thiểu, xác nhận nhu cầu và đủ điều kiện bàn giao |

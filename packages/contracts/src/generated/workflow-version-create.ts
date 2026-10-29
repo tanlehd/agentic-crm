@@ -33,31 +33,6 @@ export interface WorkflowGraph {
         }
       | {
           key: string;
-          type: "start_chatflow";
-          config: (
-            | {
-                [k: string]: unknown;
-              }
-            | {
-                [k: string]: unknown;
-              }
-          ) & {
-            conversation_id?:
-              | string
-              | {
-                  ref: string;
-                };
-            chatflow_version_id: string;
-            thread_id?:
-              | string
-              | {
-                  ref: string;
-                };
-          };
-          next: string;
-        }
-      | {
-          key: string;
           type: "request_lead_handoff";
           config: {
             lead_id:
@@ -73,7 +48,7 @@ export interface WorkflowGraph {
           key: string;
           type: "wait_event";
           config: {
-            event_type: "chatflow.completed" | "lead.accepted";
+            event_type: "lead.accepted";
             match_key: {
               ref: string;
             };
@@ -221,31 +196,6 @@ export interface WorkflowGraph {
         }
       | {
           key: string;
-          type: "start_chatflow";
-          config: (
-            | {
-                [k: string]: unknown;
-              }
-            | {
-                [k: string]: unknown;
-              }
-          ) & {
-            conversation_id?:
-              | string
-              | {
-                  ref: string;
-                };
-            chatflow_version_id: string;
-            thread_id?:
-              | string
-              | {
-                  ref: string;
-                };
-          };
-          next: string;
-        }
-      | {
-          key: string;
           type: "request_lead_handoff";
           config: {
             lead_id:
@@ -261,7 +211,7 @@ export interface WorkflowGraph {
           key: string;
           type: "wait_event";
           config: {
-            event_type: "chatflow.completed" | "lead.accepted";
+            event_type: "lead.accepted";
             match_key: {
               ref: string;
             };

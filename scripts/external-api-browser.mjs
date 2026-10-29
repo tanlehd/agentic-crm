@@ -4,7 +4,7 @@ import {parseEnv} from 'node:util';
 import {chromium,expect as baseExpect} from '@playwright/test';
 import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
-import {fixtureId} from '../apps/backend/dist/modules/identity/seed.js';
+import {fixtureId} from '../services/core-baseline/dist/modules/identity/seed.js';
 const expect=baseExpect.configure({timeout:30000}),env=parseEnv(await readFile('.env','utf8')),origin='http://localhost:18080',tenant=fixtureId('clinic_alpha'),dir='artifacts/external-api';assert.equal(env.APP_ORIGIN,origin);await mkdir(dir,{recursive:true});
 const browser=await chromium.launch({channel:'msedge',headless:true}),page=await browser.newPage({viewport:{width:1440,height:1000}}),checks=[],shots=[],errors=[];page.setDefaultTimeout(30000);page.on('pageerror',e=>errors.push(e.message));
 const shot=async name=>{assert.equal(await page.getByLabel('New app token').count(),0,'Never capture a credential');const path=dir+'/'+name+'.png';await page.screenshot({path,fullPage:true});shots.push(path);};

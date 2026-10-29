@@ -15,9 +15,9 @@ Cung cấp registry, Contact/Company/Activity, custom objects/properties, associ
 
 Tenant admin thiết kế schema; agent CRUD theo object action/scope. Field deny áp dụng đọc, ghi, filter và export. Schema.read không đồng nghĩa được đọc mọi record. Tạo association cần read cả hai đầu và update source.
 
-## Use case và state machine
+## Use case và quyền sở hữu
 
-Custom object: create → active → archived (archive UI/schema đầy đủ sau M1). Record: active → archived; archive bị chặn nếu run/record nghiệp vụ active phụ thuộc. Contact lifecycle prospect → customer khi Deal thắng ở M4; M1 không cho người dùng PATCH customer.
+CRM tạo/đọc/cập nhật Contact, Company, Activity và custom records theo quyền. Không có lifecycle lưu trữ bắt buộc chung cho mọi object/record. Contact prospect → customer theo kết quả Deal won qua contract Sales–CRM; create là thao tác, không phải state. Metadata chỉ công bố capability thực tế của từng owner. [Legacy archive](../contracts/legacy-record-archive.md) mô tả phần source/data còn giữ để xử lý tương thích, không là yêu cầu service mới.
 
 Tenant cấu hình Appointment/ServiceOffering bằng metadata, tạo record và liên kết Contact để chứng minh extension; không cần migration tạo bảng ngành.
 
@@ -49,13 +49,14 @@ Sai type/enum/required trả 422 với field path; unknown key reject. Stale ver
 
 ## Mở rộng còn Draft
 
+
 PLAN-024A/B thiết kế [shared metadata/capability](../data/workflow-metadata.md) và Kafka object-change producers cho Workflow. Relationship traversal và generic change-image/enrollment giữ implementation gate; không sửa giới hạn M1 dưới đây thành tính năng đã chạy.
 
 Formula field, computed property, unique custom field, multiselect, relationship traversal query, schema migration UI, bulk import/merge và drag-and-drop page layout.
 
 ## SRC-010 implementation boundary
 
-Registry metadata/association HTTP và internal record/subtype/ownership ports triển khai tại `apps/backend/src/modules/crm`; exact [registry contract](../contracts/registry.md). Migration v6 có persisted field_policy, loader dùng Identity role IDs port. Chưa có production subtype adapter, record CRUD/typed index/forms hoặc public assignment; không coi synthetic subtype trong test là Contact đã triển khai. History append-only ở DB grants, source version tăng khi tạo association; HTTP commands có atomic audit/receipt. Metadata/association chưa phát workflow event; domain creation events và assignment consumers nối cùng modules tương ứng.
+Registry metadata/association HTTP và internal record/subtype/ownership ports triển khai tại `services/core-baseline/src/modules/crm`; exact [registry contract](../contracts/registry.md). Migration v6 có persisted field_policy, loader dùng Identity role IDs port. Chưa có production subtype adapter, record CRUD/typed index/forms hoặc public assignment; không coi synthetic subtype trong test là Contact đã triển khai. History append-only ở DB grants, source version tăng khi tạo association; HTTP commands có atomic audit/receipt. Metadata/association chưa phát workflow event; domain creation events và assignment consumers nối cùng modules tương ứng.
 
 ## SRC-011…013 M1 boundary
 

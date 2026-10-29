@@ -1,5 +1,7 @@
 # Reporting service and semantic kernel
 
+SRC-090: [independent Docker package and runbook](../../docs/development/reporting-container.md), `pnpm image:reporting` / `pnpm test:reporting:container`. SRC-091 activates local container3004, with native comparison and rollback drill; [rollout runbook](../../docs/development/phased-service-rollout.md). Current API/own schema7 covers the delivered builder/dashboard/connected slices; dated partial descriptions below are historical. Container startup never migrates; runtime-only credentials, private signed API and main host BFF preserved. Production rollout and remaining backlog are separate gates.
+
 SRC-085: bounded native_operations_v1 source now uses the shared compiler/query/report/dashboard core. Own schema5 adds immutable connected catalog metadata and dual widget pins; source observations stay request-local. [Contract](../../docs/contracts/operations-reporting.md), [runbook](../../docs/development/operations-reporting.md). Earlier mock-only descriptions below are historical.
 
 SRC-059 lifecycle phase: native /reporting/runs and private /internal/v1/reporting/runs add owner-scoped durable queued/running/terminal state, pinned snapshot/executor,15s lease attempts,cancel fence and persisted aggregate JSON/CSV. Own schema3 adds two tables; no automatic worker. [Contract](../../docs/contracts/reporting-runs.md), [runbook](../../docs/development/reporting-runs.md). Drilldown and full UI remain pending; earlier slice summaries below are historical.

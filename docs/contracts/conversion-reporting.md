@@ -4,6 +4,8 @@
 
 ## Semantics and dictionary
 
+CHG-20261024-01 [Chat/Sales boundary review](chat-sales-conversion-boundary.md): conversion counts use Sales immutable source/lead_id/stage, not Chat kind=outcome contribution rows. Chat opened/assignment history is still used for initial-owner evidence. Closing Chat does not freeze Sales outcomes or require a reverse callback. Current metrics count distinct sessions; conversation-grain metrics must deduplicate session.conversation_id explicitly.
+
 Chat owns sessions/need/contribution facts; Sales owns leads/deals/context/merge/outcome links; CRM supplies record metadata through an application port. Reporting receives a signed minimized payload, never business SQL. Baseline ports share the existing monolith UoW only; extraction replaces them with versioned APIs/events. No transcripts or customer names in reporting payload.
 
 New adapter `native_conversion_v1`, tenant-specific binding, immutable catalog pin. Read all bounded tenant facts (max5000 source facts and10000 projection rows); reject excess, never truncate. Source snapshot uses REPEATABLE READ with database observation timestamp; only current snapshot semantics, no historical-state reconstruction. Public rolling windows1…365days, max horizon90days; source retains older related facts for complete lineage/current backlog. Facts do not persist in Reporting. Durable connected runs remain unsupported.

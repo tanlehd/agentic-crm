@@ -1,4 +1,5 @@
 'use client';
+import {useInboxInterval} from './inbox-polling';
 import { useRef,useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '../../components/ui/button';
@@ -12,9 +13,9 @@ export function Ownership({tenant,record:r,reload,expanded=false}:{tenant:string
   const keys=useRef(new Map<string,string>()),command=useCommand(tenant,keys.current),[selected,setSelected]=useState(r.owner_principal_id??''),[version,setVersion]=useState(r.version),[pending,setPending]=useState<Pending|null>(null),[notice,setNotice]=useState('');
   const [team,setTeam]=useState(r.team_id??'');
   const targetPath=`/api/v1/records/${r.id}/assignment-targets${team?'?team_id='+team:''}`;
-  const targets=useQuery({queryKey:[tenant,targetPath],queryFn:({signal})=>request(tenant,targetPath,{signal}),retry:false,refetchInterval:5000});
+  const targets=useQuery({queryKey:[tenant,targetPath],queryFn:({signal})=>request(tenant,targetPath,{signal}),retry:false,refetchInterval:useInboxInterval(),refetchIntervalInBackground:false});
   const teams=useQuery({queryKey:[tenant,`/api/v1/records/${r.id}/assignment-teams`],queryFn:({signal})=>request(tenant,`/api/v1/records/${r.id}/assignment-teams`,{signal}),retry:false});
-  const history=useQuery({queryKey:[tenant,`/api/v1/records/${r.id}/ownership-history`],queryFn:({signal})=>request(tenant,`/api/v1/records/${r.id}/ownership-history`,{signal}),retry:false,refetchInterval:5000});
+  const history=useQuery({queryKey:[tenant,`/api/v1/records/${r.id}/ownership-history`],queryFn:({signal})=>request(tenant,`/api/v1/records/${r.id}/ownership-history`,{signal}),retry:false,refetchInterval:useInboxInterval(),refetchIntervalInBackground:false});
   const stale=version!==r.version,canAssign=r.allowed_actions?.includes('assign'),canTakeover=r.allowed_actions?.includes('takeover');
   async function submit(input:Pending){setPending(input);setNotice('');const result=await command.run(input.path,input.body,'POST',input.version);if(result){setPending(null);setVersion(result.data.version);setSelected(result.data.owner_principal_id??'');setNotice('Đã cập nhật phân công.');}else if(command.failure.current?.status&&command.failure.current.status<500)setPending(null);reload();}
   const blocked=command.busy||!!pending||stale||targets.isPending||!!targets.error;

@@ -1,5 +1,13 @@
 # Native Identity và chuyển đổi schema
 
+SRC-099/100 completed scoped native Human dispatch authority and [four Identity ledger tables](../data/identity-dispatch-ledger.md). Real MySQL grant/consume/revoke/replay plus injected Chat proof, no HTTP/AI/physical Identity extraction. Actual test32→37 prerequisite then37→38 preserves prior rows; main DB unchanged. Next PLAN-007C gate is Chat native claim/registry/intent storage; AI delegation and independent policy mapping also remain open.
+
+SRC-098/PLAN-007C3 implements [Connector attempt lifecycle](../data/connector-attempt-ledger.md) at test schema5 without moving Identity/Chat data. Next PLAN-007C work is exact Identity grant/consume/revoke tables and native authorization integration; no remote authority inferred from Connector receipts or test callbacks.
+
+SRC-097/PLAN-007C2 implements [Connector preparation/cancellation guards](../data/connector-preparation-ledger.md) after payload storage. Native test schema3→4 preserves populated payloads/receipts and backfills exact bindings. Other PLAN-007C ledgers and full PLAN-007B legacy migration/cutover remain pending; this slice never reads Identity from Connector runtime SQL.
+
+PLAN-007C / CHG-20261018-10: after PLAN-006H/SRC-095, prepare scoped dispatch/exchange/control ledger templates and own-schema migration/grant/recovery tests for isolated adapters. [Ledger inventory](../development/chat-control.md). SRC-096/PLAN-007C1 implements only [Connector payload/request storage](../data/connector-payload-ledger.md); other ledgers remain pending. No transfer of legacy Identity/Chat/CRM data; broad PLAN-007B still depends on full PLAN-006 feature/migration readiness.
+
 PLAN-007 / ADR-021. User-authorized2026-10-07; [guideline](../data/database-guidelines.md), [schema catalog](../data/schema-catalog.md), [native auth](../contracts/native-auth.md). PLAN-007 đóng thiết kế chuẩn và nghiên cứu; không đóng implementation của auth/schema extraction.
 
 ## Phạm vi đã quyết định

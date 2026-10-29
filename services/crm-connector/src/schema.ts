@@ -1,5 +1,9 @@
 import type { Pool } from 'mysql2/promise';
 import { messengerStatements } from './messenger-schema.js';
+import { payloadStatements } from './payload-schema.js';
+import { preparationStatements } from './preparation-schema.js';
+import { attemptStatements } from './attempt-schema.js';
+import {connectionStatusStatements} from './connection-status-schema.js';
 import { hash } from './validation.js';
 export const statements = [
  `CREATE TABLE connector_connection (
@@ -28,7 +32,7 @@ export const statements = [
  FOREIGN KEY(tenant_id,connection_id) REFERENCES connector_connection(tenant_id,id)) ENGINE=InnoDB`,
 ];
 export const checksum=hash(statements.join('\n'));
-export const migrations=[{version:1,name:'durable_ingress',checksum,statements},{version:2,name:'messenger_capture',checksum:hash(messengerStatements.join('\n')),statements:messengerStatements}];
+export const migrations=[{version:1,name:'durable_ingress',checksum,statements},{version:2,name:'messenger_capture',checksum:hash(messengerStatements.join('\n')),statements:messengerStatements},{version:3,name:'immutable_dispatch_payload',checksum:hash(payloadStatements.join('\n')),statements:payloadStatements},{version:4,name:'dispatch_preparation_guard',checksum:hash(preparationStatements.join('\n')),statements:preparationStatements},{version:5,name:'dispatch_attempt_lifecycle',checksum:hash(attemptStatements.join('\n')),statements:attemptStatements},{version:6,name:'connection_disable_receipts',checksum:hash(connectionStatusStatements.join('\n')),statements:connectionStatusStatements}];
 function validateJournal(rows:any[],complete:boolean){
  if(rows.length>migrations.length||(complete&&rows.length!==migrations.length))throw new Error('CONNECTOR_SCHEMA_MISMATCH');
  for(let i=0;i<rows.length;i++){const expected=migrations[i]!,r=rows[i];if(r.version!==expected.version||r.name!==expected.name||r.checksum!==expected.checksum||r.state!=='applied')throw new Error('CONNECTOR_SCHEMA_MISMATCH');}

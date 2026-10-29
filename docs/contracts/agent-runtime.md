@@ -1,5 +1,8 @@
 # Agent Runtime adapter contract
 
+ADR-027: one Workflow service owns business automation. CHG-20261021-08 removes legacy Chatflow code, routes and data; historical identifiers in evidence are not supported runtime APIs. Current removal scope is documented in the retirement contract.
+
+
 > Microservices target ADR-017 dùng [cross-service rules](service-boundaries.md). APIs/UoW trong tài liệu này là baseline implementation hiện tại; exact remote contracts và sagas cần PLAN-006 trước extraction.
 Status: Ready for implementation — mock M2; provider adapter production Draft M3.
 
@@ -79,4 +82,4 @@ PLAN-003: [provider matrix](../references/meta/capability-matrix.md) xác nhận
 
 ## Agent Assist mode — UX-005 design boundary
 
-Assist is a configured AI agent with skill/instruction and bounded read/tool permissions. It proposes structured classifications/Next actions only; it cannot directly mutate CRM/Conversation or send public replies. Workflow/Chatflow consumes the proposal and invokes a separately authorized Conversation suggestion-update action with its service actor. Fixed rules can invoke the identical action without AI. Assist is not implicitly the Conversation owner. Existing M2 owner-bound execution and allowlist remain unchanged until PLAN-008 defines the separate mode/contract; this section does not enable tools or an endpoint. [Product scope](../ux/agent-assist-response.md).
+Assist is a configured AI agent with skill/instruction and bounded read/tool permissions. It proposes structured classifications/Next actions only; it cannot directly mutate CRM/Conversation or send public replies. Workflow consumes the proposal and invokes a separately authorized Conversation suggestion-update action with its service actor. Fixed rules can invoke the identical action without AI. Assist is not implicitly the Conversation owner. Existing M2 owner-bound execution and allowlist remain unchanged until PLAN-008 defines the separate mode/contract; this section does not enable tools or an endpoint. [Product scope](../ux/agent-assist-response.md).

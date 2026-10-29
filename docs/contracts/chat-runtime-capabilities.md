@@ -1,0 +1,11 @@
+# Chat runtime lineage and capability readiness
+
+CHG-20261022-02, SRC-109/T05 scoped Ready refinement of [T02](../architecture/chat-data-migration.md) and [owner protocol](chat-owner-v1.md). This is a read-only runtime check, not a migration runner or an activation instruction.
+
+Chat startup verifies its own complete journal: exactly the packaged versions1–4, explicit registered system tenant, matching migration names/checksums, applied state/timestamp and no error marker. Packaged SQL/checksum files are verified before comparison. Baseline migration20/21/22/43 and a copied baseline journal never establish Chat readiness. Runtime credentials only SELECT the journal and writer gate; runtime has no migration method. Unknown/newer/partial/tampered lineage fails closed until a compatible binary is reviewed.
+
+Capability readiness requires both mounted owner handlers and completed local backfill. workspace_read_v1 requires queue/sidebar/read-state/mark-read routes and complete Conversation workspace rows. workspace_catalog_v1 requires all inbox/options/share/tag/snippet routes and workspace_read_v1. activity_v1 additionally requires activity/snooze/wake routes, enabled rollout flags, and backfilled activity counters for all Conversations. owner_v1 requires assignment/takeover and close handlers. Schema presence alone advertises none. Internal capability watermark is the active writer epoch; it is not an event-delivery offset.
+
+Public workspace features are derived from these gates and mounted handlers. contact_channels_v1 remains false until its authorized owner composition exists. Current candidate lacks queue/sidebar/activity handlers, so it cannot advertise these features as ready merely because catalog/state tests pass. Fresh Human Identity admission applies to both capability reads; an active current Chat writer epoch remains required. No user policy object crosses the boundary.
+
+Required evidence: retained native own journal accepted; baseline/extra/missing/failed/checksum/system-tenant drift rejected; missing handler/backfill/rollout flag never returns ready; writer epoch/current actor/tenant checks; runtime schema/gate mutation denied. No main mount or D3 delivery gate is completed by this readiness component alone.

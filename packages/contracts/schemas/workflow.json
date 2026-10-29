@@ -119,106 +119,6 @@
                     "pattern": "^[a-z][a-z0-9_]{0,47}$"
                   },
                   "type": {
-                    "const": "start_chatflow"
-                  },
-                  "config": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "conversation_id": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          {
-                            "type": "object",
-                            "additionalProperties": false,
-                            "properties": {
-                              "ref": {
-                                "type": "string",
-                                "pattern": "^(trigger\\.(aggregate_id|conversation_id|thread_id|session_id|need_id|assessment_version|contact_id|connection_id)|outputs\\.[a-z][a-z0-9_]{0,47}\\.[a-z_]+)$"
-                              }
-                            },
-                            "required": [
-                              "ref"
-                            ]
-                          }
-                        ]
-                      },
-                      "chatflow_version_id": {
-                        "type": "string",
-                        "format": "uuid"
-                      },
-                      "thread_id": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          {
-                            "type": "object",
-                            "additionalProperties": false,
-                            "properties": {
-                              "ref": {
-                                "type": "string",
-                                "pattern": "^(trigger\\.(aggregate_id|conversation_id|thread_id|session_id|need_id|assessment_version|contact_id|connection_id)|outputs\\.[a-z][a-z0-9_]{0,47}\\.[a-z_]+)$"
-                              }
-                            },
-                            "required": [
-                              "ref"
-                            ]
-                          }
-                        ]
-                      }
-                    },
-                    "required": [
-                      "chatflow_version_id"
-                    ],
-                    "oneOf": [
-                      {
-                        "required": [
-                          "conversation_id"
-                        ],
-                        "not": {
-                          "required": [
-                            "thread_id"
-                          ]
-                        }
-                      },
-                      {
-                        "required": [
-                          "thread_id"
-                        ],
-                        "not": {
-                          "required": [
-                            "conversation_id"
-                          ]
-                        }
-                      }
-                    ]
-                  },
-                  "next": {
-                    "type": "string",
-                    "pattern": "^[a-z][a-z0-9_]{0,47}$"
-                  }
-                },
-                "required": [
-                  "key",
-                  "type",
-                  "config",
-                  "next"
-                ]
-              },
-              {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "key": {
-                    "type": "string",
-                    "pattern": "^[a-z][a-z0-9_]{0,47}$"
-                  },
-                  "type": {
                     "const": "request_lead_handoff"
                   },
                   "config": {
@@ -285,7 +185,6 @@
                     "properties": {
                       "event_type": {
                         "enum": [
-                          "chatflow.completed",
                           "lead.accepted"
                         ]
                       },
@@ -1123,7 +1022,75 @@
                 ]
               },
               "graph": {
-                "$ref": "#/definitions/workflow-graph"
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "trigger": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "event_type": {
+                        "enum": [
+                          "conversation.created",
+                          "need.assessed"
+                        ]
+                      },
+                      "connection_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      }
+                    },
+                    "required": [
+                      "event_type",
+                      "connection_id"
+                    ]
+                  },
+                  "entry_node": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]{0,47}$"
+                  },
+                  "nodes": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 50,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "key",
+                        "type",
+                        "config"
+                      ],
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "maxLength": 48
+                        },
+                        "type": {
+                          "type": "string",
+                          "maxLength": 48
+                        },
+                        "config": {
+                          "type": "object"
+                        },
+                        "next": {
+                          "type": "string",
+                          "maxLength": 48
+                        },
+                        "on_timeout": {
+                          "type": "string",
+                          "maxLength": 48
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "trigger",
+                  "entry_node",
+                  "nodes"
+                ],
+                "description": "Read-only immutable version history, including retired node types. Authoring and execution still require workflow-graph."
               },
               "execution_role_id": {
                 "type": "string",
@@ -1448,39 +1415,12 @@
                   "provider"
                 ]
               }
-            },
-            "chatflows": {
-              "type": "array",
-              "maxItems": 200,
-              "items": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "id": {
-                    "type": "string",
-                    "format": "uuid"
-                  },
-                  "name": {
-                    "type": "string"
-                  },
-                  "number": {
-                    "type": "integer",
-                    "minimum": 1
-                  }
-                },
-                "required": [
-                  "id",
-                  "name",
-                  "number"
-                ]
-              }
             }
           },
           "required": [
             "actors",
             "teams",
-            "connections",
-            "chatflows"
+            "connections"
           ]
         },
         "meta": {

@@ -1,0 +1,4 @@
+import type { TransactionScope } from '../../kernel/tenancy/unit-of-work.js';
+export async function ownershipHistory(s:TransactionScope,id:string){return (await s.query('SELECT from_owner_id,to_owner_id,from_team_id,to_team_id,owner_revision,reason,actor_kind,actor_id FROM ownership_history WHERE tenant_id=? AND record_id=? ORDER BY owner_revision DESC LIMIT 100',[s.context.tenantId,id])).map((r:any)=>({...r,owner_revision:String(r.owner_revision)}));}
+
+export async function ownedRecords(s:TransactionScope,principal:string){return (await s.query("SELECT r.id FROM crm_record r JOIN object_type o ON o.tenant_id=r.tenant_id AND o.id=r.object_type_id WHERE r.tenant_id=? AND r.owner_principal_id=? AND r.archived_at IS NULL AND o.`key`<>'conversation' ORDER BY r.id FOR UPDATE",[s.context.tenantId,principal])).map((r:any)=>r.id as string);}

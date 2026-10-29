@@ -29,7 +29,7 @@ Không thể suy schema nội bộ của sản phẩm khác từ UI/documentatio
 
 ### P1 — Referral marketing đang thay đổi vòng đời xử lý chat
 
-Evidence: [receive](../../apps/backend/src/modules/conversation/domain.ts), nhánh input.referral gọi cancelQueued/cancelAgentExecutions/stopSessions; [acquisition storage](../../apps/backend/src/modules/conversation/acquisition-storage.ts) đóng phiên active và mở phiên mới. Đây là hành vi đúng contract SRC-053, nhưng có rủi ro nghiệp vụ.
+Evidence lịch sử SRC-053: domain.receive/acquisition-storage trong monolith từng đóng phiên active khi referral đổi. Source đó đã được gỡ ở T09; [quy tắc identity hiện hành](../contracts/conversation-identity.md) và [Chat ingress](../../services/chat/src/ingress-message.ts) giữ phiên đang mở. Finding này mô tả trạng thái tại ngày review, không phải hành vi hiện tại.
 
 Case: agent/bot đang hỏi thông tin để chốt nhu cầu A, khách bấm quảng cáo B rồi gửi tiếp số điện thoại. Chưa có bằng chứng họ bỏ A, nhưng hệ thống cắt orchestration/reply cũ. Referral mới là evidence về tương tác, không đủ chứng minh một nhu cầu hoặc phiên phục vụ mới.
 
@@ -37,7 +37,7 @@ Case: agent/bot đang hỏi thông tin để chốt nhu cầu A, khách bấm qu
 
 ### P1 — Attribution và mẫu số conversion phụ thuộc thao tác đóng chat
 
-Evidence: organic inbound dùng phiên active; không có timeout; [Lead source port](../../apps/backend/src/modules/conversation/lead-source-port.ts) pin nguồn phiên được chọn. Ví dụ S1 bắt đầu từ Ad A; một tuần sau khách tự quay lại, agent chưa close thì Lead mới vẫn lấy A. Nếu agent đã close, inbound không referral tạo organic session. Cùng hành vi khách hàng có thể ra nguồn/mẫu số khác chỉ vì vận hành Inbox.
+Evidence: organic inbound dùng phiên active; không có timeout; [session source contract](../contracts/chat-session-source.md) pin nguồn phiên được chọn. Ví dụ S1 bắt đầu từ Ad A; một tuần sau khách tự quay lại, agent chưa close thì Lead mới vẫn lấy A. Nếu agent đã close, inbound không referral tạo organic session. Cùng hành vi khách hàng có thể ra nguồn/mẫu số khác chỉ vì vận hành Inbox.
 
 Session conversion vẫn là metric hợp lệ nếu gọi đúng là conversion của phiên theo policy acquisition_v1. Nó không tự chứng minh conversion của ad click, nhu cầu, khách mới hoặc nguyên nhân doanh thu. Một khách bấm lại cùng Ad nhiều lần cũng tăng số session dù chỉ có một nhu cầu.
 
@@ -45,7 +45,7 @@ Session conversion vẫn là metric hợp lệ nếu gọi đúng là conversion
 
 ### P1 — Origin chưa đủ cho một Deal đi qua nhiều cuộc trao đổi
 
-Evidence: Lead chỉ pin một conversation/session, Deal sao chép snapshot Lead trong [deal domain](../../apps/backend/src/modules/sales/deals.ts). Generic [associations](../../apps/backend/src/modules/crm/platform.ts) đã có; không đúng nếu nói hệ thống hoàn toàn thiếu N:N. Tuy nhiên chưa có contract sales-context chuyên biệt cho session/message evidence ↔ Lead/Deal, vai trò liên kết, ambiguity và UI chọn cơ hội đang xử lý.
+Evidence: Lead chỉ pin một conversation/session, Deal sao chép snapshot Lead trong [deal domain](../../services/core-baseline/src/modules/sales/deals.ts). Generic [associations](../../services/core-baseline/src/modules/crm/platform.ts) đã có; không đúng nếu nói hệ thống hoàn toàn thiếu N:N. Tuy nhiên chưa có contract sales-context chuyên biệt cho session/message evidence ↔ Lead/Deal, vai trò liên kết, ambiguity và UI chọn cơ hội đang xử lý.
 
 Case: L1/D1 sinh từ Ad A; khách quay lại qua Ad B, chat tiếp trên Page khác hoặc điện thoại để chốt chính D1. Origin A hợp lệ để trả lời nguồn ban đầu; B không được thể hiện như một tương tác giúp chốt trong đường origin hiện tại. Tạo L2/D2 chỉ để giữ B sẽ nhân bản cơ hội và có thể nhân tiền.
 
@@ -71,7 +71,7 @@ Không có referral chỉ có nghĩa không quan sát thấy referral, không đ
 
 ### P2 — Thread dài hạn nhưng automation chỉ bắt lần tạo thread
 
-[Workflow engine](../../apps/backend/src/modules/workflow/engine.ts) starter hiện bắt conversation.created; [SRC-053 evidence](../tracking/details/SRC-053.md) đã ghi auto-start ở session tiếp theo nằm ngoài scope. Khách quay lại cùng thread không tự chạy lại flow khởi đầu theo trigger này. Cần separate opened/reopened/referral/enrollment semantics và re-entry policy, không emit giả conversation.created.
+[Workflow engine](../../services/core-baseline/src/modules/workflow/engine.ts) starter hiện bắt conversation.created; [SRC-053 evidence](../tracking/details/SRC-053.md) đã ghi auto-start ở session tiếp theo nằm ngoài scope. Khách quay lại cùng thread không tự chạy lại flow khởi đầu theo trigger này. Cần separate opened/reopened/referral/enrollment semantics và re-entry policy, không emit giả conversation.created.
 
 ## Phương án đề xuất để review tiếp
 

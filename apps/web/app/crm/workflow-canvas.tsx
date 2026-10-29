@@ -4,7 +4,7 @@ import {Background,Controls,Handle,MarkerType,MiniMap,Position,ReactFlow,ReactFl
 import {addCanvasNode,autoLayout,connectGraph,ports,readPositions,triggerId,type Port,type Positions} from './workflow-canvas-model';
 import {insertNode,workflowLabels,type WorkflowGraph,type WorkflowNode,type WorkflowType} from './workflow-model';
 import '@xyflow/react/dist/style.css';
-const icons:Record<WorkflowType,string>={read_need:'≡',recover_need:'↻',assign_owner:'↗',start_chatflow:'◉',wait_event:'◷',condition:'◇',request_lead_handoff:'⇢',wait_timer:'◴',end:'■'};
+const icons:Record<WorkflowType,string>={read_need:'≡',recover_need:'↻',assign_owner:'↗',wait_event:'◷',condition:'◇',request_lead_handoff:'⇢',wait_timer:'◴',end:'■'};
 type CardData={node?:WorkflowNode;entry?:boolean;trigger?:string;select:()=>void};
 function CanvasCard({data,selected}:NodeProps<Node<CardData>>){
  const n=data.node,outputs=n?ports(n):[{id:'entry',label:'Bắt đầu',target:''}];

@@ -1,5 +1,7 @@
 # Baseline triển khai — modular monolith
 
+Historical through SRC-027 only. Current native Identity, independent Reporting and remaining monolith boundaries are shown in the [2026-10-18 deployment audit](deployment-topology.md). OIDC in the historical diagram below is superseded by SRC-038 native MySQL auth.
+
 Status: Current source baseline through SRC-027; retained as migration reference. Target architecture superseded by [ADR-017 / microservices](architecture.md).
 
 ## Cấu trúc triển khai

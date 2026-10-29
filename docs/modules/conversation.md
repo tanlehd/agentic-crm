@@ -1,12 +1,15 @@
 # MOD-04 — Conversation & Chat Workspace
 
+ADR-027: business orchestration belongs to [Workflow](../services/workflow.md). Chatflow/session terminology in baseline source notes below denotes [legacy compatibility](../contracts/legacy-chatflow.md), not an independent module/service to extend. The owning domain retains its own data, command validation and current authorization.
+
+
 SRC-083 scope2026-10-17: [Custom Inbox builder](../contracts/custom-inbox-builder.md) exposes saved-query authoring/preview/lifecycle/share on existing Chat storage, with minimal authorized Identity options. Counts and membership evaluate under viewer rights; no routing/owner mutation. [Runtime evidence](../tracking/details/SRC-083.md); full SRC-036/037 remain separate.
 
 **Implemented additive slice SRC-078 / 2026-10-16:** [Thread / Conversation exact contract](../contracts/thread-conversation-implementation.md), PLAN-033A DONE. Thread legacy IDs/API remain stable; Conversation episode has optional custom fields and stage, event-time ownership/contributor history, and Related Lead/Deal actions with current permissions. Cross-team transfer preserves the episode; Ticket and connected Reporting remain gated. Physical forward31 stays in the baseline monolith; service extraction rules below remain unchanged.
 
 CHG-20261013-08 accepted [logical ERD](../data/chat-sales-erd.md): session is one inbox episode, new Ad during open session adds evidence without split/reset/cancellation solely due to referral. Configurable process version/current stage, transition history and evidence-backed milestone history are independent of open/closed processing status and Sales outcomes. SRC-068 implements the session/source/context subset through the exact Customer360 contract; stage/milestone configuration remains a separate design gate.
 
-> Kiến trúc đích microservice theo ADR-017: [Chat / Conversation Server](../services/chat.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.
+> Kiến trúc microservice theo ADR-017: [Chat / Conversation Server](../services/chat.md). Independent Chat API/worker và database đã nghiệm thu candidate T08; main cutover thuộc T09. UoW chỉ trong owning service; không áp dụng transaction/FK xuyên service.
 Status: Ready for implementation text inbox M2. Requirements: REQ-05, REQ-06, REQ-09.
 
 ## Mục tiêu và phạm vi
@@ -19,7 +22,7 @@ Chat agent có chat seat + conversation permissions; AI cần capability convers
 
 ## Use case và state machine
 
-Conversation `open ↔ pending`, `open/pending → closed`. Inbound khi pending đưa về open trong transaction message; closed không reopen, tin mới tạo Conversation mới trên identity. Close dừng chatflow/AI pending và cancel queued outbound.
+Conversation là thread lâu dài trên identity; session là một đợt xử lý. Conversation `open ↔ pending`, `open/pending → closed`. Inbound mới khi pending đưa về open; tin sau thời điểm đóng reopen cùng Conversation và tạo session kế tiếp. Tin cũ đến trễ không reopen hay sửa nguồn của session đã đóng. Close tăng control revision, ghi event/terminal proof và cancel queued outbound; consumer ngoài Chat chịu trách nhiệm reconcile execution của mình.
 
 Message outbound `queued → sending → sent|failed|unknown`; queued → cancelled khi handoff/close. Inbound bắt đầu received. Failed pre-dispatch có thể retry cùng intent; unknown phải reconcile. Timeline xếp received_at/id ổn định, lưu source occurred_at để giải thích tin trễ.
 

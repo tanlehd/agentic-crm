@@ -3,7 +3,7 @@ import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {parseEnv} from 'node:util';
 import {randomUUID} from 'node:crypto';
 import {chromium,expect} from '@playwright/test';
-import {fixtureId} from '../apps/backend/dist/modules/identity/seed.js';
+import {fixtureId} from '../services/core-baseline/dist/modules/identity/seed.js';
 const env=parseEnv(await readFile('.env','utf8'));assert.equal(env.APP_ENV,'development');assert.equal(env.APP_ORIGIN,'http://localhost:18080');
 const origin=env.APP_ORIGIN,tenant=fixtureId('clinic_alpha'),key='nocode_service_request_demo',label='Yêu cầu dịch vụ DEMO',menu='Yêu cầu dịch vụ',relation='nocode_request_contact_demo';
 const browser=await chromium.launch({channel:'chrome',headless:true}),page=await browser.newPage({viewport:{width:1440,height:1050}}),checks=[],errors=[];

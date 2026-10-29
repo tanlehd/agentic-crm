@@ -1,55 +1,34 @@
 # Operations & Audit
 
-ENV-003 developer tooling: [local service manager](../development/service-manager.md) observes/controls local processes and Compose infrastructure. It is independent of this target production service and does not implement tenant Operations APIs, central audit or remote Linux supervision.
+Operational tooling có trong baseline; independent aggregate service là target, không có quyền SQL toàn hệ thống.
 
-Status: Target architecture accepted direction — PLAN-005 / ADR-017. Service extraction/API/physical schema chưa Ready; không đồng nghĩa deployed. [Module hiện tại](../modules/operations.md) · [Catalog](README.md) · [Cross-service rules](../contracts/service-boundaries.md).
+## Trách nhiệm và dữ liệu sở hữu
 
-## Phạm vi và trách nhiệm
+Sanitized audit/status projections, incident/attention, replay request và source receipts; authoritative audit vẫn thuộc service phát sinh.
 
-Cross-service operational views, audit aggregation, DLQ/replay requests, incident traces và health dashboards.
+Hiển thị health/backlog/trace/operation state; nhận yêu cầu replay/repair và chuyển tới đúng owner theo quyền hiện hành.
 
-Ngoài phạm vi: Không sửa business tables hoặc bypass service authorization khi retry/repair.
+Schema đích: `crm_operations`, theo [schema catalog](../data/schema-catalog.md). Physical baseline/candidate được ghi trong contract và migration tương ứng.
 
-## Kiến trúc bên trong
+## Ngoài phạm vi
 
-Deploy unit đề xuất `services/operations` gồm NestJS API và worker entrypoints theo workload. Cấu trúc `domain`, `application`, `ports`, `adapters/http`, `adapters/events`, `adapters/persistence`, `migrations`, `tests`, `docs`. Domain không import database entity hoặc implementation của service khác. API/worker chỉ truy cập MySQL database và credentials riêng của service; module kernel dùng schema-local outbox/inbox/receipt/audit. Tham chiếu remote là ID có tenant/service/type, không cross-database foreign key. Đây là source layout đích, chưa tạo directory source rỗng.
+Không sửa business tables, không cấp quyền bypass, không tự tạo lại command để gửi tin lần hai.
 
-## Data model nội bộ và nguồn chuẩn
+## Giao tiếp với service khác
 
-Tên entities dưới đây là logical target model, không phải danh sách bảng đã migrate. Physical schema/DDL mỗi service phải chốt tại extraction task. Mọi application table có tenant_id NOT NULL theo [DB guideline](../data/database-guidelines.md); version/timestamps/retention theo loại entity. UUID opaque được giữ khi chuyển từ monolith.
+| Bên liên quan | Hợp đồng trách nhiệm |
+|---|---|
+| Mọi producer | Nhận minimized audit/operation events và watermark. |
+| Owning service | Gửi replay/status request; owner reauthorize và dedup. |
+| Identity | Kiểm quyền operator, tách tenant operator khỏi platform infrastructure role. |
 
-| Entity / aggregate | Fields chính / quan hệ | Invariant / authority |
-|---|---|---|
-| audit_projection / service_checkpoint | tenant_id,event_id,service,actor ref,action,resource ref,result,trace,time | Authoritative audit appended locally at source; aggregator dedup, immutable retention |
-| incident / replay_request | source service/operation/event refs,reason,requester,status,receipt | Replay command routed to source owner with policy, no direct queue payload edit |
-| operational_projection | sanitized execution/delivery status,attempts,age,error code,watermark | No message body/secret/raw payload by default |
+## Quy tắc riêng
 
-Mỗi service có local `outbox_event`, `consumer_inbox`, `idempotency_receipt`, `audit_entry` khi phát sinh mutation; key tenant+consumer+event hoặc tenant+actor+command+idempotency. Không dùng một bảng chung có multi-service writers. Local FK tenant-bound, cross-service reference được validate bằng API hoặc reconciled projection theo policy.
+Central outage không làm mất source audit đã ghi atomic. Logs/projections không mặc định chứa transcript/secret. Infra access không tự cấp quyền nội dung khách hàng.
 
-## API, commands và events
+## Contract và evidence
 
-Consumes audit/operation events; ReadOperations, RequestReplay→owning service; source service reauthorizes/dedups. Metrics/traces pipeline separate from business event records.
+- [Operations module](../modules/operations.md)
+- [Service boundaries](../contracts/service-boundaries.md)
 
-Các tên interface/event ở đây là logical proposals, chưa endpoint/schema được triển khai. Exact OpenAPI/JSON Schema, auth scopes, errors, versions, payload minimization và consumer contract tests thuộc PLAN-006 gate; legacy wire types giữ nguyên tới compatibility cutover. Không dùng DTO chung để import domain/service implementation.
-
-## Consistency, authorization và failure handling
-
-Audit write local cùng mutation; central outage không mất audit nhờ outbox. Tenant operators chỉ tenant data; platform infra role không ngầm được đọc nội dung khách.
-
-Transaction chỉ local state+audit+outbox/inbox. Network call không giữ SQL transaction; remote action phải có operation key/status/reconciliation. Trace propagation không thay tenant authorization. Read/write luôn kiểm tenant và current rights; owner/grant projections không đủ làm authority cho side effect.
-
-## Vận hành và scale
-
-Independent retention/search capacity; alert queue age, DLQ, authorization failures, saga stuck. Replay rate limited and audited; do not poison active workflows with incompatible old events.
-
-Owner vận hành là team sở hữu service (chưa gán người cụ thể). Bắt buộc readiness dependency-aware, liveness process-only, metrics latency/error/saturation/backlog, redacted tracing, restore drill và graceful shutdown leases. SLO/RPO/RTO và alert thresholds phải được chốt/test theo deployment gate; chưa có số liệu production để claim đạt.
-
-## Source mapping và lộ trình tách
-
-Hiện Operations đọc qua monolith application services; migrate to projections/authorized status APIs. Historical audit partition mapping needs tenant+origin service IDs.
-
-Rollback/cutover tuân [migration plan](../planning/microservices-migration.md): single writer, shadow read/hash reconciliation, durable event watermark; không dual-write thủ công, không sửa migrations1–18. Source implementation hiện hữu chỉ được nói DONE theo [tracker](../tracking/tasks.md).
-
-## Acceptance trước service Ready
-
-Own DB credentials không đọc được DB khác; API/consumer schemas và tenant ACL negative tests; duplicate/out-of-order/lost ACK; crash sau remote effect; permission/owner revoked; broker/downstream outage; poison event/DLQ replay; migrate/restore và compatibility với client/run phiên bản cũ. Thêm domain cases ở module hiện hữu; với Draft module phải chốt domain AC trước code. Chưa test service phân tán, tất cả gates này NOT_RUN.
+Evidence: Theo module Operations và runtime runbooks; independent aggregation còn target. Trạng thái chuẩn ở [task tracker](../tracking/tasks.md); triển khai hiện tại ở [topology](../system/deployment-topology.md). Áp dụng [ranh giới chung](README.md#ranh-giới-chung); không suy feature hoặc migration mới từ tên entity trong catalog.

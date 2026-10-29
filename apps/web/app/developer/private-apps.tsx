@@ -18,8 +18,9 @@ export function AppManager(){
   if(!signedIn)return <div className="dev-empty"><h3>Đăng nhập để quản lý ứng dụng</h3><p>Tài liệu API luôn có sẵn. App management cần phiên native của tenant admin.</p><a className="dev-primary" href="/login?return_to=%2Fdeveloper">Đăng nhập CRM</a></div>;
   return <><label className="dev-field">Workspace<select aria-label="Developer workspace" value={tenant} onChange={e=>setTenant(e.target.value)}><option value="">Chọn tenant…</option>{members.map(m=><option key={m.id} value={m.tenant_id}>{m.tenant_name}</option>)}</select></label>{tenant?<TenantApps key={tenant} tenant={tenant}/>:<p>Chọn tenant để xem app và danh sách scope khả dụng.</p>}</>;
 }
-function TenantApps({tenant}:{tenant:string}){
+export function TenantApps({tenant,onDirty}:{tenant:string;onDirty?:(value:boolean)=>void}){
   const [apps,setApps]=useState<App[]>([]),[catalog,setCatalog]=useState<Catalog[]>([]),[teams,setTeams]=useState<{id:string;name:string}[]>([]),[loading,setLoading]=useState(true),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState(''),[secret,setSecret]=useState(''),[days,setDays]=useState(90),[editing,setEditing]=useState<App|null>(null),[draft,setDraft]=useState<{id:string;name:string;description:string;grants:Grant[]}|null>(null);
+  useEffect(()=>{onDirty?.(!!draft||busy);},[draft,busy,onDirty]);
   const alive=useRef(true);useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
   async function load(){setLoading(true);try{const [a,c]=await Promise.all([call(tenant,''),call(tenant,'/catalog')]);if(alive.current){setApps(a.data);setCatalog(c.data);setTeams(c.teams);setError('');}}catch(e){if(alive.current)setError((e as Error).message);}finally{if(alive.current)setLoading(false);}}
   useEffect(()=>{void load();},[tenant]);

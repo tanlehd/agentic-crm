@@ -22,7 +22,7 @@ Windows PowerShell, Node24.21.0; prepend `.local/node-v24.21.0-win-x64` vào PAT
 
 ```powershell
 node node_modules/typescript/bin/tsc -p packages/contracts/tsconfig.json
-node node_modules/typescript/bin/tsc -p apps/backend/tsconfig.json
+node node_modules/typescript/bin/tsc -p services/core-baseline/tsconfig.json
 node node_modules/typescript/bin/tsc -p apps/web/tsconfig.json --noEmit
 node node_modules/vitest/vitest.mjs run --exclude '**/*.integration.test.ts'
 node scripts/generate-object-platform-contracts.mjs --check
@@ -40,4 +40,4 @@ Native test dùng retained `native_identity_test`, `.local/native-auth-test.env`
 
 Reporting hiện chưa có connected datasource cho object mới; Workflow có canonical catalog nhưng chưa có custom-object trigger/runtime. UI công bố rõ hai trạng thái này. PLAN-028B/SRC-075 và PLAN-028C/SRC-076 giữ dependency SRC-059 và distributed runtime gates. Không chuyển mock reports sang dữ liệu thật ngầm định.
 
-Lifecycle/deprecation/archive definition, unlink, reverse-label editing, dependency impact/index/backfill còn PLAN-028E. Standard custom values chỉ hỗ trợ Contact/Company/Activity/Lead; Deal/Conversation/Ticket hiển thị giới hạn và từ chối write. Required/index/type changes giữ rejection guards M1. Saved view apply trong Records vẫn yêu cầu schema.read; mở cho ordinary agents cần read contract riêng. Related list hiện hiển thị endpoint IDs; chưa có enriched related-record navigation. Full OP-01…19/release/capacity chưa hoàn tất.
+Unlink, reverse-label editing và compatibility/index/backfill theo thao tác cụ thể còn PLAN-028E; không yêu cầu lifecycle deprecation/archive mặc định. Standard custom values chỉ hỗ trợ Contact/Company/Activity/Lead; Deal/Conversation/Ticket hiển thị giới hạn và từ chối write. Required/index/type changes giữ rejection guards M1. Saved view apply trong Records vẫn yêu cầu schema.read; mở cho ordinary agents cần read contract riêng. Related list hiện hiển thị endpoint IDs; chưa có enriched related-record navigation. Full OP-01…19/release/capacity chưa hoàn tất.

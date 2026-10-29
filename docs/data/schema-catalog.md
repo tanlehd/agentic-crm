@@ -1,5 +1,53 @@
 # Schema catalog — nơi đặt bảng mới
 
+Current T09 placement (2026-10-27): main baseline agentic_crm46 and Chat crm_chat4, active epoch2. Final fenced source43 copy6,053rows/59tables and owner bootstrap367rows reconciled; main scoped grants and same-DB recovery accepted. Baseline retained Chat copies are historical and inaccessible to runtime. [Runbook/evidence](../development/chat-main-local-runtime.md). Earlier dated rehearsal entries below retain their original scope.
+
+T09 CHG-20261026-02: retained test_t09_chat_import rehearses the existing59-table Chat001/002 dictionary against authenticated main43 diagnostic data (no new model, no source mutation).6,053rows reconcile after committed-chunk interruption and replay; no test reset. At that rehearsal, main destination crm_chat was untouched; current main placement is recorded above. Baseline forward46 only expands the four Identity workload service CHECKs per the [existing filled template delta](identity-workload-registry.md); applied on retained test_t09_baseline, preserving rows and journals1–45. Main46 was NOT_RUN at that rehearsal; final T09 applied/verified46. Failed first CHECK-rendering assertion and successful normalized/no-op rerun are retained in T09 evidence.
+
+CHG-20261023-10 verified candidate: [Connector connection barrier](connector-connection-barrier.md), additive forward6 applied only to retained native_connector_test, old data/journal hashes preserved. Native17/outbound12groups PASS; main Connector5/Chat4 unchanged. Preserves in-flight/unknown attempts; no receipt purge.
+
+CHG-20261023-07 candidate only: reviewed sales_owner_command installed in retained native_identity_test for [Human need outcome saga](../contracts/chat-need-outcome-candidate.md). Exact DDL/installed hashes pinned, existing sales_need_outcome rows preserved; no historical migration, main schema or Chat schema change. Native acceptance in progress.
+
+T05 CHG-20261023-01: [CRM note candidate storage](chat-note-candidate.md) applied only in retained native_identity_test: reviewed crm_owner_command plus exact activity_ibfk_1 detachment, preserving Activity rows and the own-registry FK. Private checksum stamp guards repeated use. Read8/write10 native groups PASS; additional recovery acceptance13groups PASS including real CRM outage and native account barrier recovery. Main43/Chat4 journals and applied migrations unchanged; no CRM or Chat main extraction claim.
+
+CHG-20261021-08: [Chatflow retirement](chatflow-retirement.md), baseline schema43 and Chat candidate schema4. Five tables and obsolete Lead/outbound references removed; owning business data preserved. Frozen T03 snapshots and historical migration checksums remain unchanged.
+
+T05 CHG-20261021-02: [channel_ingress_touchpoint](channel-ingress-touchpoint.md), owner Channels/CRM Connector, target crm_connector with retained native_identity_test candidate mapping. Additive evidence/terminal ledger; no main/legacy/Chat migration edit.
+
+T05 CHG-20261020-02: [filled ingress templates](chat-ingress-storage.md) add four Chat-owned tables in forward003: contact mutex, inbox, delivery alias and operation-scoped request ledger. Applied only to retained test_crm_chat_owner (63tables, journal3);001–002/frozen T03/main42 unchanged. Local composite FKs and tenant checks; append-only aliases/requests have SELECT/INSERT only. [Native candidate/evidence](../development/chat-ingress-candidate.md).
+
+T05 CHG-20261020-01: [canonical references](../contracts/chat-ingress-references.md) provisions only the reviewed T02 connector_reference_gate/reservation pair plus local FK in retained native_identity_test. DDL checksum pinned at .local/chat-ownership/reference-schema.json; existing CRM pair reused. Dedicated CRM/Channels runtime credentials have own-table SELECT and own-reference-ledger DML only. No main42, Chat001–002 or historical migration changes; baseline test mapping does not extract Channels/CRM.
+
+T04 CHG-20261019-24: retained native_identity_test adds reviewed T02 crm_reference_gate/reservation and their tenant/resource composite FK for the [CRM metadata candidate](../development/crm-owner-candidate.md). Separate CRM runtime has metadata SELECT and its two ledgers' DML only. Fixture DDL/digest pinned; main42, T03 frozen stores and historical migrations unchanged. This baseline test mapping does not claim CRM service extraction.
+
+T04 Identity fixture CHG-20261019-05: retained `native_identity_test` adds exactly three already-reviewed T02 tables, identity_owner_admission/gate/barrier, for the [Human candidate](../development/identity-owner-candidate.md). Fixture DDL is extracted from immutable owner-additions-v1.sql and pinned in private fixture metadata. This is not baseline043 or main migration. Separate runtime grants exclude Chat/CRM/password/dispatch-grant SQL and DDL; tenant UPDATE(version) exists only for MySQL's required exclusive lock privilege. Existing native test tenants/rows remain; new reusable4101/4102 are shared logical IDs with the separate Chat test fixture.
+
+T04 retained native fixture CHG-20261019-04: `test_crm_chat_owner` contains the same reviewed59Chat tables/immutable001–002 lineage, with separate `chat_owner_test_operator` and restricted `chat_owner_test_runtime` credentials. It uses explicit reusable synthetic business tenants, never main/T03 source/destination/restore. No new table design. Committed ownership/concurrency tests retain rows; operator creates fixture records and writer gates, runtime has only existing Chat API table grants. T03 final candidates remain frozen evidence.
+
+T03 final retained candidate (CHG-20261019-02,2026-10-19): hardcoded `final` test profile reserves `test_chat_source_final` for identical synthetic baseline42 and `test_crm_chat_final`/`test_crm_chat_final_restore` for the same59reviewed Chat tables/001–002 lineage. Separate credentials and private artifact directory; original three rehearsal schemas remain unchanged. No new table design or historical DDL change; final native acceptance passed:59tables/43localFKs/journal2 and2,136rows in both Chat targets; D3-02 accepted.
+
+Historical first rehearsal, T03/SRC-1092026-10-18: `test_crm_chat` and `test_crm_chat_restore` contain the reviewed59Chat tables, own lineage `chat-owner-v1` journal2 and43localFKs; source is separate retained synthetic `test_chat_source`42. [Runbook and remaining acceptance](../development/chat-storage.md). Main unchanged; no new table design beyond T02; D3-02 not accepted. The five T02 SQL files remain design artifacts; immutable service-owned copies under `services/chat/migrations` are the executed inputs.
+
+T02/SRC-109: [physical target dictionary](chat-extraction-tables.md) and [migration manifest](chat-extraction/manifest-v1.json) complete D3-01 design1/6. Target crm_chat has59tables;58support additions belong to their existing owners with explicit baseline/private-schema mapping. No database provision/extraction occurred; runtime remains2/17.
+
+SRC-108 complete: [chat_outbound_job and remote intent status template](chat-outbound-job.md), owner Chat/crm_chat, current baseline. Forward42 applied native_identity_test and main agentic_crm preserving old data/journal. Identity enrollment uses its existing own delegation table; no Chat credential/session SQL or remote FK. [Evidence](../tracking/details/SRC-108.md).
+
+SRC-107: current Connector schema5 is now provisioned in the dedicated local project's `connector_local` database and serves mock ingress. Backend agentic_crm stays37; no table ownership move/new DDL definition. Old schema2 acceptance volume retained. [Delivery evidence](../tracking/details/SRC-107.md). Earlier test-only notes below are historical.
+
+SRC-104: [Workload registry templates](identity-workload-registry.md) assign identity_workload_service/certificate/event to system scope and identity_workload_admission to explicit business scope in crm_identity (baseline backend). Forward41 only in retained native_identity_test; no main cutover.
+
+SRC-103: [chat_result_request](chat-dispatch-result.md) belongs to Chat/crm_chat, current baseline; forward40 in native_identity_test only. Append-only request digest links same-tenant Chat claim; no remote receipt FK. Main migration/physical extraction not performed.
+
+SRC-101: [Chat claim/request](chat-dispatch-claim.md) target crm_chat, current Chat-owned partition in baseline agentic_crm; forward39 tested only in native_identity_test. Same-owner intent FK, no remote Identity/Connector FK. Full physical extraction remains gated.
+
+PLAN-007C5/SRC-100: [Identity dispatch tables](identity-dispatch-ledger.md) own delegation/grant/request/event in target crm_identity, physical baseline agentic_crm. Forward38 first applied only to retained native_identity_test; main runtime upgrade/cutover remains gated. Native authority and ledger require the same Identity transaction; no separate ledger DB/shared cross-service UoW.
+
+SRC-098 forward5: [attempt dictionary](connector-attempt-ledger.md) extends Connector guard with grant/claim/fence/deadline/provider result and lifecycle CHECKs, extends request operation allowlist, adds immutable `connector_attempt_event`. Tenant-bound FK and recovery index, no remote SQL. Actual populated native_connector_test4→5 preserves10old tables/old values; migration1…4 definitions/checksums unchanged. Only local test schema upgraded, no image/production rollout.
+
+SRC-097 forward4 adds Connector-owned `connector_dispatch_guard` and `connector_dispatch_request`; [filled dictionary/templates](connector-preparation-ledger.md). Same-tenant intent/attempt keys and guard FK; backfill from own payload table only. Retained native_connector_test upgraded from populated3 to4, previous tables/checksums preserved. Main remains unconfigured and retained image/schema2 unchanged; no monolith/Identity/Chat data move.
+
+SRC-096 forward3 in Connector: `connector_dispatch_payload` and `connector_payload_request`, business tenant immutable source/replay ledgers. [Exact dictionary and filled templates](connector-payload-ledger.md). Applied only to retained native_connector_test for acceptance; main Connector remains unconfigured and prior container schema2 is unchanged. No monolith table move or cross-schema FK; journal retains registered system tenant. Remaining dispatch/control ledgers under PLAN-007C are not implemented.
+
 SRC-087 forward36 adds `sales_stage_event`, Sales-owned in baseline agentic_crm / target crm_sales, tenant-scoped append-only with unique tenant/kind/subject/sequence and no remote FK. Reporting007 expands adapter CHECK for native_stage_v1, no new business columns. CRM113old tables and Reporting20old business tables preserved. [Filled table review](../contracts/stage-funnel-reporting.md) · [Evidence](../tracking/details/SRC-087.md). This bounded ledger now supplies Lead/Deal stage history; configurable Sales pipeline remains separately gated.
 
 SRC-086 forward006 expands report_connected_catalog adapter CHECK for native_conversion_v1; no new columns/tables. Local/test Reporting6,CRM35,20old business tables preserved. Goal stays in versioned definition JSON; source facts remain request-local. [Filled table review](../contracts/conversion-reporting.md) · [Evidence](../tracking/details/SRC-086.md).
@@ -28,7 +76,7 @@ PLAN-007 / ADR-021, 2026-10-07. **Normative cho thiết kế mới**; không ph�
 
 ## Nguyên tắc phân vùng
 
-PLAN-024 / ADR-022 thêm crm_workflow_core vào target catalog, tách authoring và execution; cả hai Workflow schemas chưa được provision/extract. Catalog hiện có 15 schema đích, gồm Marketing được bổ sung sau ADR-021 và Workflow Core mới. [Logical map](workflow-metadata.md), [architecture](../system/workflow-architecture.md). Không thay tables/grants hiện tại; table templates/DDL/migration gate PLAN-024C phải hoàn tất trước source.
+ADR-027 / CHG-20261021-07: một Workflow service/schema crm_workflow sở hữu authoring và execution, gồm conversational flows. crm_workflow_core và crm_chatflow không còn schema đích. Forward43 gỡ legacy Chatflow storage; applied historical migrations vẫn bất biến.
 
 Trong MySQL, schema đồng nghĩa database, không có lớp schema lồng trong một database như PostgreSQL. Một instance local có thể chứa các database dưới đây; production có thể đặt chúng ở các instance khác nhau mà contract không đổi. Không tạo database theo tenant; các tenant dùng cùng schema của owning service và tách bằng `tenant_id`.
 
@@ -46,15 +94,13 @@ Mỗi schema có đúng một service writer, migration lineage và runtime cred
 | `crm_core` | CRM Core & Metadata | Contact, Company, contact_identity, Activity; object/property/form/view definitions, custom records/indexes; association definitions/links; catalog projection của external records | Lead/Deal state, message, execution state; password đăng nhập |
 | `crm_connector` | CRM Connector | channel connections, provider asset/Page bindings và encrypted credentials; OAuth attempt của Facebook; ingress/delivery/transport receipts, provider profile/resolution caches | Contact canonical, Chat ownership/message history |
 | `crm_chat` | Chat | conversation/message/content/outbound intent; unread/workspace/inbox/snippet/tag/snooze/activity projection; local Conversation record metadata/owner/share/history | Nội dung CRM Activity gốc; password hoặc canonical provider credential |
-| `crm_sales` | Sales | lead, lead_handoff; Deal/pipeline/stage trong scope M4 sau Ready; Sales record metadata/ownership/history; snapshot attribution của Lead | Contact master; message; tự chuyển Customer thành entity độc lập |
+| `crm_sales` | Sales | lead, lead_handoff, Deal/outcome/stage history đã có baseline; configurable pipeline cần scope riêng; Sales record metadata/ownership/history; snapshot attribution của Lead | Contact master; message; tự chuyển Customer thành entity độc lập |
 | `crm_ai` | AI Runtime | provider Agent config/policy, agent_execution/tool_execution, capacity slot, execution receipt/knowledge refs khi Ready | Identity principal/roles; toàn bộ message transcript sao chép mặc định |
 | `crm_routing` | Routing | routing_cursor, eligibility/allocation policy/projection, routing_attention | Owner authoritative của Conversation/Lead; AI execution lease |
-| `crm_workflow` | Workflow API — target ADR-022 | definition/draft/immutable version, publish request/audit/outbox; authoring authority | Runtime run/step/wait, canonical CRM metadata; Core DB access |
-| `crm_workflow_core` | Workflow Core — target ADR-022 | installed artifact/deployment, Kafka inbox/enrollment, run/step/action/wait/timer/reconciliation | Mutable drafts, canonical CRM records; API DB access |
-| `crm_chatflow` | Chatflow | definition/version/session/node_run/turn; qualification provenance và logical Lead refs | Canonical Lead, Contact, message hoặc tool execution |
+| `crm_workflow` | Workflow — ADR-027 | definition/draft/version/activation, trigger/enrollment/run/step/wait/timer, conversational variables/provenance/Human tasks và action receipts | Canonical CRM/Sales/Ticket/Identity/Chat records; không business SQL xuyên service |
 | `crm_media` | Media | asset/rendition/scan/extraction metadata và storage refs sau gate Ready | File binary trong bảng message; public unprotected media URL |
 | `crm_ticket` | Ticket | ticket/SLA/service lifecycle và local ownership sau M4 Ready | Sales opportunity; generic miscellaneous tables |
-| `crm_reporting` | Reporting | tenant-authorized projections, source/link semantic catalog, metric/report/template definitions và export metadata sau gate Ready | Primary business writers; query trực tiếp mọi service DB |
+| `crm_reporting` | Reporting | tenant-authorized projections, source/link semantic catalog, metric/report/template definitions và export metadata theo delivered Reporting contracts | Primary business writers; query trực tiếp mọi service DB |
 | `crm_marketing` | Marketing | Meta hierarchy/Creative/targeting replicas, base/breakdown Insights observations, history và sync checkpoints sau PLAN-011 Ready | Lead origin snapshot; doanh thu Sales; Messenger transport; report SQL xuyên schema |
 | `crm_operations` | Operations | sanitized audit/status projections, incident/replay request receipts sau gate Ready | Bản authoritative audit của service khác; quyền SQL toàn hệ thống |
 

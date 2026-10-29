@@ -11,7 +11,7 @@ const version = spawnSync(pnpm, ['--version'], { encoding: 'utf8' });
 if (version.status !== 0 || version.stdout.trim() !== manifest.pnpm) throw new Error(`Use pnpm ${manifest.pnpm}`);
 const directory = process.env.VERIFY_ARTIFACT_DIR || 'artifacts/verify';
 await mkdir(directory, { recursive: true });
-const steps = ['lint', 'docs:check', 'schemas:check', 'contracts:check', 'test:scripts', 'test:unit', 'build', 'typecheck', 'test:smoke-api'];
+const steps = ['lint', 'docs:check', 'architecture:chat', 'schemas:check', 'contracts:check', 'test:scripts', 'test:unit', 'build', 'typecheck', 'test:smoke-api'];
 const results = { node: process.versions.node, pnpm: manifest.pnpm, platform: process.platform, arch: process.arch, startedAt: new Date().toISOString(), steps: [] };
 let failed = false;
 for (const step of steps) {

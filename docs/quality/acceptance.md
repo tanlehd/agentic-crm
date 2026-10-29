@@ -1,5 +1,10 @@
 # Acceptance và traceability
 
+[Yêu cầu REQ-01…14](../product/requirements.md) giữ traceability cho baseline và các phần mở rộng; [vision](../product/vision.md) định vị nền tảng quản trị dữ liệu khách hàng và hoạt động xuyên Marketing/Sales/Customer Service. Các AC theo lát cắt chỉ chứng minh phạm vi đã kiểm thử, không nghiệm thu toàn bộ nền tảng hoặc mọi nguồn tương tác.
+
+ADR-027 current automation acceptance is [WF-U01…14](workflow-platform-acceptance.md): one Workflow service, conversational/routing/data actions in one engine, owner authority and retained-run migration. WF-01…15 and Chatflow results in dated entries below are historical baseline evidence, not additional service requirements or unified-runtime PASS.
+
+
 SRC-085: [OR-01…08 operations dashboard acceptance](operations-reporting-acceptance.md) replaces the bespoke Routing performance UI with ordinary Reports/Dashboards. Original HR evidence remains historical; team/agent/reroute behavior is preserved.
 
 SRC-084: [HR-01…10 biên bản và 10 ảnh nghiệm thu](human-routing-acceptance.md) — team skills, capacity/waiting, agent reply/close→next, admin reroute and operational performance. [Executed evidence](../tracking/details/SRC-084.md). Bounded monolith R1 with synthetic mock transport; distributed routing and generic Report Builder integration remain separate.
@@ -35,8 +40,8 @@ SRC-006 kiểm auth prerequisite của AC-01/02: OIDC/state/nonce/PKCE/CSRF, ses
 | REQ-04 | [Data model](../data/model.md), [CRM](../modules/crm.md) | [Metadata API](../contracts/api.md) | AC-04 |
 | REQ-05 | [Channels](../modules/channels.md), [Operations](../modules/operations.md) | [API](../contracts/api.md), [Events](../contracts/events.md) | AC-05, AC-15 |
 | REQ-06 | [Agents](../modules/agents.md) | [Assignment API](../contracts/api.md) | AC-06 |
-| REQ-07 | [Agents](../modules/agents.md), [Chatflow](../modules/chatflow.md) | [Agent Runtime](../contracts/agent-runtime.md) | AC-07, AC-18 |
-| REQ-08 | [Workflow](../modules/workflow.md), [Chatflow](../modules/chatflow.md) | [Events](../contracts/events.md) | AC-08, AC-16, AC-17 |
+| REQ-07 | [Agents](../modules/agents.md), [Workflow](../modules/workflow.md) | [Agent Runtime](../contracts/agent-runtime.md) | AC-07, AC-18 |
+| REQ-08 | [Workflow](../modules/workflow.md), [Workflow](../modules/workflow.md) | [Events](../contracts/events.md) | AC-08, AC-16, AC-17 |
 | REQ-09 | [First slice](../business/first-slice.md) | [Conversation/Lead API](../contracts/api.md) | AC-09 |
 | REQ-10 | [Ticket](../modules/ticket.md) | Draft M4: transition/SLA contract | AC-10 |
 | REQ-11 | [Reporting](../modules/reporting.md) | M2 metric definitions; [RB-MOCK/CONNECTED plan](../planning/report-builder.md), exact API gate PLAN-022 | AC-11; [RB-01…17](report-builder-acceptance.md) |
@@ -95,7 +100,7 @@ SRC-013 đóng **M1 release gate**: Admin/CRM UI real OIDC, tenant/permission ne
 
 ## SRC-014 — sub-scope M2
 
-Evidence [SRC-014](../tracking/details/SRC-014.md): AC-05 business-message dedup/transaction port (chưa durable ACK/referral); AC-15 race một active Conversation/identity; AC-18 queued cancellation hook/close, sending giữ kết quả, unknown không resend và mock reconcile; AC-01/02 tenant/owner/field policy; AC-12 audit/outbox sanitized. Không đóng toàn AC-05/06/07/09/15/18 hoặc M2 release gate: intake, actual takeover/routing/AI, workflow/chatflow và Sales vẫn thuộc các task tiếp theo.
+Evidence [SRC-014](../tracking/details/SRC-014.md): AC-05 business-message dedup/transaction port (chưa durable ACK/referral); AC-15 race một active Conversation/identity; AC-18 queued cancellation hook/close, sending giữ kết quả, unknown không resend và mock reconcile; AC-01/02 tenant/owner/field policy; AC-12 audit/outbox sanitized. Không đóng toàn AC-05/06/07/09/15/18 hoặc M2 release gate: intake, actual takeover/routing/AI, workflow và Sales vẫn thuộc các task tiếp theo.
 
 ## SRC-015 — AC-05 mock inbound
 
@@ -119,7 +124,7 @@ AC-08 engine: DAG publish/version pinning, duplicate starter selection, same act
 
 ## SRC-020 completed scope (S-20261005-10)
 
-Initial A parser evidence was extended by actual durable engine/ports and Human completion.150 MySQL integration tests pass (18 Chatflow +132 regression), including first input, fenced/restarted work, proposal-only runtime, takeover/late callback, live outbound auth, one Lead/session, atomic rollback and Human race/evidence/CAS.66 unit/contract tests and9 canonical gates pass. Preview schema16 upgrade retained count/hash across13 pre-existing tables. Chrome154 real OIDC/mock intake/Workflow/Chatflow/Human takeover and consent form PASS; qualified Lead and parent completion verified with Human owner retained. Final status and evidence at [SRC-020 detail](../tracking/details/SRC-020.md). Full M2/Sales acceptance is not closed.
+Initial A parser evidence was extended by actual durable engine/ports and Human completion.150 MySQL integration tests pass (18 Chatflow +132 regression), including first input, fenced/restarted work, proposal-only runtime, takeover/late callback, live outbound auth, one Lead/session, atomic rollback and Human race/evidence/CAS.66 unit/contract tests and9 canonical gates pass. Preview schema16 upgrade retained count/hash across13 pre-existing tables. Chrome154 real OIDC/mock intake/Workflow/Human takeover and consent form PASS; qualified Lead and parent completion verified with Human owner retained. Final status and evidence at [SRC-020 detail](../tracking/details/SRC-020.md). Full M2/Sales acceptance is not closed.
 
 ## SRC-021 backend Sales sub-scope
 
@@ -235,7 +240,7 @@ SRC-040 acceptance: API need_response true -> false after sent -> true on new in
 
 SRC-041 supersedes SRC-040 need-response transition: inbound -> unknown/null; note unchanged; sent covering current inbound -> replied/false; follow-up inbound -> unknown/null.10 browser groups/107 unit/31 prototype checks PASS. True “Cần trả lời” + optional Next action requires future valid Assist assessment; not current integration acceptance. [Evidence](../tracking/details/SRC-041.md).
 
-UX-005 product acceptance (design-only): Conversation suggestion attributes/update action independent of AI; Workflow/Chatflow can apply fixed-rule output or validated configured Assist proposal. Assist cannot directly write CRM/Conversation or publicly reply; orchestrator actor writes only suggestion fields. Same tenant/revision/dedup guards for both branches. [Scope](../ux/agent-assist-response.md); runtime acceptance awaits PLAN-008/source, existing tests do not claim this integration.
+UX-005 product acceptance (design-only): Conversation suggestion attributes/update action independent of AI; Workflow can apply fixed-rule output or validated configured Assist proposal. Assist cannot directly write CRM/Conversation or publicly reply; orchestrator actor writes only suggestion fields. Same tenant/revision/dedup guards for both branches. [Scope](../ux/agent-assist-response.md); runtime acceptance awaits PLAN-008/source, existing tests do not claim this integration.
 
 UX-006 design acceptance: each registered next_action.type maps to correct list label; null/unknown fallback distinct from responded; no independent need_response target; rule and Assist use same update path; type assignment has no business side effects. Reply completion cannot complete a create_lead/create_ticket/close_chat suggestion. Source rollout/legacy compatibility and runtime verification remain PLAN-008/source work. [Spec](../ux/agent-assist-response.md).
 

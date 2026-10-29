@@ -1,0 +1,13 @@
+# Chat assignment directory candidate
+
+SRC-109/T06, CHG-20261023-13, Ready. Preserve GET `/api/v1/records/:id/assignment-targets?team_id=…` and `/assignment-teams` for Conversation. These Routing UI consumers are explicitly unresolved in the T05 handler inventory. Assignment/takeover mutation remains the existing T04 saga.
+
+Chat owns the resource snapshot and final delivery CAS. A fresh Human parent command binds the selected team in its target (null principal/kind), the actual Conversation resource and the exact public payload. Identity requires current record read plus assign-or-takeover under the native session; directory access does not grant assignment. Like the baseline directory, this returns target IDs/kind/eligibility/reason or active team IDs/name/purpose, not Conversation text or private policy bodies.
+
+Identity owns candidate discovery, Human membership/seat/availability/team/role/text-field eligibility. It reads only Identity data and batches bounded candidate queries; max200 candidates/teams, explicit overflow instead of truncation. The selected team must be active in the same tenant; omission uses the Conversation's team. AI IDs may remain visible with ineligible policy reason because native AI assignment is deferred, without consulting AI Runtime policy/execution tables.
+
+Routing owns Human profile/capacity/allocation/reservation load. Its new private directory read takes the admitted Chat command and asks current Identity for the same bound directory, then reads only Routing tables. It returns candidate ID plus capacity eligibility; it is an advisory read, never a reservation. The current owner retains the baseline capacity exception. Actual assignment still revalidates authority and reserves capacity atomically.
+
+Two additive private operations: Identity `admission-assignment-directory` callable by Chat/Routing; Routing `assignment-directory-capacity` callable by Chat. Both bind command/admission and fail on owner outage, revoked admission, wrong tenant/operation or changed authorization. Chat compares fresh Identity directory before disclosure and rechecks its resource snapshot under parent commit. No shared SQL/UoW, new table, cached permission or main mount. Bound composition deadlines may use10s; individual existing dependency/recovery budgets stay unchanged.
+
+Acceptance: actual native Identity/Chat/Routing HTTP, public session/query validation; active/disabled/foreign teams, scoped record access, Human role/seat/availability/field denial, capacity including reserved work/current owner exception, AI deferred state, source outage, source drift, completed logout and bounded directories. No main automatic routing or D3-03 completion is implied by this read adapter.

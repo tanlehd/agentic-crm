@@ -3,7 +3,7 @@ import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {parseEnv} from 'node:util';
 import {randomUUID} from 'node:crypto';
 import {chromium,expect as baseExpect} from '@playwright/test';
-import {fixtureId} from '../apps/backend/dist/modules/identity/seed.js';
+import {fixtureId} from '../services/core-baseline/dist/modules/identity/seed.js';
 const expect=baseExpect.configure({timeout:30000}),env=parseEnv(await readFile('.env','utf8')),origin='http://localhost:18080',tenant=fixtureId('clinic_alpha'),dir='artifacts/stage-funnel';assert.equal(env.APP_ORIGIN,origin);await mkdir(dir,{recursive:true});
 const browser=await chromium.launch({channel:'msedge',headless:true}),page=await browser.newPage({viewport:{width:1600,height:1100}}),checks=[],shots=[],errors=[];page.setDefaultTimeout(30000);page.on('pageerror',e=>errors.push(e.message));
 const button=name=>page.getByRole('button',{name,exact:true}),shot=async name=>{const path=dir+'/'+name+'.png';await page.screenshot({path,fullPage:true});shots.push(path);};

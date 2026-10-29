@@ -1,0 +1,22 @@
+// Keep local inter-container RPC on the private Compose network.
+import {readFile,writeFile} from 'node:fs/promises';
+import {parseEnv} from 'node:util';
+import {mainEvidenceDirectory} from './lib/chat-main-evidence.mjs';
+const dir='.local/chat-main',ports={identity:13111,crm:13112,connector:13113,routing:13114,sales:13115,workflow:13116};
+const writeEnv=async(name,mutate)=>{const p=dir+'/'+name+'.env',e=parseEnv(await readFile(p,'utf8'));mutate(e);await writeFile(p,Object.entries(e).map(([k,v])=>k+'='+JSON.stringify(v)).join('\n')+'\n',{mode:0o600});};
+const owners=JSON.parse(await readFile(dir+'/material/owners.json','utf8'));
+owners.chat='http://chat-api:3020/';owners.identity='http://identity:13111/';owners.routing='http://routing:13114/';
+await writeFile(dir+'/material/owners.json',JSON.stringify(owners),{mode:0o600});
+await writeFile(dir+'/material/owners.hostnetwork.json',JSON.stringify({...owners,chat:'http://127.0.0.1:13020/',identity:'http://127.0.0.1:13111/',routing:'http://127.0.0.1:13114/'}),{mode:0o600});
+const endpoints=JSON.parse(await readFile(dir+'/material/endpoints.json','utf8'));
+endpoints.owners=Object.fromEntries(Object.entries(ports).map(([r,p])=>[r,'http://'+(r==='connector'?'channels-owner':r)+':'+p+'/']));endpoints.dispatch.identity='http://dispatch:3012/';
+await writeFile(dir+'/material/endpoints.json',JSON.stringify(endpoints),{mode:0o600});
+for(const role of [...Object.keys(ports),'worker','dispatch','chat'])await writeEnv(role,e=>{e.WORKLOAD_REGISTRY_URL='http://dispatch:3012/internal/v1/workloads/admit';e.CHAT_OWNER_URL=owners.chat;e.IDENTITY_OWNER_URL=owners.identity;e.ROUTING_OWNER_URL=owners.routing;e.CHANNELS_OWNER_URL='http://connector:13113/';if(role==='dispatch')e.WORKLOAD_CHAT_URL=owners.chat;if(role==='chat'){e.CHAT_DB_HOST='mysql';e.CHAT_DB_PORT='3306';}else{e.MYSQL_HOST='mysql';e.MYSQL_PORT='3306';if(role==='worker'){e.REDIS_HOST='redis';e.REDIS_PORT='6379';}}});
+await writeEnv('api.container',e=>{e.WORKLOAD_REGISTRY_URL='http://127.0.0.1:3012/internal/v1/workloads/admit';e.CHAT_OWNER_URL='http://127.0.0.1:13020/';e.IDENTITY_OWNER_URL='http://127.0.0.1:13111/';e.ROUTING_OWNER_URL='http://127.0.0.1:13114/';e.CHANNELS_OWNER_URL='http://127.0.0.1:13113/';e.BASELINE_OWNER_CONFIG_FILE='/run/chat/owners.hostnetwork.json';});
+await writeEnv('api.container',e=>{e.MYSQL_HOST='127.0.0.1';e.REDIS_HOST='127.0.0.1';});
+const base=JSON.parse(await readFile(dir+'/compose.baseline.json','utf8'));base.networks={...base.networks,platform:{external:true,name:'agentic-crm_default'}};
+for(const role of [...Object.keys(ports),'dispatch','worker'])base.services[role].networks=['default','platform'];
+base.services.connector.networks={default:{aliases:['channels-owner']},platform:{}};
+await writeFile(dir+'/compose.baseline.json',JSON.stringify(base,null,2));
+await writeFile(dir+'/compose.chat-network.json',JSON.stringify({services:{'chat-api':{networks:['default','main','platform']},'chat-worker':{networks:['default','main','platform']}},networks:{main:{external:true,name:'agentic-crm-chat-main_default'},platform:{external:true,name:'agentic-crm_default'}}},null,2));
+const result={status:'PASS',network:'agentic-crm-chat-main_default',internalRouting:'direct-compose-dns',apiRouting:'docker-host-loopback',deadlinesChanged:false};await writeFile((await mainEvidenceDirectory())+'/main-network.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result));

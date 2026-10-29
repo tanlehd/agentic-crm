@@ -1,5 +1,9 @@
 # Bản đồ tài liệu
 
+[Repository map](architecture/repository-map.md): hiện trạng source, cấu trúc đích một web app/backend theo owner, shared libraries, cleanup và các gate trước deploy độc lập.
+
+**Điểm vào phát triển:** chọn owning service trong [service catalog](services/README.md), rồi đọc thiết kế, contract, dữ liệu và acceptance được liên kết từ service đó. [README](../README.md) giữ tổng quan; [tracker](tracking/tasks.md) và [checkpoint](tracking/checkpoint.md) giữ trạng thái hiện hành. Các ghi nhận triển khai có ngày bên dưới dùng để truy vết, không thay phạm vi hiện hành của service.
+
 **Điểm vào theo sản phẩm:** [Nhóm tính năng theo mục tiêu và người sử dụng](product/capability-map.md). Dùng cùng trục cho giới thiệu tính năng, UX, hướng dẫn, demo và presentation; các nhóm tài liệu kỹ thuật bên dưới phục vụ truy vết.
 
 [Thread / Conversation implementation](development/thread-conversation.md) — SRC-078 /2026-10-16: stage + classification per episode, history across team transfer, Related Lead/Deal actions. [Exact gate](contracts/thread-conversation-implementation.md) · [Evidence](tracking/details/SRC-078.md). Ticket/connected Reporting remain gated.
@@ -39,7 +43,7 @@ Ngày baseline: 2026-10-02. Trạng thái phản ánh độ sâu thiết kế, k
 
 | Nhóm | Tài liệu | Trạng thái / phạm vi |
 |---|---|---|
-| Product | [Vision](product/vision.md), [Glossary](product/glossary.md) | Ready for implementation: baseline thuật ngữ/phạm vi |
+| Product | [Vision](product/vision.md), [Capability map](product/capability-map.md), [Requirements](product/requirements.md), [Glossary](product/glossary.md) | Định hướng nền tảng và thuật ngữ; readiness/implementation theo từng service, contract và task |
 | Planning | [Roadmap](product/roadmap.md) | Ready for implementation: thứ tự milestone; chưa cam kết lịch |
 | Build & tracking | [Build plan](planning/build-plan.md), [tasks](tracking/tasks.md), [checkpoint](tracking/checkpoint.md), [log](tracking/log.md) | Kế hoạch 25 task M1–M2; status source xem tracker |
 | Docker | [Development & packaging](system/docker-development.md) | M1 images + Conversation backend, migration v10, auth và seed Alpha/Beta đã chạy |
@@ -70,7 +74,7 @@ Ngày baseline: 2026-10-02. Trạng thái phản ánh độ sâu thiết kế, k
 | MOD-06 | [Ticket System](modules/ticket.md) | Draft: blueprint M4 |
 | MOD-07 | [Agent & Routing](modules/agents.md) | Routing/assignment/takeover implemented SRC-017; private mock runtime SRC-018 implemented; session integration SRC-020 |
 | MOD-08 | [Workflow](modules/workflow.md) | Primitive M2 implemented SRC-019/020/021; [native metadata + Core validator](development/workflow-foundation.md) SRC-065 delivered; [Web/API/Core/Kafka plan](planning/workflow-platform.md) runtime/persistence/CMS gates remain |
-| MOD-09 | [Chatflow](modules/chatflow.md) | SRC-020 DONE: qualification flow M2; visual builder Draft |
+| MOD-09 | [Workflow](modules/workflow.md) | SRC-020 DONE: qualification flow M2; visual builder Draft |
 | MOD-10 | [Reporting & Dashboard](modules/reporting.md) | Semantic kernel/private drafts + [typed mock projections](development/reporting-projections.md) implemented SRC-063/057/058; [plan](planning/report-builder.md); remaining query/ACL/publish/UI gate PLAN-022 TODO |
 | MOD-11 | [Audit & Operations](modules/operations.md) | Outbox/inbox, audit, replay foundation implemented SRC-008; operations M2 UI implemented SRC-022 |
 

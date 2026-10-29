@@ -29,6 +29,8 @@ Relay tick 1 giây, batch 100, lease 60 giây; retry delay theo [events](../cont
 
 ## UI
 
+CHG-20261027-04: CRM không còn màn hình Vận hành độc lập hoặc mục tương ứng trong sidebar/mobile/tìm công cụ. Bỏ shortcut “Xem lượt chạy” từ Workflows; link cũ `?screen=operations` chuyển về Workflows. Các khả năng vận hành dưới đây là trách nhiệm API; việc đưa chúng vào ngữ cảnh từng module cần scope UI riêng.
+
 Failed delivery list, sanitized error, attempts, next retry, correlation và nút retry có reason. Audit record detail chỉ hiện field được phép. Queue attention hiển thị handoff quá hạn, runtime error và message unknown riêng.
 
 ## Failure handling

@@ -1,4 +1,5 @@
 'use client';
+import {useInboxInterval} from './inbox-polling';
 import { useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useApi,useCommand,request,ErrorNotice,can,type Context } from './api';
@@ -10,18 +11,21 @@ import { SessionProgressPanel } from './session-progress';
 
 const label=(r:any)=>r.fields.title??r.fields.qualification?.service_interest??`Lead ${r.id.slice(-8)}`;
 const state=(r:any)=>r.fields.status??r.fields.stage;
+type CreateContext=Readonly<{kind:'lead'|'deal'|'from-lead';conversation:string;contactId:string;sessionId:string;sequence:string;leadId?:string}>;
 export function Customer360({tenant,context,conversation,contactId,canEdit,open}:{tenant:string;context:Context;conversation:string;contactId:string;canEdit:boolean;open?:(kind:'contact'|'lead'|'conversation',id:string)=>void}){
- const sessions=useInfiniteQuery({queryKey:[tenant,`/api/v1/conversations/${conversation}/acquisition-sessions`],initialPageParam:null as string|null,queryFn:({signal,pageParam})=>request(tenant,`/api/v1/conversations/${conversation}/acquisition-sessions?limit=50${pageParam?'&before_sequence='+pageParam:''}`,{signal}),getNextPageParam:page=>page.next_before_sequence??undefined,refetchInterval:5000,retry:false});
+ const sessions=useInfiniteQuery({queryKey:[tenant,`/api/v1/conversations/${conversation}/acquisition-sessions`],initialPageParam:null as string|null,queryFn:({signal,pageParam})=>request(tenant,`/api/v1/conversations/${conversation}/acquisition-sessions?limit=50${pageParam?'&before_sequence='+pageParam:''}`,{signal}),getNextPageParam:page=>page.next_before_sequence??undefined,refetchInterval:useInboxInterval(),refetchIntervalInBackground:false,retry:false});
  if(sessions.isPending)return <p role="status">Đang tải Customer 360…</p>;
  if(sessions.error)return <ErrorNotice error={sessions.error} reload={()=>void sessions.refetch()}/>;
  const rows=sessions.data.pages.flatMap(p=>p.data),active=rows.find((s:any)=>s.status==='active');
- return <><SalesPanel key={`${contactId}:${active?.id??'closed'}`} {...{tenant,context,conversation,contactId,canEdit,open}} session={active}/><SessionProgressPanel key={conversation} {...{tenant,context,conversation}} sessions={rows}/>{sessions.hasNextPage&&<Button variant="outline" disabled={sessions.isFetchingNextPage} onClick={()=>void sessions.fetchNextPage()}>Tải thêm phiên để theo dõi</Button>}</>;
+ return <><SalesPanel key={`${tenant}:${conversation}:${contactId}`} {...{tenant,context,conversation,contactId,canEdit,open}} session={active}/><SessionProgressPanel key={conversation} {...{tenant,context,conversation}} sessions={rows}/>{sessions.hasNextPage&&<Button variant="outline" disabled={sessions.isFetchingNextPage} onClick={()=>void sessions.fetchNextPage()}>Tải thêm phiên để theo dõi</Button>}</>;
 }
 function SalesPanel({tenant,context,conversation,contactId,canEdit,session,open}:{tenant:string;context:Context;conversation:string;contactId:string;canEdit:boolean;session?:any;open?:(kind:'contact'|'lead'|'conversation',id:string)=>void}){
- const [kind,setKind]=useState<'lead'|'deal'>('lead'),[history,setHistory]=useState(false),[selected,setSelected]=useState(''),[form,setForm]=useState<'lead'|'deal'|'from-lead'|null>(null),[merge,setMerge]=useState(false),command=useCommand(tenant);
+ const [kind,setKind]=useState<'lead'|'deal'>('lead'),[history,setHistory]=useState(false),[selected,setSelected]=useState(''),[form,setForm]=useState<CreateContext|null>(null),[merge,setMerge]=useState(false),command=useCommand(tenant);
+ // An open create belongs to the selected source episode, even after polling observes close/reopen.
+ const startCreate=(kind:CreateContext['kind'],leadId?:string)=>{if(session)setForm({kind,conversation,contactId,sessionId:session.id,sequence:String(session.sequence),...(leadId?{leadId}:{})});};
  const filter=[{field:'contact_id',op:'eq',value:contactId},...(!history?[{field:kind==='lead'?'status':'stage',op:'in',value:kind==='lead'?['new','qualifying','qualified','handed_off','accepted']:['open','qualified','proposal']}]:[])];
  const base=`/api/v1/${kind}s?${new URLSearchParams({limit:'20',filter:JSON.stringify(filter)})}`,readable=can(context,kind,'read');
- const list=useInfiniteQuery({queryKey:[tenant,base],initialPageParam:null as string|null,queryFn:({signal,pageParam})=>request(tenant,base+(pageParam?'&cursor='+encodeURIComponent(pageParam):''),{signal}),getNextPageParam:page=>page.next_cursor??undefined,enabled:readable,retry:false,refetchInterval:5000});
+ const list=useInfiniteQuery({queryKey:[tenant,base],initialPageParam:null as string|null,queryFn:({signal,pageParam})=>request(tenant,base+(pageParam?'&cursor='+encodeURIComponent(pageParam):''),{signal}),getNextPageParam:page=>page.next_cursor??undefined,enabled:readable,retry:false,refetchInterval:useInboxInterval(),refetchIntervalInBackground:false});
  const detail=useApi(tenant,`/api/v1/${kind}s/${selected}`,!!selected&&readable,true),r=detail.error?null:detail.data?.data;
  const rows:any[]=list.error?[]:list.data?.pages.flatMap(p=>p.data)??[];
  const editable=!!session&&canEdit&&r&&!r.archived&&!['disqualified','won','lost'].includes(state(r))&&can(context,kind,kind==='lead'?'qualify':'update',r);
@@ -38,11 +42,11 @@ function SalesPanel({tenant,context,conversation,contactId,canEdit,session,open}
  {r&&<section className="crm-form" aria-label="Hồ sơ đang chọn"><h4>ĐANG CHỌN: {label(r)}</h4><p>{r.id}<br/>Trạng thái: {state(r)??'Ẩn theo quyền'}<br/>Owner: {r.owner_principal_id??'Chưa phân công'}<br/>Nguồn gốc: {r.fields.source_classification??'—'} · Ad: {r.fields.source_ad_id??'—'}</p>
  {editable&&<Button disabled={command.busy} onClick={async()=>{await command.run(`/api/v1/sales/records/${r.id}/session-context`,{conversation_id:conversation,conversation_session_id:session.id},'POST',r.version);}}>Tiếp tục {kind==='lead'?'Lead':'Deal'} này trong phiên</Button>}
  <ContextHistory key={r.id} tenant={tenant} record={r} session={session?.id} open={open}/>
- {kind==='lead'&&<><Button variant="outline" onClick={()=>open?.('lead',r.id)}>Mở hồ sơ Lead</Button>{session&&can(context,'deal','create')&&!r.archived&&state(r)!=='disqualified'&&<Button variant="outline" onClick={()=>setForm('from-lead')}>Tạo Deal từ Lead đang chọn</Button>}{!r.archived&&can(context,'lead','archive',r)&&can(context,'lead','qualify',r)&&<Button variant="outline" onClick={()=>setMerge(true)}>Xem xét hợp nhất Lead trùng</Button>}</>}
+ {kind==='lead'&&<><Button variant="outline" onClick={()=>open?.('lead',r.id)}>Mở hồ sơ Lead</Button>{session&&can(context,'deal','create')&&!r.archived&&state(r)!=='disqualified'&&<Button variant="outline" onClick={()=>startCreate('from-lead',r.id)}>Tạo Deal từ Lead đang chọn</Button>}{!r.archived&&can(context,'lead','archive',r)&&can(context,'lead','qualify',r)&&<Button variant="outline" onClick={()=>setMerge(true)}>Xem xét hợp nhất Lead trùng</Button>}</>}
  {kind==='deal'&&editable&&<DealForm key={r.version} tenant={tenant} record={r} conversation={conversation} acquisitionSession={session.id} onSaved={()=>void detail.refetch()}/>}
  </section>}
- {session&&<><p>Tiếp tục hồ sơ nếu cùng nhu cầu. Tạo mới khi khách có nhu cầu khác.</p><div className="crm-actions">{can(context,'lead','create')&&<Button variant="outline" onClick={()=>setForm('lead')}>Tạo Lead cho nhu cầu mới</Button>}{can(context,'deal','create')&&<Button variant="outline" onClick={()=>setForm('deal')}>Tạo Deal trực tiếp</Button>}</div></>}
- {form&&session&&(form!=='from-lead'||r&&kind==='lead')&&<Dialog title={form==='lead'?'Nhu cầu mới':'Cơ hội mới'} onClose={()=>setForm(null)}>{form==='lead'?<LeadCreate tenant={tenant} conversation={conversation} acquisitionSession={session.id} contactId={contactId} onCreated={v=>created(v,'lead')}/>:<DealForm tenant={tenant} contactId={contactId} conversation={conversation} acquisitionSession={session.id} leadId={form==='from-lead'?r.id:undefined} onSaved={v=>created(v,'deal')}/>}</Dialog>}
+ {session&&<><p>Tiếp tục hồ sơ nếu cùng nhu cầu. Tạo mới khi khách có nhu cầu khác.</p><div className="crm-actions">{can(context,'lead','create')&&<Button variant="outline" onClick={()=>startCreate('lead')}>Tạo Lead cho nhu cầu mới</Button>}{can(context,'deal','create')&&<Button variant="outline" onClick={()=>startCreate('deal')}>Tạo Deal trực tiếp</Button>}</div></>}
+ {form&&<Dialog key={`${form.kind}:${form.sessionId}:${form.leadId??''}`} title={form.kind==='lead'?'Nhu cầu mới':'Cơ hội mới'} onClose={()=>setForm(null)}><p>Hồ sơ này gắn với phiên #{form.sequence} đã chọn khi mở biểu mẫu.</p>{form.sessionId!==session?.id&&<p>Phiên đã thay đổi. Nguồn của biểu mẫu này vẫn được giữ nguyên.</p>}{form.kind==='lead'?<LeadCreate tenant={tenant} conversation={form.conversation} acquisitionSession={form.sessionId} contactId={form.contactId} onCreated={v=>created(v,'lead')}/>:<DealForm tenant={tenant} contactId={form.contactId} conversation={form.conversation} acquisitionSession={form.sessionId} leadId={form.leadId} onSaved={v=>created(v,'deal')}/>}</Dialog>}
  {merge&&r&&<MergeLead tenant={tenant} source={r} targets={rows.filter(t=>t.id!==r.id&&!t.archived)} onClose={()=>setMerge(false)} onSaved={target=>{setSelected(target);setMerge(false);}}/>}
  </section>;
 }

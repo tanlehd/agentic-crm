@@ -1,94 +1,35 @@
 # MOD-08 — Workflow
 
-PLAN-028: [Custom-object business flow](../contracts/no-code-object-platform.md) reuse canonical metadata, post-commit create/update triggers, related reads/owner commands, Decision/Delay và fault/replay semantics. PLAN-028C phụ thuộc PLAN-024B…E cùng source runtime prerequisites; before-save/loops/screen flows deferred. Existing M2 và SRC-065 capabilities không được tự nâng thành generic execution.
-
-SRC-066 adds [M2 Workflow CMS](../development/workflow-cms.md) on local: menu, seven-node list editor, immutable saved versions, review/publish, enable/disable and scoped discovery/validation APIs. Target distributed CMS/Kafka remains pending.
-
-SRC-065 adds native shared CRM catalog and pure typed authoring kernel for the new architecture, [runbook](../development/workflow-foundation.md). Metadata/validation only; M2 runtime below remains unchanged. Independent Kafka/execution/CMS not yet implemented.
-
-> Kiến trúc đích microservice theo ADR-017: [Workflow Orchestrator](../services/workflow.md). Nội dung implementation/UoW/FK dưới đây mô tả baseline monolith; không áp dụng transaction xuyên service. Service extraction chưa triển khai.
-Status: Primitive engine M2 implemented SRC-019; visual builder Draft M5. Requirements: REQ-08, REQ-09.
-
-PLAN-024 / ADR-022 (2026-10-13): [kiến trúc Web/API/Core và Kafka](../system/workflow-architecture.md) cùng [kế hoạch thiết kế](../planning/workflow-platform.md) đã chốt hướng CMS, node/action registry, CRM related-record automation và follow-up communication trên [shared metadata](../data/workflow-metadata.md). Architecture Ready; exact contracts/source chưa Ready. Hạn chế primitive/trigger/timer dưới đây vẫn là contract M2, không áp ngược catalog node mới vào runtime cũ. Canvas CMS đã thuộc scope thiết kế user yêu cầu; parallel/loop/subworkflow và provider thật giữ gate riêng.
+Workflow là module/service orchestration duy nhất cho business automation, theo [ADR-027](../decisions/README.md#adr-027--one-workflow-service-for-business-orchestration). Chatflow không còn module nghiệp vụ độc lập. Baseline source cũ còn trong giai đoạn tương thích; không coi việc sửa tài liệu là runtime migration.
 
 ## Mục tiêu và phạm vi
 
-Điều phối cross-module có durable state, version và retry. M2 publish graph bằng JSON qua admin API; không build canvas hay cho chạy JavaScript tùy ý.
+Người dùng định nghĩa trigger, điều kiện, nhánh, action, delay, chờ event/message/Human input và kết thúc flow. Root/context có thể là Contact/custom record, Lead, Deal, Ticket, User hoặc Conversation. Không tách business flow theo channel hoặc object thành engine khác nhau.
+
+Authoring, versioning và execution dùng cùng Workflow model. Luồng qualification/hỏi đáp trước đây là template ghép các action Chat, AI Runtime và Sales; human routing là flow dùng Routing allocator và owning-service assignment command.
 
 ## Actor và quyền
 
-Designer cần automation.design; publisher cần automation.publish; run dùng service actor tenant-scoped và execution role pinned. Publish không tự cấp quyền runtime vượt service actor hiện hành.
+Designer/publisher/operator có quyền theo Identity. Run dùng service actor được cấu hình; permission hiện hành và quyền của owner quyết định mọi effect. User-triggered flow không impersonate người dùng có quyền cao hơn. User object thuộc Identity; không copy credentials/session/roles thành CRM record.
 
-## Use case và state machine
+## Use case và hành vi
 
-Version draft → published bất biến; sửa tạo version mới. Run `queued → running ↔ waiting → completed|failed|cancelled`; terminal không tự reopen. Step pending → running → succeeded/failed; retry transient giữ action key. Cancel ngăn step chưa chạy và ghi durable child-cancel request; worker retry tối đa5 lần/15s, attention giữ khi hết retry; không đảo tác dụng đã commit.
+1. Conversation created/changed → điều kiện team/queue → Routing candidate/capacity → Chat assignment.
+2. Lead thay đổi → kiểm điều kiện → tạo/update Deal qua Sales → follow-up theo action được phép.
+3. Ticket thay đổi → branch/escalation/notification khi Ticket adapter có thật.
+4. User/team availability thay đổi → đánh giá lại công việc liên quan → yêu cầu allocation; không sửa owner hàng loạt bằng SQL.
+5. Hội thoại thu thập thông tin → chờ message/Human input → kiểm evidence → Sales qualification; dùng một run, không start child Chatflow.
 
-Graph có shape `{trigger,entry_node,nodes:[{key,type,config,next?}]}`. Key unique, mọi node reachable, graph acyclic, tối đa 50 nodes. M2 không parallel branches/loop/subworkflow/arbitrary code. Condition node có `on_true/on_false`; end không next. Binding chỉ path trong `trigger` hoặc output node trước đó; không expression eval.
-
-| Primitive | Config tối thiểu | Output / guard |
-|---|---|---|
-| trigger | event_type=conversation.created, connection_id | trigger aggregate/contact IDs |
-| assign_owner | record_id binding, team_id, capability, preference | owner_id nullable,owner_revision; no candidate đi tiếp queue attention |
-| start_chatflow | conversation_id, chatflow_version_id | session_id; version phải published |
-| wait_event | event_type, match_key binding, timeout_seconds | persisted result hoặc timed_out; chỉ child chatflow.completed / lead.accepted M2 |
-| condition | left binding, op(eq/exists), right?, on_true,on_false | typed boolean; absent eq=false |
-| request_lead_handoff | lead_id binding,target_team_id | handoff_id,lead_id |
-| wait_timer | duration_seconds | woke_at; 1…86400 giây |
-| end | outcome string | completed |
-
-Wait timeout bắt buộc edge `on_timeout`; max 86400s. `wait_event` match key là child session_id hoặc handoff_id thuộc run, không broad tenant event match. Context output chỉ persist IDs/qualification outcome cần thiết; không raw transcript.
-
-Binding dùng JSON object `{ "ref": "trigger.aggregate_id" }` hoặc `{ "ref": "outputs.start.session_id" }`; literal giữ đúng JSON type. Chỉ ref tới trigger envelope hoặc output node dominator đã chạy. Node có key `start` là ví dụ; không có string interpolation, property access ngoài allowlist hoặc expression code. Publish kiểm tra type output/input và mọi nhánh tới end.
-
-## Graph chuẩn M2
-
-```mermaid
-flowchart TD
-  A[conversation.created] --> B[Assign intake owner]
-  B --> C[Start pinned qualification Chatflow]
-  C --> D[Wait chatflow.completed / 24h]
-  D --> E{Outcome qualified?}
-  E -->|yes| F[Request Lead handoff to Sales]
-  E -->|no| Z[End needs_attention]
-  D -->|timeout| Z
-  F --> G[Wait lead.accepted / 15min]
-  G -->|accepted| H[End accepted]
-  G -->|timeout| I[End handoff_pending; alert]
-```
-
-Handoff vẫn pending sau wait timeout; workflow hoàn tất outcome handoff_pending, không đánh dấu Lead accepted/cancelled. Human cần có quyền tiếp tục xử lý. Parent run cancel yêu cầu cancel child đang active; Lead đã tạo/handoff không xóa.
+Run states queued/running/waiting/completed/failed/cancelled phục vụ execution/recovery, không áp vào lifecycle business object. Create/update/assign/close vẫn là commands của owner tương ứng.
 
 ## Entity và invariant
 
-[Execution dictionary](../data/dictionary.md): run pin version; unique `(tenant,version,trigger_event)`; starter chọn version một lần. Step action key=`run_id:node_key`, không gồm attempt. Lease 60s; worker heartbeat 15s; recovery worker mỗi 15s claim expired step và replay bằng cùng action key. M2 primitive không có network I/O dài trong transaction; external execution thuộc child Chatflow.
+Workflow owns definitions/versions/enrollments/runs/steps/waits/action receipts trong crm_workflow. Version bất biến; retry không đổi action identity; wait/event matching tenant/run/resource-bound; owner/current authorization checked tại effect. Variables lưu tối thiểu refs/provenance, không mặc định copy transcript hoặc user secrets.
 
-Wait state và subscription persist trước nhả worker; check current child state lúc register để tránh lost signal. Step lease takeover tăng fencing token; commit phải khớp token, tránh worker cũ ghi đè kết quả.
+## API, event và UI
 
-## API và event
+[Orchestration contract](../contracts/workflow-orchestration.md) và [architecture](../system/workflow-architecture.md) là nguồn đích. Một editor/catalog/node palette phục vụ mọi flow. Event source/command capability do owner công bố; unsupported action hiện unavailable. Authoring API, engine và worker là nội bộ cùng service, không cần install/activation saga giữa hai Workflow services.
 
-[Automation API](../contracts/api.md), [events](../contracts/events.md). Publish validate graph type/binding, service actor quyền, referenced team/version tồn tại cùng tenant. Consume conversation.created; emit workflow.completed/execution.failed. Không publish lại version đã published với body mới.
+## Acceptance và chuyển đổi
 
-## UI
-
-M2 chỉ danh sách definition/version và run detail read-only, node trạng thái/error sanitized. JSON fixture là authoring chính; builder kéo thả M5.
-
-## Failure handling
-
-Retry policy chung 5 lần; permission/validation → failed và attention. Redis mất được outbox/recovery khôi phục. Worker crash sau action commit trước step success dùng action idempotency để không lặp business write.
-
-## Acceptance và dependency
-
-[AC-08, AC-16, AC-17](../quality/acceptance.md); phụ thuộc Operations, command interfaces CRM/Agents/Sales/Chatflow; Workflow không viết bảng nghiệp vụ của chúng.
-
-## Mở rộng còn Draft
-
-Graph loop/parallel, nested workflow, compensation, version migration run, visual builder và lựa chọn engine khác cần ADR trước thêm capability.
-
-SRC-019 triển khai graph/definition/version APIs, durable starter selection, action ledger, leased/fenced steps và predicate polling. [Exact contract](../contracts/workflow.md). Chatflow/Sales ports mặc định fail closed tới SRC-020/021; test harness riêng không vào production. Run scanning bỏ lease/retry chưa due; wait polling xoay theo last_checked_at để tránh starvation.
-
-
-## SRC-034 implementation
-
-SRC-034 adds source-owned activity_revision and outbox notifications for verified Conversation-bound started/terminal transitions. Wait states are not pause events. Verification status and limitations: [task evidence](../tracking/details/SRC-034.md).
-
-UX-005 target action: update only Conversation classification/Next action fields via owning Chat port/API. Workflow/Chatflow may bind a fixed rule output or validated read-only Agent Assist proposal; the service actor, not Assist, performs the write. This is a PLAN-008 design item, not a primitive currently registered in the engine. [Scope](../ux/agent-assist-response.md).
+[Acceptance](../quality/workflow-platform-acceptance.md) kiểm event dedup, routing race, current rights, Human wait/resume, unknown effect và retained runs. [Implementation plan](../planning/workflow-platform.md) ghi source gaps. Chatflow code/data is retired under CHG-20261021-08. Historical Workflow graphs remain evidence; retired nodes cannot be published or executed. See [retirement](../contracts/legacy-chatflow.md).

@@ -3,7 +3,7 @@ import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {parseEnv} from 'node:util';
 import {randomUUID} from 'node:crypto';
 import {chromium,expect} from '@playwright/test';
-import {fixtureId} from '../apps/backend/dist/modules/identity/seed.js';
+import {fixtureId} from '../services/core-baseline/dist/modules/identity/seed.js';
 import {defaultRecordPage} from '../packages/contracts/dist/index.js';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';

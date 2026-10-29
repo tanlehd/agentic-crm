@@ -1,5 +1,9 @@
 # Roadmap và backlog
 
+**Scope hiện hành CHG-20261023-19 / ADR-029:** [Nghiệm thu theo owner](../governance/service-delivery-scope.md) áp dụng cho mọi mốc service. API/producer/local consumer và runtime cutover thuộc service đó; downstream business E2E có owner/backlog riêng. D3 không chờ hoàn thiện Routing/Workflow/Sales/Reporting, chỉ cần contract/compatibility và writer safety liên quan Chat. [Bàn giao consumer](../planning/chat-extraction/consumer-handoff.md); D4 chưa mở. Mỗi rollout chỉ tác động các unit cần đổi đã liệt kê.
+
+[Tầm nhìn sản phẩm](vision.md) bao phủ dữ liệu khách hàng và hoạt động Marketing/Sales/Customer Service trên nền tảng có Workflow và AI Agent. Các milestone và mock Messenger slice dưới đây là cách chia triển khai, không quy định hội thoại là đầu vào bắt buộc. Phạm vi phát triển theo [service catalog](../services/README.md); ưu tiên và trạng thái hiện hành lấy từ [tracker](../tracking/tasks.md) và [checkpoint](../tracking/checkpoint.md). Các ghi chú có ngày là lịch sử kế hoạch.
+
 **Ưu tiên tiếp theo2026-10-15 / CHG-20261015-02:** [No-code Object Platform](../planning/no-code-object-platform.md), R1 Object & Properties/ERD/Agent Workspace, R2 connected Reporting, R3 custom-object Flow. Đây là lát cắt M5 dựa M1 đã có; source chỉ bắt đầu sau exact gates, không tự promote module Draft khác. Status chi tiết ở tracker; các ghi chú ưu tiên cũ bên dưới là lịch sử.
 
 **2026-10-12 / CHG-20261012-06:** User accepted early API-backed UI. [PLAN-022H](../contracts/reporting-authoring.md) scopes source/model/fields/axes/flat filters/chart/pivot/private draft/CSV over delivered APIs. SRC-064 is the sole active source task; SRC-059 requeued READY, incomplete scope/evidence preserved. Full SRC-060 follows SRC-059 and SRC-064; no publish/dashboard/drilldown completion claim. No database changes.
@@ -19,10 +23,10 @@ CHG-20261007-12: ưu tiên [CRM base](../planning/crm-base-outcomes.md) trước
 |---|---|---|
 | M0 — Documentation baseline | Bộ tài liệu hiện tại, ERD, contracts, ADR, fixtures | Link hợp lệ, traceability REQ→design→AC, không lẫn Draft với Ready |
 | M1 — Foundation | Tenant/OIDC, seat/role/team, registry, Contact/Lead, custom object, audit/outbox | AC-01…04, AC-12, AC-14; migration từ DB trống; hai tenant |
-| M2 — Mock vertical slice | Mock Messenger, inbox, routing, Workflow/Chatflow, mock AI, Lead acceptance | AC-05…09, AC-15…18; restart/retry và handoff end-to-end |
+| M2 — Mock vertical slice | Mock Messenger, inbox, routing, Workflow, mock AI, Lead acceptance | AC-05…09, AC-15…18; restart/retry và handoff end-to-end |
 | M3 — Real integrations | CRM Connectors/routing thật, AI Agent provider setup (Meta Business Agent case study), message đa nền tảng và theo dõi hiệu suất | Spec connector/provider được nâng Ready; sandbox credential, signature, rate limit, outbound reconciliation được kiểm thử |
 | M4 — Revenue & service | Deal/customer, Appointment, Google Ads lead form, Ticket | Hoàn thiện thiết kế module Draft; AC-03 phần Deal, AC-10, AC-13 |
-| M5 — Configurable platform | Visual workflow/chatflow, form/view builder, custom reports, template ngành | Version/migration metadata, reporting ACL, fan-out join và publish validation; AC-04 nâng cao, AC-11 |
+| M5 — Configurable platform | Visual workflow, form/view builder, custom reports, template ngành | Version/migration metadata, reporting ACL, fan-out join và publish validation; AC-04 nâng cao, AC-11 |
 
 ## Backlog triển khai theo dependency
 
@@ -35,7 +39,7 @@ CHG-20261007-12: ưu tiên [CRM base](../planning/crm-base-outcomes.md) trước
 | B-05 | Channel normalization + mock intake + identity resolution | B-03, B-04 | [Channels](../modules/channels.md) |
 | B-06 | Conversation, Message, owner CAS, inbox UI | B-05 | [Conversation](../modules/conversation.md) |
 | B-07 | Agent policy, routing, mock runtime, handoff | B-06 | [Agents](../modules/agents.md) |
-| B-08 | Workflow/Chatflow definitions, durable runs, wait/resume | B-04, B-07 | [Workflow](../modules/workflow.md), [Chatflow](../modules/chatflow.md) |
+| B-08 | Workflow definitions, durable runs, wait/resume | B-04, B-07 | [Workflow](../modules/workflow.md), [Workflow](../modules/workflow.md) |
 | B-09 | Qualify Lead, Sale handoff/acceptance UI | B-03, B-08 | [Sales](../modules/sales.md) |
 | B-10 | Full mock fixture replay + failure injection | B-09 | [Acceptance](../quality/acceptance.md) |
 

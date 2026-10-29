@@ -252,12 +252,12 @@ Ví dụ synthetic: Page P phục vụ dòng A/B. Ad A1 và post P1 map sang dò
 
 | Khả năng | Evidence hiện tại | Khoảng cách với đề xuất |
 |---|---|---|
-| Eligibility/round-robin/transfer/takeover | [Module](../modules/agents.md), [routing contract](../contracts/routing.md), [source routing](../../apps/backend/src/modules/agents/routing.ts) | Human capacity hiện unlimited; chưa có business skill catalog/matching |
-| Capacity ledger | [Dictionary](../data/dictionary.md), [capacity source](../../apps/backend/src/modules/agents/capacity.ts) | Đếm AI execution running; không phải Human conversation capacity |
+| Eligibility/round-robin/transfer/takeover | [Module](../modules/agents.md), [routing contract](../contracts/routing.md), [source routing](../../services/core-baseline/src/modules/agents/routing.ts) | Human capacity hiện unlimited; chưa có business skill catalog/matching |
+| Capacity ledger | [Dictionary](../data/dictionary.md), [capacity source](../../services/core-baseline/src/modules/agents/capacity.ts) | Đếm AI execution running; không phải Human conversation capacity |
 | Không có ứng viên | `routing_attention`, owner null/team target | Chưa là queue có enqueue order/deadline/drain-on-capacity cho Human |
-| Lượt xử lý | [Acquisition source](../../apps/backend/src/modules/conversation/acquisition-storage.ts), [identity contract](../contracts/conversation-identity.md) | Có `acquisition_session.opened`; chưa kết nối general session routing |
-| Workflow assignment | [Engine](../../apps/backend/src/modules/workflow/engine.ts), [graph](../../apps/backend/src/modules/workflow/graph.ts) | Trigger hiện conversation.created/need.assessed, node assign_owner gọi round-robin; chưa có durable wait for assignment |
-| Follow-up route | [Need recovery](../../apps/backend/src/modules/conversation/need-recovery.ts) | Đã mở lượt/route ở đường recovery riêng; phải chống chạy kép khi thêm session subscriber |
+| Lượt xử lý | [Chat ingress](../../services/chat/src/ingress-message.ts), [identity contract](../contracts/conversation-identity.md) | Có `acquisition_session.opened`; native Chat sở hữu session; xem tracker cho runtime cutover |
+| Workflow assignment | [Engine](../../services/core-baseline/src/modules/workflow/engine.ts), [graph](../../services/core-baseline/src/modules/workflow/graph.ts) | Trigger hiện conversation.created/need.assessed, node assign_owner gọi round-robin; chưa có durable wait for assignment |
+| Follow-up route | [Workflow Chat port](../../services/core-baseline/src/modules/workflow/chat-port.ts) | Legacy recovery đã gỡ; native consumer integration chưa nghiệm thu trả unavailable, thuộc backlog Workflow |
 | Inbox/views | [Research trước](agent-workspace-queues-views.md), [Custom Inbox](../contracts/custom-inbox-builder.md) | Saved-query/share không là dispatcher hoặc workload ledger |
 
 Đặc biệt: `conversation.created` không có nghĩa mỗi `session_id` mới. Không sửa semantics event cũ để giả hỗ trợ trigger mới. Phải chốt versioned event/enrollment và compatibility trước code. Giữ một owner authority trên Chat/registry trong baseline; lịch sử session dùng snapshots, không thêm một owner độc lập trên WorkItem.

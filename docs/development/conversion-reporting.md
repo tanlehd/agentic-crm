@@ -25,7 +25,7 @@ Danh sách **Việc cần xem xét để chuyển đổi** mở Inbox/Lead/Deal 
 
 Reporting migration006 mở rộng CHECK của catalog metadata, không thêm bảng/cột nghiệp vụ. Dùng runner chuẩn `node scripts/reporting-db.mjs --test` và `node scripts/reporting-db.mjs`; backup/fingerprint/rerun của lượt triển khai ở evidence. Không sửa migration đã chạy hoặc reset database. CRM giữ version35, Reporting6.
 
-Kiểm tra bằng Node24.21.0 trong `.local/node-v24.21.0-win-x64/node.exe`: `scripts/conversion-reporting-test.mjs`, `scripts/conversion-reporting-storage-test.mjs`, `scripts/conversion-reporting-browser.mjs`. Native test dùng retained native_seed_test và fixture Human Routing; browser dùng local Alpha admin/mock ingress. Các script giữ synthetic fixtures, khôi phục quyền tạm và gỡ target synthetic khỏi report hiện hành sau kiểm tra. Không chạy với production.
+T09 đã xoá `conversion-reporting-test.mjs` cùng baseline SQL adapter. Kiểm tra model/query bằng `services/reporting/tests/conversion.test.ts`, stage/operations tests; connected adapter integration và browser acceptance cần hoàn thiện tại Reporting trước khi chạy lại storage/browser flow. Existing reports/history giữ nguyên; source chưa nối trả `CONNECTED_SOURCE_UNAVAILABLE`, không thay bằng dữ liệu rỗng.
 
 Nguồn cần report.run và read/all trên Conversation, Contact, Lead, Deal, cùng quyền read/filter cho field; export cần quyền riêng. Thiếu quyền thì nguồn không khả dụng, không trả tỷ lệ 0. Mỗi query đọc snapshot hiện tại qua owning-module ports; không SQL xuyên service.
 

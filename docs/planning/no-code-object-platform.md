@@ -1,6 +1,6 @@
 # No-code CRM Object Platform — PLAN-028
 
-Implementation update CHG-20261015-03: PLAN-028A/SRC-073/074 DONE bounded catalog/config/Object & Properties/ERD/Workspace. [Exact implemented contract](../contracts/object-platform-r1.md) và [evidence](../tracking/details/SRC-074.md). Remaining lifecycle/unlink/reverse-label/dependency/backfill ở PLAN-028E; R2/R3 giữ gates. Các mô tả toàn bộ mục tiêu phía dưới vẫn là plan, không runtime claim.
+Implementation update CHG-20261015-03: PLAN-028A/SRC-073/074 DONE bounded catalog/config/Object & Properties/ERD/Workspace. [Exact implemented contract](../contracts/object-platform-r1.md) và [evidence](../tracking/details/SRC-074.md). Remaining metadata compatibility/unlink/reverse-label/dependency/backfill ở PLAN-028E; R2/R3 giữ gates. Các mô tả toàn bộ mục tiêu phía dưới vẫn là plan, không runtime claim.
 
 2026-10-15 · Owner: Codex · CHG-20261015-02. **Product/architecture plan; chưa Ready cho source mới.** Đây là kế hoạch ưu tiên tiếp theo theo yêu cầu người dùng, mở rộng nền M1 thay vì xây registry thứ hai. Exact contracts, table designs và acceptance gates ở PLAN-028A…D phải hoàn tất trước source tương ứng. Task status chỉ authoritative tại [tracker](../tracking/tasks.md).
 
@@ -18,7 +18,7 @@ Ví dụ nghiệm thu xuyên suốt: **Service Request** liên kết Contact và
 
 | Phần | Có trong source/evidence | Kế hoạch bổ sung |
 |---|---|---|
-| Metadata | SRC-010/011: object_type, property_definition, association_type; tám scalar types, immutable key/type, typed index, CAS | Catalog hợp nhất standard/custom, lifecycle/dependency usage, publication metadata và index/backfill có kiểm soát |
+| Metadata | SRC-010/011: object_type, property_definition, association_type; tám scalar types, immutable key/type, typed index, CAS | Catalog hợp nhất standard/custom, compatibility/dependency usage, publication metadata và index/backfill có kiểm soát |
 | Admin | `apps/web/app/crm/metadata.tsx`: create object/property, đổi label, form/view, association type | Trang Object & Properties, settings tabs, ERD, wizard, placement và impact preview |
 | Records | SRC-011/012/013: generic custom CRUD, Contact/Company/Activity, association và scoped query | Workspace menu/config, usable list/detail/related lists, lookup picker; giữ owner command cho domain |
 | Workflow | SRC-065 canonical catalog + typed validator; SRC-066/067 M2 CMS/canvas | Custom object producer/enrollment/actions chưa có; PLAN-024B…E vẫn bắt buộc |
@@ -66,7 +66,7 @@ Không sửa wire M1 hoặc diễn giải lại workflow-catalog v1. Adapter com
 
 | Gate/task | Deliverable và điều kiện xong |
 |---|---|
-| PLAN-028A | Exact metadata/lifecycle/capability/association/UX contract; inventory từng standard owner; OpenAPI/schema, full table templates nếu cần, compatibility, index/backfill, permission matrix và R1 tests. Dependency PLAN-028 |
+| PLAN-028A | Exact metadata/capability/association/UX contract; inventory từng standard owner; OpenAPI/schema, full table templates nếu cần, compatibility, index/backfill, permission matrix và R1 tests. Dependency PLAN-028 |
 | SRC-073 | Catalog/metadata/association backend extensions theo PLAN-028A; preserve existing IDs/records/indexes, migration forward nếu cần |
 | SRC-074 | Object & Properties + ERD + Agent Workspace placement/renderer và R1 native/browser gate; dependency SRC-073 |
 | PLAN-028B | Exact CRM connected producer/snapshot/event/query/ACL + Reporting dynamic model plan; dependency SRC-074. Chốt scope overlap PLAN-022/SRC-049 trước source |
@@ -82,7 +82,7 @@ SRC-059 còn drilldown/metric scope được hoàn tất theo gate riêng trư�
 
 | Rủi ro | Quyết định/gate |
 |---|---|
-| Schema đổi phá report/run | Immutable IDs/manifests, dependency impact, deprecate trước retire, explicit upgrade |
+| Schema đổi phá report/run | Immutable IDs/manifests, impact của fields thực sự được dùng và explicit compatibility upgrade |
 | Query N:N nhân số tiền/số record | Root grain, EXISTS/collection semantics, preaggregation; reject ambiguous measure/path |
 | UI thấy object nhưng adapter không hỗ trợ | Capability per owner/action/property, disabled với lý do; no false success |
 | Thu hồi quyền nhưng cache/snapshot còn dữ liệu | Current authorization ở discovery/query/delivery/export/action; cache bind revisions và fail closed |

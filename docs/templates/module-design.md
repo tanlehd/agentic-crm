@@ -4,15 +4,15 @@ Status: Draft. Milestone: M?. Requirements: REQ-?.
 
 ## Mục tiêu và phạm vi
 
-Mục tiêu, capability của phiên bản này, phần hoãn và dependency.
+Mục tiêu, capability của phiên bản này, dữ liệu/command do module sở hữu, phần ngoài phạm vi và dependency thực sự cần cho use case. Liên kết service descriptor trong docs/services; không sao chép state của service khác.
 
 ## Actor và quyền
 
 Actor, seat/entitlement, permission action, record scope và field policy.
 
-## Use case và state machine
+## Use case và hành vi
 
-Happy path, trạng thái bắt đầu/kết thúc, transition, trigger, guard và hành động.
+Nêu người sử dụng, tác vụ thực tế và kết quả. Chỉ thêm state machine nếu use case cần trạng thái bền vững; mỗi state/transition phải có ý nghĩa và trigger rõ. Create/update là thao tác, không tự biến thành state. Không mặc định archive/dependency drain cho mọi entity.
 
 ## Entity và invariant
 

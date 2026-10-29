@@ -1,5 +1,11 @@
 # Docker: đóng gói, môi trường và nghiệm thu
 
+SRC-091: Reporting container3004 active locally; Connector image builds independently and has API/worker readiness/retained operations acceptance. [Rollout commands and rollback](../development/phased-service-rollout.md); main Connector still inactive, no production cutover. Service-owned data rules preserved.
+
+## Independent Reporting package — SRC-090
+
+Use the [Reporting container runbook](../development/reporting-container.md) and standalone compose.reporting.yaml for build/test/operations. It does not merge with or mutate baseline Compose volumes and never runs migrations on startup. [Audited topology](deployment-topology.md) distinguishes Docker infrastructure from host applications and future service targets.
+
 SRC-038 đã bỏ Keycloak khỏi runtime. Native MySQL auth và host development theo [runbook](../development/native-auth.md). Các mốc scaffold phía dưới là lịch sử.
 
 Status: SRC-003 scaffold đã implement/test ngày 2026-10-03. Web/API/worker/gateway/MySQL/Redis/Keycloak và contract test runner đã chạy; SRC-004 bổ sung migrate/provision và MySQL kernel tests; SRC-005 thêm portable verify/CI adapter; SRC-009 thêm seed Identity Alpha/Beta; SRC-010 thêm migration v6 và registry fixture v2 qua migration one-shot. Xem [runbook thực tế](../development/local.md).

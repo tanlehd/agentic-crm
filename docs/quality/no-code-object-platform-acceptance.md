@@ -2,7 +2,7 @@
 
 ## SRC-080 / record page acceptance
 
-Exact [RP-01…08](../contracts/record-pages.md): independent detail/preview defaults; team CRUD/assignment/priority/fallback; card builder and save/undo/dirty behavior; actual CRM/Inbox consumers; live tenant/field/record rights and CAS; legacy form/view compatibility; preserved forward32; desktop/mobile/keyboard/error states. [Executed evidence](../tracking/details/SRC-080.md). Broader no-code lifecycle and connected consumers below retain their separate gates.
+Exact [RP-01…08](../contracts/record-pages.md): independent detail/preview defaults; team CRUD/assignment/priority/fallback; card builder and save/undo/dirty behavior; actual CRM/Inbox consumers; live tenant/field/record rights and CAS; legacy form/view compatibility; preserved forward32; desktop/mobile/keyboard/error states. [Executed evidence](../tracking/details/SRC-080.md). Concrete metadata operations and connected consumers below retain their separate scopes.
 
 ## SRC-079 / settings layout acceptance
 
@@ -16,7 +16,7 @@ Exact [RP-01…08](../contracts/record-pages.md): independent detail/preview def
 
 Execution evidence và giới hạn tại [SRC-079](../tracking/details/SRC-079.md); không đóng toàn bộ OP-01…19 từ layout này.
 
-2026-10-15 · **Full scenarios chưa hoàn tất.** Bounded SRC-073/074 có [acceptance sub-scope/evidence](../tracking/details/SRC-074.md): catalog/config/ERD/record/link/ACL/CAS/upgrade đã test; R2/R3/lifecycle/capacity còn NOT_RUN. Bảng dưới là full test plan, không tự đồng nghĩa PASS. [Plan](../planning/no-code-object-platform.md), [contract direction](../contracts/no-code-object-platform.md). AC-04/M5 và AC-11 extension; không đóng toàn milestone từ docs.
+2026-10-15 · **Full scenarios chưa hoàn tất.** Bounded SRC-073/074 có [acceptance sub-scope/evidence](../tracking/details/SRC-074.md): catalog/config/ERD/record/link/ACL/CAS/upgrade đã test; R2/R3/remaining metadata operations/capacity còn NOT_RUN. Bảng dưới là full test plan, không tự đồng nghĩa PASS. [Plan](../planning/no-code-object-platform.md), [contract direction](../contracts/no-code-object-platform.md). AC-04/M5 và AC-11 extension; không đóng toàn milestone từ docs.
 
 Fixture synthetic giữ lại qua reruns: tenant Alpha/Beta, admin/Human agent/viewer/AI/service actor hiện có hoặc fixture riêng được provision idempotent; Service Request và Service Offering theo keys namespaced, Contact association; quyền temporary phải restore. Không reset DB/Redis.
 
@@ -37,7 +37,7 @@ Fixture synthetic giữ lại qua reruns: tenant Alpha/Beta, admin/Human agent/v
 | OP-13 / R2–3 | Revoke object/field/filter/export/execute quyền sau cache/run creation | Query/aggregate/export/step/resume deny theo current rights; tenant super-admin policy đúng, AI/service không thừa hưởng |
 | OP-14 / R3 | Request status chuyển approved, duplicate event và unrelated later update | Enrollment theo pinned before/after; re-entry modes đúng; one action per stable receipt |
 | OP-15 / R3 | Flow get related Contact, create Activity/update request, fault/partial write | Owner commands + scalar/collection guards; no standard state bypass; partial receipts/reconcile chính xác |
-| OP-16 / R3 | Delay restart, revoke/archive/date edit khi đang wait, publish new version | Persisted timer/pinned run; defined cancel/reschedule; no duplicate side effect; new version không thay old run |
+| OP-16 / R3 | Delay restart, revoke/owner-declared resource unavailable/date edit khi đang wait, publish new version | Persisted timer/pinned run; defined cancel/reschedule; no duplicate side effect; new version không thay old run |
 | OP-17 / R3 | Self-trigger/A→B→A, event sequence gap, crash after effect before ACK | Bounded anti-cycle, gap handling, idempotent recovery; no false exactly-once claim |
 | OP-18 / release | Retained upgrade/rerun/restart, old M1 metadata/mock reports/M2 runs | IDs/data/rights giữ; migrations checksum unchanged; compatibility and restore evidence |
 | OP-19 / release | Hai tenant cùng keys với configured catalog/query/graph limits | Isolation, overflow/timeouts/cancel and pagination; measured capacity budgets trước release |

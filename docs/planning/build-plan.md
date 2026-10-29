@@ -1,69 +1,12 @@
 # Kế hoạch sinh source code M1–M2
 
-SRC-087 / 2026-10-18: [Stage funnel](../contracts/stage-funnel-reporting.md) implemented in the bounded monolith slice: Conversation/Lead/Deal event source, ordered distinct funnel, entry/exit visits and paired duration/current age; eight metrics and six saved-report widgets. Sales owns append-only `sales_stage_event` (physical agentic_crm, target crm_sales), Chat owns process/progress/history, CRM owns record metadata; Reporting owns definitions/catalog pins in schema7. No business facts persisted in Reporting. [Runbook](../development/stage-funnel-reporting.md) · [Evidence](../tracking/details/SRC-087.md). Earlier PLAN-049 proposal-only statements remain historical; exact exclusions follow the implemented contract.
+SRC-109/T01–T09 DONE, Codex 2026-10-27. D3 Human-first 6/6; independent local delivery3/14 (Reporting, Connector, Chat). Legacy Conversation graph retired; main baseline46/crm_chat4, both Chat tenant gates active epoch2 after accepted post-write freeze/forward recovery. Source data and original receipts retained. Production, AI native, live-provider delivery and other-owner business consumers remain outside this acceptance. No commit/push/reset.
 
-2026-10-18 / PLAN-049 / CHG-20261018-01: [Stage funnel audit và HubSpot research](stage-funnel-reporting.md) xác nhận chưa có chart/template stage-event funnel trong builder. Conversation có stage ledger; Lead/Deal thiếu full transition history. Đề xuất owner facts → ordered funnel/visit metrics → saved reports/widgets, tách event window/cohort và stage exit/drop-off. Research-only; PLAN-050 TODO exact gate trước source, không tự mở configurable Sales pipeline M4 hoặc thay ưu tiên backlog hiện có.
-
-2026-10-17 / CHG-20261017-08: user authorized coding; PLAN-048 exact contract DONE before source, SRC-086 now DONE bounded connected conversion/goal/dashboard slice. [Evidence](../tracking/details/SRC-086.md). Reporting forward006 CHECK only, shared Reporting core and owner ports. Historical PLAN-048 TODO below superseded; broad SRC-049/SRC-075/PLAN-028B and other backlog unchanged.
-
-2026-10-17 / PLAN-047 / CHG-20261017-07: [Conversion and operations review](conversion-operations-review.md) xác minh base lineage/context hiện có; connected Operations chưa cung cấp business funnel hoặc goal. Review-only, không đổi source/DDL. PLAN-048 TODO là đề xuất exact scoped CRM conversion/goal/drilldown gate; phối hợp PLAN-028B/SRC-075 và SRC-049, không buộc CRM funnel chờ Meta Insights. Chưa claim implementation; các backlog khác giữ nguyên.
-
-2026-10-17 / CHG-20261017-06: PLAN-046 exact connected Operations gate Ready; SRC-085 generalizes performance into objects/properties and existing Dashboard/Report Builder. Reporting forward005 metadata pin only; generic custom-object ingestion/durable connected runs remain separate. [Contract](../contracts/operations-reporting.md).
-
-2026-10-17 / CHG-20261017-05: user authorized PLAN-045/SRC-084. [Human routing](../contracts/human-routing.md) scoped R1 implemented/tested with screenshot acceptance; exact monolith gate completed,9new tables forward35. Broader visual/custom rule/overflow/extraction/report-builder gates remain separate; unrelated source backlog preserved.
-
-2026-10-17 / CHG-20261017-04: PLAN-044 delivers [logical Omni-style routing ERD](../data/conversation-routing-erd.md), ownership, candidate-table review and future acceptance scenarios. Design-only; no new implementation claimed. Next routing step is exact API/DDL/permissions/cutover gate; existing source backlog priority remains unchanged.
-
-2026-10-17 / PLAN-040: [Assignment research](../references/conversation-assignment.md) compares HubSpot/Salesforce/Intercom/respond.io/Zendesk and proposes employee skills, per-session routing, Human capacity queues and shared workflow dispatch. Research-only, not a Ready implementation gate; source dependencies and existing backlog priority unchanged.
-
-2026-10-17 / CHG-20261017-02: PLAN-039 tổ chức [nhóm tính năng theo mục tiêu và người sử dụng](../product/capability-map.md) làm trục cho tài liệu/UX/demo/presentation. Documentation-only; không đổi source dependency, service ownership, runtime scope hoặc backlog PLAN-028E.
-
-2026-10-17 / CHG-20261017-01: PLAN-038/SRC-083 DONE scoped [Custom Inbox builder](../contracts/custom-inbox-builder.md): saved conversation filter preview/lifecycle/share UI and additive native discovery on existing Chat storage. [Evidence](../tracking/details/SRC-083.md); no migration. Remaining full workspace release/general filters and PLAN-028E remain separate.
-
-2026-10-16 / CHG-20261016-03: PLAN-034 exact gate DONE; SRC-080 triển khai [record detail/preview + Default/team views](../contracts/record-pages.md), forward32 chỉ thêm presentation metadata. [Runbook](../development/record-pages.md). PLAN-028E/connected consumers giữ nguyên dependency và phạm vi.
-
-2026-10-16 / CHG-20261016-02: user ưu tiên layout Object & Properties. SRC-079 phụ thuộc SRC-074/SRC-078 DONE; [UX Ready](../ux/object-properties-workspace.md) dùng catalog/commands hiện tại, không migration. PLAN-028E và connected consumers giữ gate riêng.
-
-**Implemented 2026-10-16 / CHG-20261016-01:** PLAN-033A exact gate DONE; SRC-078 delivers [Thread/Conversation classification, transfer and contributions](../development/thread-conversation.md) over existing stage/Lead/Deal runtime. Forward31 preserves old IDs. Ticket/connected Reporting and PLAN-028E backlog remain separately gated.
-
-**Next priority2026-10-15 / CHG-20261015-02:** [PLAN-028](no-code-object-platform.md) lập kế hoạch mở rộng M1 metadata thành no-code CRM: Object & Properties/ERD/Workspace → connected custom-object Reporting → custom-object Workflow. PLAN-028A…D exact gates và SRC-073…077 tuần tự; SRC-059/PLAN-024B…E còn prerequisites, không đổi DONE/evidence của task cũ. SRC-073/074 bounded model/workspace implemented; [runbook](../development/object-platform.md), [evidence](../tracking/details/SRC-074.md). No active source task; PLAN-028E preserves remaining R1, R2/R3 pending.
-
-**Current 2026-10-14 / CHG-20261014-05:** User authorized implementation after PLAN-027 review. Dashboard/Reports local slice is implemented: Reporting-owned schema4 (six new tenant-scoped tables;13 prior business tables preserved), native APIs, atomic templates and separate UI. [Runbook](../development/dashboard-workspace.md) · [Backend evidence](../tracking/details/SRC-071.md) · [UI evidence](../tracking/details/SRC-072.md). Earlier design-only/phase statements below are historical; broad Reporting milestones remain in tracker.
-
-**2026-10-14 / CHG-20261014-04 / PLAN-027:** [Dashboard/Reports redesign](dashboard-workspace.md) là bộ đặc tả để review trước code theo lựa chọn người dùng. Menu riêng, dashboard home/template creation/saved-report widgets và Report Library/viewer/editor. Proposed sequence PLAN-027A executable contract gate → SRC-071 own-service backend/storage → SRC-072 frontend/native acceptance; chưa claim source task. SRC-059/060/061/062 và SRC-064 giữ scope/status trong tracker; không tính design vào tính năng đã chạy.
-
-CHG-20261013-04: SRC-067 DONE scoped, Codex 2026-10-13, follows completed SRC-066 with a [visual canvas](../contracts/workflow-visual-builder.md). [Evidence](../tracking/details/SRC-067.md): real browser graph editing/save/reopen, desktop/mobile and332unit PASS. Existing M2 APIs, Alpha permissions and distributed Kafka/API/Core gates remain unchanged; no active source task.
-
-**2026-10-13 / CHG-20261013-02:** User requested Workflow implementation. SRC-064 requeued READY, progress/Alpha gate retained. PLAN-024A/SRC-065 delivered [native canonical catalog and typed Core draft validator](../development/workflow-foundation.md); exact Kafka/change-image design PLAN-024B is next. Runtime/persistence/CMS not completed by this slice. No source task currently active.
-
-**2026-10-13 / PLAN-024 / ADR-022:** [Workflow Web/API/Core architecture và design sequence](workflow-platform.md), Kafka CRM object change, canonical CRM Base metadata, multi-node data/routing/communication follow-up. Kiến trúc thiết kế trước, chưa claim source/SRC-042 hoặc đóng PLAN-009. Gates A metadata → B Kafka/enrollment → C API/Core/DDL → D actions → E CMS UX/cutover. SRC-064 giữ implementation IN_PROGRESS; không task triển khai song song.
-
-**2026-10-12 / CHG-20261012-06:** User accepted early API-backed UI. [PLAN-022H](../contracts/reporting-authoring.md) scopes source/model/fields/axes/flat filters/chart/pivot/private draft/CSV over delivered APIs. SRC-064 is the sole active source task; SRC-059 requeued READY, incomplete scope/evidence preserved. Full SRC-060 follows SRC-059 and SRC-064; no publish/dashboard/drilldown completion claim. No database changes.
-
-**2026-10-12 / CHG-20261012-05:** PLAN-022G [durable run contract/table designs](../contracts/reporting-runs.md) implemented as SRC-059 lifecycle slice: owner/current native ACL,lease attempts,cancel,pinned snapshot/result persistence in own schema3. [Evidence](../tracking/details/SRC-059.md). No automatic worker; exact drilldown design next. SRC-059 remains sole active source task, SRC-060 UI unclaimed.
-
-**2026-10-12 / CHG-20261012-04:** PLAN-022F adds [native mock query/CSV contract](../contracts/reporting-query-api.md), implemented as SRC-059 second phase with explicit complete-source grants and live result-delivery checks. [Evidence](../tracking/details/SRC-059.md). SRC-059 remains the sole active source task; exact durable run/drilldown design is next. No connected ACL/UI completion claim.
-
-**2026-10-12 / CHG-20261012-03:** PLAN-022E scopes the [internal mock query core](../contracts/reporting-query.md); SRC-059 IN_PROGRESS now delivers executable26metrics/group/pivot/authorization ports/cache/CSV. [Evidence](../tracking/details/SRC-059.md). Remaining exact native query/source policy and run/drilldown gates precede their implementation; no UI completion claim, no second active source task.
-
-**2026-10-12 / CHG-20261012-02:** PLAN-022D/SRC-058 add [typed synthetic adapter and durable projection generations](../contracts/reporting-projections.md),own schema2; G1 dataset and replay/checkpoint/tombstone/activation isolation tested. Next exact query/native source ACL gate before SRC-059, no UI/runtime KPI completion claim. [Evidence](../tracking/details/SRC-058.md).
-
-**2026-10-12 / CHG-20261012-01:** PLAN-022C scopes [private draft persistence/native ACL](../contracts/reporting-persistence.md); SRC-057 implements own Reporting MySQL schema/API and native BFF. Broader PLAN-022 remains the projection/query/publish/UI gate. Next complete exact synthetic datasource/projection contract before SRC-058; one source task at a time. [Evidence](../tracking/details/SRC-057.md).
-
-**2026-10-10 / PLAN-022A:** [Report Builder plan](report-builder.md) bổ sung mock-first sequence PLAN-022 → SRC-057…062, sau đó SRC-049 connected integration (còn cần SRC-051/053/055). Datasource/model/attribute/relation/metric catalog dùng chung cho chart/pivot/dashboard và templates. Đây là product planning, không mở source task thứ hai; SRC-051 hiện vẫn IN_PROGRESS. Exact API/DDL/producer/ACL gates phải Ready trước source.
-
-**Implementation override CHG-20261010-02:** user requests sequential implementation; SRC-051 requeued READY, progress retained. PLAN-022B/SRC-063 delivers first scoped semantic catalog/validator kernel, then remaining PLAN-022 gates → persisted foundation SRC-057. No parallel source work, DB reset or scope completion claim for Marketing.
-
-**Current priority CHG-20261007-14:** Lead/Deal → organic Conversation→Lead→Deal won with value → organic Page report/release (SRC-045/046/052/050); then Marketing sync/campaign reports (SRC-051/049). Ticket/receipts follow separately. CHG-20261007-15: marketing reports measure conversion performance for resource, content/message and audience strategy; won value is a funnel outcome, receipts are independent. Exact scoped design: [organic Sales base](../contracts/organic-sales-base.md).
-
-
-Ưu tiên hiện hành CHG-20261007-14: [CRM base outcomes](crm-base-outcomes.md), scoped organic release → PLAN-011 Marketing exact design → SRC-051/049; Ticket/receipts và frameworks theo sau. M1–M2 dưới đây giữ nguyên evidence lịch sử. Lead từ Conversation có immutable system attribution, khác nguồn khai báo agent chọn.
-
-ADR-021/PLAN-007 supersedes Keycloak as future auth design: [native auth + schema plan](native-identity-data-plan.md). Các W0–W6/gates OIDC dưới đây ghi baseline lịch sử; task mới dùng CRM-owned MySQL authentication và [DB guideline](../data/database-guidelines.md).
-
-Status: Ready for implementation theo từng task và design gate. Baseline kế hoạch: 2026-10-02; scaffold/Docker SRC-001…003 đã có ngày 2026-10-03, trạng thái thực thi theo tracker.
+[Current Chat scope](chat-extraction/remaining-boundaries.md) · [Canonical step status](../tracking/tasks.md#plan-057--src-109-thread-steps). Workflow and other consumer business implementation are accepted by their owning services.
 
 ## Mục tiêu và chiến lược
+
+UI-20261029-01 / CHG-20261029-01: [Settings workspace](../ux/settings-workspace.md) gom điều hướng quản trị vào một nút Settings và ba nhóm sidebar. Scope Ready chỉ gồm layout, nối màn hiện có và Inbox Center scaffolds; không mở thêm provider hoặc persistence cho Conversation view. Dependency SRC-109 và UI-20261027-01 đã DONE; trạng thái/evidence tại tracker.
 
 Sinh source theo từng phần nhỏ, mỗi phần có thể kiểm thử và tiếp tục ở phiên khác. Đợt đầu đi đến M2 mock vertical slice; M3–M5 giữ trên roadmap, chỉ được triển khai sau khi thiết kế tương ứng được nâng Ready. Không đặt một ngày hoàn tất giả định cho toàn platform.
 
@@ -113,7 +56,7 @@ Tree chỉ mô tả đích, chưa là file đã tạo. Backend module chia domai
 | W2 — Identity và reliability | SRC-006…009 | Login thật qua Keycloak local, tenant context, seat/role/team, transactional audit/outbox/inbox |
 | W3 — CRM foundation | SRC-010…013 | Registry, custom object/index, Contact/Company/Activity, Lead domain cơ bản, Admin UI; M1 gate |
 | W4 — Inbound và hội thoại | SRC-014…017 | Mock intake, inbox, outbound intent, Human/AI assignment/handoff |
-| W5 — Agent và automation | SRC-018…021 | Mock runtime, durable Workflow/Chatflow, Lead qualification/handoff/acceptance APIs |
+| W5 — Agent và automation | SRC-018…021 | Mock runtime, durable Workflow, Lead qualification/handoff/acceptance APIs |
 | W6 — Demo và độ bền | SRC-022…025 | Sale UI, fixture đủ luồng, chaos/retry/race tests, build release và M2 gate |
 
 W2–W5 vẫn cập nhật UI theo khả năng backend đã có; không dựng tất cả màn hình bằng dữ liệu giả rồi gọi đó là end-to-end. Seed/sample data chỉ cho dev/test, có tên môi trường rõ.

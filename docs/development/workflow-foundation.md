@@ -1,5 +1,8 @@
 # Workflow foundation — SRC-065
 
+ADR-027: one Workflow service owns business automation. CHG-20261021-08 removes legacy Chatflow code, routes and data; historical identifiers in evidence are not supported runtime APIs. Current removal scope is documented in the retirement contract.
+
+
 Implemented: native canonical CRM metadata discovery and pure Core draft validation. [Contract](../contracts/workflow-catalog.md) · [Evidence](../tracking/details/SRC-065.md) · [Remaining platform plan](../planning/workflow-platform.md).
 
 ## Native discovery

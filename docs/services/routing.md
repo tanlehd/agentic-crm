@@ -1,61 +1,42 @@
 # Routing & Allocation
 
-SRC-085 / 2026-10-17: [Operations Reporting](../contracts/operations-reporting.md) cung cấp 6 read objects, 7 model và template dashboard trên core chung. Routing/Chat/Identity giữ quyền sở hữu facts, producer qua authorized monolith ports; Reporting chỉ lưu definitions/catalog metadata trong own schema5, không SQL/FK xuyên service. UI phân tích ở Dashboards/Reports; Routing giữ cấu hình và hành động điều phối. [Runbook](../development/operations-reporting.md).
+Human routing R1 có trong monolith; T04 native configuration/capacity và T06 reconciliation/dispatch, reply facts, public admin/mine read và reroute candidates đã kiểm thử. Operational consumer/scanner wiring và main cutover còn theo SRC-109; AI execution capacity là scope riêng.
 
-SRC-084: [Human routing R1](../contracts/human-routing.md) implements team skills, workload, durable waiting/event dispatch and operational report in current monolith; forward35. [Evidence](../tracking/details/SRC-084.md). This does not complete service extraction or distributed saga acceptance.
+## Trách nhiệm và dữ liệu sở hữu
 
-PLAN-044 / 2026-10-17: [Omni-style logical ERD](../data/conversation-routing-erd.md) proposes reusable skills, versioned queue/rules, work/queue entry/attempt/Human allocation and decision trace. Human occupancy spans queues and uses Chat owner CAS/reconciliation; agent_capacity_slot remains AI execution only. Logical design reviewed; exact API/DDL/cutover gate not Ready, no runtime expansion.
+Routing configuration, skill/eligibility matching, queue/rules/cursor, Human capacity reservation/allocation, attention và decision history.
 
-**Implemented additive slice SRC-078 / 2026-10-16:** [Thread / Conversation exact contract](../contracts/thread-conversation-implementation.md), PLAN-033A DONE. Thread legacy IDs/API remain stable; Conversation episode has optional custom fields and stage, event-time ownership/contributor history, and Related Lead/Deal actions with current permissions. Cross-team transfer preserves the episode; Ticket and connected Reporting remain gated. Physical forward31 stays in the baseline monolith; service extraction rules below remain unchanged.
+Chọn candidate, reserve workload, đề xuất assignment, xác nhận/release allocation từ terminal owner proof; cung cấp cấu hình và hành động điều phối.
 
-Status: Target architecture accepted direction — PLAN-005 / ADR-017. Service extraction/API/physical schema chưa Ready; không đồng nghĩa deployed. Module đích mới; chưa có service độc lập. · [Catalog](README.md) · [Cross-service rules](../contracts/service-boundaries.md).
+Schema đích: `crm_routing`, theo [schema catalog](../data/schema-catalog.md). Physical baseline/candidate được ghi trong contract và migration tương ứng.
 
-## Phạm vi và trách nhiệm
+## Ngoài phạm vi
 
-Eligibility/capability matching, round-robin/capacity reservation, assignment proposals và attention queues.
+Không sở hữu Conversation/Lead owner cuối cùng, không ghi database Chat/Sales. Không gộp Human workload với AI Runtime execution slot.
 
-Ngoài phạm vi: Không canonical owner store; không tự UPDATE Chat/Sales/CRM databases.
+## Giao tiếp với service khác
 
-## Kiến trúc bên trong
+| Bên liên quan | Hợp đồng trách nhiệm |
+|---|---|
+| Identity | Đọc principal/team/role eligibility hiện hành. |
+| Chat hoặc resource owner | Gửi assignment proposal; nhận authoritative owner revision/terminal proof. |
+| AI Runtime | Chỉ dùng capacity API khi scope AI đã triển khai. |
+| Reporting | Cung cấp workload/decision facts, không tạo reporting engine riêng. |
 
-Deploy unit đề xuất `services/routing` gồm NestJS API và worker entrypoints theo workload. Cấu trúc `domain`, `application`, `ports`, `adapters/http`, `adapters/events`, `adapters/persistence`, `migrations`, `tests`, `docs`. Domain không import database entity hoặc implementation của service khác. API/worker chỉ truy cập MySQL database và credentials riêng của service; module kernel dùng schema-local outbox/inbox/receipt/audit. Tham chiếu remote là ID có tenant/service/type, không cross-database foreign key. Đây là source layout đích, chưa tạo directory source rỗng.
+Business triggers/branch/follow-up thuộc [Workflow](workflow.md). Routing giữ thuật toán matching, queue/capacity và reconciliation; không vận hành một configurable business flow engine khác. Legacy automatic starters phải được chuyển quyền enrollment theo từng flow để tránh hai lần phân công.
 
-## Data model nội bộ và nguồn chuẩn
+## Quy tắc riêng
 
-Tên entities dưới đây là logical target model, không phải danh sách bảng đã migrate. Physical schema/DDL mỗi service phải chốt tại extraction task. Mọi application table có tenant_id NOT NULL theo [DB guideline](../data/database-guidelines.md); version/timestamps/retention theo loại entity. UUID opaque được giữ khi chuyển từ monolith.
+Chỉ owner service thắng CAS mới đổi owner. Reservation chưa xác nhận không là assignment thành công; stale release/confirm không ghi đè revision mới. Queue disable là cấu hình Routing, không tạo lifecycle cho Contact.
 
-| Entity / aggregate | Fields chính / quan hệ | Invariant / authority |
-|---|---|---|
-| routing_policy / routing_cursor | tenant_id,team_ref,capability,policy revision,last candidate | Policy/cursor local transaction |
-| assignment_operation / reservation | operation_id,resource service/id,expected owner revision,candidate,lease/fence,status | Reserve→propose→confirmed/rejected/expired; retry same operation key |
-| routing_attention | resource ref,reason,active,since,revision | Read projection, business resolution qua owning service |
+## Contract và evidence
 
-Mỗi service có local `outbox_event`, `consumer_inbox`, `idempotency_receipt`, `audit_entry` khi phát sinh mutation; key tenant+consumer+event hoặc tenant+actor+command+idempotency. Không dùng một bảng chung có multi-service writers. Local FK tenant-bound, cross-service reference được validate bằng API hoặc reconciled projection theo policy.
+- [Human routing](../contracts/human-routing.md)
+- [Native configuration](../contracts/routing-configuration-candidate.md)
+- [Human acceptance](../quality/t04-human-acceptance.md)
+- [Native dispatch evidence](../development/chat-routing-dispatch-candidate.md)
+- [Native public Routing reads](../development/routing-view-candidate.md)
+- [Native Human reroute](../development/routing-reroute-candidate.md)
+- [Operations reporting](../contracts/operations-reporting.md)
 
-## API, commands và events
-
-ResolveCandidates/ProposeAssignment tới Chat hoặc Sales hoặc CRM/Ticket authority; Identity eligibility API; Runtime capacity API. Consumes owner.changed/availability/capacity events; emits routing.assignment.proposed/attention.
-
-Các tên interface/event ở đây là logical proposals, chưa endpoint/schema được triển khai. Exact OpenAPI/JSON Schema, auth scopes, errors, versions, payload minimization và consumer contract tests thuộc PLAN-006 gate; legacy wire types giữ nguyên tới compatibility cutover. Không dùng DTO chung để import domain/service implementation.
-
-## Consistency, authorization và failure handling
-
-Winning assignment do resource owner CAS quyết định; reservation chưa confirmed không hiển thị owner mới. Race/out-of-order receipt không ghi đè revision cao hơn; release lease idempotent.
-
-Transaction chỉ local state+audit+outbox/inbox. Network call không giữ SQL transaction; remote action phải có operation key/status/reconciliation. Trace propagation không thay tenant authorization. Read/write luôn kiểm tenant và current rights; owner/grant projections không đủ làm authority cho side effect.
-
-## Vận hành và scale
-
-Partition theo tenant/team, bounded retries nếu candidate không eligible. Authority unavailable giữ unassigned/attention; không fail open.
-
-Owner vận hành là team sở hữu service (chưa gán người cụ thể). Bắt buộc readiness dependency-aware, liveness process-only, metrics latency/error/saturation/backlog, redacted tracing, restore drill và graceful shutdown leases. SLO/RPO/RTO và alert thresholds phải được chốt/test theo deployment gate; chưa có số liệu production để claim đạt.
-
-## Source mapping và lộ trình tách
-
-Hiện code routing trong agents kết hợp CRM CAS/capacity transaction. Tách policy computation trước, sau đó replacement reservation/commit protocol; không giữ global DB lock qua network.
-
-Rollback/cutover tuân [migration plan](../planning/microservices-migration.md): single writer, shadow read/hash reconciliation, durable event watermark; không dual-write thủ công, không sửa migrations1–18. Source implementation hiện hữu chỉ được nói DONE theo [tracker](../tracking/tasks.md).
-
-## Acceptance trước service Ready
-
-Own DB credentials không đọc được DB khác; API/consumer schemas và tenant ACL negative tests; duplicate/out-of-order/lost ACK; crash sau remote effect; permission/owner revoked; broker/downstream outage; poison event/DLQ replay; migrate/restore và compatibility với client/run phiên bản cũ. Thêm domain cases ở module hiện hữu; với Draft module phải chốt domain AC trước code. Chưa test service phân tán, tất cả gates này NOT_RUN.
+Evidence: SRC-084/085, SRC-109/T04. Trạng thái chuẩn ở [task tracker](../tracking/tasks.md); triển khai hiện tại ở [topology](../system/deployment-topology.md). Áp dụng [ranh giới chung](README.md#ranh-giới-chung); không suy feature hoặc migration mới từ tên entity trong catalog.

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFile,writeFile} from 'node:fs/promises';
 import {parseEnv} from 'node:util';
 import {connect} from './lib/reporting-database.mjs';
-import {databaseSource} from '../apps/backend/dist/kernel/database/data-source.js';
+import {databaseSource} from '../services/core-baseline/dist/kernel/database/data-source.js';
 const env=parseEnv(await readFile('.local/reporting.env','utf8')),c=await connect(env),checks=[];
 try{
  const [[w]]=await c.query("SELECT w.* FROM dashboard_widget w JOIN report_connected_catalog c ON c.tenant_id=w.tenant_id AND c.binding_id=w.binding_id AND c.catalog_hash=w.connected_catalog_hash WHERE c.adapter_id='native_stage_v1' LIMIT 1");assert(w);assert.equal(w.generation_id,null);checks.push('stage widget persists catalog pin with NULL mock generation');

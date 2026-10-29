@@ -2,7 +2,7 @@ import { chromium } from '@playwright/test';
 import assert from 'node:assert/strict';
 import { readFile,mkdir,writeFile } from 'node:fs/promises';
 import { parseEnv } from 'node:util';
-import { fixtureId } from '../apps/backend/dist/modules/identity/seed.js';
+import { fixtureId } from '../services/core-baseline/dist/modules/identity/seed.js';
 import { randomUUID } from 'node:crypto';
 const env=parseEnv(await readFile('.env','utf8')),origin=env.APP_ORIGIN;
 assert.equal(env.APP_ENV,'development');assert(['localhost','127.0.0.1'].includes(new URL(origin).hostname));

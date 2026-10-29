@@ -5,7 +5,7 @@ import {randomUUID} from 'node:crypto';
 import {chromium,expect} from '@playwright/test';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
-import {fixtureId} from '../apps/backend/dist/modules/identity/seed.js';
+import {fixtureId} from '../services/core-baseline/dist/modules/identity/seed.js';
 const env=parseEnv(await readFile('.env','utf8'));assert.equal(env.APP_ENV,'development');assert.equal(env.APP_ORIGIN,'http://localhost:18080');
 const origin=env.APP_ORIGIN,tenant=fixtureId('clinic_alpha'),schema=JSON.parse(await readFile('packages/contracts/schemas/session-progress.json','utf8')),ajv=addFormats(new Ajv({strict:true}));ajv.addSchema(schema);
 const browser=await chromium.launch({channel:'chrome',headless:true}),page=await browser.newPage({viewport:{width:1600,height:1100}}),checks=[],errors=[];page.setDefaultTimeout(25000);page.on('pageerror',e=>errors.push(e.message));await mkdir('artifacts/session-progress',{recursive:true});

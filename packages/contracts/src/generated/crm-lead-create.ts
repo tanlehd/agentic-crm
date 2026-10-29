@@ -14,7 +14,6 @@ export interface CrmLeadCreate {
     };
   };
   conversation_id?: string | null;
-  qualification_session_id?: null;
   declared_source?: null | "referral" | "website" | "facebook" | "phone" | "other";
   conversation_session_id?: string | null;
 }

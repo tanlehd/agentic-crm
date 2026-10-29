@@ -8,7 +8,7 @@ Tổ chức lại Inbox để agent chọn hàng chờ, đọc hội thoại, tr
 
 Ảnh người dùng gọi `agent_workspace_chat_sample` được lưu tại [agent_workspace_chat_layout_sample.png](agent_workspace_chat_layout_sample.png). Dùng cấu trúc và tỷ lệ thị giác của ảnh; khung đỏ, mũi tên và nhãn đen là chú thích, không đưa vào sản phẩm. Không sao chép tên, avatar, email, điện thoại hoặc nội dung hội thoại trong ảnh làm fixture.
 
-Nguồn hành vi: [Conversation](../modules/conversation.md), [Conversation API](../contracts/conversation.md), [routing](../contracts/routing.md), [rich messages](../contracts/rich-messages.md), [contact-bound compatibility](../contracts/contact-resolution-local.md), [channel configuration](../contracts/facebook-configuration.md), [Chatflow](../contracts/chatflow.md). Dữ liệu theo [dictionary](../data/dictionary.md), [ownership](../data/service-ownership.md) và [Chat service](../services/chat.md). UX không thay state machine, quyền, ownership hay service boundary.
+Nguồn hành vi: [Conversation](../modules/conversation.md), [Conversation API](../contracts/conversation.md), [routing](../contracts/routing.md), [rich messages](../contracts/rich-messages.md), [contact-bound compatibility](../contracts/contact-resolution-local.md), [channel configuration](../contracts/facebook-configuration.md), [Legacy conversational compatibility](../contracts/legacy-chatflow.md). Dữ liệu theo [dictionary](../data/dictionary.md), [ownership](../data/service-ownership.md) và [Chat service](../services/chat.md). UX không thay state machine, quyền, ownership hay service boundary.
 
 ## 2. Cấu trúc màn hình — UX-003 supersedes app rail
 
@@ -39,6 +39,8 @@ Mỗi conversation card: padding 12px, gap 8px, cao tối thiểu 104px (tự t�
 Preview dùng `latest_message` có quyền. Không có tin: “Chưa có tin nhắn”; field denied: “Nội dung bị giới hạn”; rich có text projection thì dùng projection, không tự suy ra nội dung từ payload bị che. Tên fallback “Liên hệ chưa có tên”; avatar không tự fetch URL provider. Card unread dùng tên semibold + badge số inbound chưa đọc (99+ nếu lớn), accessible label số thật; marker theo agent, không phải khách đã đọc. Chip Snoozed ghi hạn thức dậy; tags tối đa2 chip + số còn lại mở tooltip/pane.
 
 Chọn card tải đúng detail; list giữ vị trí cuộn và selection qua poll. Tải thêm dùng cursor API và nút **Tải thêm**; loading không nhân đôi card. Record rời filter vì mark-read/snooze/assignment: giữ detail có quyền đang đọc, hiện banner **Không còn trong bộ lọc**; card rời list, draft giữ. Nếu mất quyền thì xóa detail ngay. Không tự mở record đầu tiên hoặc tự nhận ownership. Cursor expired/query changed: tải trang đầu và thông báo, không mất draft.
+
+CHG-20261027-06: Inbox và pane con dùng fallback mỗi5phút, cấu hình NEXT_PUBLIC_INBOX_POLL_INTERVAL_MS. Một WebSocket khi Inbox visible báo thay đổi sau commit; giao diện tải lại query đang mở qua API có quyền. Kết nối lại đồng bộ dữ liệu; hidden/inactive đóng socket và ngừng polling. Page chỉ tải khi bộ lọc mở. Mọi API vẫn kiểm quyền hiện tại; state dùng TanStack Query theo tenant. Contract: [Inbox realtime](../contracts/inbox-realtime-v1.md).
 
 ## 5. Conversation actions
 

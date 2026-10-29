@@ -1,6 +1,6 @@
 # Lát cắt đầu — Messenger CTM → Lead → Sale
 
-Status: Ready for implementation M2 bằng mock connectors/runtime.
+Phạm vi: kịch bản mock M2 lịch sử, dùng truy vết acceptance ban đầu. Đây là một ví dụ tiếp nhận qua Messenger trong [nền tảng Agentic CRM](../product/vision.md), không là luồng bắt buộc cho mọi khách hàng hoặc tương tác. Các bước Chatflow bên dưới đã được thay thế bởi quyết định một Workflow service và [retirement code/data](../development/chatflow-retirement.md); không dùng chúng làm hướng dẫn triển khai hiện hành. Phạm vi tiếp tục theo [service catalog](../services/README.md) và tracker.
 
 ## Preconditions
 

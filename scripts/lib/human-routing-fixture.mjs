@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import {readFile,writeFile} from 'node:fs/promises';
 import {randomBytes,createHash} from 'node:crypto';
-import {fixtureId} from '../../apps/backend/dist/modules/identity/seed.js';
-import {passwordHash} from '../../apps/backend/dist/modules/identity/auth/password.js';
-import {PLATFORM_TENANT_ID} from '../../apps/backend/dist/kernel/database/system-scope.js';
+import {fixtureId} from '../../services/core-baseline/dist/modules/identity/seed.js';
+import {passwordHash} from '../../services/core-baseline/dist/modules/identity/auth/password.js';
+import {PLATFORM_TENANT_ID} from '../../services/core-baseline/dist/kernel/database/system-scope.js';
 export async function humanRoutingFixture(ds){
  assert(['agentic_crm','native_seed_test'].includes(ds.options.database));assert(['127.0.0.1','localhost'].includes(ds.options.host));
  const file='.local/human-routing-'+ds.options.database+'.json';let f;

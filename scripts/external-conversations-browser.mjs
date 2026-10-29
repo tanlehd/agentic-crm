@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {parseEnv} from 'node:util';
 import {chromium,expect as baseExpect} from '@playwright/test';
-import {fixtureId} from '../apps/backend/dist/modules/identity/seed.js';
+import {fixtureId} from '../services/core-baseline/dist/modules/identity/seed.js';
 const expect=baseExpect.configure({timeout:30000}),env=parseEnv(await readFile('.env','utf8')),origin='http://localhost:18080',tenant=fixtureId('clinic_alpha'),dir='artifacts/external-conversations',name='Synthetic External Conversations browser';
 assert.equal(env.APP_ORIGIN,origin);await mkdir(dir,{recursive:true});
 const browser=await chromium.launch({channel:'msedge',headless:true}),page=await browser.newPage({viewport:{width:1440,height:1000}}),checks=[],errors=[];page.setDefaultTimeout(30000);page.on('pageerror',e=>errors.push(e.message));

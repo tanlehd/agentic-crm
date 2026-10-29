@@ -1,5 +1,8 @@
 # MOD-05 — Lead/Opportunity & Sale Workspace
 
+ADR-027: business orchestration belongs to [Workflow](../services/workflow.md). Chatflow/session terminology in baseline source notes below denotes [legacy compatibility](../contracts/legacy-chatflow.md), not an independent module/service to extend. The owning domain retains its own data, command validation and current authorization.
+
+
 SRC-087: [Stage transition ledger and funnel contract](../contracts/stage-funnel-reporting.md) adds immutable from/to events on existing fixed Lead/Deal lifecycle commands and provides an owner read port to Reporting. No lifecycle state/reopen rule changed. [Evidence](../tracking/details/SRC-087.md).
 
 Current SRC-068 / CHG-20261013-10: [Customer360/session contract](../contracts/customer-360-session.md) is authoritative for inbox_v2 and forward28: new Ad retains the open session, actual create/follow-up/closing context is separate from immutable origin, direct Deal is supported, duplicate Lead consolidation preserves original history. Prior v1 splitting descriptions below are historical. Stage/milestone configuration and connected funnel reporting remain outside this implemented slice.

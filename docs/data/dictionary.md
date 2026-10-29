@@ -1,5 +1,18 @@
 # Data dictionary
 
+ADR-027: one Workflow service owns business automation. CHG-20261021-08 removes legacy Chatflow code, routes and data; historical identifiers in evidence are not supported runtime APIs. Current removal scope is documented in the retirement contract.
+
+
+T05 CHG-20261020-01: [reference candidate fields/protocol](../contracts/chat-ingress-references.md) uses existing CRM canonical Contact/mapping, immutable Channels connection namespace and four reviewed T02 reference tables. Contact revision is registry version; mapping/connection revision remains1. Only Connector's two missing support tables are added to retained baseline test storage; no historical DDL edits or Chat schema change.
+
+T02/SRC-109 design v1: [exact table dictionary/templates](chat-extraction-tables.md), [manifest](chat-extraction/manifest-v1.json), [partition/migration/rollback](../architecture/chat-data-migration.md).59Chat tables (44retained sources+journal+14new),58owner-local support additions,117filled templates. Design only; baseline42 unchanged, no DDL applied.
+
+SRC-108: [durable Human job dictionary](chat-outbound-job.md) defines phase/lease/CAS, immutable binding/resource and internal remote intent states; message/public status unchanged. Forward42 native/main upgrade and Human runtime verified; [evidence](../tracking/details/SRC-108.md).
+
+SRC-104: [Current workload dictionary](identity-workload-registry.md) defines service enabled/version, certificate fingerprint/validity/overlap/revocation, explicit tenant admission and immutable operator audit. No private keys or session material.
+
+SRC-099…103: scoped [Identity Human dispatch ledger](identity-dispatch-ledger.md), [Chat claim](chat-dispatch-claim.md) and [Chat result request](chat-dispatch-result.md) define native grant/claim/result ownership. Native test schema40 only, main baseline unchanged; source complete for these scopes, no independent Identity/Chat deployment.
+
 SRC-087 / 2026-10-18: [Stage funnel](../contracts/stage-funnel-reporting.md) implemented in the bounded monolith slice: Conversation/Lead/Deal event source, ordered distinct funnel, entry/exit visits and paired duration/current age; eight metrics and six saved-report widgets. Sales owns append-only `sales_stage_event` (physical agentic_crm, target crm_sales), Chat owns process/progress/history, CRM owns record metadata; Reporting owns definitions/catalog pins in schema7. No business facts persisted in Reporting. [Runbook](../development/stage-funnel-reporting.md) · [Evidence](../tracking/details/SRC-087.md). Earlier PLAN-049 proposal-only statements remain historical; exact exclusions follow the implemented contract.
 
 SRC-086 / 2026-10-17: [Connected conversion](../contracts/conversion-reporting.md) implemented:5objects/6models,10saved reports, goal/horizon và native record drilldown qua core chung. Chat/Sales/CRM giữ facts qua monolith application ports; Reporting giữ catalog/definition JSON trong own schema6. Immutable origin, direct branch, raw/canonical merge và current backlog tách biệt. [Evidence](../tracking/details/SRC-086.md). Các đoạn PLAN-047/048 chưa triển khai bên dưới là lịch sử trước lượt code.
@@ -46,7 +59,7 @@ Status: Ready for implementation cho bảng M1–M2; phần bổ sung M3 và m�
 
 Baseline legacy theo [model](model.md): bảng nghiệp vụ bên dưới có `tenant_id`; account và tenant root/journal đã được bổ sung tenant_id bởi SRC-038; mọi FK nội bộ tenant dùng cặp `(tenant_id,target_id)`. `tenant` có `id` là tenant root. Bảng nối dùng composite PK như ghi trong constraint; bảng còn lại có `id CHAR(36)`. Audit/event có `created_at`; mutable entity có `updated_at`. String key phân biệt hoa thường; email không dùng làm account key.
 
-Ký hiệu `?` là nullable; `JSON` là dữ liệu có schema ở service; `ref` là UUID FK. Mặc định trường không có `?` bắt buộc. ID fields được index cùng tenant; `version BIGINT` bắt đầu 1. Các config mutable (tenant, membership, principal, ai_agent, team, role, object_type, property_definition, connection, form/view, workflow/chatflow definition) đều có version dù bảng dưới chỉ liệt kê field đặc thù. Status dùng VARCHAR + application enum validation. Money/decimal lưu `DECIMAL(20,6)`, datetime UTC microsecond, bool `TINYINT(1)`.
+Ký hiệu `?` là nullable; `JSON` là dữ liệu có schema ở service; `ref` là UUID FK. Mặc định trường không có `?` bắt buộc. ID fields được index cùng tenant; `version BIGINT` bắt đầu 1. Các config mutable (tenant, membership, principal, ai_agent, team, role, object_type, property_definition, connection, form/view, workflow definition) đều có version dù bảng dưới chỉ liệt kê field đặc thù. Status dùng VARCHAR + application enum validation. Money/decimal lưu `DECIMAL(20,6)`, datetime UTC microsecond, bool `TINYINT(1)`.
 
 ## Identity và policy — M1
 
@@ -87,7 +100,7 @@ Ký hiệu `?` là nullable; `JSON` là dữ liệu có schema ở service; `ref
 |---|---|---|
 | contact | record_id ref, display_name, normalized_phone?, normalized_email?, lifecycle(prospect/customer), customer_since?, contact_preference JSON | PK tenant+record; phone/email không unique; initial prospect |
 | company | record_id ref, name, domain? | PK tenant+record; schema nền móng, UI nâng cao sau |
-| lead | record_id ref, contact_id ref, conversation_id? ref, qualification_session_id? ref, source_touchpoint_id? ref, status, qualification JSON, qualified_at?, accepted_at? | Unique tenant+qualification_session khi non-null; Contact ref đến contact subtype |
+| lead | record_id ref, contact_id ref, conversation_id? ref, source_touchpoint_id? ref, status, qualification JSON, qualified_at?, accepted_at? | Nhiều Lead trên cùng Contact; manual Idempotency-Key; Contact ref đến contact subtype |
 | lead_handoff | lead_id ref, target_team_id ref, requested_by_kind, requested_by_id, status(pending/accepted/cancelled), active_lead_key?, accepted_by_principal_id? ref, due_at, accepted_at? | Unique tenant+active_lead_key; bằng lead ID khi pending, NULL khi terminal |
 | activity | record_id ref, kind(note/task/call), subject, body?, due_at?, status(open/done/cancelled), related_record_id ref | Note nội bộ không gửi ra channel; dùng association để liên kết thêm |
 | channel_connection | provider(mock_messenger/messenger/google_ads), external_account_id, secret_ref?, credential_hash?, status, config JSON | Unique tenant+provider+external_account; mock token hash riêng; không expose secret |
@@ -111,11 +124,6 @@ SRC-014 physical v9 triển khai `channel_connection.provider=mock_messenger`, s
 | workflow_run | version_id ref, trigger_event_id, service_actor_id ref, context JSON, status, started_at, finished_at? | Unique tenant+version+trigger_event; workflow trigger M2 chỉ conversation.created |
 | workflow_step_run | run_id ref, node_key, status, attempt, input JSON, output? JSON, action_key, lease_until?, fencing_token BIGINT, error_code? | Unique tenant+run+node_key; no loop M2; action_key ổn định qua retry |
 | workflow_wait | run_id ref, node_key, kind(event/timer), match_key, resume_at?, status(waiting/resumed/timed_out) | Unique tenant+run+node; event subscription + condition persisted |
-| chatflow_definition | key, name, active_version_id? ref | Unique tenant+key |
-| chatflow_version | definition_id ref, number, graph JSON, state(draft/published) | Unique tenant+definition+number; published immutable |
-| chatflow_session | version_id ref, parent_run_id ref, start_action_key, conversation_id ref, active_conversation_key?, node_key, variables JSON, status, version, owner_revision, last_message_id? ref | Unique tenant+active_conversation_key khi running/waiting_message/paused_human; unique tenant+start_action_key; version pinned |
-| chatflow_node_run | session_id ref, node_key, status, input JSON, output? JSON, invalid_attempts INT, lease_until?, fencing_token BIGINT | Unique tenant+session+node; prompt keys lấy session/node/invalid_attempts; recovery giống workflow step |
-| chatflow_turn | session_id ref, message_id ref, status, result? JSON | Unique tenant+session+message; một inbound xử lý một lần |
 | agent_execution | session_id ref, principal_id ref, owner_revision, auth_revision, policy_version, status, request JSON, result? JSON, expires_at | id chính là runtime execution_id; policy snapshot không thay live auth |
 | tool_execution | agent_execution_id ref, call_id, tool, args_hash, result? JSON, status | Unique tenant+execution+call; cùng call_id khác args → conflict |
 | routing_cursor | team_id ref, capability_key, last_principal_id? ref | Unique tenant+team+capability; lock khi round-robin |
@@ -170,13 +178,11 @@ SRC-019 v13: workflow_definition additionally service_actor_id; workflow_run def
 
 ## SRC-020 physical refinement (CHG-20261005-06)
 
-V14 adds Chatflow definition/version/session/node_run/turn. Session stores service_actor_id/execution_role_id pinned from parent, owner_revision, draft/variables/provenance JSON objects, lead_id nullable, outcome/error_code, last_message_id and checked_at. Active Conversation key generated from running/waiting_message/paused_human. Node_run stores status pending/running/waiting/succeeded/cancelled, invalid_attempts0..3, prompt_attempt (last emitted attempt), execution_id nullable, lease_until and monotonic fencing_token. Turn stores node_key and validated/invalid/runtime status, no transcript copy. All IDs tenant-bound; terminal rows retained. Version/turn/node references use tenant composite FK.
+CHG-20261021-08: forward43 removes the five legacy Chatflow tables and dependent runtime data. [Current removal dictionary](chatflow-retirement.md).
 
-V14 drops the v8 null-only checks for Lead conversation/session/source_touchpoint and adds tenant FKs; existing null data unchanged. Lead.session uniqueness remains. Session.lead_id references Lead after table creation. Agent execution session IDs remain validated through owning session port (legacy private runtime test adapters have no production Chatflow row); no change to historical migrations. Each synchronous node effect and progress commits atomically; async runtime callbacks use execution ID plus current node/owner guard. Claim lease60s with fence; waiting-message polling rotates checked_at. Three invalid answers route Human; draft-only runtime data cannot create consent evidence. Direct Lead updates/qualification/disqualification are blocked while its session active via injected Sales session guard.
+Lead keeps Contact/Conversation/source references and qualification values; the obsolete qualification-session FK, index and column are removed.
 
-V15 follow-up (same CHG): MySQL skips composite FK when any member is NULL; `ck_lead_session_conversation` requires non-null conversation whenever qualification_session_id is non-null. V14 preserved after first disposable application. Outbound v14 adds nullable chatflow_session_id composite FK including conversation; AI dispatcher requires this session binding and checks live owner, service role and AI policy immediately before send. Lead source touchpoint is the earliest Conversation touchpoint via Channels port.
 
-V16 follow-up preserves applied v14/v15 and adds private `chatflow_node_run.proposed_reply TEXT NULL` bounded4000. Runtime proposal/tool only stores text there; no outbound intent until the exact execution completes successfully under live guards. Takeover/failed/cancelled executions leave proposals inert; session read projections exclude this field.
 
 SRC-021: lead_handoff exact fields and state/parent/action constraints follow [Sales handoff contract](../contracts/sales-handoff.md); attention persists no eligible/15-minute alert.
 
@@ -233,7 +239,7 @@ Physical fields/defaults/CHECK/index/FK theo [exact implementation contract](../
 
 PLAN-016: [Page/Instagram ERD](marketing-erd.md) adds Marketing metadata refs for Facebook Page, Instagram Account, Facebook Post and Instagram Media, plus observed Page–Instagram links. Creative references content and actor identities; it is not the same entity as a post. Existing Channels/Connector credentials/webhooks remain under their owner; no cross-service SQL/FK. Exact schemas and hydration permissions stay PLAN-011.
 
-PLAN-018: [Conversation acquisition session](../contracts/conversation-acquisition-session.md) adds Chat-owned logical conversation_session/message membership and session source evidence. Core Contact anchors Conversation/Session; Sales Lead gets separate conversation_session_id and Deal inherits origin session/source. Existing qualification_session_id remains Chatflow-related. No physical columns yet; forward migration and evidence-only legacy coverage required in SRC-053.
+PLAN-018: [Conversation acquisition session](../contracts/conversation-acquisition-session.md) adds Chat-owned logical conversation_session/message membership and session source evidence. Core Contact anchors Conversation/Session; Sales Lead gets separate conversation_session_id and Deal inherits origin session/source. The former qualification_session_id was removed by forward43. No physical columns yet; forward migration and evidence-only legacy coverage required in SRC-053.
 
 ## SRC-053 acquisition sessions — forward26
 

@@ -1,0 +1,52 @@
+# Retained Identity authority and Connector dispatch peers. Chat runs only in compose.chat.yaml.
+x-process: &process
+  init: true
+  read_only: true
+  tmpfs: ['/tmp:size=16m,mode=1777']
+  cap_drop: [ALL]
+  security_opt: ['no-new-privileges:true']
+  pids_limit: 128
+  mem_limit: 512m
+  restart: unless-stopped
+  stop_grace_period: 45s
+  extra_hosts: ['host.docker.internal:host-gateway']
+  logging: {driver: json-file, options: {max-size: 10m, max-file: '3'}}
+x-health: &health
+  test: [CMD, node, --input-type=module, -e, "import {randomUUID} from 'node:crypto';import {workloadMaterial,registryConfig,remoteRegistryAuthority,workloadRequest} from '@agentic-crm/workload-transport';const m=await workloadMaterial(process.env.WORKLOAD_SERVICE),a=remoteRegistryAuthority(m,await registryConfig());const r=await workloadRequest(m,a,{url:new URL((process.env.WORKLOAD_TRANSPORT==='http-local'?'http:':'https:')+'//127.0.0.1:'+process.env.WORKLOAD_PORT+'/internal/v1/workloads/ready'),expectedService:m.service,tenant:process.env.WORKLOAD_TENANT_ID,data:{schema_version:1,request_id:randomUUID(),tenant_id:process.env.WORKLOAD_TENANT_ID}});if(r.status!=='ready')process.exit(1);"]
+  interval: 10s
+  timeout: 6s
+  start_period: 30s
+  retries: 6
+services:
+  identity:
+    <<: *process
+    image: ${OUTBOUND_BACKEND_IMAGE:?Pin backend candidate}
+    command: [node, dist/dispatch-main.js, identity]
+    env_file: [.local/human-outbound/identity.env]
+    ports: ['127.0.0.1:3012:3012']
+    volumes:
+      - ./.local/human-outbound/http-keys.json:/run/workload/http-keys.json:ro
+      - ./.local/human-outbound/ca.crt:/run/workload/ca.crt:ro
+      - ./.local/human-outbound/identity.crt:/run/workload/cert.pem:ro
+      - ./.local/human-outbound/identity.key:/run/workload/key.pem:ro
+      - ./.local/human-outbound/authority.pub:/run/workload/authority.pub:ro
+      - ./.local/human-outbound/authority.key:/run/workload/authority.key:ro
+    healthcheck: *health
+  connector:
+    <<: *process
+    image: ${OUTBOUND_CONNECTOR_IMAGE:?Pin Connector candidate}
+    command: [node, dist/main.js, dispatch]
+    env_file: [.local/human-outbound/connector.env]
+    ports: ['127.0.0.1:3014:3014']
+    networks: [default, connector-database]
+    volumes:
+      - ./.local/human-outbound/http-keys.json:/run/workload/http-keys.json:ro
+      - ./.local/human-outbound/ca.crt:/run/workload/ca.crt:ro
+      - ./.local/human-outbound/connector.crt:/run/workload/cert.pem:ro
+      - ./.local/human-outbound/connector.key:/run/workload/key.pem:ro
+      - ./.local/human-outbound/authority.pub:/run/workload/authority.pub:ro
+    healthcheck: *health
+networks:
+  connector-database:
+    external: true
+    name: agentic-crm-connector-local_database

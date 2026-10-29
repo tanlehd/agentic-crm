@@ -1,0 +1,524 @@
+{
+  "version": 1,
+  "task": "SRC-109",
+  "baselineSchema": 42,
+  "migrationReady": false,
+  "owners": {
+    "chat": [
+      "chat_claim_request",
+      "chat_dispatch_claim",
+      "chat_inbox",
+      "chat_inbox_share",
+      "chat_outbound_job",
+      "chat_read_rollout_conversation",
+      "chat_read_rollout_principal",
+      "chat_result_request",
+      "chat_snippet",
+      "chat_workspace_rollout",
+      "conversation",
+      "conversation_acquisition_session",
+      "conversation_activity",
+      "conversation_activity_counter",
+      "conversation_read_state",
+      "conversation_snooze",
+      "conversation_tag",
+      "conversation_tag_link",
+      "conversation_workspace",
+      "message",
+      "message_acquisition_membership",
+      "message_content",
+      "message_workspace",
+      "need_assessment",
+      "need_assessment_revision",
+      "need_follow_up",
+      "outbound_intent",
+      "session_classification",
+      "session_contribution",
+      "session_milestone_event",
+      "session_need",
+      "session_process_head",
+      "session_process_version",
+      "session_progress",
+      "session_stage_event",
+      "session_touchpoint"
+    ],
+    "partition": [
+      "audit_entry",
+      "consumer_inbox",
+      "crm_record",
+      "idempotency_record",
+      "outbox_event",
+      "ownership_history",
+      "property_index_value",
+      "record_team_access"
+    ],
+    "journal": [
+      "schema_migration"
+    ],
+    "identity": [
+      "account",
+      "account_credential",
+      "auth_attempt",
+      "auth_challenge",
+      "auth_session",
+      "auth_token",
+      "external_app",
+      "field_policy",
+      "identity_dispatch_delegation",
+      "identity_dispatch_event",
+      "identity_dispatch_grant",
+      "identity_dispatch_request",
+      "identity_workload_admission",
+      "identity_workload_certificate",
+      "identity_workload_event",
+      "identity_workload_service",
+      "membership",
+      "principal",
+      "principal_role",
+      "role",
+      "service_actor",
+      "system_audit_entry",
+      "team",
+      "team_member",
+      "tenant"
+    ],
+    "core": [
+      "activity",
+      "association",
+      "association_type",
+      "company",
+      "contact",
+      "contact_identity",
+      "custom_record",
+      "form_definition",
+      "object_type",
+      "object_workspace_config",
+      "property_definition",
+      "record_page_team",
+      "record_page_view",
+      "view_definition"
+    ],
+    "connector": [
+      "channel_connection",
+      "channel_marketing_admission_receipt",
+      "channel_marketing_credential",
+      "facebook_oauth_attempt",
+      "facebook_page",
+      "inbound_delivery",
+      "mock_outbound_receipt",
+      "touchpoint"
+    ],
+    "ai": [
+      "agent_capacity_slot",
+      "agent_execution",
+      "tool_execution"
+    ],
+    "identity-ai-split": [
+      "agent_policy",
+      "ai_agent"
+    ],
+    "routing": [
+      "routing_assignment_attempt",
+      "routing_attention",
+      "routing_cursor",
+      "routing_human_allocation",
+      "routing_human_profile",
+      "routing_queue",
+      "routing_queue_entry",
+      "routing_queue_version",
+      "routing_skill",
+      "routing_team_skill",
+      "routing_work_item"
+    ],
+    "sales": [
+      "deal",
+      "lead",
+      "lead_handoff",
+      "lead_merge",
+      "sales_need_outcome",
+      "sales_session_context",
+      "sales_stage_event"
+    ],
+    "chatflow": [
+      "chatflow_definition",
+      "chatflow_node_run",
+      "chatflow_session",
+      "chatflow_turn",
+      "chatflow_version"
+    ],
+    "workflow-api": [
+      "workflow_definition",
+      "workflow_version"
+    ],
+    "workflow-core": [
+      "workflow_action",
+      "workflow_run",
+      "workflow_step_run",
+      "workflow_trigger_selection",
+      "workflow_wait"
+    ]
+  },
+  "partitions": {
+    "crm_record": {
+      "rule": "Same tenant object_type key=conversation AND conversation.record_id=id; mismatch blocks migration, including archived records",
+      "status": "specified"
+    },
+    "ownership_history": {
+      "rule": "Same tenant record_id in the validated Conversation record set, including all historical revisions",
+      "status": "specified"
+    },
+    "record_team_access": {
+      "rule": "Same tenant record_id in the validated Conversation record set; a share is not team membership",
+      "status": "specified"
+    },
+    "property_index_value": {
+      "rule": "Same tenant record_id in the validated Conversation record set; retain property IDs as Core logical references",
+      "status": "specified"
+    },
+    "audit_entry": {
+      "rule": "Explicit command/resource/producer mapping including denied rows with null resource_id; correlation alone cannot identify owner",
+      "status": "pending"
+    },
+    "idempotency_record": {
+      "rule": "Explicit route+actor kind+resource binding; generic CRM and multi-owner note commands need legacy receipt routing",
+      "status": "pending"
+    },
+    "outbox_event": {
+      "rule": "Explicit producer+event version+aggregate binding; record.assigned is partitioned by its Conversation aggregate, not prefix",
+      "status": "pending"
+    },
+    "consumer_inbox": {
+      "rule": "Explicit consumer name+source event ID; source may remain Core/Workflow/Identity. Preserve retry, lease and terminal states",
+      "status": "pending"
+    }
+  },
+  "ports": [
+    {
+      "file": "modules/identity/authorization.ts",
+      "boundary": "Current native actor/tenant/role/team checks and owner eligibility; replace tenant transaction lock with exact admission protocol"
+    },
+    {
+      "file": "modules/identity/workspace-port.ts",
+      "boundary": "Current catalog target validation and principal/team discovery"
+    },
+    {
+      "file": "modules/identity/routing-port.ts",
+      "boundary": "AI ownership eligibility/configuration; no Identity or AI config SQL in Chat"
+    },
+    {
+      "file": "modules/crm/registry.ts",
+      "boundary": "Chat record/version/owner/share/history local; Core object metadata remote"
+    },
+    {
+      "file": "modules/crm/access.ts",
+      "boundary": "Canonical Identity field policies plus Core object metadata, not copied permissions"
+    },
+    {
+      "file": "modules/crm/properties.ts",
+      "boundary": "Core definitions remote; Chat record values and index local"
+    },
+    {
+      "file": "modules/crm/core.ts",
+      "boundary": "Active Contact/reference checks; archive coordination and timestamp value helpers are separate responsibilities"
+    },
+    {
+      "file": "modules/crm/conversation-ports.ts",
+      "boundary": "Split createUnassigned into Chat registry; Contact/createInboundContact and note body stay Core"
+    },
+    {
+      "file": "modules/crm/activity-port.ts",
+      "boundary": "Core note binding/body reads; replace synchronous Chat contribution with durable notification"
+    },
+    {
+      "file": "modules/crm/contact-identity.ts",
+      "boundary": "Canonical external identity resolution; cache miss is not canonical absence"
+    },
+    {
+      "file": "modules/channels/ports.ts",
+      "boundary": "Connection/Page/touchpoint metadata, binding validation and sender receipt; no provider credentials in Chat"
+    },
+    {
+      "file": "modules/agents/cancellation.ts",
+      "boundary": "Cancellation becomes outbox/control reconciliation; never remote writes within Chat UoW"
+    },
+    {
+      "file": "modules/chatflow/lifecycle.ts",
+      "boundary": "Pinned session pause/cancel from Chat control revision"
+    },
+    {
+      "file": "modules/chatflow/activity-port.ts",
+      "boundary": "Owner-authorized source run binding/read"
+    },
+    {
+      "file": "modules/workflow/activity-port.ts",
+      "boundary": "Owner-authorized source run binding/read"
+    },
+    {
+      "file": "modules/sales/contribution-port.ts",
+      "boundary": "Current Sales visibility for outcome history; projection cannot authorize"
+    },
+    {
+      "file": "kernel/reliability/commands.ts",
+      "boundary": "Local Chat audit/receipt/outbox; exact legacy row ownership still required"
+    },
+    {
+      "file": "kernel/reliability/delivery.ts",
+      "boundary": "Own consumer inbox/retries/outbox; never copy every source consumer state"
+    },
+    {
+      "file": "kernel/reliability/activity-notification.ts",
+      "boundary": "Remote source freshness via owner notification watermark, no remote outbox SQL"
+    }
+  ],
+  "dynamicSql": [
+    {
+      "file": "apps/backend/src/modules/conversation/acquisition-storage.ts",
+      "line": 61,
+      "sha256": "2171e057c7035cb7bf09ba6df6e5e85243502d7420a4dcf36865f02a39a26145",
+      "tables": [
+        "conversation_acquisition_session"
+      ],
+      "reason": "Optional sequence predicate; value bound as parameter"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/activity-storage.ts",
+      "line": 31,
+      "sha256": "adf319152b6b76aecd2b28147fcb0bbac0e21a276c3dfcca022d129210ea6cad",
+      "tables": [
+        "message"
+      ],
+      "reason": "Optional bounded backfill keyset; no dynamic table"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/activity.ts",
+      "line": 57,
+      "sha256": "7e238bbe272171ffbd52d2b59977c11291477965fe293f3cf944118f9b5886cf",
+      "tables": [
+        "conversation_activity"
+      ],
+      "reason": "Boolean selects comparison/order; values bound"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/activity.ts",
+      "line": 70,
+      "sha256": "819e5597314bfed38e7e7841aa856bb5e609a297030c5bf1121165ed594b27bc",
+      "tables": [
+        "conversation_activity"
+      ],
+      "reason": "Boolean selects comparison; values bound"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/chatflow-port.ts",
+      "line": 14,
+      "sha256": "e6744d439ec1eae27ed7eca7b5f76157dd2a5e27b6f23ca08d2ba70965f01fa3",
+      "tables": [
+        "message",
+        "message_content"
+      ],
+      "reason": "Consent adds fixed original-text predicate; rich sidecar stays Chat"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/chatflow-port.ts",
+      "line": 18,
+      "sha256": "485c8df5203f88a4fa0cdde6e49c359c38f0c06eaf0e2ce6be5a5e4e92143786",
+      "tables": [
+        "message",
+        "message_content"
+      ],
+      "reason": "Fixed consent predicate and placeholder-only exclusion list"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/classification.ts",
+      "line": 54,
+      "sha256": "02e9f18c355def7e485956e071ce58a228c017b1e6f8f61ed1a397b04f3d184f",
+      "tables": [
+        "session_contribution"
+      ],
+      "reason": "Optional before_revision; value bound"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/contribution-storage.ts",
+      "line": 8,
+      "sha256": "bbb4c2e65dfb1ca2bddd5efb6461c9a23f77365962788835e597401278875fdc",
+      "tables": [
+        "conversation_acquisition_session"
+      ],
+      "reason": "Explicit session ID or active predicate; source-owner writes need event replacement"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/domain.ts",
+      "line": 129,
+      "sha256": "e2b80d9b182ef0cd8fb1eb046130d2b3c14faf5d2cc3757f6e754863b34cff4e",
+      "tables": [
+        "message",
+        "conversation",
+        "crm_record",
+        "channel_connection"
+      ],
+      "reason": "Closed message/thread branch; Page filter expands channel_connection EXISTS. Connector metadata replacement required"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/external-port.ts",
+      "line": 53,
+      "sha256": "96b5cc21d3cc081545beb1b328fca515872534f51102ce337366dfdccab6b233",
+      "tables": [
+        "conversation",
+        "crm_record",
+        "message",
+        "record_team_access"
+      ],
+      "reason": "Closed message/thread projection and ACL share EXISTS; parent and message grants intersect"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/human-routing-port.ts",
+      "line": 5,
+      "sha256": "ab1084f18ac1e03f93620387d17a527861e1c3f5bae31ec3ed2506133dfd9446",
+      "tables": [
+        "session_contribution"
+      ],
+      "reason": "Placeholder-only session set; service query must remain bounded"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/human-routing-port.ts",
+      "line": 8,
+      "sha256": "1883e0efe485870a6960914e852479e3be9866642486303ac4c9b318a0dff2af",
+      "tables": [
+        "conversation_acquisition_session",
+        "conversation",
+        "crm_record",
+        "ownership_history"
+      ],
+      "reason": "Fixed owner/connection predicate branches plus placeholder sets; authoritative Chat facts for Routing"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/human-routing-port.ts",
+      "line": 14,
+      "sha256": "2ee07299d489d86da06c5ce871563fc775b1f630cb4b41831c2afbd06a1b792e",
+      "tables": [
+        "session_contribution"
+      ],
+      "reason": "Placeholder-only session set"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/lead-source-port.ts",
+      "line": 16,
+      "sha256": "e709acc8f2211bda65b8b1aa22d5d869e5d5b35d72099969ad96deedf6dfce13",
+      "tables": [
+        "conversation_acquisition_session"
+      ],
+      "reason": "Explicit session ID or active predicate"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/session-progress.ts",
+      "line": 57,
+      "sha256": "d9983390b230bfcc0abdc27232b1114fb2c0da97584d229b72c57c634427b9e9",
+      "tables": [
+        "session_stage_event"
+      ],
+      "reason": "Fixed before_revision fragment; bound value"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/session-progress.ts",
+      "line": 58,
+      "sha256": "9c56be507fffd3b22534fc95fc4a054de47be0c6a71493494e8eb1533224223d",
+      "tables": [
+        "session_milestone_event"
+      ],
+      "reason": "Fixed before_revision fragment; correction self-join remains Chat"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/workspace-catalogs.ts",
+      "line": 44,
+      "sha256": "ac4bd8e6cb0df2cdb371caa7e694a3536ad7607e29eb2c0abea277d1c205d8c1",
+      "tables": [
+        "chat_inbox",
+        "conversation_tag",
+        "chat_snippet"
+      ],
+      "reason": "Table selected only by catalogTables fixed enum"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/workspace-catalogs.ts",
+      "line": 61,
+      "sha256": "01e412d5fdd9bb7ae2629297aa0b8f74044257594f75d0715b7b04e465620fc5",
+      "tables": [
+        "chat_inbox",
+        "conversation_tag",
+        "chat_snippet"
+      ],
+      "reason": "Table selected only by catalogTables fixed enum"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/workspace-catalogs.ts",
+      "line": 114,
+      "sha256": "746a226d8dd0296c39c75b8f666553f955ded39c9fe1d94b853e8087e2ff3021",
+      "tables": [
+        "chat_inbox",
+        "conversation_tag",
+        "chat_snippet"
+      ],
+      "reason": "Fixed catalogTables enum; values keys populated by validated operation branches, not raw body"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/workspace-catalogs.ts",
+      "line": 115,
+      "sha256": "7b02b452f06a5700437a4bc23b8c4f5ca44e54dc8ca1c9c41462a6ff0381759b",
+      "tables": [
+        "chat_inbox",
+        "conversation_tag",
+        "chat_snippet"
+      ],
+      "reason": "Fixed catalogTables enum and validated field map; bound values/version bump"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/workspace-catalogs.ts",
+      "line": 117,
+      "sha256": "08390a7632ec7a828fa6ae2ab8956036866708bd4ba4014b44127bc3271d088e",
+      "tables": [
+        "chat_inbox",
+        "conversation_tag",
+        "chat_snippet"
+      ],
+      "reason": "Same fixed catalog table as preceding write"
+    },
+    {
+      "file": "apps/backend/src/modules/conversation/workspace-storage.ts",
+      "line": 31,
+      "sha256": "5905f482cbd88d9fd8fdabf5092565ee1f0940a3d8f997faa3fc448614f1a706",
+      "tables": [
+        "message"
+      ],
+      "reason": "Fixed received_at/id keyset fragment"
+    }
+  ],
+  "constraintOverrides": {
+    "activity.activity_ibfk_2": {
+      "disposition": "retain-non-chat-subtype-in-baseline",
+      "reason": "Subtype record is not in Conversation partition; preserve baseline same-owner FK. Verify subtype and object_type agree before partition."
+    },
+    "company.company_ibfk_1": {
+      "disposition": "retain-non-chat-subtype-in-baseline",
+      "reason": "Subtype record is not in Conversation partition; preserve baseline same-owner FK. Verify subtype and object_type agree before partition."
+    },
+    "contact.contact_ibfk_1": {
+      "disposition": "retain-non-chat-subtype-in-baseline",
+      "reason": "Subtype record is not in Conversation partition; preserve baseline same-owner FK. Verify subtype and object_type agree before partition."
+    },
+    "custom_record.custom_record_ibfk_1": {
+      "disposition": "retain-non-chat-subtype-in-baseline",
+      "reason": "Subtype record is not in Conversation partition; preserve baseline same-owner FK. Verify subtype and object_type agree before partition."
+    },
+    "deal.fk_deal_record": {
+      "disposition": "retain-non-chat-subtype-in-baseline",
+      "reason": "Subtype record is not in Conversation partition; preserve baseline same-owner FK. Verify subtype and object_type agree before partition."
+    },
+    "lead.lead_ibfk_2": {
+      "disposition": "retain-non-chat-subtype-in-baseline",
+      "reason": "Subtype record is not in Conversation partition; preserve baseline same-owner FK. Verify subtype and object_type agree before partition."
+    },
+    "consumer_inbox.consumer_inbox_ibfk_1": {
+      "disposition": "replace-inbox-producer-fk",
+      "reason": "Chat consumes Core/Workflow events absent from its own outbox. Event ID is a logical authenticated producer reference; never copy remote outbox just to satisfy this FK."
+    }
+  }
+}

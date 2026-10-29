@@ -1,0 +1,44 @@
+# Main local Chat cutover storage — T09
+
+CHG-20261027-02/03: main local cutover accepted. Final fenced source was agentic_crm43; current baseline is46 and independent crm_chat is4, active epoch2 after accepted post-write forward recovery. Existing applied migrations, historical source rows and synthetic fixtures are preserved. [Runtime/evidence](../development/chat-main-local-runtime.md). The sections below describe the migration strategy, not permission to rerun it on active main.
+
+## Native owner compatibility tables
+
+The following are existing reviewed tables, not new business models. Their complete column, key, index, authorization, concurrency, retention, grants and acceptance templates are in [Chat extraction tables](chat-extraction-tables.md); exact DDL is [owner additions](chat-extraction/owner-additions-v1.sql). Forward baseline44 materializes only these synchronous compatibility dependencies in the current baseline deployment. Owner-specific credentials stay table-scoped; Chat receives no baseline grant.
+
+| Owner | Tables | Current physical placement and reason |
+|---|---|---|
+| Identity | identity_owner_admission, identity_owner_gate, identity_owner_barrier, identity_account_gate, identity_account_barrier | agentic_crm; native sessions/policy remain baseline until Identity extraction |
+| CRM | crm_reference_gate, crm_reference_reservation, crm_owner_command | agentic_crm; canonical Contact/metadata and note effects remain CRM |
+| Routing | routing_capacity_reservation, routing_allocation_head, routing_capacity_gate, routing_owner_command | agentic_crm; capacity/configuration remain Routing |
+| Channels / Connector owner adapter | connector_reference_gate, connector_reference_reservation, channel_ingress_touchpoint | agentic_crm; canonical channel configuration remains baseline; independent Connector transport schema stays separate |
+| Sales | sales_owner_command | agentic_crm; existing need outcome links remain Sales |
+
+`channel_ingress_touchpoint` uses its [filled table design](channel-ingress-touchpoint.md) and immutable `services/crm-connector/migrations/channels001-touchpoint.sql`. No new columns or implicit defaults. All business rows have explicit non-null tenant IDs; account gates use the registered system tenant exactly as designed. Only same-owner reference-gate FKs are installed. Existing Activity related-record FK is detached in the forward migration, preserving every Activity row; references to Chat are validated through owner proofs. No shared UoW crosses the new Chat boundary.
+
+## Migration and compatibility
+
+CHG-20261026-02 adds forward46 after immutable44/45: apply the already-reviewed Identity owner-v1 workload allowlist to the four original baseline service CHECKs. This closes a concrete startup prerequisite for CRM/Routing/BFF workload enrollment; no automatic registration or business permission is granted. See the [filled workload table delta](identity-workload-registry.md). Run retained45→46 row/journal preservation and unknown-service denial before main.
+
+Apply baseline44 with the separate migrator after a retained-data preservation check. Provision API/worker/owner credentials separately; boot never migrates. Initialize Identity tenant/account and Routing capacity gates under the documented owner rules; import Routing allocation heads from reconciled current work, never infer completed allocations. No table/row reset. Run the same migration on a retained isolated baseline before main; preserve old journal checksums/counts and verify a no-op rerun.
+
+Forward45 detaches the reviewed inbound_delivery, touchpoint, lead, agent_execution, association and routing_attention FKs to remote Chat/registry resources. Baseline44 was already exercised on retained test_t09_baseline and is immutable. The old source42 detachment script is not executable against source43: Chatflow tables were retired and Activity detachment is already44. No FK is replaced by a cross-schema FK. The Channels bridge keeps its original delivery ledger and authentication, but replaces its local message processor with an authenticated Chat ingress relay; the SQL transaction ends before RPC, original delivery IDs pin retries, and only the Chat worker creates messages/sessions. A received Chat receipt is polled durably; transport failure never switches back to the local Conversation implementation.
+
+Snapshot the final quiescent main source with exact integer/decimal/JSON/microsecond representation. Source43 has retired Chatflow tables; do not recreate them or assume source42's full table inventory. Validate actual schema and the legacy Chat table subset against the immutable dictionary. Classify all retained audit/outbox/inbox/idempotency rows, including failed/dispatched events and expired receipts. An unrecognized version or effect stays NO_GO until an exact reviewed compatibility mapping exists. No mass response/payload rewrite.
+
+After copy/reconciliation, apply existing Chat forward3/4, verify own-schema grants and enable a single epoch. Remove superseded source jobs/registrations and D2 Chat/coordinator launch entries; stop/drain is a transitional operation only. Preserve source data as historical operator recovery evidence. After destination writes, freeze and repair/replay the same Chat database; never reactivate baseline writers.
+
+CHG-20261026-02: main43 uses a separate selector and import profile; the frozen T03 test guards remain unchanged. Selection verifies source43 journal and actual source foreign keys, applies the exact reviewed main audit rules, and rejects unclassified rows. The only staging shape conversion is the absent outbound_intent.chatflow_session_id column: populate NULL for the immutable Chat001 dictionary, record that conversion in the plan, then drop it through existing Chat004 before activation. It restores no retired business state. Every other legacy column/type/nullability must match. Original source rows and hashes remain in the authenticated encrypted snapshot. Diagnostic preflight may exercise selection offline, but import accepts only a newly fenced final snapshot and the same immutable plan/destination binding; it cannot relabel the diagnostic snapshot as final. Native rehearsal, conflict/resume and full reconciliation precede main import.
+
+## Verification
+
+T09 requires migration preservation/no-op, tenant and foreign-schema negative checks, public forwarding with current auth and CSRF, native owner callbacks, ingress/send/status, source compatibility, worker registration removal, same-database restart/post-write recovery and non-Chat owner smoke. Source-only composition or a successful build does not close the gate. Design-publication evidence was artifacts/chat-extraction/t09-20261026. Final main smoke/recovery and reconciliation PASS are under artifacts/chat-extraction/t09-20261027-02 and linked in the task evidence.
+
+
+## Source43 preflight evidence — 2026-10-26
+
+Read-only diagnostic snapshot uses one REPEATABLE READ transaction, exact textual integer/decimal/JSON/microsecond projection, per-table hashes and AES-256-GCM plus manifest HMAC. All122InnoDB tables and7,824rows were read using the local operator credential; no main row/schema/grant/config/process mutation. Private artifacts are under .local/chat-cutover/main-preflight; public evidence contains counts and hashes only. The manifest explicitly has writersFenced=false and purpose diagnostic-only-not-importable. T03 test guards are unchanged; this is not permission to import an unfenced snapshot.
+
+Source43 ledger review classifies3,202rows, zero unresolved families; all696failed outbox rows are included. Existing event/receipt rules keep original version/payload and exact tenant/resource binding. The source43 audit map in scripts/lib/chat-main-audits.mjs retains recognized non-Chat audits at their owning service. It validates actor/tenant, exact action and owner entity/subtype. CRM schema metadata remains CRM even when its object key is Conversation. Record-page removals are identified by the exact immutable action/UUID/field shape; saved pages require a live row or matching removal audit. Unknown actions still fail; no blanket prefix, response rewrite, archival exception, reviewer signature or purge is introduced. The frozen source42 exception mechanism remains unchanged.
+
+Historical rehearsal: migration44/45 and runtime grants were first verified on retained test_t09_baseline while main remained43. Current main46 acceptance is recorded above. Migration45's first draft failed after two statements due to an unquoted reserved table name; the explicit retained-test repair preserved the original failure, hashes and journals1–44 before completing the remaining statements. Both applied migrations are now immutable. Artifacts migration45-draft-failure.json, migration.json and grants.json preserve the actual history.

@@ -1,5 +1,19 @@
 # External API facade
 
-Baseline module in apps/backend, not an extracted service. Identity owns app configuration, grants and credential/quota in target crm_identity; CRM/Sales own records and metadata. [Contract](../contracts/external-api.md) specifies the local application ports. On extraction the facade must call versioned Identity/owner APIs, never their database or implementation. Gateway has no business DB. No separate deployment is claimed by this task.
+Facade đang ở baseline backend, không phải service dữ liệu hoặc deployment mới.
 
-PLAN-053 adds the [Chat-owned Conversation/message read port](../contracts/external-conversations.md). It validates parent registry ACL and projects only explicit fields; the facade never reads Chat tables itself. Current monolith shares a transaction through these defined ports.
+## Trách nhiệm và dữ liệu sở hữu
+
+Chuyển private-app requests tới owner và giữ wire compatibility; không sở hữu business database, token verifier hoặc quota ledger.
+
+## Ngoài phạm vi
+
+Không impersonate Human, sửa ownership hoặc tự cấp quyền từ cached metadata.
+
+## Giao tiếp với service khác
+
+Identity sở hữu app credentials/grants/quota. CRM/Sales/Chat sở hữu record/message reads và field filtering. Khi tách service, facade gọi versioned owner APIs thay application ports; không đọc SQL của owner.
+
+## Contract và evidence
+
+[Private apps](../contracts/external-api.md), [Conversation/message reads](../contracts/external-conversations.md), SRC-088/089 trong [tracker](../tracking/tasks.md). Quy tắc chung tại [catalog](README.md).

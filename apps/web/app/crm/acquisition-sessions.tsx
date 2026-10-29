@@ -1,4 +1,5 @@
 'use client';
+import {useInboxInterval} from './inbox-polling';
 import { useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { request,useCommand,ErrorNotice } from './api';
@@ -6,7 +7,7 @@ import { LeadCreate } from './records';
 import { Button } from '../../components/ui/button';
 export function AcquisitionSessions({tenant,conversation,contactId,version,canClose,onClosed,onCreated}:{tenant:string;conversation:string;contactId:string;version:string;canClose:boolean;onClosed:()=>void;onCreated?:(r:any)=>void}){
  const [selected,setSelected]=useState(''),command=useCommand(tenant);
- const sessions=useInfiniteQuery({queryKey:[tenant,`/api/v1/conversations/${conversation}/acquisition-sessions`],initialPageParam:null as string|null,queryFn:({signal,pageParam})=>request(tenant,`/api/v1/conversations/${conversation}/acquisition-sessions?limit=50${pageParam?'&before_sequence='+pageParam:''}`,{signal}),getNextPageParam:page=>page.next_before_sequence??undefined,refetchInterval:5000,retry:false});
+ const sessions=useInfiniteQuery({queryKey:[tenant,`/api/v1/conversations/${conversation}/acquisition-sessions`],initialPageParam:null as string|null,queryFn:({signal,pageParam})=>request(tenant,`/api/v1/conversations/${conversation}/acquisition-sessions?limit=50${pageParam?'&before_sequence='+pageParam:''}`,{signal}),getNextPageParam:page=>page.next_before_sequence??undefined,refetchInterval:useInboxInterval(),refetchIntervalInBackground:false,retry:false});
  const rows:any[]=sessions.data?.pages.flatMap(p=>p.data)??[],chosen=rows.find(r=>r.id===selected),active=rows.find(r=>r.status==='active');
  if(sessions.isPending)return <p role="status">Đang tải phiên hội thoại…</p>;
  if(sessions.error)return <ErrorNotice error={sessions.error} reload={()=>void sessions.refetch()}/>;

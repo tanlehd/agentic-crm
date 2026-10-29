@@ -49,7 +49,7 @@ SRC-014 đã có ChannelReferences và MockSender persisted receipt (lookup reco
 
 [Exact contract](../contracts/mock-intake.md) · [evidence](../tracking/details/SRC-015.md). Endpoint credential-only ACK sau MySQL commit; status dùng connection credential hoặc Human operator, retry Human có CSRF/idempotency. Worker claim lease60s/fencing và bounded backoff, duplicate message kiểm trước identity/Contact để không tạo dữ liệu thừa; Touchpoint chỉ new message có referral CTM. Seed Alpha/Beta additive và repeat-safe; tokens random private .env, hash DB. API không trả raw payload. Conversation detail có attribution CTM/unknown qua Channels port.
 
-Phạm vi chưa có: inbox UI SRC-016, routing SRC-017, workflow/chatflow/Lead/Sales xuyên luồng SRC-018…023; không Meta thật.
+Phạm vi chưa có: inbox UI SRC-016, routing SRC-017, workflow/Lead/Sales xuyên luồng SRC-018…023; không Meta thật.
 
 ## M3 — CRM Connector (Draft)
 

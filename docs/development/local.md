@@ -1,6 +1,6 @@
 # Chạy CRM local
 
-Luồng hiện tại: [Native Identity setup, upgrade và test](native-auth.md), [monitor và env từng service](service-manager.md). MySQL/Redis chạy Docker; API/worker/web chạy Node host. Keycloak đã gỡ khỏi runtime. Không xóa DB/volume/Redis khi khởi động hoặc test thường ngày.
+Luồng main sau T09: [Chat runtime/runbook](chat-main-local-runtime.md). MySQL/Redis, API/shared worker và owner adapters chạy Docker; web18080 chạy Node host qua TCP entry13001. Native setup/upgrade dành cho đúng môi trường mới hoặc retained test; không chạy lại generator/writer cũ lên main đã cutover. Keycloak đã gỡ khỏi runtime. Không xóa DB/volume/Redis khi khởi động hoặc test thường ngày.
 
 Windows tại repository: `. ./scripts/dev-shell.ps1`; toolchain Node24.21.0/pnpm10.33.0 phải được cài trước. Checkout mới có thể dùng Node chính thức cùng phiên bản; private tooling không được commit.
 

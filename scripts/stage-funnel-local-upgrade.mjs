@@ -3,8 +3,8 @@ import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {parseEnv} from 'node:util';
 import {createHash} from 'node:crypto';
 import {spawnSync} from 'node:child_process';
-import {databaseSource} from '../apps/backend/dist/kernel/database/data-source.js';
-import {migrate} from '../apps/backend/dist/kernel/database/migration-runner.js';
+import {databaseSource} from '../services/core-baseline/dist/kernel/database/data-source.js';
+import {migrate} from '../services/core-baseline/dist/kernel/database/migration-runner.js';
 
 const env=parseEnv(await readFile('.env','utf8'));assert.equal(env.APP_ENV,'development');assert.equal(env.MYSQL_DATABASE,'agentic_crm');assert.equal(env.APP_ORIGIN,'http://localhost:18080');assert(/^[a-z][a-z0-9_]{0,40}$/.test(env.MYSQL_USER));
 const origin='http://127.0.0.1:3020',html=await(await fetch(origin)).text(),token=/const token='([a-f0-9]+)'/.exec(html)?.[1];assert(token);

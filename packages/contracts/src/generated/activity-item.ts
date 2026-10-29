@@ -11,7 +11,7 @@ export type ActivityItem =
         id: string;
       } | null;
       source_ref: {
-        service: "chat" | "crm" | "workflow" | "chatflow";
+        service: "chat" | "crm" | "workflow";
         kind: string;
         id: string;
         revision: string;
@@ -32,7 +32,7 @@ export type ActivityItem =
         id: string;
       } | null;
       source_ref: {
-        service: "chat" | "crm" | "workflow" | "chatflow";
+        service: "chat" | "crm" | "workflow";
         kind: string;
         id: string;
         revision: string;
@@ -52,7 +52,7 @@ export type ActivityItem =
         id: string;
       } | null;
       source_ref: {
-        service: "chat" | "crm" | "workflow" | "chatflow";
+        service: "chat" | "crm" | "workflow";
         kind: string;
         id: string;
         revision: string;
@@ -74,7 +74,7 @@ export type ActivityItem =
         id: string;
       } | null;
       source_ref: {
-        service: "chat" | "crm" | "workflow" | "chatflow";
+        service: "chat" | "crm" | "workflow";
         kind: string;
         id: string;
         revision: string;
@@ -94,7 +94,7 @@ export type ActivityItem =
         id: string;
       } | null;
       source_ref: {
-        service: "chat" | "crm" | "workflow" | "chatflow";
+        service: "chat" | "crm" | "workflow";
         kind: string;
         id: string;
         revision: string;
@@ -114,7 +114,7 @@ export type ActivityItem =
         id: string;
       } | null;
       source_ref: {
-        service: "chat" | "crm" | "workflow" | "chatflow";
+        service: "chat" | "crm" | "workflow";
         kind: string;
         id: string;
         revision: string;
@@ -134,13 +134,13 @@ export type ActivityItem =
         id: string;
       } | null;
       source_ref: {
-        service: "chat" | "crm" | "workflow" | "chatflow";
+        service: "chat" | "crm" | "workflow";
         kind: string;
         id: string;
         revision: string;
       };
       payload: {
-        source_service: "workflow" | "chatflow";
+        source_service: "workflow";
         run_id: string;
         definition_version_id: string;
         state: "started" | "paused" | "resumed" | "completed" | "failed" | "cancelled";

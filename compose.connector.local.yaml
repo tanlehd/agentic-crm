@@ -1,0 +1,11 @@
+# SRC-107: opt-in local activation; pin the image in the ignored operator env.
+services:
+  connector-admin:
+    image: ${CONNECTOR_IMAGE:?Pin the accepted Connector image ID}
+  connector-api:
+    image: ${CONNECTOR_IMAGE:?Pin the accepted Connector image ID}
+  connector-worker:
+    image: ${CONNECTOR_IMAGE:?Pin the accepted Connector image ID}
+    ports: ['127.0.0.1:3011:3011']
+  connector-mysql:
+    ports: ['127.0.0.1:13307:3306']

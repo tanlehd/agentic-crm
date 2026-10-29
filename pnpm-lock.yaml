@@ -36,52 +36,6 @@ importers:
         specifier: 5.0.3
         version: 5.0.3(@types/node@24.10.1)(vite@8.3.2(@types/node@24.10.1)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
 
-  apps/backend:
-    dependencies:
-      '@agentic-crm/contracts':
-        specifier: workspace:*
-        version: link:../../packages/contracts
-      '@nestjs/common':
-        specifier: 12.1.2
-        version: 12.1.2(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/core':
-        specifier: 12.1.2
-        version: 12.1.2(@nestjs/common@12.1.2(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@12.1.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/platform-express':
-        specifier: 12.1.2
-        version: 12.1.2(@nestjs/common@12.1.2(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@12.1.2)
-      '@node-rs/argon2':
-        specifier: 2.2.2
-        version: 2.2.2
-      ajv:
-        specifier: 8.20.0
-        version: 8.20.0
-      ajv-formats:
-        specifier: 3.0.1
-        version: 3.0.1(ajv@8.20.0)
-      ioredis:
-        specifier: 5.8.2
-        version: 5.8.2
-      jose:
-        specifier: 6.1.3
-        version: 6.1.3
-      mysql2:
-        specifier: 3.24.5
-        version: 3.24.5(@types/node@24.10.1)
-      reflect-metadata:
-        specifier: 0.2.2
-        version: 0.2.2
-      rxjs:
-        specifier: 7.8.2
-        version: 7.8.2
-      typeorm:
-        specifier: 1.1.1
-        version: 1.1.1(ioredis@5.8.2)(mysql2@3.24.5(@types/node@24.10.1))
-    devDependencies:
-      tsx:
-        specifier: 4.23.15
-        version: 4.23.15
-
   apps/web:
     dependencies:
       '@agentic-crm/contracts':
@@ -132,11 +86,114 @@ importers:
 
   packages/testkit: {}
 
+  packages/workflow-definition:
+    dependencies:
+      '@agentic-crm/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+      ajv:
+        specifier: 8.20.0
+        version: 8.20.0
+      ajv-formats:
+        specifier: 3.0.1
+        version: 3.0.1(ajv@8.20.0)
+
+  packages/workload-transport:
+    dependencies:
+      '@agentic-crm/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+      ajv:
+        specifier: 8.20.0
+        version: 8.20.0
+      ajv-formats:
+        specifier: 3.0.1
+        version: 3.0.1(ajv@8.20.0)
+
+  services/chat:
+    dependencies:
+      '@agentic-crm/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@agentic-crm/workload-transport':
+        specifier: workspace:*
+        version: link:../../packages/workload-transport
+      ajv:
+        specifier: 8.20.0
+        version: 8.20.0
+      ajv-formats:
+        specifier: 3.0.1
+        version: 3.0.1(ajv@8.20.0)
+      ioredis:
+        specifier: 5.8.2
+        version: 5.8.2
+      mysql2:
+        specifier: 3.24.5
+        version: 3.24.5(@types/node@24.10.1)
+
+  services/core-baseline:
+    dependencies:
+      '@agentic-crm/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@agentic-crm/workload-transport':
+        specifier: workspace:*
+        version: link:../../packages/workload-transport
+      '@nestjs/common':
+        specifier: 12.1.2
+        version: 12.1.2(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/core':
+        specifier: 12.1.2
+        version: 12.1.2(@nestjs/common@12.1.2(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@12.1.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/platform-express':
+        specifier: 12.1.2
+        version: 12.1.2(@nestjs/common@12.1.2(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@12.1.2)
+      '@node-rs/argon2':
+        specifier: 2.2.2
+        version: 2.2.2
+      ajv:
+        specifier: 8.20.0
+        version: 8.20.0
+      ajv-formats:
+        specifier: 3.0.1
+        version: 3.0.1(ajv@8.20.0)
+      ioredis:
+        specifier: 5.8.2
+        version: 5.8.2
+      jose:
+        specifier: 6.1.3
+        version: 6.1.3
+      mysql2:
+        specifier: 3.24.5
+        version: 3.24.5(@types/node@24.10.1)
+      reflect-metadata:
+        specifier: 0.2.2
+        version: 0.2.2
+      rxjs:
+        specifier: 7.8.2
+        version: 7.8.2
+      typeorm:
+        specifier: 1.1.1
+        version: 1.1.1(ioredis@5.8.2)(mysql2@3.24.5(@types/node@24.10.1))
+      ws:
+        specifier: 8.18.3
+        version: 8.18.3
+    devDependencies:
+      '@types/ws':
+        specifier: 8.18.1
+        version: 8.18.1
+      tsx:
+        specifier: 4.23.15
+        version: 4.23.15
+
   services/crm-connector:
     dependencies:
       '@agentic-crm/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      '@agentic-crm/workload-transport':
+        specifier: workspace:*
+        version: link:../../packages/workload-transport
       '@nestjs/common':
         specifier: 12.1.2
         version: 12.1.2(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -206,18 +263,6 @@ importers:
       rxjs:
         specifier: 7.8.2
         version: 7.8.2
-
-  services/workflow-core:
-    dependencies:
-      '@agentic-crm/contracts':
-        specifier: workspace:*
-        version: link:../../packages/contracts
-      ajv:
-        specifier: 8.20.0
-        version: 8.20.0
-      ajv-formats:
-        specifier: 3.0.1
-        version: 3.0.1(ajv@8.20.0)
 
 packages:
 
@@ -1041,6 +1086,9 @@ packages:
 
   '@types/react@19.3.0':
     resolution: {integrity: sha512-N0rFCuH9YoxG9/m61l9MfpJKfmLOVU0em7ipIz6TRgSSkvReLB9vL85GB+yr8Bs5leqpvg96JSwF4ZS1s4viQg==}
+
+  '@types/ws@8.18.1':
+    resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
 
   '@vitest/mocker@5.0.3':
     resolution: {integrity: sha512-T8sWAIbkSyAjkwTcaEc3Iu0o9A27X1/kdXrizhZkGuSKScRQtRzclfAMpOTcGdXCsqxeWlpGy3XjqaW8CpLORg==}
@@ -2222,6 +2270,18 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
+  ws@8.18.3:
+    resolution: {integrity: sha512-PEIGCY5tSlUt50cqyMXfCzX+oOPqN0vuGqWzbcJ2xvnkzkq46oOpz7dQaTDBdfICb4N14+GARUDw2XV2N4tvzg==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
   y18n@5.0.8:
     resolution: {integrity: sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==}
     engines: {node: '>=10'}
@@ -2824,6 +2884,10 @@ snapshots:
   '@types/react@19.3.0':
     dependencies:
       csstype: 3.2.3
+
+  '@types/ws@8.18.1':
+    dependencies:
+      '@types/node': 24.10.1
 
   '@vitest/mocker@5.0.3(vite@8.3.2(@types/node@24.10.1)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))':
     dependencies:
@@ -3884,6 +3948,8 @@ snapshots:
       strip-ansi: 7.2.0
 
   wrappy@1.0.2: {}
+
+  ws@8.18.3: {}
 
   y18n@5.0.8: {}
 

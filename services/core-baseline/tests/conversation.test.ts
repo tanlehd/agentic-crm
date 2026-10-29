@@ -1,0 +1,29 @@
+import { readFileSync } from 'node:fs';
+import Ajv from 'ajv';
+import addFormats from 'ajv-formats';
+import { describe,it,expect } from 'vitest';
+const schema=JSON.parse(readFileSync('packages/contracts/schemas/conversation.json','utf8'));
+const ajv=addFormats(new Ajv({strict:true}));ajv.addSchema(schema);
+describe('Conversation wire validation',()=>{
+  it('rejects whitespace, oversize text, spoofed fields and nondecimal revision',()=>{
+    const validate=ajv.compile({$ref:`${schema.$id}#/definitions/conversation-send`});
+    expect(validate({text:'Synthetic',owner_revision:'1'})).toBe(true);
+    for(const input of [{text:' ',owner_revision:'1'},{text:'x'.repeat(4001),owner_revision:'1'},{text:'Synthetic',owner_revision:1},{text:'Synthetic',owner_revision:'1',actor_id:'spoof'}])expect(validate(input)).toBe(false);
+  });
+  it('generated response contract keeps unknown distinct from sent and failed',()=>{
+    const validate=ajv.compile({$ref:`${schema.$id}#/definitions/conversation-intent`});
+    const base={id:'10000000-0000-4000-8000-000000000001',conversation_id:'10000000-0000-4000-8000-000000000002',message_id:'10000000-0000-4000-8000-000000000003',provider_message_id:null,error_code:'DELIVERY_UNKNOWN'};
+    expect(validate({...base,status:'unknown'})).toBe(true);expect(validate({...base,status:'delivered'})).toBe(false);
+  });
+});
+
+describe('SRC-026 envelope contract',()=>{
+  it('keeps mock provenance, nullable external receipt and strict null-only content',()=>{
+    const validate=ajv.compile({$ref:`${schema.$id}#/definitions/conversation-message-envelope-v2`});
+    const base={id:'10000000-0000-4000-8000-000000000001',conversation_id:'10000000-0000-4000-8000-000000000002',connection_id:'10000000-0000-4000-8000-000000000003',schema_version:2,platform:'mock_messenger',message_type:'text',direction:'outbound',status:'unknown',external_msg_id:null,outbound_intent_id:'10000000-0000-4000-8000-000000000004',occurred_at:'2026-10-06T01:00:00Z',received_at:'2026-10-06T01:00:00Z'};
+    expect(validate(base)).toBe(true);
+    expect(validate({...base,text:'Synthetic',reply_to:null,attachment:null})).toBe(true);
+    expect(validate({...base,external_msg_id:'opaque/id'})).toBe(true);
+    for(const invalid of [{platform:'messenger'},{schema_version:3},{message_type:'template'},{attachment:{html:'<script/>'}},{reply_to:{id:base.id}},{provider_message_id:'duplicate-source'},{text:null}])expect(validate({...base,...invalid})).toBe(false);
+  });
+});

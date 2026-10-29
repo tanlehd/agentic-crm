@@ -1,0 +1,15 @@
+import type {Migration} from './migrations.js';
+import {PLATFORM_TENANT_ID} from './system-scope.js';
+const id='CHAR(36) CHARACTER SET ascii COLLATE ascii_bin';
+const digest='CHAR(64) CHARACTER SET ascii COLLATE ascii_bin';
+const scope=`tenant_id ${id} NOT NULL CHECK(tenant_id<>'${PLATFORM_TENANT_ID}')`;
+const engine='ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_as_cs';
+const state="state VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL CHECK(state IN ('issued','consumed','revoked'))";
+const fence=`claim_id ${id} NULL,fence_id ${id} NULL,CHECK((state='consumed' AND claim_id IS NOT NULL AND fence_id IS NOT NULL) OR (state<>'consumed' AND claim_id IS NULL AND fence_id IS NULL))`;
+const revisions='principal_revision BIGINT UNSIGNED NOT NULL CHECK(principal_revision>0),security_revision BIGINT UNSIGNED NOT NULL CHECK(security_revision>0)';
+export const identityDispatchMigration:Migration={version:38,name:'identity_human_dispatch_ledger',statements:[
+ `CREATE TABLE identity_dispatch_delegation(${scope},id ${id} NOT NULL,principal_id ${id} NOT NULL,session_hash ${digest} NOT NULL,${revisions},created_at DATETIME(6) NOT NULL,PRIMARY KEY(tenant_id,id)) ${engine} COMMENT='Identity; immutable native Human delegation; verifier never exposed'`,
+ `CREATE TABLE identity_dispatch_grant(${scope},id ${id} NOT NULL,intent_id ${id} NOT NULL,attempt_id ${id} NOT NULL,delegation_id ${id} NOT NULL,binding_json JSON NOT NULL CHECK(JSON_TYPE(binding_json)='OBJECT'),resource_json JSON NOT NULL CHECK(JSON_TYPE(resource_json)='OBJECT'),${revisions},${state},${fence},expires_at DATETIME(6) NOT NULL,version BIGINT UNSIGNED NOT NULL DEFAULT 1 CHECK(version>0),created_at DATETIME(6) NOT NULL,updated_at DATETIME(6) NOT NULL,PRIMARY KEY(tenant_id,id),UNIQUE KEY identity_grant_intent(tenant_id,intent_id),UNIQUE KEY identity_grant_attempt(tenant_id,attempt_id),FOREIGN KEY(tenant_id,delegation_id) REFERENCES identity_dispatch_delegation(tenant_id,id)) ${engine} COMMENT='Identity; fixed grant and terminal consume/revoke lifecycle'`,
+ `CREATE TABLE identity_dispatch_request(${scope},caller VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,operation VARCHAR(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,request_id ${id} NOT NULL,grant_id ${id} NOT NULL,request_digest ${digest} NOT NULL,created_at DATETIME(6) NOT NULL,PRIMARY KEY(tenant_id,caller,operation,request_id),FOREIGN KEY(tenant_id,grant_id) REFERENCES identity_dispatch_grant(tenant_id,id),CHECK((caller='chat' AND operation='issue') OR (caller='connector' AND operation='consume') OR (caller='identity' AND operation='revoke'))) ${engine} COMMENT='Identity; immutable successful request digest'`,
+ `CREATE TABLE identity_dispatch_event(${scope},grant_id ${id} NOT NULL,version BIGINT UNSIGNED NOT NULL CHECK(version>0),${state},${fence},created_at DATETIME(6) NOT NULL,PRIMARY KEY(tenant_id,grant_id,version),FOREIGN KEY(tenant_id,grant_id) REFERENCES identity_dispatch_grant(tenant_id,id)) ${engine} COMMENT='Identity; append-only grant state audit'`,
+]};

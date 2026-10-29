@@ -1,0 +1,26 @@
+{
+  "name": "@agentic-crm/chat",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start:api": "node dist/main.js api",
+    "start:worker": "node dist/main.js worker",
+    "db:status": "node dist/migration-main.js status",
+    "db:upgrade": "node dist/migration-main.js upgrade"
+  },
+  "dependencies": {
+    "@agentic-crm/contracts": "workspace:*",
+    "@agentic-crm/workload-transport": "workspace:*",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "ioredis": "5.8.2",
+    "mysql2": "3.24.5"
+  },
+  "files": [
+    "dist",
+    "migrations"
+  ]
+}

@@ -1,7 +1,7 @@
 import { createRequire } from 'node:module';
 import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
-const mysql=createRequire(new URL('../../apps/backend/package.json',import.meta.url))('mysql2/promise');
+const mysql=createRequire(new URL('../../services/core-baseline/package.json',import.meta.url))('mysql2/promise');
 export const systemTenant='01900000-0000-7000-8000-000000000001';
 export const digest=value=>createHash('sha256').update(value).digest('hex');
 export async function connect(env,role='OPERATOR'){

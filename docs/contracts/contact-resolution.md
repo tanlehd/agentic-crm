@@ -1,5 +1,7 @@
 # Contact resolution, Connector cache và Chat message context
 
+T05 CHG-20261020-01: [native reference candidate](chat-ingress-references.md) adds exact canonical binding reads and durable Contact/mapping/connection reservations through owning HTTP, without Contact creation. Current delivery scope is tracked in [T05](../planning/chat-extraction/05-messaging-workspace.md); legacy Contact archive is not a distributed service requirement.
+
 PLAN-006B / CHG-20261006-10 / ADR-019, accepted responsibility and semantic contract 2026-10-06 theo user. Target semantics; SRC-030 triển khai phần compatibility trên mock connections theo [local contract](contact-resolution-local.md). Provider enrichment, full message event family và extraction chưa triển khai. Ready cho phân chia trách nhiệm và invariant bên dưới; exact machine schemas, service authentication, physical migrations và dispatch fencing vẫn là gate PLAN-006 trước source. Không đổi strict API/events M2 hoặc envelope v2/v3 đã phát hành.
 
 ## Authority
@@ -39,7 +41,7 @@ Avatar URL là untrusted, có thể hết hạn và chứa query nhạy cảm; k
 
 Mapping cache không thay authorization. Cache entry chứa mapping_revision, trạng thái và expires_at; dùng khi chưa expired/invalidated và không có known synchronization gap. CRM mapping change/invalidation event có revision; consumer bỏ stale revisions, phát hiện gap thì invalidate và đọc lại DB. Cache không tự gia hạn TTL khi hit. Exact transport/watermarks và cửa sổ stale tối đa còn implementation gate; TTL5 phút là baseline performance, không phải guarantee immediate revocation.
 
-Khi cache→input→Conversation không khớp, refresh từ DB một lần; nếu vẫn mismatch trả CONTACT_BINDING_STALE, không tự remap Conversation hoặc tạo Contact khác. DB unavailable thì pending/retry thay vì create. Không có per-message CRM validation bắt buộc cho valid cache hit; với merge/archive/identity reassignment, cần protocol fence/invalidation và historical-message policy trước khi bật mutation đó. Không claim stale cache an toàn cho privileged send; live authorization/owner/control checks vẫn theo dispatch gate. Retry same operation giữ immutable body/receipt; thay context sau terminal rejection dùng operation mới với business dedup key được giữ.
+Khi cache→input→Conversation không khớp, refresh từ DB một lần; nếu vẫn mismatch trả CONTACT_BINDING_STALE, không tự remap Conversation hoặc tạo Contact khác. DB unavailable thì pending/retry thay vì create. Không có per-message CRM validation bắt buộc cho valid cache hit; identity reassignment hoặc merge, nếu được triển khai, cần xác định mapping/history compatibility đúng use case; không suy thêm generic archive saga. Không claim stale cache an toàn cho privileged send; live authorization/owner/control checks vẫn theo dispatch gate. Retry same operation giữ immutable body/receipt; thay context sau terminal rejection dùng operation mới với business dedup key được giữ.
 
 ## Semantic contracts đích (chưa phải route deployed)
 

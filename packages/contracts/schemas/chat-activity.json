@@ -1423,8 +1423,7 @@
                   "enum": [
                     "chat",
                     "crm",
-                    "workflow",
-                    "chatflow"
+                    "workflow"
                   ]
                 },
                 "kind": {
@@ -1542,8 +1541,7 @@
                   "enum": [
                     "chat",
                     "crm",
-                    "workflow",
-                    "chatflow"
+                    "workflow"
                   ]
                 },
                 "kind": {
@@ -1648,8 +1646,7 @@
                   "enum": [
                     "chat",
                     "crm",
-                    "workflow",
-                    "chatflow"
+                    "workflow"
                   ]
                 },
                 "kind": {
@@ -1779,8 +1776,7 @@
                   "enum": [
                     "chat",
                     "crm",
-                    "workflow",
-                    "chatflow"
+                    "workflow"
                   ]
                 },
                 "kind": {
@@ -1893,8 +1889,7 @@
                   "enum": [
                     "chat",
                     "crm",
-                    "workflow",
-                    "chatflow"
+                    "workflow"
                   ]
                 },
                 "kind": {
@@ -2015,8 +2010,7 @@
                   "enum": [
                     "chat",
                     "crm",
-                    "workflow",
-                    "chatflow"
+                    "workflow"
                   ]
                 },
                 "kind": {
@@ -2125,8 +2119,7 @@
                   "enum": [
                     "chat",
                     "crm",
-                    "workflow",
-                    "chatflow"
+                    "workflow"
                   ]
                 },
                 "kind": {
@@ -2154,8 +2147,7 @@
               "properties": {
                 "source_service": {
                   "enum": [
-                    "workflow",
-                    "chatflow"
+                    "workflow"
                   ]
                 },
                 "run_id": {
@@ -2248,8 +2240,7 @@
                     "enum": [
                       "chat",
                       "crm",
-                      "workflow",
-                      "chatflow"
+                      "workflow"
                     ]
                   },
                   "state": {
@@ -2380,8 +2371,7 @@
         },
         "source_service": {
           "enum": [
-            "workflow",
-            "chatflow"
+            "workflow"
           ]
         },
         "run_id": {

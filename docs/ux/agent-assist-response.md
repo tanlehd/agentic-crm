@@ -10,7 +10,7 @@ Conversation sở hữu một gợi ý hành động hiện tại, có type dùn
 |---|---|
 | next_action.type | Loại gợi ý được gán: response, create_lead, create_ticket, close_chat; thay thuộc tính need_response độc lập |
 | next_action | Gợi ý hành động tiếp theo, optional; không phải lệnh tự thực thi |
-| source | Nguồn rule hoặc agent; workflow/chatflow run, step và version đã áp dụng |
+| source | Nguồn rule hoặc agent; workflow run, step và version đã áp dụng |
 | basis | Tenant, Conversation và inbound sequence/revision mà kết quả đang xét |
 | assessment revision/time | Phát hiện ghi đè, kết quả đến trễ và hiển thị độ mới |
 
@@ -18,7 +18,7 @@ Cung cấp logical action “Update Conversation suggestions”: nhận Next act
 
 UI đọc các thuộc tính đã lưu, hiển thị nhãn và Next action cùng nguồn. UI không gọi AI để tự suy ra trạng thái. Không có Next action thì hiển thị “Chưa xác định”, không dựng đề xuất giả. “Đã phản hồi” là trạng thái có bằng chứng sent, tách khỏi nhãn hành động; không suy ra từ next_action=null hoặc type khác response. Không lưu thêm boolean need_response song song.
 
-## Phần 2 — Workflow/Chatflow điều phối
+## Phần 2 — Workflow điều phối
 
 Workflow hoặc Chatflow quyết định trigger, điều kiện, lúc chạy và cách tạo đề xuất. AI là lựa chọn trong quy trình, không là dependency bắt buộc của Phần 1.
 
@@ -34,7 +34,7 @@ flowchart LR
   C --> H[Người dùng xem xét / xử lý]
 ```
 
-Hai nhánh dùng cùng update action và cùng validation, audit, retry/dedup, revision guards. Ví dụ rule được cấu hình có thể gán “Cần trả lời” và “Kiểm tra thông tin khách yêu cầu” mà không gọi AI. Nhánh AI có thể đề xuất hành động theo skill/context; workflow/chatflow kiểm kết quả rồi gọi action bằng service actor có quyền. Không tự bật rule hoặc agent chỉ vì tồn tại định nghĩa.
+Hai nhánh dùng cùng update action và cùng validation, audit, retry/dedup, revision guards. Ví dụ rule được cấu hình có thể gán “Cần trả lời” và “Kiểm tra thông tin khách yêu cầu” mà không gọi AI. Nhánh AI có thể đề xuất hành động theo skill/context; workflow kiểm kết quả rồi gọi action bằng service actor có quyền. Không tự bật rule hoặc agent chỉ vì tồn tại định nghĩa.
 
 ## Agent Assist: định nghĩa và quyền
 
@@ -48,7 +48,7 @@ Agent Assist là một AI agent được cấu hình skill/instruction, context 
 ## Vòng đời và concurrency
 
 1. Khách nhắn mới: vô hiệu hóa Next action thuộc lượt trước, next_action=null / “Chưa xác định”.
-2. Nếu có workflow/chatflow được cấu hình, quy trình chạy nhánh rule hoặc AI và ghi kết quả qua update action. Không quy trình, đang chạy, lỗi hoặc abstain: giữ chưa xác định.
+2. Nếu có workflow được cấu hình, quy trình chạy nhánh rule hoặc AI và ghi kết quả qua update action. Không quy trình, đang chạy, lỗi hoặc abstain: giữ chưa xác định.
 3. Nhãn “Cần trả lời” đến từ next_action.type=response được quy trình hợp lệ gán; không tự suy ra từ unread, thời gian chờ hay message direction.
 4. Phản hồi sent bao phủ inbound hiện tại: cập nhật trạng thái gửi độc lập và giải quyết gợi ý response đúng revision. Không tự coi create_lead/create_ticket/close_chat đã hoàn tất chỉ vì gửi một tin. Tin khách mới trong khi gửi vẫn làm lượt mới chưa xác định; kết quả quy trình cũ không được phục hồi gợi ý hết hiệu lực.
 5. Note nội bộ không phải reply và không tự đánh giá. Next action hết hiệu lực cùng assessment; lưu đề xuất không đồng nghĩa hành động đã hoàn tất.
@@ -59,7 +59,7 @@ Mọi update kiểm tenant, current inbound basis, lifecycle, authorization và 
 
 A. Chốt exact next_action.type catalog/payload, trạng thái gửi độc lập và legacy need_response cutover, DDL/tenant ownership, update action/API, ACL, migration/compatibility và acceptance. Phần này phải kiểm thử được chỉ bằng rule, không cần model/provider.
 
-B. Chốt trigger/binding và action registration Workflow/Chatflow, service actor permission, Agent Assist skill/config/read-only tool profile, structured output, stale-result/dedup/cancellation và audit provenance. Publish version không tự cấp thêm quyền. Quy trình nào thực thi hành động thật sau này là use case/quyền riêng, không thuộc suggestion update.
+B. Chốt trigger/binding và action registration Workflow, service actor permission, Agent Assist skill/config/read-only tool profile, structured output, stale-result/dedup/cancellation và audit provenance. Publish version không tự cấp thêm quyền. Quy trình nào thực thi hành động thật sau này là use case/quyền riêng, không thuộc suggestion update.
 
 Acceptance tối thiểu: rule-only update; AI proposal qua orchestrator; direct Assist write/send denied; new inbound reset; late rule/AI rejected; concurrent update conflict; tenant/field denial; retries dedup; no configured process stays unknown; sent with newer inbound stays unknown. Đây là thiết kế, chưa phải evidence runtime.
 

@@ -25,6 +25,16 @@ async function query(model:string,metrics:string[],change:Partial<Definition>={}
  const access=completeMockAccess({audience:'reporting-query-v1',tenantId:tenant,principalId:tenant,authRevision:'1',mockSource:'all',canExport:true,bodyHash:'a'.repeat(64),issuedAt:Date.now(),expiresAt:Date.now()+5000},s);return executeQuery(s,liveDefinition(d,s.manifest),access);});
 }
 describe('connected conversion cohorts',()=>{
+ it('derives later Sales won from lineage while closed Chat sessions remain unchanged',async()=>{
+  const p=conversionFixture(),chat=structuredClone(p.conversion.rows.cv_session),deal=p.conversion.rows.cv_deal!.find(r=>r.id==='d2')!;
+  const metrics=['cv_sessions_count','cv_sessions_with_lead','cv_sessions_via_lead_won','cv_sessions_with_won'];
+  deal.stage='open';deal.closed_at=null;
+  expect((await query('cv_sessions',metrics,{},p)).totals).toEqual({cv_sessions_count:'4',cv_sessions_with_lead:'2',cv_sessions_via_lead_won:'1',cv_sessions_with_won:'2'});
+  deal.stage='won';deal.closed_at=at(5);
+  expect((await query('cv_sessions',metrics,{},p)).totals).toEqual({cv_sessions_count:'4',cv_sessions_with_lead:'2',cv_sessions_via_lead_won:'2',cv_sessions_with_won:'3'});
+  expect(p.conversion.rows.cv_session).toEqual(chat);
+  expect(chat.every(row=>row.status==='closed')).toBe(true);
+ });
  it('rejects oversized sources and unavailable catalog pins without truncation or fallback',async()=>{const p=conversionFixture(),row=p.conversion.rows.cv_session![0]!;p.conversion.rows.cv_session=Array.from({length:10001},(_,i)=>({...row,id:'s'+i}));await expect(withSourcePolicy(tenant,p,async()=>{})).rejects.toThrow('CONVERSION_SOURCE_LIMIT');await withSourcePolicy(tenant,conversionFixture(),async()=>{expect(()=>connectedSnapshot(conversionBinding(tenant),'f'.repeat(64))).toThrow('SNAPSHOT_PIN_UNAVAILABLE');});});
  it('keeps empty sessions and separates raw volume, distinct session rates and direct won',async()=>{const r=await query('cv_sessions',['cv_sessions_count','cv_sessions_leads','cv_sessions_lead_rate','cv_sessions_won_rate','cv_sessions_direct_won','cv_sessions_via_lead_won','cv_sessions_won_value']);expect(r.totals).toEqual({cv_sessions_count:'4',cv_sessions_leads:'3',cv_sessions_lead_rate:'50.000000',cv_sessions_won_rate:'75.000000',cv_sessions_direct_won:'1',cv_sessions_via_lead_won:'2',cv_sessions_won_value:'30.000000'});});
  it('preserves duplicate Lead deal lineage while canonical rates count one group',async()=>{expect((await query('cv_leads_raw',['cv_leads_raw_count','cv_leads_raw_won_rate'])).totals).toEqual({cv_leads_raw_count:'3',cv_leads_raw_won_rate:'66.666667'});expect((await query('cv_leads_canonical',['cv_leads_canonical_count','cv_leads_canonical_won','cv_leads_canonical_won_rate','cv_leads_canonical_won_value'])).totals).toEqual({cv_leads_canonical_count:'2',cv_leads_canonical_won:'2',cv_leads_canonical_won_rate:'50.000000',cv_leads_canonical_won_value:'20.000000'});});

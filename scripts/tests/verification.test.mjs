@@ -53,8 +53,13 @@ test('strict schema gate rejects unknown keywords and duplicate IDs', async () =
 });
 test('contract drift check fails without rewriting stale generated files', async () => {
   await fixture(async cwd => {
+    await mkdir(join(cwd, 'docs/contracts'), { recursive: true });
+    await mkdir(join(cwd, 'docs/developer'), { recursive: true });
+    await mkdir(join(cwd, 'docs/architecture'), { recursive: true });
+    await cp(new URL('docs/developer/openapi.json', root), join(cwd, 'docs/developer/openapi.json'));
     await cp(new URL('packages/contracts', root), join(cwd, 'packages/contracts'), { recursive: true });
-    assert.equal(invoke('generate-contracts.mjs', cwd).status, 0);
+    const generatedResult = invoke('generate-contracts.mjs', cwd);
+    assert.equal(generatedResult.status, 0, generatedResult.stderr);
     const generated = join(cwd, 'packages/contracts/src/generated/health.ts');
     const stale = '// stale generated contract\n';
     await writeFile(generated, stale);

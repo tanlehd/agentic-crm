@@ -1,4 +1,5 @@
 'use client';
+import {useInboxInterval} from './inbox-polling';
 import {useEffect,useRef,useState} from 'react';
 import {useInfiniteQuery,useQuery} from '@tanstack/react-query';
 import {request,useCommand,ErrorNotice,type ApiError} from './api';
@@ -15,7 +16,7 @@ const base='/api/v1/chat-workspace/inboxes';
 const defaultFilter=():InboxFilter=>({scope:'all',status:['open','pending'],snooze:'exclude',unread:'any'});
 const sortLabels:Record<Sort,string>={latest_message_desc:'Tin mới nhất',latest_message_asc:'Tin cũ nhất',waiting_longest:'Chờ phản hồi lâu nhất'};
 const statusLabels:Record<string,string>={open:'Đang mở',pending:'Đang chờ xử lý',closed:'Đã đóng'};
-function useCollection(tenant:string,path:string,enabled:boolean,poll=false){return useInfiniteQuery({queryKey:[tenant,path],initialPageParam:null as string|null,queryFn:({signal,pageParam})=>request(tenant,path+(pageParam?'&cursor='+encodeURIComponent(pageParam):''),{signal}),enabled,getNextPageParam:p=>p.next_cursor??undefined,retry:false,refetchInterval:poll&&enabled?5000:false,refetchIntervalInBackground:false});}
+function useCollection(tenant:string,path:string,enabled:boolean,poll=false){const interval=useInboxInterval();return useInfiniteQuery({queryKey:[tenant,path],initialPageParam:null as string|null,queryFn:({signal,pageParam})=>request(tenant,path+(pageParam?'&cursor='+encodeURIComponent(pageParam):''),{signal}),enabled,getNextPageParam:p=>p.next_cursor??undefined,retry:false,refetchInterval:poll&&enabled?interval:false,refetchIntervalInBackground:false});}
 export function filterParams(p:InboxFilter,sort:Sort,limit=8){const q=new URLSearchParams({scope:p.scope,status:p.status.join(','),snooze:p.snooze,unread:p.unread,sort,limit:String(limit)});for(const k of ['team_id','channel','channel_id'] as const)if(p[k])q.set(k,p[k]!);if(p.tag_ids?.length)q.set('tag_ids',p.tag_ids.join(','));return q.toString();}
 type Mutation={path:string;body:unknown;method:string;version?:string};
 function useSafeMutation(tenant:string){
@@ -48,7 +49,7 @@ function InboxEditor({tenant,source,initial,canCreate,onClose,onSaved,onShare,on
  const mutation=useSafeMutation(tenant),canUpdate=source?.allowed_actions.includes('update')===true,editable=canCreate||canUpdate,dirty=JSON.stringify(draft)!==JSON.stringify(initial),busy=mutation.busy||!!mutation.pending;
  const options=useQuery({queryKey:[tenant,'/api/v1/chat-workspace/inbox-options'],queryFn:({signal})=>request(tenant,'/api/v1/chat-workspace/inbox-options',{signal}),enabled:editable,retry:false}),o=options.data?.data as Options|undefined;
  const capabilities=useQuery({queryKey:[tenant,'/api/v1/chat-workspace/capabilities'],queryFn:({signal})=>request(tenant,'/api/v1/chat-workspace/capabilities',{signal}),enabled:editable,retry:false});
- const fresh=useQuery({queryKey:[tenant,base+'/'+source?.id],queryFn:({signal})=>request(tenant,base+'/'+source!.id,{signal}),enabled:!!source,retry:false,refetchInterval:5000,refetchIntervalInBackground:false});
+ const fresh=useQuery({queryKey:[tenant,base+'/'+source?.id],queryFn:({signal})=>request(tenant,base+'/'+source!.id,{signal}),enabled:!!source,retry:false,refetchInterval:useInboxInterval(),refetchIntervalInBackground:false});
  const denied=!!source&&[403,404].includes((fresh.error as ApiError)?.status??0),stale=!!source&&fresh.data?.data.version!==undefined&&fresh.data.data.version!==source.version;
  const channels=useCollection(tenant,'/api/v1/conversation-channels?limit=100',editable&&!!o?.filter_fields.includes('channel_id')),tags=useCollection(tenant,'/api/v1/chat-workspace/tags?limit=100',editable&&!!o?.filter_fields.includes('tags'));
  const preview=useQuery({queryKey:[tenant,'inbox-preview',previewQuery],queryFn:({signal})=>request(tenant,'/api/v1/chat-workspace/conversations?'+previewQuery,{signal}),enabled:!!previewQuery&&!denied,retry:false,refetchOnWindowFocus:false});

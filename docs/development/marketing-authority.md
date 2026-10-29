@@ -21,7 +21,7 @@ Authority role has Identity reads for the existing monolith authorization port, 
 Persistent synthetic checks, using pinned Node24:
 
 ```powershell
-.local/node-v24.21.0-win-x64/node.exe node_modules/typescript/bin/tsc -p apps/backend/tsconfig.json
+.local/node-v24.21.0-win-x64/node.exe node_modules/typescript/bin/tsc -p services/core-baseline/tsconfig.json
 .local/node-v24.21.0-win-x64/node.exe scripts/marketing-authority-test.mjs
 .local/node-v24.21.0-win-x64/node.exe scripts/marketing-authority-grants.mjs --test
 .local/node-v24.21.0-win-x64/node.exe scripts/marketing-authority-test.mjs

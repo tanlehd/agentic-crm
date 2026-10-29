@@ -4,12 +4,12 @@ services:
     build: {context: ., dockerfile: infra/docker/Dockerfile, target: development}
     command: [pnpm, dev:api]
     volumes:
-      - ./apps/backend/src:/app/apps/backend/src:ro
+      - ./services/core-baseline/src:/app/services/core-baseline/src:ro
   worker:
     image: agentic-crm-development:local
     command: [pnpm, dev:worker]
     volumes:
-      - ./apps/backend/src:/app/apps/backend/src:ro
+      - ./services/core-baseline/src:/app/services/core-baseline/src:ro
   web:
     image: agentic-crm-web-development:local
     build: {target: development}

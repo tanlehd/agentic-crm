@@ -3,7 +3,7 @@ import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {parseEnv} from 'node:util';
 import {randomUUID} from 'node:crypto';
 import {chromium,expect as baseExpect} from '@playwright/test';
-import {fixtureId} from '../apps/backend/dist/modules/identity/seed.js';
+import {fixtureId} from '../services/core-baseline/dist/modules/identity/seed.js';
 const expect=baseExpect.configure({timeout:30000});
 const env=parseEnv(await readFile('.env','utf8'));assert.equal(env.APP_ENV,'development');assert.equal(env.APP_ORIGIN,'http://localhost:18080');
 const origin=env.APP_ORIGIN,tenant=fixtureId('clinic_alpha'),browser=await chromium.launch({channel:'chrome',headless:true}),page=await browser.newPage({viewport:{width:1600,height:1100}}),checks=[],errors=[];page.setDefaultTimeout(30000);page.on('pageerror',e=>errors.push(e.message));await mkdir('artifacts/conversation-identity',{recursive:true});

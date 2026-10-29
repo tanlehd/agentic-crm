@@ -10,7 +10,7 @@ CHG-20261013-01 / PLAN-024 bổ sung [Workflow Web/API/Core design plan](workflo
 2. SRC-042: khung Workflow theo thiết kế Ready: definition/version, trigger/condition/action registry, binding, service actor/quyền, run status và retry/idempotency; cấu hình/UI theo PLAN-009.
 3. SRC-043: khung Chatflow trên nền Workflow: definition/version, session/node/context, gọi action/agent, pause/resume/cancel, structured result và quyền. Chưa ghép Next action vào Inbox.
 4. SRC-044: khung AI Agent: định nghĩa/config, skills, provider/adapter boundary, quyền/tool profile và thực thi trả kết quả có cấu trúc. Phân biệt Assist chỉ đề xuất với owner agent; kiểm được bằng adapter synthetic, không gọi đó là provider production đã tích hợp.
-5. PLAN-008: chỉ bắt đầu sau cả ba khung DONE; chốt exact typed next_action, action/API/persistence/compatibility và cách ghép Workflow/Chatflow/rule/Assist vào luồng Chat. Sau đó mới claim source tích hợp Chat được tách từ kế hoạch này.
+5. PLAN-008: chỉ bắt đầu sau cả ba khung DONE; chốt exact typed next_action, action/API/persistence/compatibility và cách ghép Workflow/rule/Assist vào luồng Chat. Sau đó mới claim source tích hợp Chat được tách từ kế hoạch này.
 
 Scope từng source vẫn cần PLAN-009 Ready và acceptance cụ thể; danh sách trên là thứ tự/gate, không tuyên bố khung đã triển khai. Dependency tuần tự bảo đảm một implementation task active. Provider thật, visual builder đầy đủ, Ticket và tích hợp hành động nghiệp vụ chưa có vẫn theo design gate riêng.
 

@@ -2,7 +2,7 @@
 
 **Implemented additive slice SRC-078 / 2026-10-16:** [Thread / Conversation exact contract](thread-conversation-implementation.md), PLAN-033A DONE. Thread legacy IDs/API remain stable; Conversation episode has optional custom fields and stage, event-time ownership/contributor history, and Related Lead/Deal actions with current permissions. Cross-team transfer preserves the episode; Ticket and connected Reporting remain gated. Physical forward31 stays in the baseline monolith; service extraction rules below remain unchanged.
 
-2026-10-15, CHG-20261015-03. Ready for bounded source after contract checks. User requested Code following PLAN-028. First delivery is canonical object catalog + persisted workspace settings + Object & Properties/ERD + native generic records. Lifecycle mutation, reverse-label editing, unlink, cross-consumer dependency index and backfill remain unimplemented follow-up scope of PLAN-028E; no complete R1 or full PLAN-028 claim from this slice. Existing key/type/cardinality immutable guards are retained. [Plan](../planning/no-code-object-platform.md).
+2026-10-15, CHG-20261015-03. Ready for bounded source after contract checks. User requested Code following PLAN-028. First delivery is canonical object catalog + persisted workspace settings + Object & Properties/ERD + native generic records. Reverse-label editing, unlink and operation-specific compatibility/backfill remain unimplemented follow-up scope of PLAN-028E; no complete R1 or full PLAN-028 claim from this slice. Existing key/type/cardinality immutable guards are retained. [Plan](../planning/no-code-object-platform.md).
 
 ## API
 

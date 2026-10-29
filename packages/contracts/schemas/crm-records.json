@@ -720,9 +720,6 @@
           ],
           "format": "uuid"
         },
-        "qualification_session_id": {
-          "type": "null"
-        },
         "declared_source": {
           "enum": [
             null,

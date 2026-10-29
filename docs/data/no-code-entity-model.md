@@ -16,7 +16,7 @@ Implemented slice2026-10-15: canonical registry reused; CRM object_workspace_con
 | Form / view / workspace placement | existing forms/views; proposed placement CRM-owned | field/column IDs, versioned configuration, nav group/order/enabled; visibility intersection current rights, không ACL master |
 | Published metadata manifest / dependency usage | Proposed canonical version + consumer-owned bindings | schema revision/digest, immutable refs, consumer/version/usage, impact/reconciliation status; no record values |
 | Reporting model / binding | Reporting / crm_reporting | canonical refs + own model version, source binding/generation/watermark, grain/metrics/query capabilities |
-| Workflow artifact / run | Workflow API/Core / crm_workflow, crm_workflow_core | canonical bindings/manifest digest, root ref/event sequence, graph/executor version, execution authority |
+| Workflow artifact / run | Workflow / crm_workflow | canonical bindings/manifest digest, root ref/event sequence, graph/executor version, execution authority |
 
 Các row proposed trên là logical requirements, chưa quyết định mỗi row = một bảng. Physical designs phải ưu tiên reuse; mọi bảng mới kể cả link/audit/outbox/journal/backfill có tenant_id NOT NULL, registered system tenant chỉ cho control-plane. Không database/table/column theo tenant. Record/value storage của Sales/Chat/Ticket thuộc owner sau extraction, không CRM ghi remote SQL.
 
@@ -42,9 +42,9 @@ Diagram là logical relationship, không cross-schema FK. Mọi reference chứa
 
 1:N nghĩa một source có nhiều targets, mỗi target tối đa một source trong association type đó; đảo chiều hiển thị N:1. 1:1 giới hạn cả hai đầu. N:N dùng association rows; tuple tenant/type/source/target không trùng. Cả hai endpoint cùng tenant, active và đúng object type. Association không tự grant/share records hoặc kế thừa owner. Lookup UI lưu link, không giấu record ID trong custom string.
 
-V1 không master-detail/cascade delete. Link/unlink explicit, audit, current rights cả hai đầu và CAS; exact unlink/version contract mới phải chốt, M1 chỉ có create/list. Archive record giữ lịch sử; planner loại archived records theo query policy, active dependencies có thể block theo owner. Thay cardinality khi có links cần impact/violation scan; không tự drop links. N:N có thuộc tính dùng custom junction object và hai 1:N definitions, không thêm pseudo-field type.
+V1 không master-detail/cascade delete. Link/unlink explicit, audit, current rights cả hai đầu và CAS; exact unlink/version contract mới phải chốt, M1 chỉ có create/list. Visibility/query policy do owner của record công bố; không áp archive hoặc dependency blocker chung cho mọi record. Thay cardinality khi có links cần impact/violation scan; không tự drop links. N:N có thuộc tính dùng custom junction object và hai 1:N definitions, không thêm pseudo-field type.
 
-Custom object/field đề xuất lifecycle active → deprecated → archived; existing M1 create active tiếp tục compatibility. Config drafts/publish cho placement/model/run tách khỏi record archive. Deprecated vẫn đọc lịch sử, không cho binding mới; archive chỉ khi dependency checks/retention cho phép. Standard object/core property không archive/đổi key/type bằng tenant editor. M1 không có lifecycle endpoints này, chỉ mở sau PLAN-028A.
+Không định nghĩa lifecycle mặc định cho custom object/field. Rename label giữ ID/binding; thay key/type hoặc xóa field đã được sử dụng cần compatibility và impact theo thao tác cụ thể, không thêm vòng đời deprecated/archive hoặc consumer drain chỉ vì dùng metadata. Standard domain fields do owner công bố. Config draft/publish chỉ áp dụng thành phần có use case xuất bản.
 
 Label đổi giữ ID/key. Add optional field compatible nhưng cần catalog refresh; add required trên existing data tiếp tục reject cho tới resumable backfill gate. Index enable chỉ usable sau backfill+dual maintenance+validation hoàn tất; failed jobs không quảng bá query capability. Enum option removal/type conversion/formula/unique chưa R1. Khi retire definition giữ historical manifest đủ cho saved report/run retention; revoke quyền vẫn có hiệu lực ngay khi kiểm lại.
 

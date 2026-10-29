@@ -5,7 +5,7 @@ import {randomUUID} from 'node:crypto';
 import {chromium,expect} from '@playwright/test';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
-import {fixtureId} from '../apps/backend/dist/modules/identity/seed.js';
+import {fixtureId} from '../services/core-baseline/dist/modules/identity/seed.js';
 const env=parseEnv(await readFile('.env','utf8'));assert.equal(env.APP_ENV,'development');assert.equal(env.APP_ORIGIN,'http://localhost:18080');
 const origin=env.APP_ORIGIN,tenant=fixtureId('clinic_alpha'),schema=JSON.parse(await readFile('packages/contracts/schemas/customer360.json','utf8')),ajv=addFormats(new Ajv({strict:true}));ajv.addSchema(schema);
 for(const key of Object.keys(schema.definitions))assert(ajv.getSchema('customer360#/definitions/'+key));

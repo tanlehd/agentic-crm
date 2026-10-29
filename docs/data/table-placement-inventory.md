@@ -1,5 +1,7 @@
 # Table placement inventory — baseline source22
 
+CHG-20261021-08: five legacy conversational tables removed by forward43; they have no target schema. Other table placements below remain unchanged.
+
 PLAN-007,2026-10-07. Read compiled migration metadata built/verified during ENV-003 from current source, without executing SQL. Historical inventory captured at21; SRC-038 local DB now23. Every monolith CREATE TABLE in versions1–22 mapped below; journals and independent Connector added explicitly. Not a production information_schema audit. Target scope follows [catalog](schema-catalog.md) and [guideline](database-guidelines.md).
 
 | Current table in agentic_crm | Created version | Target schema / split | tenant_id column in baseline DDL |
@@ -20,11 +22,6 @@ PLAN-007,2026-10-07. Read compiled migration metadata built/verified during ENV-
 | chat_read_rollout_principal | 20 | crm_chat | present |
 | chat_snippet | 21 | crm_chat | present |
 | chat_workspace_rollout | 22 | crm_chat | present |
-| chatflow_definition | 14 | crm_chatflow | present |
-| chatflow_node_run | 14 | crm_chatflow | present |
-| chatflow_session | 14 | crm_chatflow | present |
-| chatflow_turn | 14 | crm_chatflow | present |
-| chatflow_version | 14 | crm_chatflow | present |
 | company | 8 | crm_core | present |
 | consumer_inbox | 5 | per owning service | present |
 | contact | 8 | crm_core | present |

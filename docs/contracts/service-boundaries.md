@@ -1,6 +1,15 @@
 # Cross-service contract rules
 
+ADR-027: Workflow is the sole configurable business orchestration service, including conversational flows and routing rules. API/engine/worker are internal components under crm_workflow. Identity User/team, CRM/custom objects, Sales Lead/Deal, Ticket and Chat Conversation remain owning authorities. Routing supplies allocation/capacity; the owner commits assignment. Historical Chatflow wire references below are compatibility only; [current orchestration](workflow-orchestration.md).
+
+
+PLAN-006H/SRC-095 adds the scoped [Chat registry/control recovery contract](chat-control-v1.md): owner-resolved notices, cumulative pause/cancel generation watermarks and current reference checks. A broker notice or catalog projection never authorizes a mutation. Schema/model kit only; scoped PLAN-007C persistence design follows while full PLAN-006/007B feature/migration gates remain pending.
+
 PLAN-005 / ADR-017: architecture rules accepted, exact machine protocols not Ready (PLAN-006). Current generated contracts remain monolith API baseline; logical names below are not implemented routes/events.
+
+PLAN-006E/SRC-092 adds [reviewed Chat authority/revocation/dispatch and registry boundary](chat-extraction-boundary.md) plus an [executable dependency inventory](../architecture/chat-extraction.md). Only the preparation/CI scope is Ready. PLAN-006F must specify exact remote transport/grant/revocation semantics; synchronous permission RPC alone does not retain the monolith tenant-lock atomicity. Parent PLAN-006 remains incomplete.
+
+PLAN-006F/SRC-093 completes the scoped [dispatch v1 machine protocol](chat-dispatch-v1.md): mTLS workload profile, issued reference/current consume, immutable resource context, independent claim/revoke/start linearization, bounded begin handler and unknown reconciliation. Generated schemas/reference tests are implemented; durable server/DDL/mTLS verification still pending. The earlier issue/consume gap below is resolved only for this specified v1 flow, not every privileged action or full extraction.
 
 ## Query / command envelope
 

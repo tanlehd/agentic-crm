@@ -1,5 +1,113 @@
 # Task tracker — source generation
 
+## Repository baseline
+
+| ID | Task | Dependencies | Status | Owner | Evidence |
+|---|---|---|---|---|---|
+| BASE-20261029-01 | Snapshot accumulated workspace into a local Git baseline at user request | None (repository snapshot) | DONE | Codex 2026-10-29 | Commit containing this entry; [baseline evidence](details/BASE-20261029-01.md). Static checks and 461 unit tests PASS; feature acceptance unchanged, FIX-20261027-01 remains deferred/open. |
+
+## UI follow-up
+
+| ID | Task | Dependencies | Status | Owner | Evidence |
+|---|---|---|---|---|---|
+| UI-20261029-01 | Consolidate administration into grouped Settings workspace and Inbox Center layout | SRC-109; UI-20261027-01 | DONE | Codex 2026-10-29 | CHG-20261029-01; [SET-01…05 local layout evidence](details/UI-20261029-01.md). Web typecheck, browser9groups/desktop/mobile320/390, lint PASS; existing tenant permissions retained. Conversation team-view persistence and new providers remain outside scope. |
+| FIX-20261027-01 | Diagnose and repair Inbox latency, polling and realtime reads | SRC-109 | IN_PROGRESS | Codex 2026-10-27 | CHG-20261027-06 polling/realtime sub-scope DONE locally: env5min, authenticated socket, browser/native/lifecycle PASS. [Evidence](details/FIX-20261027-01.md#polling-and-realtime-acceptance--2026-10-27). Overall reliability remains open: intermittent503/clock investigation deferred by user; Windows time unchanged. |
+| UI-20261027-01 | Remove standalone Operations navigation and obsolete Workflow shortcut | SRC-109 | DONE | Codex 2026-10-27 | CHG-20261027-04; web typecheck, docs check, local browser sidebar/search/legacy link PASS; artifacts/ui-20261027-01/navigation.png |
+
+SRC-109/T01–T09 DONE, Codex 2026-10-27. D3 Human-first 6/6; independent local delivery3/14 (Reporting, Connector, Chat). Legacy Conversation graph retired; main baseline46/crm_chat4, both Chat tenant gates active epoch2 after accepted post-write freeze/forward recovery. Source data and original receipts retained. Production, AI native, live-provider delivery and other-owner business consumers remain outside this acceptance. No commit/push/reset.
+
+Scope/evidence: [remaining boundaries](../planning/chat-extraction/remaining-boundaries.md), [workspace source](../development/chat-workspace-source.md), [change log](log.md).
+
+## Current extraction tasks
+
+| ID | Task | Dependencies | Status | Owner | Evidence |
+|---|---|---|---|---|---|
+| SRC-107 | Activate existing Connector mock ingress against actual native local backend, retained recovery and operational rollback | PLAN-056; SRC-028; SRC-030; SRC-091 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-107.md); DLV-01…05 5/5, native message/outage/lost ACK/restart/rollback, own schema5; packages2/17, local2/17 ingress-only |
+| SRC-108 | D2 Human outbound runtime composition, durable orchestration and local rollout | SRC-107; SRC-106 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-108.md); D2-01…06 6/6, public main Alpha Human→durable worker→owning HTTP→synthetic sent; schema42 preserves old data, pinned images/restart/rollback/reapply; packages/local2/17 |
+| SRC-109 | D3 Chat-owned API/producer/local consumers and local single-writer cutover | SRC-108 | DONE | Codex 2026-10-27 | [Evidence](details/SRC-109.md#t09-legacy-retirement-and-main-cutover--2026-10-27); T01–T09 DONE, D3 Human-first6/6, local3/14. Main smoke/restart/freeze/forward recovery and original receipt/effect preservation PASS. Other-owner business and AI native remain deferred. |
+
+## PLAN-057 — SRC-109 thread steps
+
+These are handoff scopes within SRC-109, not nine new source tasks or deployed services. This table is the canonical step status. Claim owner/date when execution starts; a partially completed step stays IN_PROGRESS. Design readiness still follows the exact scope in each file. D3 gates6/6 (D3-01…06 accepted), local3/14; main single-writer cutover D3-06 accepted with T09 evidence.
+
+| Step | Execution plan | Dependency | Status | Owner | Acceptance evidence |
+|---|---|---|---|---|---|
+| T01 | [Owner contracts](../planning/chat-extraction/01-contracts.md) | SRC-108 DONE + current audit | DONE | Codex 2026-10-18 | [Evidence](details/SRC-109.md#t01--owner-contracts-complete-design-only);181operations/515named schemas,16capabilities/8Chat consumers;93contract cases + generation/schema/typecheck PASS; no runtime gate |
+| T02 | [Data design](../planning/chat-extraction/02-data-design.md) | T01 DONE | DONE | Codex 2026-10-18 | [Evidence](details/SRC-109.md#t02--data-design-complete-design-only);117templates/59Chat+58owner tables,75FK,4ledger rules,backfill/forward recovery;37tests+static/drift PASS; D3-01 1/6; DDL/copy NOT_RUN |
+| T03 | [Own DB/migration](../planning/chat-extraction/03-database.md) | T02 DONE | DONE | Codex 2026-10-19 | [Evidence](details/SRC-109.md#t03--retained-storage-complete);59tables/43localFKs,2,136rows+restore;11baseline+9completion native groups and89focused cases PASS; events/references/exceptions/storage recovery complete; D3-02 accepted |
+| T04 | [Registry/ownership](../planning/chat-extraction/04-ownership.md) | T03 DONE | DONE | Codex 2026-10-19 | [Human acceptance](../quality/t04-human-acceptance.md); final25native HTTP groups including custom8/public Routing4, Chat5, Routing6, optional TLS12 PASS; current Identity authority/revoke, assignment/takeover/close/history, five watermarks, metadata/custom values/index and native configuration drains. Main routing unchanged; T05/T06 scope explicit; AI capacity DEFERRED |
+| T05 | [Messaging/workspace](../planning/chat-extraction/05-messaging-workspace.md) | T04 DONE | DONE | Codex 2026-10-23 | [Human candidate acceptance](../quality/t05-human-acceptance.md): ingress/outbound/workspace/session/notes/need/generic/lifecycle/global disable and lineage. Lifecycle20native plus ownership regression/30focused PASS;56public candidate handlers. T06 integrations explicit; no main activation. |
+| T06 | [Chat producer/local consumers](../planning/chat-extraction/06-consumers.md) | T05 DONE | DONE | Codex 2026-10-25 | [Boundary acceptance](../quality/t06-chat-boundary-acceptance.md): existing T04/T05, producer/eight local consumers/scanners/recovery plus 11 external-read native groups; 42 focused cases, no open Chat catalog group; old-writer inventory reviewed. D3-03 accepted. |
+| T07 | [Independent runtime](../planning/chat-extraction/07-runtime.md) | T06 DONE | DONE | Codex 2026-10-25 | [Runtime acceptance](../quality/t07-chat-runtime-acceptance.md): independent API/worker image, container ingress/send/restart, readiness/outage, six scheduler jobs and graceful stop; D3-04 accepted. |
+| T08 | [Composed parity](../planning/chat-extraction/08-parity.md) | T07 DONE | DONE | Codex 2026-10-25 | [Independent composed acceptance](../quality/t08-chat-parity-acceptance.md): public feature families, durable receiver/local inbox/command recovery, SIGKILL/restart and post-write freeze/forward replay; final image pins and release checks recorded. D3-05 accepted. |
+| T09 | [Main local cutover](../planning/chat-extraction/09-cutover.md) | T08 DONE | DONE | Codex 2026-10-27 | Legacy graph retired; scoped runtime/grants, final copy6,053rows, baseline46/Chat4. Main Human/public/non-Chat smoke, tenant/CSRF, event/inbox, freeze+forward recovery epoch2 and unchanged source/effect hashes PASS. Web18080 verified through local Windows API13001. [Evidence](details/SRC-109.md#t09-legacy-retirement-and-main-cutover--2026-10-27). |
+
+[Copyable prompts and full plan](../planning/chat-extraction-execution.md) · [Current handoff](chat-extraction-handoff.md). PLAN-057 DONE means the execution plan is delivered, not T01…T09 executed.
+
+## Other tasks and history
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-007C4 | Native session/account/ACL serialization prerequisite for Identity dispatch | SRC-038; SRC-093; SRC-098 | DONE | Codex 2026-10-18 | [Ready contract](../contracts/identity-dispatch-authority.md); design-only, Human baseline port |
+| SRC-099 | Native Human dispatch authority, session/revocation lock ordering and retained race tests | PLAN-007C4; SRC-038; SRC-093; SRC-098 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-099.md);9native groups/461unit tests PASS; baseline Human only; packages2/17, active local1/17 |
+| PLAN-007C5 | Exact native Human delegation/grant/replay/event ledger design | PLAN-007C4; SRC-099; SRC-093 | DONE | Codex 2026-10-18 | [Filled templates](../data/identity-dispatch-ledger.md); baseline Identity ownership, migration38 proposed |
+| SRC-100 | Native Human Identity grant/consume/revoke persistence and retained MySQL acceptance | PLAN-007C5; SRC-099; SRC-093; SRC-098 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-100.md);13native+10authority/463unit PASS; schema38 test only; packages2/17, active local1/17 |
+| PLAN-007C6 | Native Chat owner claim transaction and immutable receipt tables | SRC-100; SRC-098; SRC-093; SRC-095 | DONE | Codex 2026-10-18 | [Filled templates](../data/chat-dispatch-claim.md); baseline claim only, full registry/control/extraction pending |
+| SRC-101 | Native Chat claim persistence, owner CAS and Identity round-trip acceptance | PLAN-007C6; SRC-100; SRC-098; SRC-093; SRC-095 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-101.md);12native+13Identity regression/463unit/89script PASS; packages2/17, active local1/17 |
+| PLAN-007C7 | Exact three-authority native integration and retained fault acceptance | SRC-098; SRC-100; SRC-101 | DONE | Codex 2026-10-18 | [Acceptance](../quality/native-dispatch-integration.md); no new table/endpoint |
+| SRC-102 | Native Identity–Chat–Connector integration with separate Connector DB and fault tests | PLAN-007C7; SRC-098; SRC-100; SRC-101 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-102.md);20native/21focused unit PASS; injected transport/synthetic provider; packages2/17,active local1/17 |
+| PLAN-007C8 | Exact Chat terminal result/receipt/coverage/audit/outbox transaction | SRC-102; SRC-101; SRC-098 | DONE | Codex 2026-10-18 | [Filled template](../data/chat-dispatch-result.md); no transport activation |
+| SRC-103 | Native Chat result application, monotonic receipts and three-authority completion tests | PLAN-007C8; SRC-102; SRC-101; SRC-098 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-103.md);29native/463unit PASS, schema40test only; packages2/17,active local1/17 |
+
+## Chat extraction boundary — 2026-10-18
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-007C11 | Stable full Chat claim proof compatibility and owner wire contract | SRC-105; SRC-104; SRC-103 | DONE | Codex 2026-10-18 | [Ready contract](../contracts/chat-claim-proof.md); no DDL |
+| SRC-106 | Generated claim proof wire and native Chat/Identity adapters | PLAN-007C11; SRC-105; SRC-104; SRC-103 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-106.md);30native/468unit/90script PASS; packages2/17,active1/17 |
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-007C10 | Exact current-registry TLS boundary and native network acceptance | SRC-104; SRC-103; SRC-093 | DONE | Codex 2026-10-18 | [Ready transport](../contracts/workload-tls-boundary.md); no new wire/business endpoint |
+| SRC-105 | TLS1.3 workload boundary and native CA/registry/keepalive acceptance | PLAN-007C10; SRC-104; SRC-103; SRC-093 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-105.md);12native TLS/466unit PASS; packages2/17,active1/17 |
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-007C9 | Current workload certificate and explicit tenant admission table design | SRC-103; SRC-100; SRC-093 | DONE | Codex 2026-10-18 | [Ready templates](../data/identity-workload-registry.md); registry prerequisite only |
+| SRC-104 | Native Identity workload registry, bounded rotation and current tenant admission | PLAN-007C9; SRC-103; SRC-100; SRC-093 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-104.md);12native+29dispatch regression/464unit PASS; test schema41; packages2/17,active1/17 |
+
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-006E | Current Chat authority/revocation/registry/dispatch boundary and dependency guard contract | PLAN-005; PLAN-006D; SRC-038; SRC-082; SRC-089; SRC-091 | DONE | Codex 2026-10-18 | [Scoped contract](../contracts/chat-extraction-boundary.md); design only, full PLAN-006 remains pending |
+| SRC-092 | Executable Chat dependency inventory, reviewed baseline and CI regression guard | PLAN-006E; SRC-038; SRC-082; SRC-089; SRC-091 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-092.md); CEX-01…06;253entries/20script tests PASS; no runtime/DDL or physical Chat cutover |
+| PLAN-006F | Exact Identity delegation and Chat/Connector dispatch grants/revocation/receipt machine contracts | PLAN-006E; SRC-092 | DONE | Codex 2026-10-18 | [v1 contract](../contracts/chat-dispatch-v1.md); exact admission/in-flight semantics, design only; durable adapter/DDL still gated |
+| SRC-093 | Dispatch v1 schema/types/OpenAPI and executable authority/race/crash reference scenarios | PLAN-006F; SRC-092; SRC-038; SRC-030 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-093.md); DSP-01…08,24focused/44script tests; contract kit only, no remote server/provider deployment |
+| PLAN-006G | Authenticated payload transfer, Chat ingress/cancel and receipt replay compatibility | PLAN-006F; SRC-093; SRC-030; SRC-082 | DONE | Codex 2026-10-18 | [Ready scoped contract](../contracts/chat-exchange-v1.md); design only, remaining PLAN-006/007B gates preserved |
+| SRC-094 | Chat exchange schema/types/OpenAPI and payload/ingress/cancel replay reference scenarios | PLAN-006G; SRC-093; SRC-030; SRC-082 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-094.md);22focused/66script tests; CXP-01…06 contract kit only; no durable adapter, migration or cutover |
+| PLAN-006H | First-slice Chat registry/current-reference ports, AI/Chatflow cancellation and broker/recovery compatibility | PLAN-006G; SRC-094; SRC-092 | DONE | Codex 2026-10-18 | [Scoped Ready contract](../contracts/chat-control-v1.md); full PLAN-006 feature/mutation parity remains pending |
+| SRC-095 | Chat control/registry schemas and executable projection/cancellation/recovery reference scenarios | PLAN-006H; SRC-094; SRC-092 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-095.md); CCR-01…06,23focused/89script tests; contract kit, no live broker/DB/runtime cutover |
+| PLAN-007C | Scoped dispatch/exchange/control ledger templates, migration/grants and retained adapter test design | PLAN-007; PLAN-006H; SRC-095 | IN_PROGRESS | Codex 2026-10-18 | C1…C11 DONE scoped: native Human dispatch/result, workload registry, TLS boundary and full claim proof wire; AI/Chat registry/control/consumer ledgers and business HTTP ports pending after D1 per PLAN-056; broad PLAN-007B/PLAN-006 gate legacy extraction |
+| PLAN-007C1 | Connector immutable payload/request table design and native acceptance | PLAN-007; PLAN-006H; SRC-095 | DONE | Codex 2026-10-18 | [Filled templates](../data/connector-payload-ledger.md); design-only; parent PLAN-007C remains open |
+| SRC-096 | Connector immutable payload/request MySQL repository, forward migration and retained acceptance | PLAN-007C1; SRC-095; SRC-094; SRC-028 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-096.md); CPD-01…06,12native/19unit/89script tests; schema3 in retained test DB only, no HTTP/provider activation |
+| PLAN-007C2 | Exact Connector preparation/cancellation tables and shared staging lock | PLAN-007C1; SRC-096; SRC-094; SRC-095 | DONE | Codex 2026-10-18 | [Filled templates](../data/connector-preparation-ledger.md); design-only; in-flight lifecycle still gated |
+| SRC-097 | Durable Connector prepare/cancel, shared payload guard and retained MySQL acceptance | PLAN-007C2; SRC-096; SRC-094; SRC-095 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-097.md); CPG-01…06,11native+12payload regression/19unit/89script PASS; schema4 test only, no begin/provider activation |
+| PLAN-007C3 | Exact Connector attempt/fence/result/recovery dictionary and one-use executor boundary | PLAN-007C2; SRC-097; SRC-096; SRC-093 | DONE | Codex 2026-10-18 | [Filled templates](../data/connector-attempt-ledger.md); design-only, native authority/traffic gates remain |
+| SRC-098 | Native Connector attempt lifecycle, one-use executor and retained crash/replay acceptance | PLAN-007C3; SRC-097; SRC-096; SRC-093 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-098.md); CTA-01…07,17native+23native regression/19unit/89script PASS; schema5/injected ports only, no production sender |
+
+## Shared platform and staged rollout — 2026-10-18
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-055 | Adopt shared CRM platform and exact staged runtime rollout gate | SRC-090; SRC-030; SRC-038 | DONE | Codex 2026-10-18 | [ADR-023](../decisions/README.md#adr-023--shared-crm-platform-and-phased-runtime-separation); [Ready RO contract](../contracts/phased-service-rollout.md), design-only |
+| SRC-091 | Connector worker readiness/retained package acceptance and Reporting local container rollout | PLAN-055; SRC-090; SRC-030; SRC-038 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-091.md); RO-01…06 PASS; Reporting local container active, Connector retained test stopped; no full Chat/domain extraction |
+
+## Deployment audit and packaging — 2026-10-18
+
+| ID | Deliverable | Deps | Status | Owner | Gate / evidence |
+|---|---|---|---|---|---|
+| PLAN-054 | Fresh deployment inventory, topology and exact independent packaging gate | SRC-028; SRC-057; SRC-087 | DONE | Codex 2026-10-18 | [Ready contract](../contracts/service-packaging.md); [current/target diagrams](../system/deployment-topology.md); design-only |
+| SRC-090 | Independent Reporting image/Compose, retained container acceptance and operations runbook | PLAN-054; SRC-028; SRC-057; SRC-087 | DONE | Codex 2026-10-18 | [Evidence](details/SRC-090.md); SP-01…06; image+5container groups+191unit PASS, current/target diagrams; production/domain extraction unchanged |
+
 Nguồn chuẩn trạng thái công việc. Updated: 2026-10-07. Thiết kế có thể Ready nhưng source task vẫn TODO; hai trạng thái không đồng nghĩa.
 
 **Hiện tại:** SRC-001…031 DONE (M1–M2:25; M3 foundation:2; independent ingress:1; signed Messenger capture:1; contact cache compatibility:1; Facebook configuration:1); M1 và M2 local/mock release gates PASS. Runtime local localhost:18080 dùng native MySQL auth (SRC-038); historical preview có, Identity Admin/CRM UI, standard/custom CRUD, Lead qualification, metadata/form/view và association. SRC-014/015 Conversation và mock intake, SRC-016 inbox UI DONE; SRC-017 routing/assignment/takeover DONE; SRC-018 private mock runtime DONE; SRC-019 durable Workflow DONE; SRC-020 DONE, Codex 2026-10-05; SRC-021 DONE, Codex 2026-10-05; SRC-022 DONE, Codex 2026-10-05; SRC-023 DONE, Codex 2026-10-05; SRC-024 DONE, Codex 2026-10-06; SRC-025 DONE, Codex 2026-10-06; PLAN-005/006A DONE (architecture/doc-only); SRC-028 DONE; SRC-029 DONE; PLAN-006B DONE (design-only); PLAN-006C/006D DONE (scoped design); SRC-030/031 DONE; SRC-032/033 DONE (Codex 2026-10-06), SRC-034 DONE backend (SRC-038 final regression); Agent Chat rebuild còn SRC-035…037. PLAN-002/003/004A/004B DONE; PLAN-004 remaining TODO. [Checkpoint](checkpoint.md) · [Execution log](log.md) · [Build plan](../planning/build-plan.md).
@@ -88,10 +196,10 @@ Git publication S-20261015-Object-Platform: user requested commit/push of the co
 | SRC-080 | Persisted record detail/preview builder, team views and runtime CRM/Inbox integration | PLAN-034; SRC-079; SRC-078 | DONE | Codex 2026-10-16 | [Evidence](details/SRC-080.md);RP-01…08;380unit/22native/32browser/builds PASS;forward32 preserves98old tables |
 | SRC-079 | Layout cấu hình Đối tượng / Thuộc tính theo ảnh tham chiếu | SRC-074; SRC-078 | DONE | Codex 2026-10-16 | [Evidence](details/SRC-079.md);376unit/16native-browser/build/types/docs/lint PASS; OP-UI-01…05 bounded UI; không migration |
 | PLAN-028 | Object & Properties, ERD, association, Agent Workspace và shared entity model cho Reporting/Workflow; Salesforce reference và staged delivery | SRC-010; SRC-011; SRC-013; SRC-065; SRC-072 | DONE | Codex 2026-10-15 | [Evidence](details/PLAN-028.md); inventory/UX/logical model/contracts/19AC/Salesforce references; docs/dependency checks, design-only; chưa claim implementation |
-| PLAN-028A | Exact metadata/lifecycle/capabilities/association/placement contracts và filled table designs nếu cần | PLAN-028 | DONE | Codex 2026-10-15 | [Scoped Ready contract/table template](../contracts/object-platform-r1.md); docs283/2468links PASS; lifecycle beyond immutable baseline remains follow-up |
-| SRC-073 | Object Platform catalog/capability backend và persisted workspace configuration | PLAN-028A; SRC-011; SRC-065 | DONE | Codex 2026-10-15 | [Evidence](details/SRC-073.md);9 focused unit,8 native/MySQL groups,build/schema PASS; scoped OP-01/02/03/08, immutable baseline; lifecycle/unlink remains PLAN-028E |
-| SRC-074 | Object & Properties, ERD và dynamic Agent Workspace | SRC-073; SRC-013; SRC-039 | DONE | Codex 2026-10-15 | [Evidence](details/SRC-074.md);365unit/9native/11browser/builds, local30 preserved95tables; bounded config/CRUD/link UI; broader lifecycle remains PLAN-028E |
-| PLAN-028E | Remaining metadata lifecycle/unlink/reverse labels/dependency-index/backfill exact gate | SRC-074 | TODO | unassigned | Preserves incomplete R1 scope; no archive/deprecation or unlink implementation inferred from SRC-073/074 |
+| PLAN-028A | Exact metadata/lifecycle/capabilities/association/placement contracts và filled table designs nếu cần | PLAN-028 | DONE | Codex 2026-10-15 | [Scoped Ready contract/table template](../contracts/object-platform-r1.md); docs283/2468links PASS; generic lifecycle requirement removed; concrete metadata operations remain PLAN-028E |
+| SRC-073 | Object Platform catalog/capability backend và persisted workspace configuration | PLAN-028A; SRC-011; SRC-065 | DONE | Codex 2026-10-15 | [Evidence](details/SRC-073.md);9 focused unit,8 native/MySQL groups,build/schema PASS; scoped OP-01/02/03/08, immutable baseline; metadata compatibility/unlink remains PLAN-028E |
+| SRC-074 | Object & Properties, ERD và dynamic Agent Workspace | SRC-073; SRC-013; SRC-039 | DONE | Codex 2026-10-15 | [Evidence](details/SRC-074.md);365unit/9native/11browser/builds, local30 preserved95tables; bounded config/CRUD/link UI; additional metadata operations remain PLAN-028E |
+| PLAN-028E | Remaining metadata unlink/reverse labels and operation-specific compatibility/backfill | SRC-074 | TODO | unassigned | Generic archive/deprecation lifecycle removed by CHG-20261021-06; remaining concrete metadata operations need their exact contract |
 | PLAN-028B | Exact connected CRM producer/projection/ACL/dynamic report model contract | SRC-074; SRC-058; SRC-063 | TODO | unassigned | Root/related grain, watermark/change coverage, physical design và SRC-049 overlap boundary |
 | SRC-075 | Connected custom-object Report Builder và Dashboard report integration | PLAN-028B; SRC-074; SRC-058; SRC-059; SRC-072 | TODO | unassigned | OP-08…13; mock bindings preserved; SRC-059 remaining scope prerequisite |
 | PLAN-028C | Exact custom-object Flow triggers/actions và distributed runtime source dependency inventory | SRC-075; PLAN-024E | TODO | unassigned | Phải liệt kê runtime source prerequisites trước SRC-076 READY |
@@ -163,7 +271,7 @@ CHG-20261013-02: user yêu cầu triển khai Workflow tuần tự. SRC-064 requ
 | PLAN-024 | Kiểm kê Workflow hiện hữu; kiến trúc Web/API/Core, Kafka object changes, shared CRM metadata, node/action catalog và kế hoạch thiết kế | PLAN-005; SRC-019; SRC-050 | DONE | Codex 2026-10-13 | [Evidence](details/PLAN-024.md); design-only, docs/link/DAG/lint/whitespace PASS; runtime mới NOT_RUN |
 | PLAN-024A | Exact shared CRM metadata/binding/query và producer capability catalog | PLAN-024 | DONE | Codex 2026-10-13 | [Scoped contract](../contracts/workflow-catalog.md); document review and docs check PASS; producer capability gaps explicit, no source/runtime completion claim |
 | PLAN-024B | Exact Kafka object-change/change-image/enrollment/replay/security | PLAN-024A | READY | unassigned | Ready to design after native catalog slice; producer coverage/schema/topic/sequence/activation boundary/retention và anti-cycle before source |
-| PLAN-024C | Exact Workflow API/Core control/auth/table templates/migrations | PLAN-024B | TODO | unassigned | OpenAPI, native scopes, publish saga, two private schemas, per-table filled templates và compatibility |
+| PLAN-024C | Exact unified Workflow API/control/auth/storage/migrations | PLAN-024B | TODO | unassigned | OpenAPI/native scopes, local activation in one crm_workflow owner, legacy graph/run/receipt mapping and forward compatibility; ADR-027 |
 | PLAN-024D | Exact node/action execution, related records và communication adapters | PLAN-024C | TODO | unassigned | Typed inputs/outputs, CAS/partial receipts, routing, delay/branch/wait, provider authority/reconcile |
 | PLAN-024E | CMS UX, scoped source backlog và distributed release/cutover | PLAN-024D | TODO | unassigned | API-backed screens, keyboard/mobile, persistent synthetic fault tests, single starter/drain/restore |
 | SRC-065 | Native shared CRM Workflow catalog và typed Core authoring validator | PLAN-024A; SRC-038; SRC-019; SRC-053 | DONE | Codex 2026-10-13 | [Evidence](details/SRC-065.md);325 unit,8 native HTTP/MySQL groups, builds/types/schema/drift PASS; WF-01/02/07/13 metadata/validator only, runtime/Kafka/CMS still pending |
@@ -398,9 +506,9 @@ User-prioritized sequence; [framework plan](../planning/automation-frameworks.md
 
 | ID | Deliverable | Deps | Status | Owner | Gate / evidence |
 |---|---|---|---|---|---|
-| PLAN-009 | Baseline gap review and exact Workflow/Chatflow/AI Agent framework scopes | UX-006; SRC-018; SRC-019; SRC-020; SRC-050 | TODO | unassigned | PLAN-024 supplies Workflow architecture/gap review only; exact PLAN-024A…E and remaining Chatflow/AI scopes still required; no SRC-042 readiness claim |
-| SRC-042 | Workflow framework on existing engine | PLAN-009; SRC-019; SRC-065 | TODO | unassigned | SRC-065 metadata/validator foundation delivered; remaining exact PLAN-024B…E/PLAN-009 scopes and definition/action/trigger/auth/runtime tests still required |
-| SRC-043 | Chatflow framework on Workflow foundation | SRC-042; SRC-020 | TODO | unassigned | Exact PLAN-009 scope; session/node/context/action lifecycle tests |
+| PLAN-009 | Baseline gap review and unified Workflow/AI integration scope | UX-006; SRC-018; SRC-019; SRC-020; SRC-050 | TODO | unassigned | PLAN-024 supplies Workflow architecture/gap review only; exact PLAN-024A…E and legacy conversational migration/AI integration still required; no SRC-042 readiness claim |
+| SRC-042 | Unified Workflow foundation on existing engine/library | PLAN-009; SRC-019; SRC-065 | TODO | unassigned | SRC-065 metadata/validator foundation delivered; remaining exact PLAN-024B…E/PLAN-009 scopes and definition/action/trigger/auth/runtime tests still required |
+| SRC-043 | Implement conversational actions inside unified Workflow | SRC-042; SRC-020 | TODO | unassigned | ADR-027: common run/step/wait/Human input and owner actions; Chatflow retirement handled separately by CHG-20261021-08; no legacy engine rebuild |
 | SRC-044 | AI Agent definition/skill/permission/execution framework | SRC-043; SRC-018 | TODO | unassigned | Exact PLAN-009 scope; structured results and suggestion-only Assist guard tests |
 
 ## CRM base first — 2026-10-07

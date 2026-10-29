@@ -10,6 +10,7 @@
     "worker": "node dist/main.js worker"
   },
   "dependencies": {
+    "@agentic-crm/workload-transport": "workspace:*",
     "@agentic-crm/contracts": "workspace:*",
     "@nestjs/common": "12.1.2",
     "@nestjs/core": "12.1.2",

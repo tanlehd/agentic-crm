@@ -1,5 +1,8 @@
 # MOD-07 — Agent & Routing
 
+ADR-027: business orchestration belongs to [Workflow](../services/workflow.md). Chatflow/session terminology in baseline source notes below denotes [legacy compatibility](../contracts/legacy-chatflow.md), not an independent module/service to extend. The owning domain retains its own data, command validation and current authorization.
+
+
 SRC-085 / 2026-10-17: [Operations Reporting](../contracts/operations-reporting.md) cung cấp 6 read objects, 7 model và template dashboard trên core chung. Routing/Chat/Identity giữ quyền sở hữu facts, producer qua authorized monolith ports; Reporting chỉ lưu definitions/catalog metadata trong own schema5, không SQL/FK xuyên service. UI phân tích ở Dashboards/Reports; Routing giữ cấu hình và hành động điều phối. [Runbook](../development/operations-reporting.md).
 
 SRC-084 / 2026-10-17: [Human routing R1](../contracts/human-routing.md) now implements bounded team skills/profile capacity/queue dispatch/admin supervisor and agent workload/reporting. Human capacity is enforced for enrolled profiles; other legacy paths remain compatible. AI execution leases unchanged. [Acceptance/screenshots](../quality/human-routing-acceptance.md).
@@ -65,4 +68,4 @@ User direction CHG-20261006-03: AI Runtime là platform; CRM có AI Agent setup 
 
 PLAN-003: [capability matrix](../references/meta/capability-matrix.md) bổ sung provider allowlist, config/eval versions và shared Business Manager budget semantics. Màn hình admin chỉ expose mutation đúng asset authority; không cho tenant admin sửa budget chung mặc định. Hosted tool gateway còn gate trusted callback binding; đầy đủ platform API không đồng nghĩa được cấp arbitrary CRM tool access.
 
-Agent Assist design UX-005: a configured AI agent with skills and restricted read/proposal permissions, no direct CRM write or public send. Workflow/Chatflow owns the suggestion-update action; rule-only flows work without AI. Separate Conversation suggestion state from orchestration/provider. [Product scope](../ux/agent-assist-response.md); exact PLAN-008 integration pending, existing M2 owner-agent behavior unchanged.
+Agent Assist design UX-005: a configured AI agent with skills and restricted read/proposal permissions, no direct CRM write or public send. Workflow owns the suggestion-update action; rule-only flows work without AI. Separate Conversation suggestion state from orchestration/provider. [Product scope](../ux/agent-assist-response.md); exact PLAN-008 integration pending, existing M2 owner-agent behavior unchanged.

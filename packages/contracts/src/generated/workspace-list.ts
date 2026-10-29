@@ -20,7 +20,10 @@ export interface WorkspaceItem {
     last_read_inbound_seq: string;
     unread_message_count: string;
   };
-  snooze: null;
+  snooze: null | {
+    until: string;
+    revision: string;
+  };
   tags?: {
     id: string;
     name: string;
@@ -31,7 +34,7 @@ export interface WorkspaceItem {
   waiting_since: string | null;
   waiting_seconds: number | null;
   waiting_metric_state: "ready" | "unavailable";
-  workspace_allowed_actions: ("mark_read" | "tags")[];
+  workspace_allowed_actions: ("mark_read" | "snooze" | "wake" | "tags")[];
 }
 export interface ConversationEntity {
   id: string;

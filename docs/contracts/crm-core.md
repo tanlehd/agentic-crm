@@ -14,9 +14,9 @@ POST `/leads/{id}/qualification`: `{qualification}` đầy đủ; lead.qualify +
 
 POST `/leads/{id}/disqualify`: `{reason}` nonblank≤1000; new/qualifying → disqualified; reason không vào logs/outbox. Source/handoff/acceptance ngoài SRC-012. Qualified timestamp UTC; contact.created/lead.created/lead.qualified payload IDs/timestamps, không phone/qualification. Audit/receipt/outbox/registry/subtype/index một transaction.
 
-Ports: CRM Contact reference kiểm active/read trong caller UoW; Sales archive guard chặn archive Contact có Lead chưa disqualified. Reserved session creation interface khai báo cho SRC-020, default implementation fail closed M1; không mở credential/public session bypass. M2 Conversation/run archive guards bổ sung composition trước mở module đó. Generic archive Lead bị reject; Contact/Company/Activity/custom hỗ trợ.
+Ports: CRM cung cấp Contact reference có quyền cho caller. Baseline dùng application port trong UoW; khi tách service dùng owner API. Session creation/qualification thuộc Sales/Chatflow contract, không mở credential/public session bypass. Generic CRUD không vượt domain command. Archive behavior của M1 được kê riêng trong [legacy compatibility](legacy-record-archive.md), không là điều kiện mở module mới.
 
-AC-03/M1, qualification sub-scope AC-09: nhiều Lead một Contact; invalid consent không thay state/event; manual evidence actor server; replay/transition/CAS; tenant isolation; field deny bao phủ qualification; Contact archive guard qua Sales port; M2 refs và generic Lead/Deal creation rejected. Contact customer semantics/handoff/full AC-09 vẫn milestone sau.
+AC-03/M1, qualification sub-scope AC-09: nhiều Lead một Contact; invalid consent không thay state/event; manual evidence actor server; replay/transition/CAS; tenant isolation; field deny bao phủ qualification; M2 refs và generic Lead/Deal creation rejected. Contact customer semantics/handoff/full AC-09 vẫn milestone sau.
 
 ## Future CRM base extension — PLAN-010
 

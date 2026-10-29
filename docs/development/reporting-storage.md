@@ -1,5 +1,7 @@
 # Reporting private draft storage — local runbook
 
+Current packaging SRC-090: [independent image/Compose and operational runbook](reporting-container.md). Provisioning below remains the explicit local migration entrypoint; image startup never migrates. Dated initial draft-only scope below is historical; current source/schema7 and acceptance are in the deployment audit and feature evidence.
+
 SRC-057 / PLAN-022C. [Contract and table dictionary](../contracts/reporting-persistence.md), [generated OpenAPI](../contracts/reporting-storage.openapi.json), [evidence](../tracking/details/SRC-057.md). Draft storage began with6 business tables; SRC-058 now adds5 [mock projection tables](reporting-projections.md) in schema2,11 business tables+system journal. Native CRM API is the only browser-facing entry; Reporting receives short-lived signed admissions over private HTTP. No report execution, publish, dashboard UI, connected data ingestion or outbox relay.
 
 ## Provision and build

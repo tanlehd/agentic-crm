@@ -2,8 +2,8 @@
 import { readFile,writeFile,mkdir } from 'node:fs/promises';
 import { parseEnv } from 'node:util';
 import { randomUUID } from 'node:crypto';
-import { nativePool,NativeAuthService } from '../apps/backend/dist/modules/identity/auth/native-service.js';
-import { nativeConfig } from '../apps/backend/dist/modules/identity/auth/native-config.js';
+import { nativePool,NativeAuthService } from '../services/core-baseline/dist/modules/identity/auth/native-service.js';
+import { nativeConfig } from '../services/core-baseline/dist/modules/identity/auth/native-config.js';
 const env=parseEnv(await readFile('.local/services/api.env','utf8'));
 if(env.APP_ENV!=='development'||env.MYSQL_HOST!=='127.0.0.1'||env.MYSQL_DATABASE!=='agentic_crm')throw new Error('LOCAL_OPERATOR_ONLY');
 let input='';for await(const chunk of process.stdin){input+=chunk;if(input.length>128)throw new Error('ACCOUNT_UUID_REQUIRED');}

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile,writeFile } from 'node:fs/promises';
 import { parseEnv } from 'node:util';
 import { createRequire } from 'node:module';
-const require=createRequire(new URL('../apps/backend/package.json',import.meta.url));const {createConnection}=require('mysql2/promise');
+const require=createRequire(new URL('../services/core-baseline/package.json',import.meta.url));const {createConnection}=require('mysql2/promise');
 const env=parseEnv(await readFile('.env','utf8'));assert.equal(env.APP_ENV,'development');assert.equal(env.MYSQL_DATABASE,'agentic_crm');
 const options={host:'127.0.0.1',port:Number(env.LOCAL_MYSQL_PORT??13306),database:env.MYSQL_DATABASE};
 const app=await createConnection({...options,user:env.MYSQL_USER,password:env.MYSQL_PASSWORD}),auth=await createConnection({...options,user:env.MYSQL_AUTH_USER,password:env.MYSQL_AUTH_PASSWORD});

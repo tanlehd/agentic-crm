@@ -1,5 +1,7 @@
 # ERD chốt — Conversation, Session, hành vi, Lead và Deal
 
+**CHG-20261024-01:** [Chat→Sales boundary](../contracts/chat-sales-conversion-boundary.md) confirms this lineage is sufficient for conversion reporting: Sales Lead/Deal source and Deal.lead_id/stage determine created/converted/won. No mandatory reverse outcome contribution into Chat. Preserve session versus conversation grain, Chat lifecycle and historical contributions; no ERD/schema change.
+
 SRC-084: [Human routing implementation](../contracts/human-routing.md) attaches work to existing session_id and retains Chat owner/contribution authority. Forward35 adds Routing data only; thread/session identity and Sales attribution are unchanged.
 
 PLAN-044 / 2026-10-17: [Conversation routing companion ERD](conversation-routing-erd.md) adds session-bound work, durable waiting and Human allocations as a logical proposal. Chat keeps canonical owner/session/contribution authority; this extension does not change the approved Chat/Sales lifecycle or current source.

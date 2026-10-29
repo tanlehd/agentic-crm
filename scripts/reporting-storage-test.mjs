@@ -7,7 +7,7 @@ import {ReportingStore} from '../services/reporting/dist/storage.js';
 import {AdmissionVerifier,hash,systemTenant} from '../services/reporting/dist/storage-security.js';
 import {ReportingController,ReportingRuntime,storageJsonBody} from '../services/reporting/dist/http.js';
 import {connect,migrate} from './lib/reporting-database.mjs';
-const require=createRequire(new URL('../apps/backend/package.json',import.meta.url));
+const require=createRequire(new URL('../services/core-baseline/package.json',import.meta.url));
 const {Module}=require('@nestjs/common'),{NestFactory}=require('@nestjs/core');
 const env=parseEnv(await readFile('.local/reporting-test.env','utf8'));assert.equal(env.REPORTING_DB_NAME,'test_crm_reporting');
 const operator=await connect(env),runtime=await connect(env,'RUNTIME');let store=new ReportingStore(env),app;

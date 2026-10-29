@@ -26,10 +26,10 @@ Header 56px toàn chiều ngang. Nav nằm dưới header tới đáy. Không c�
 | Trái | Logo, tên workspace + chevron | Mở tenant list được phép; workspace đang dùng luôn rõ |
 | Giữa | Search bar, Ctrl/Cmd+K | Mở command/search dialog; phạm vi được ghi trong label/results |
 | Phải | + Tạo mới | Contact / Lead / Deal theo create capability và readiness |
-| Phải | Cài đặt workspace | Thành viên/quyền, kênh, cấu hình dữ liệu qua màn có sẵn; chỉ quyền configure tương ứng |
+| Phải | Settings | Một nút mở [Settings workspace](settings-workspace.md), sidebar Account Management / Data Management / Tools; lọc theo quyền hiện hành |
 | Cuối | Avatar initials + user name | Profile summary, workspace hiện tại, đăng xuất native; sửa profile chỉ khi có contract |
 
-Header ở <768px giữ workspace compact, nút menu/search/create/user; settings vào user menu. Không hiển thị search input chật dưới 160px. Trên mobile title và controls được wrap, không truncate mất tên đối tượng duy nhất.
+Header ở <768px giữ workspace compact, nút menu/search/create/Settings/user; Settings vẫn truy cập trực tiếp. Không hiển thị search input chật dưới 160px. Trên mobile title và controls được wrap, không truncate mất tên đối tượng duy nhất.
 
 **Search hai giai đoạn:** shell đầu tiên tìm menu/công cụ đã có quyền từ danh mục frontend (label “Tìm công cụ…”). Đích tiếp theo có scope Contacts/Leads/Deals, result type/name/ID và mở hồ sơ; chỉ bật sau versioned search API với ACL, field policy, paging/ranking/Unicode/error được chốt. Không gom tất cả CRM records về browser để giả global search. Search Inbox luôn riêng và chỉ prefix tên liên hệ. Các màn record chưa thiết kế không được giả định có full-text.
 

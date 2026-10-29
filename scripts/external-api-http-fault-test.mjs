@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 import {writeFile,mkdir} from 'node:fs/promises';
-import {ExternalController,ExternalRuntime} from '../apps/backend/dist/modules/external-api/http.js';
-import {AuthRuntime} from '../apps/backend/dist/modules/identity/auth/http.js';
-import {safeJsonBody} from '../apps/backend/dist/kernel/http/json-body.js';
-const require=createRequire(new URL('../apps/backend/package.json',import.meta.url)),{Module}=require('@nestjs/common'),{NestFactory}=require('@nestjs/core');
+import {ExternalController,ExternalRuntime} from '../services/core-baseline/dist/modules/external-api/http.js';
+import {AuthRuntime} from '../services/core-baseline/dist/modules/identity/auth/http.js';
+import {safeJsonBody} from '../services/core-baseline/dist/kernel/http/json-body.js';
+const require=createRequire(new URL('../services/core-baseline/package.json',import.meta.url)),{Module}=require('@nestjs/common'),{NestFactory}=require('@nestjs/core');
 const sentinel='synthetic-secret-must-not-be-returned';
 class FaultModule{}
 Module({controllers:[ExternalController],providers:[{provide:AuthRuntime,useValue:{}},{provide:ExternalRuntime,useValue:{ready:async()=>{throw Error('DB unavailable '+sentinel);}}}]})(FaultModule);

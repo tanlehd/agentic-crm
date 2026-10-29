@@ -1,5 +1,52 @@
 # Architecture Decision Records
 
+## ADR-029 — Service-owned acceptance và rollout tối thiểu
+
+Accepted 2026-10-23, CHG-20261023-19, theo yêu cầu trực tiếp người dùng. Áp dụng [service delivery scope](../governance/service-delivery-scope.md) cho toàn catalog: service nghiệm thu API/local state/producer/local consumers của mình; downstream business integration do owner nhận nghiệm thu riêng. Producer có durable publication/ACK/recovery theo transport contract không chờ consumer hoàn tất nghiệp vụ. Synchronous commands và compatibility cần cho chức năng đang phục vụ vẫn phải đúng contract.
+
+Refines PLAN-056/057 và D3-03/05; giữ ADR-017/021/023/025/026/027/028, wire ACK semantics và migration/cutover invariants. Kafka stream chỉ dùng Kafka khi đã có thiết kế/implementation tương ứng; Chat D3 vẫn HTTP bridge. Không đổi API/event/schema, không cộng gate hoặc service từ việc thu hẹp scope.
+
+Mỗi rollout chỉ đổi service được bàn giao và dependency unit tối thiểu đã liệt kê với lý do, pins, verification/rollback. Reuse dependency tương thích; không whole-stack rebuild/restart hoặc mở D4/consumer feature vì Chat đang extract. Tradeoff: producer/service DONE không đồng nghĩa toàn hệ thống đã có downstream business outcome; phải giữ owner backlog, pending deliveries và evidence riêng. [Chat handoff](../planning/chat-extraction/consumer-handoff.md) phân loại 16 nhóm và phần chuyển về Routing/Workflow/Sales/CRM/Reporting/Gateway/AI.
+
+## ADR-028 — Repository boundaries before independent service deployment
+
+Implementation note 2026-10-21 / CHG-20261021-12: R1 has relocated the baseline to `services/core-baseline` and validator to `packages/workflow-definition`; existing package names remain compatible. [Relocation evidence](../development/repository-relocation.md). The accepted decision below records the original path transition, not current paths.
+
+Accepted technical organization 2026-10-21, PLAN-059 / CHG-20261021-11, following the user's request to clean the repository map before per-service deployment. Keep one pnpm monorepo: `apps/web` holds the shared Next.js UI, `services/<owner>` holds backend applications, `packages` holds contracts and reusable libraries. Target and current paths, source findings and rollout gates are in the [repository map](../architecture/repository-map.md).
+
+`apps/backend` remains the baseline until a bounded relocation to `services/core-baseline`; relocation does not extract its domains. The pure `services/workflow-core` validator belongs in target `packages/workflow-definition`; Workflow runtime belongs in one `services/workflow` owner, with its editor in web. Future backend owners have separate packages/builds/config/tests and owning storage when applicable. Applications do not import another service's domain implementation; communication uses versioned APIs/events. Shared packages must not contain the baseline UoW/business database authority.
+
+This refines source organization under ADR-017/023/027, not their data/traffic gates. It retains baseline deploy grouping while extraction is incomplete and separates API/worker processes from service ownership. One Git repo or multi-target Dockerfile is compatible with independent service releases if build/runtime dependency closure is isolated. Tradeoff: path moves touch many scripts/Compose/test fixtures, so execute bounded patches with compatibility checks before rollout, not a bulk rename or an empty scaffold for every catalog entry. No source move, new runtime or database migration is accepted as completed by this ADR.
+
+## ADR-027 — One Workflow service for business orchestration
+
+Accepted2026-10-21 by explicit user direction, CHG-20261021-07. Workflow is the only service/module defining configurable business flows across CRM/custom records, Ticket, Lead, Deal, Identity User/team and Chat Conversation, including routing and conversational qualification. Remove Chatflow as an independent service/module/framework. Workflow API, engine/Core, scheduler/worker and Web editor are components of one service; target schema is crm_workflow. This supersedes ADR-017's Chatflow boundary and ADR-022's separate Workflow API/Core services and crm_workflow_core schema. Kafka direction, durable versioned execution, tenant/current authorization and owning business commands remain.
+
+Workflow owns flow definition/enrollment/run/step/wait/action receipts; owners retain business state and transaction authority. Routing supplies eligibility/capacity/allocation, Workflow decides configured business rule execution, and the resource owner commits assignment CAS. Owner safety/direct Human actions do not wait for Workflow. User object authority remains Identity; events/actions never expose credentials or automatically escalate privileges. Conversational steps use the common engine; AI Runtime remains bounded execution rather than business orchestration.
+
+This reduces duplicated engines, authoring models, deployment/schema boundaries and install/reconcile protocols. API/worker processes can scale separately within Workflow. Existing legacy source/graphs/tables/receipts and Routing starters require inventory, versioned mapping/drain and one effect path per flow before removal/cutover. No immediate destructive source/DB deletion or runtime migration is claimed. [Service](../services/workflow.md), [contract](../contracts/workflow-orchestration.md), [plan](../planning/workflow-platform.md), [legacy compatibility](../contracts/legacy-chatflow.md).
+
+
+## ADR-026 — Defer TLS in local Human CRM deployment
+
+Accepted 2026-10-19 by explicit user decision, CHG-20261019-25. [Local HTTP contract](../contracts/local-workload-http.md) supersedes the mandatory TLS transport clause of ADR-025 for local development/retained tests. Explicit `http-local` uses private service keys and current Identity tenant admission; optional TLS keeps its original validation. No automatic downgrade, production rollout, schema change or weakening of Human session/permission, owner proofs, capacity and revoke drains. HTTP relies on a trusted local network and loopback published ports. TLS can be integrated later without changing business contracts.
+
+## ADR-025 — Non-send admission drain and durable HTTP event bridge for Chat
+
+Accepted technical decision2026-10-18, SRC-109/T01/CHG-20261018-29 within the explicitly requested contract scope. [Exact owner protocol](../contracts/chat-owner-v1.md) binds each non-send command to native Identity admission and local owner CAS. Revoke first closes new admission, then drains committed/aborted owner proofs before reporting completion. SQL transactions end before network I/O. Crash/timeout never becomes proof of abort; durable terminal tombstones prevent late resurrection. This deliberately sacrifices revoke completion availability during owner outage to preserve tenant-lock observable ordering; it does not use permission TTLs or reuse D2 send grants.
+
+Routing capacity, Contact/reference retirement, Sales outcome and note/context effects use explicit reservation/terminal-proof sagas. Assignment fences queued AI/Chatflow work locally and reconciles remote capacity/control afterward. Current public IDs/receipt keys/graphs and business rights are preserved. Reads use exact current field admission; composite Reporting validates Chat watermark around the remaining baseline-local snapshot.
+
+Choose existing HTTPS/mTLS with per-owner MySQL outbox delivery/inbox ACK/replay for this D3 extraction. Supersedes only the unimplemented JetStream transport proposal in chat-control-v1; its payload/control semantics stay unchanged. No broker installation, Redis-only receipt, generic Kafka object-change stream or new provider is implied. ADR-022 Kafka design and ADR-024 D2 dispatch remain intact. Physical templates/migrations/recovery-runtime evidence are T02 onward; this ADR approves protocol design, not an extracted service.
+
+## ADR-024 — Independent dispatch admission and conservative unknown recovery
+
+Accepted technical protocol decision2026-10-18, PLAN-006F/CHG-20261018-08, within user-authorized staged extraction. [Dispatch v1](../contracts/chat-dispatch-v1.md) retains native Identity as policy authority, Chat as record/owner authority and Connector as transport/binding authority. Identity issuance is an opaque prepared reference, not cached permission; consume is serialized with current revoke. Chat claim and Connector start each have their own local CAS. Effects admitted before a later local revoke/takeover may still complete; no global atomicity or recall promise.
+
+Choose a conservative one-attempt v1: only the winning live Connector handler may invoke after first consume response and local binding/fence/deadline checks. Lost ACK/crash clears volatile invocation permission; historical receipts cannot rearm sending. Persisted admitting/started becomes unknown on recovery, including crash-before-I/O. Resolve unknown only from known sent evidence. This sacrifices automatic retry/liveness in ambiguous cases to avoid duplicate customer messages. Existing monolith retry behavior is unchanged until an explicit adapter/cutover gate.
+
+Workload authentication uses mTLS/current registry, not Human credentials or custom bearer grants. Machine schemas and reference scenarios are implemented in SRC-093; actual TLS/DB/concurrency/provider evidence and physical migration remain pending. No acceptance of a permission-cache revocation window is implied by issuance TTL or transport timeout.
+
 Status: Accepted — baseline thiết kế ngày 2026-10-02, chưa có implementation.
 
 ## ADR-001 — Documentation-first, milestone-based
@@ -125,7 +172,17 @@ MySQL schema=database: catalog13 bounded-context schemas, không database-per-te
 
 Supersedes OIDC/no-password-store target in security/auth and provider choice of ADR-011/012/020; retains baseline evidence and ADR-017 service boundaries. PLAN-007 design-only; runtime vẫn Keycloak đến native source/cutover acceptance. Không xóa volume hoặc reset account credentials để thực hiện quyết định.
 
+## ADR-023 — Shared CRM platform and phased runtime separation
+
+Accepted2026-10-18 by user following Salesforce/Dataverse/HubSpot comparison, CHG-20261018-06/PLAN-055. Refines deployment sequencing of ADR-017, retains service-owned data/API/events and ADR-021 native Identity. CRM owns canonical object/property/association/layout metadata; Identity owns current policy; domain modules own business lifecycle. Consumers use versioned metadata/owner ports, never a second metadata authority or arbitrary SQL into another service.
+
+Deploy groups follow proven independent scale/release/failure needs. Current core platform remains monolith API+worker while Reporting and Connector are independent packages. Prioritize Reporting→Connector/Chat→Workflow/AI; Marketing remains an independent gated backlog. CRM/Sales separation requires transaction/registry/saga proof; do not create one container per product screen or per object. Shared platform does not authorize shared DB writers between independently extracted services. Service catalog is responsibility map; physical databases are created only at scoped extraction.
+
+RO-01…06 in [rollout contract](../contracts/phased-service-rollout.md) is first implementation gate: local Reporting container activation, Connector operational readiness and retained synthetic tests. Chat ownership transfer, workflow execution split, Kafka, production and live provider actions retain exact gates. No change to metadata/domain semantics or existing IDs/permissions/migrations. Public comparison sources: [Salesforce platform](https://architect.salesforce.com/docs/architect/fundamentals/guide/platform-multitenant-architecture.html), [Hyperforce cells](https://engineering.salesforce.com/architectural-principles-for-high-availability-on-hyperforce/), [Dataverse](https://learn.microsoft.com/en-us/power-apps/maker/data-platform/data-platform-intro), [HubSpot object infrastructure](https://product.hubspot.com/blog/hbase-share-resources). These establish principles, not a claim our topology copies their internal deployment.
+
 ## ADR-022 — Workflow Web/API/Core, Kafka và shared CRM metadata
+
+Service/schema split superseded by ADR-027 on2026-10-21. The text below is historical rationale; current development uses one Workflow service.
 
 Accepted architectural direction2026-10-13 theo yêu cầu trực tiếp user; PLAN-024 / CHG-20261013-01. [Architecture](../system/workflow-architecture.md), [design gates](../planning/workflow-platform.md). Đây là thiết kế, không implementation/deployment acceptance.
 

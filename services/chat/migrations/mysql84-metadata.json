@@ -1,0 +1,5098 @@
+{
+  "columns": [
+    {
+      "TABLE_NAME": "audit_entry",
+      "COLUMN_NAME": "id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "audit_entry",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "audit_entry",
+      "COLUMN_NAME": "actor_kind",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "audit_entry",
+      "COLUMN_NAME": "actor_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "audit_entry",
+      "COLUMN_NAME": "action",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "audit_entry",
+      "COLUMN_NAME": "resource_type",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "audit_entry",
+      "COLUMN_NAME": "resource_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "audit_entry",
+      "COLUMN_NAME": "outcome",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "audit_entry",
+      "COLUMN_NAME": "changed_fields",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "audit_entry",
+      "COLUMN_NAME": "reason",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "audit_entry",
+      "COLUMN_NAME": "correlation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "audit_entry",
+      "COLUMN_NAME": "occurred_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "audit_entry",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_claim_request",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_claim_request",
+      "COLUMN_NAME": "request_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_claim_request",
+      "COLUMN_NAME": "intent_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_claim_request",
+      "COLUMN_NAME": "request_digest",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_claim_request",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_contact_guard",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_contact_guard",
+      "COLUMN_NAME": "contact_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_contact_guard",
+      "COLUMN_NAME": "archive_command_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_contact_guard",
+      "COLUMN_NAME": "binding_digest",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_contact_guard",
+      "COLUMN_NAME": "state",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_contact_guard",
+      "COLUMN_NAME": "core_revision",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_contact_guard",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_contact_guard",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_contact_guard",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_control_head",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_control_head",
+      "COLUMN_NAME": "conversation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_control_head",
+      "COLUMN_NAME": "registry_revision",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_control_head",
+      "COLUMN_NAME": "control_revision",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_control_head",
+      "COLUMN_NAME": "cancel_through",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_control_head",
+      "COLUMN_NAME": "pause_through",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_control_head",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_control_head",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_control_head",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_dataset_head",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_dataset_head",
+      "COLUMN_NAME": "dataset",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_dataset_head",
+      "COLUMN_NAME": "revision",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_dataset_head",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_dataset_head",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_dataset_head",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_dispatch_claim",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_dispatch_claim",
+      "COLUMN_NAME": "intent_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_dispatch_claim",
+      "COLUMN_NAME": "attempt_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_dispatch_claim",
+      "COLUMN_NAME": "claim_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_dispatch_claim",
+      "COLUMN_NAME": "grant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_dispatch_claim",
+      "COLUMN_NAME": "conversation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_dispatch_claim",
+      "COLUMN_NAME": "binding_json",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_dispatch_claim",
+      "COLUMN_NAME": "resource_json",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_dispatch_claim",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "COLUMN_NAME": "consumer_name",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "COLUMN_NAME": "aggregate_type",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "COLUMN_NAME": "aggregate_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "COLUMN_NAME": "sequence",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "COLUMN_NAME": "event_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "COLUMN_NAME": "event_digest",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "COLUMN_NAME": "registration_digest",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "COLUMN_NAME": "envelope_json",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "COLUMN_NAME": "state",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "COLUMN_NAME": "next_attempt_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "COLUMN_NAME": "attempts",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "COLUMN_NAME": "lease_token",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "COLUMN_NAME": "lease_until",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "COLUMN_NAME": "acked_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "COLUMN_NAME": "producer",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "COLUMN_NAME": "consumer_name",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "COLUMN_NAME": "event_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "COLUMN_NAME": "aggregate_type",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "COLUMN_NAME": "aggregate_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "COLUMN_NAME": "sequence",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "COLUMN_NAME": "event_digest",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "COLUMN_NAME": "envelope_json",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "COLUMN_NAME": "state",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "COLUMN_NAME": "next_attempt_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "COLUMN_NAME": "attempts",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "COLUMN_NAME": "lease_token",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "COLUMN_NAME": "lease_until",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "COLUMN_NAME": "applied_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_stream",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_stream",
+      "COLUMN_NAME": "consumer_name",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_stream",
+      "COLUMN_NAME": "aggregate_type",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_stream",
+      "COLUMN_NAME": "aggregate_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_stream",
+      "COLUMN_NAME": "next_sequence",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_stream",
+      "COLUMN_NAME": "acked_through",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_stream",
+      "COLUMN_NAME": "retained_from",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_stream",
+      "COLUMN_NAME": "registration_digest",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_stream",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_stream",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_event_stream",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_inbox",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_inbox",
+      "COLUMN_NAME": "id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_inbox",
+      "COLUMN_NAME": "creator_principal_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_inbox",
+      "COLUMN_NAME": "name",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_inbox",
+      "COLUMN_NAME": "predicate_schema_version",
+      "COLUMN_DEFAULT": "1",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_inbox",
+      "COLUMN_NAME": "predicate",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_inbox",
+      "COLUMN_NAME": "sort",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_inbox",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": "1",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_inbox",
+      "COLUMN_NAME": "archived_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_inbox",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_inbox",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_inbox_share",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_inbox_share",
+      "COLUMN_NAME": "inbox_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_inbox_share",
+      "COLUMN_NAME": "target_kind",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_inbox_share",
+      "COLUMN_NAME": "target_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_inbox_share",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_chunk",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_chunk",
+      "COLUMN_NAME": "run_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_chunk",
+      "COLUMN_NAME": "table_name",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_chunk",
+      "COLUMN_NAME": "chunk_number",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_chunk",
+      "COLUMN_NAME": "last_key",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_chunk",
+      "COLUMN_NAME": "row_count",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_chunk",
+      "COLUMN_NAME": "source_hash",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_chunk",
+      "COLUMN_NAME": "target_hash",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_chunk",
+      "COLUMN_NAME": "state",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_chunk",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_run",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_run",
+      "COLUMN_NAME": "run_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_run",
+      "COLUMN_NAME": "manifest_digest",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_run",
+      "COLUMN_NAME": "snapshot_digest",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_run",
+      "COLUMN_NAME": "source_identity",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_run",
+      "COLUMN_NAME": "destination_identity",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_run",
+      "COLUMN_NAME": "source_watermark",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_run",
+      "COLUMN_NAME": "state",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_run",
+      "COLUMN_NAME": "writer_epoch",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_run",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_run",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_migration_run",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "COLUMN_NAME": "intent_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "COLUMN_NAME": "conversation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "COLUMN_NAME": "attempt_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "COLUMN_NAME": "delegation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "COLUMN_NAME": "principal_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "COLUMN_NAME": "binding_json",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "COLUMN_NAME": "resource_json",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "COLUMN_NAME": "phase",
+      "COLUMN_DEFAULT": "issue",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "COLUMN_NAME": "status",
+      "COLUMN_DEFAULT": "pending",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "COLUMN_NAME": "grant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "COLUMN_NAME": "claim_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "COLUMN_NAME": "lease_token",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "COLUMN_NAME": "lease_until",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "COLUMN_NAME": "next_attempt_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "COLUMN_NAME": "failures",
+      "COLUMN_DEFAULT": "0",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": "1",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "COLUMN_NAME": "last_error",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "command_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "operation",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "binding_digest",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "actor_kind",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "actor_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "delegation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "resource_kind",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "resource_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "record_version",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "owner_revision",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "control_revision",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "legacy_route",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "legacy_key",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "legacy_request_hash",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "binding_json",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "request_json",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "result_json",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "admission_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "state",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "terminal_digest",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "terminal_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "COLUMN_NAME": "command_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "COLUMN_NAME": "slot",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "COLUMN_NAME": "remote_owner",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "COLUMN_NAME": "remote_command_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "COLUMN_NAME": "child_key",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "COLUMN_NAME": "binding_digest",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "COLUMN_NAME": "receipt_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "COLUMN_NAME": "state",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "COLUMN_NAME": "request_json",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "COLUMN_NAME": "proof_json",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "COLUMN_NAME": "remote_revision",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "COLUMN_NAME": "next_attempt_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "COLUMN_NAME": "lease_token",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "COLUMN_NAME": "lease_until",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_selection",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_selection",
+      "COLUMN_NAME": "command_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_selection",
+      "COLUMN_NAME": "ordinal",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_selection",
+      "COLUMN_NAME": "resource_kind",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_selection",
+      "COLUMN_NAME": "resource_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_selection",
+      "COLUMN_NAME": "owner_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_selection",
+      "COLUMN_NAME": "team_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_selection",
+      "COLUMN_NAME": "record_version",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_selection",
+      "COLUMN_NAME": "owner_revision",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_selection",
+      "COLUMN_NAME": "control_revision",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_selection",
+      "COLUMN_NAME": "context_json",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_owner_selection",
+      "COLUMN_NAME": "candidate_digest",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_read_rollout_conversation",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_read_rollout_conversation",
+      "COLUMN_NAME": "conversation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_read_rollout_conversation",
+      "COLUMN_NAME": "baseline_inbound_seq",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_read_rollout_principal",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_read_rollout_principal",
+      "COLUMN_NAME": "principal_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_read_rollout_principal",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_report_page",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_report_page",
+      "COLUMN_NAME": "snapshot_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_report_page",
+      "COLUMN_NAME": "page_number",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_report_page",
+      "COLUMN_NAME": "row_count",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_report_page",
+      "COLUMN_NAME": "facts_json",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_report_page",
+      "COLUMN_NAME": "page_digest",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_report_snapshot",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_report_snapshot",
+      "COLUMN_NAME": "snapshot_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_report_snapshot",
+      "COLUMN_NAME": "command_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_report_snapshot",
+      "COLUMN_NAME": "dataset",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_report_snapshot",
+      "COLUMN_NAME": "watermark",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_report_snapshot",
+      "COLUMN_NAME": "query_digest",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_report_snapshot",
+      "COLUMN_NAME": "snapshot_digest",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_report_snapshot",
+      "COLUMN_NAME": "row_count",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_report_snapshot",
+      "COLUMN_NAME": "page_count",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_report_snapshot",
+      "COLUMN_NAME": "state",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_report_snapshot",
+      "COLUMN_NAME": "expires_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_report_snapshot",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_report_snapshot",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_report_snapshot",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_result_request",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_result_request",
+      "COLUMN_NAME": "request_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_result_request",
+      "COLUMN_NAME": "intent_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_result_request",
+      "COLUMN_NAME": "request_digest",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_result_request",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_snippet",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_snippet",
+      "COLUMN_NAME": "id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_snippet",
+      "COLUMN_NAME": "title",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_snippet",
+      "COLUMN_NAME": "shortcut",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_snippet",
+      "COLUMN_NAME": "text",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_snippet",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": "1",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_snippet",
+      "COLUMN_NAME": "archived_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_snippet",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_snippet",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_workspace_rollout",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_workspace_rollout",
+      "COLUMN_NAME": "feature_key",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_workspace_rollout",
+      "COLUMN_NAME": "state",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_workspace_rollout",
+      "COLUMN_NAME": "watermark",
+      "COLUMN_DEFAULT": "json_object()",
+      "EXTRA": "DEFAULT_GENERATED",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_workspace_rollout",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_writer_gate",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_writer_gate",
+      "COLUMN_NAME": "epoch",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_writer_gate",
+      "COLUMN_NAME": "mode",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_writer_gate",
+      "COLUMN_NAME": "manifest_digest",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "chat_writer_gate",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "consumer_inbox",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "consumer_inbox",
+      "COLUMN_NAME": "consumer_name",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "consumer_inbox",
+      "COLUMN_NAME": "event_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "consumer_inbox",
+      "COLUMN_NAME": "status",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "consumer_inbox",
+      "COLUMN_NAME": "processed_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation",
+      "COLUMN_NAME": "record_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation",
+      "COLUMN_NAME": "contact_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation",
+      "COLUMN_NAME": "contact_identity_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation",
+      "COLUMN_NAME": "connection_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation",
+      "COLUMN_NAME": "status",
+      "COLUMN_DEFAULT": "open",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation",
+      "COLUMN_NAME": "active_identity_key",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "STORED GENERATED",
+      "GENERATION_EXPRESSION": "(case when (`status` in (_utf8mb4\\'open\\',_utf8mb4\\'pending\\')) then `contact_identity_id` else NULL end)"
+    },
+    {
+      "TABLE_NAME": "conversation",
+      "COLUMN_NAME": "opened_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation",
+      "COLUMN_NAME": "closed_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation",
+      "COLUMN_NAME": "channel",
+      "COLUMN_DEFAULT": "mock_messenger",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation",
+      "COLUMN_NAME": "channel_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "STORED GENERATED",
+      "GENERATION_EXPRESSION": "`connection_id`"
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "COLUMN_NAME": "id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "COLUMN_NAME": "conversation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "COLUMN_NAME": "sequence",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": "1",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "COLUMN_NAME": "status",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "COLUMN_NAME": "opening_reason",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "COLUMN_NAME": "close_reason",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "COLUMN_NAME": "opened_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "COLUMN_NAME": "opening_occurred_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "COLUMN_NAME": "closed_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "COLUMN_NAME": "source_classification",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "COLUMN_NAME": "source_channel",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "COLUMN_NAME": "source_page_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "COLUMN_NAME": "source_ad_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "COLUMN_NAME": "source_campaign_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "COLUMN_NAME": "source_connection_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "COLUMN_NAME": "source_touchpoint_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "COLUMN_NAME": "policy_version",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "COLUMN_NAME": "active_conversation_key",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "STORED GENERATED",
+      "GENERATION_EXPRESSION": "(case when (`status` = _utf8mb4\\'active\\') then `conversation_id` else NULL end)"
+    },
+    {
+      "TABLE_NAME": "conversation_activity",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_activity",
+      "COLUMN_NAME": "id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_activity",
+      "COLUMN_NAME": "conversation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_activity",
+      "COLUMN_NAME": "activity_seq",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_activity",
+      "COLUMN_NAME": "source_service",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_activity",
+      "COLUMN_NAME": "source_kind",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_activity",
+      "COLUMN_NAME": "source_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_activity",
+      "COLUMN_NAME": "source_revision",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_activity",
+      "COLUMN_NAME": "kind",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_activity",
+      "COLUMN_NAME": "actor_kind",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_activity",
+      "COLUMN_NAME": "actor_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_activity",
+      "COLUMN_NAME": "occurred_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_activity",
+      "COLUMN_NAME": "recorded_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_activity",
+      "COLUMN_NAME": "payload",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_activity_counter",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_activity_counter",
+      "COLUMN_NAME": "conversation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_activity_counter",
+      "COLUMN_NAME": "last_seq",
+      "COLUMN_DEFAULT": "0",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_activity_counter",
+      "COLUMN_NAME": "backfilled",
+      "COLUMN_DEFAULT": "0",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_read_state",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_read_state",
+      "COLUMN_NAME": "conversation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_read_state",
+      "COLUMN_NAME": "principal_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_read_state",
+      "COLUMN_NAME": "id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_read_state",
+      "COLUMN_NAME": "last_read_inbound_seq",
+      "COLUMN_DEFAULT": "0",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_read_state",
+      "COLUMN_NAME": "revision",
+      "COLUMN_DEFAULT": "1",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_read_state",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_snooze",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_snooze",
+      "COLUMN_NAME": "conversation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_snooze",
+      "COLUMN_NAME": "until_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_snooze",
+      "COLUMN_NAME": "revision",
+      "COLUMN_DEFAULT": "1",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_snooze",
+      "COLUMN_NAME": "actor_principal_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_snooze",
+      "COLUMN_NAME": "reason",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_snooze",
+      "COLUMN_NAME": "last_cause",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_snooze",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_tag",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_tag",
+      "COLUMN_NAME": "id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_tag",
+      "COLUMN_NAME": "name",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_tag",
+      "COLUMN_NAME": "normalized_name",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_tag",
+      "COLUMN_NAME": "color",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_tag",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": "1",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_tag",
+      "COLUMN_NAME": "archived_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_tag",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_tag",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_tag_link",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_tag_link",
+      "COLUMN_NAME": "conversation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_tag_link",
+      "COLUMN_NAME": "tag_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_tag_link",
+      "COLUMN_NAME": "actor_principal_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_tag_link",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_workspace",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_workspace",
+      "COLUMN_NAME": "conversation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_workspace",
+      "COLUMN_NAME": "latest_inbound_seq",
+      "COLUMN_DEFAULT": "0",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_workspace",
+      "COLUMN_NAME": "answered_inbound_seq",
+      "COLUMN_DEFAULT": "0",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_workspace",
+      "COLUMN_NAME": "last_message_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_workspace",
+      "COLUMN_NAME": "waiting_since",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_workspace",
+      "COLUMN_NAME": "waiting_metric_state",
+      "COLUMN_DEFAULT": "ready",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_workspace",
+      "COLUMN_NAME": "tag_set_revision",
+      "COLUMN_DEFAULT": "0",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_workspace",
+      "COLUMN_NAME": "snoozed_until",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "conversation_workspace",
+      "COLUMN_NAME": "snooze_revision",
+      "COLUMN_DEFAULT": "0",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "crm_record",
+      "COLUMN_NAME": "id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "crm_record",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "crm_record",
+      "COLUMN_NAME": "object_type_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "crm_record",
+      "COLUMN_NAME": "owner_principal_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "crm_record",
+      "COLUMN_NAME": "team_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "crm_record",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": "1",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "crm_record",
+      "COLUMN_NAME": "owner_revision",
+      "COLUMN_DEFAULT": "1",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "crm_record",
+      "COLUMN_NAME": "custom_values",
+      "COLUMN_DEFAULT": "json_object()",
+      "EXTRA": "DEFAULT_GENERATED",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "crm_record",
+      "COLUMN_NAME": "archived_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "crm_record",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "crm_record",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "idempotency_record",
+      "COLUMN_NAME": "id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "idempotency_record",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "idempotency_record",
+      "COLUMN_NAME": "actor_kind",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "idempotency_record",
+      "COLUMN_NAME": "actor_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "idempotency_record",
+      "COLUMN_NAME": "route_key",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "idempotency_record",
+      "COLUMN_NAME": "key",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "idempotency_record",
+      "COLUMN_NAME": "request_hash",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "idempotency_record",
+      "COLUMN_NAME": "status",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "idempotency_record",
+      "COLUMN_NAME": "response_status",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "idempotency_record",
+      "COLUMN_NAME": "response_body",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "idempotency_record",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "idempotency_record",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "idempotency_record",
+      "COLUMN_NAME": "expires_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message",
+      "COLUMN_NAME": "id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message",
+      "COLUMN_NAME": "conversation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message",
+      "COLUMN_NAME": "connection_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message",
+      "COLUMN_NAME": "provider_message_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message",
+      "COLUMN_NAME": "outbound_intent_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message",
+      "COLUMN_NAME": "direction",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message",
+      "COLUMN_NAME": "text",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message",
+      "COLUMN_NAME": "occurred_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message",
+      "COLUMN_NAME": "received_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message",
+      "COLUMN_NAME": "status",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message_acquisition_membership",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message_acquisition_membership",
+      "COLUMN_NAME": "message_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message_acquisition_membership",
+      "COLUMN_NAME": "conversation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message_acquisition_membership",
+      "COLUMN_NAME": "session_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message_acquisition_membership",
+      "COLUMN_NAME": "resolution",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message_acquisition_membership",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message_content",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message_content",
+      "COLUMN_NAME": "message_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message_content",
+      "COLUMN_NAME": "content",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message_workspace",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message_workspace",
+      "COLUMN_NAME": "message_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message_workspace",
+      "COLUMN_NAME": "conversation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message_workspace",
+      "COLUMN_NAME": "inbound_seq",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "message_workspace",
+      "COLUMN_NAME": "reply_through_inbound_seq",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_assessment",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_assessment",
+      "COLUMN_NAME": "need_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_assessment",
+      "COLUMN_NAME": "conversation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_assessment",
+      "COLUMN_NAME": "session_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_assessment",
+      "COLUMN_NAME": "values_json",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_assessment",
+      "COLUMN_NAME": "pinned_json",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_assessment",
+      "COLUMN_NAME": "proposal_json",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_assessment",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_assessment",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_assessment",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_assessment_revision",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_assessment_revision",
+      "COLUMN_NAME": "need_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_assessment_revision",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_assessment_revision",
+      "COLUMN_NAME": "values_json",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_assessment_revision",
+      "COLUMN_NAME": "pinned_json",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_assessment_revision",
+      "COLUMN_NAME": "proposal_json",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_assessment_revision",
+      "COLUMN_NAME": "actor_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_assessment_revision",
+      "COLUMN_NAME": "recorded_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_follow_up",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_follow_up",
+      "COLUMN_NAME": "need_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_follow_up",
+      "COLUMN_NAME": "conversation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_follow_up",
+      "COLUMN_NAME": "source_session_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_follow_up",
+      "COLUMN_NAME": "session_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_follow_up",
+      "COLUMN_NAME": "run_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "need_follow_up",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "COLUMN_NAME": "id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "COLUMN_NAME": "conversation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "COLUMN_NAME": "actor_kind",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "COLUMN_NAME": "actor_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "COLUMN_NAME": "account_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "COLUMN_NAME": "owner_revision",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "COLUMN_NAME": "text",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "COLUMN_NAME": "status",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "COLUMN_NAME": "idempotency_key",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "COLUMN_NAME": "provider_message_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "COLUMN_NAME": "error_code",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "COLUMN_NAME": "dispatch_token",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "COLUMN_NAME": "sending_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "COLUMN_NAME": "chatflow_session_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "COLUMN_NAME": "id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "COLUMN_NAME": "event_type",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "COLUMN_NAME": "schema_version",
+      "COLUMN_DEFAULT": "1",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "COLUMN_NAME": "aggregate_type",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "COLUMN_NAME": "aggregate_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "COLUMN_NAME": "aggregate_version",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "COLUMN_NAME": "payload",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "COLUMN_NAME": "correlation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "COLUMN_NAME": "causation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "COLUMN_NAME": "actor_kind",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "COLUMN_NAME": "actor_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "COLUMN_NAME": "occurred_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "COLUMN_NAME": "status",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "COLUMN_NAME": "attempts",
+      "COLUMN_DEFAULT": "0",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "COLUMN_NAME": "next_attempt_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "COLUMN_NAME": "lease_until",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "COLUMN_NAME": "fencing_token",
+      "COLUMN_DEFAULT": "0",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "ownership_history",
+      "COLUMN_NAME": "id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "ownership_history",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "ownership_history",
+      "COLUMN_NAME": "record_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "ownership_history",
+      "COLUMN_NAME": "from_owner_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "ownership_history",
+      "COLUMN_NAME": "to_owner_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "ownership_history",
+      "COLUMN_NAME": "from_team_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "ownership_history",
+      "COLUMN_NAME": "to_team_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "ownership_history",
+      "COLUMN_NAME": "owner_revision",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "ownership_history",
+      "COLUMN_NAME": "reason",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "ownership_history",
+      "COLUMN_NAME": "actor_kind",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "ownership_history",
+      "COLUMN_NAME": "actor_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "ownership_history",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "property_index_value",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "property_index_value",
+      "COLUMN_NAME": "record_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "property_index_value",
+      "COLUMN_NAME": "property_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "property_index_value",
+      "COLUMN_NAME": "value_kind",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "property_index_value",
+      "COLUMN_NAME": "string_value",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "property_index_value",
+      "COLUMN_NAME": "integer_value",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "property_index_value",
+      "COLUMN_NAME": "decimal_value",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "property_index_value",
+      "COLUMN_NAME": "boolean_value",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "property_index_value",
+      "COLUMN_NAME": "date_value",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "property_index_value",
+      "COLUMN_NAME": "datetime_value",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "record_team_access",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "record_team_access",
+      "COLUMN_NAME": "record_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "record_team_access",
+      "COLUMN_NAME": "team_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "schema_migration",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "schema_migration",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "schema_migration",
+      "COLUMN_NAME": "name",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "schema_migration",
+      "COLUMN_NAME": "checksum",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "schema_migration",
+      "COLUMN_NAME": "state",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "schema_migration",
+      "COLUMN_NAME": "started_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "schema_migration",
+      "COLUMN_NAME": "applied_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "schema_migration",
+      "COLUMN_NAME": "error_code",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_classification",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_classification",
+      "COLUMN_NAME": "session_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_classification",
+      "COLUMN_NAME": "values_json",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_classification",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": "1",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_classification",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_classification",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_contribution",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_contribution",
+      "COLUMN_NAME": "session_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_contribution",
+      "COLUMN_NAME": "id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_contribution",
+      "COLUMN_NAME": "conversation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_contribution",
+      "COLUMN_NAME": "revision",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_contribution",
+      "COLUMN_NAME": "kind",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_contribution",
+      "COLUMN_NAME": "source_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_contribution",
+      "COLUMN_NAME": "source_revision",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_contribution",
+      "COLUMN_NAME": "actor_kind",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_contribution",
+      "COLUMN_NAME": "actor_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_contribution",
+      "COLUMN_NAME": "owner_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_contribution",
+      "COLUMN_NAME": "team_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_contribution",
+      "COLUMN_NAME": "owner_revision",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_contribution",
+      "COLUMN_NAME": "payload",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_contribution",
+      "COLUMN_NAME": "recorded_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_milestone_event",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_milestone_event",
+      "COLUMN_NAME": "id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_milestone_event",
+      "COLUMN_NAME": "session_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_milestone_event",
+      "COLUMN_NAME": "need_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_milestone_event",
+      "COLUMN_NAME": "revision",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_milestone_event",
+      "COLUMN_NAME": "milestone_key",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_milestone_event",
+      "COLUMN_NAME": "kind",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_milestone_event",
+      "COLUMN_NAME": "supersedes_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_milestone_event",
+      "COLUMN_NAME": "message_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_milestone_event",
+      "COLUMN_NAME": "reason",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_milestone_event",
+      "COLUMN_NAME": "occurred_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_milestone_event",
+      "COLUMN_NAME": "recorded_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_milestone_event",
+      "COLUMN_NAME": "actor_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_need",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_need",
+      "COLUMN_NAME": "id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_need",
+      "COLUMN_NAME": "session_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_need",
+      "COLUMN_NAME": "label",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_need",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_need",
+      "COLUMN_NAME": "actor_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_process_head",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_process_head",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_process_head",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_process_head",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_process_version",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_process_version",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_process_version",
+      "COLUMN_NAME": "definition",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_process_version",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_process_version",
+      "COLUMN_NAME": "actor_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_progress",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_progress",
+      "COLUMN_NAME": "session_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_progress",
+      "COLUMN_NAME": "process_version",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_progress",
+      "COLUMN_NAME": "stage_key",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_progress",
+      "COLUMN_NAME": "version",
+      "COLUMN_DEFAULT": "1",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_progress",
+      "COLUMN_NAME": "coverage",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_progress",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_progress",
+      "COLUMN_NAME": "updated_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_stage_event",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_stage_event",
+      "COLUMN_NAME": "id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_stage_event",
+      "COLUMN_NAME": "session_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_stage_event",
+      "COLUMN_NAME": "revision",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_stage_event",
+      "COLUMN_NAME": "from_stage",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_stage_event",
+      "COLUMN_NAME": "to_stage",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_stage_event",
+      "COLUMN_NAME": "reason",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_stage_event",
+      "COLUMN_NAME": "actor_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_stage_event",
+      "COLUMN_NAME": "recorded_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_touchpoint",
+      "COLUMN_NAME": "tenant_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_touchpoint",
+      "COLUMN_NAME": "touchpoint_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_touchpoint",
+      "COLUMN_NAME": "session_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_touchpoint",
+      "COLUMN_NAME": "conversation_id",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_touchpoint",
+      "COLUMN_NAME": "occurred_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "session_touchpoint",
+      "COLUMN_NAME": "recorded_at",
+      "COLUMN_DEFAULT": null,
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    }
+  ],
+  "checks": [
+    {
+      "TABLE_NAME": "audit_entry",
+      "CONSTRAINT_NAME": "ck_audit_entry_1",
+      "CHECK_CLAUSE": "(`actor_kind` in (_utf8mb4\\'human\\',_utf8mb4\\'ai\\',_utf8mb4\\'service\\',_utf8mb4\\'system\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "audit_entry",
+      "CONSTRAINT_NAME": "ck_audit_entry_2",
+      "CHECK_CLAUSE": "(`outcome` in (_utf8mb4\\'accepted\\',_utf8mb4\\'denied\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "audit_entry",
+      "CONSTRAINT_NAME": "ck_audit_entry_3",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_claim_request",
+      "CONSTRAINT_NAME": "ck_chat_claim_request_1",
+      "CHECK_CLAUSE": "(`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\')",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_claim_request",
+      "CONSTRAINT_NAME": "ck_chat_claim_request_2",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_contact_guard",
+      "CONSTRAINT_NAME": "ck_chat_contact_guard_1",
+      "CHECK_CLAUSE": "(`state` in (_utf8mb4\\'closing\\',_utf8mb4\\'archived\\',_utf8mb4\\'released\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_contact_guard",
+      "CONSTRAINT_NAME": "ck_chat_contact_guard_2",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_contact_guard",
+      "CONSTRAINT_NAME": "ck_chat_contact_guard_3",
+      "CHECK_CLAUSE": "(`version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_control_head",
+      "CONSTRAINT_NAME": "ck_chat_control_head_1",
+      "CHECK_CLAUSE": "(`registry_revision` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_control_head",
+      "CONSTRAINT_NAME": "ck_chat_control_head_2",
+      "CHECK_CLAUSE": "(`control_revision` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_control_head",
+      "CONSTRAINT_NAME": "ck_chat_control_head_3",
+      "CHECK_CLAUSE": "(`cancel_through` < `control_revision`)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_control_head",
+      "CONSTRAINT_NAME": "ck_chat_control_head_4",
+      "CHECK_CLAUSE": "(`pause_through` < `control_revision`)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_control_head",
+      "CONSTRAINT_NAME": "ck_chat_control_head_5",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_control_head",
+      "CONSTRAINT_NAME": "ck_chat_control_head_6",
+      "CHECK_CLAUSE": "(`version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_dataset_head",
+      "CONSTRAINT_NAME": "ck_chat_dataset_head_1",
+      "CHECK_CLAUSE": "(`dataset` in (_utf8mb4\\'conversion\\',_utf8mb4\\'stage\\',_utf8mb4\\'progress\\',_utf8mb4\\'routing\\',_utf8mb4\\'registry\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_dataset_head",
+      "CONSTRAINT_NAME": "ck_chat_dataset_head_2",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_dataset_head",
+      "CONSTRAINT_NAME": "ck_chat_dataset_head_3",
+      "CHECK_CLAUSE": "(`version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_dispatch_claim",
+      "CONSTRAINT_NAME": "ck_chat_dispatch_claim_1",
+      "CHECK_CLAUSE": "(`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\')",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_dispatch_claim",
+      "CONSTRAINT_NAME": "ck_chat_dispatch_claim_2",
+      "CHECK_CLAUSE": "(json_type(`binding_json`) = _utf8mb4\\'OBJECT\\')",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_dispatch_claim",
+      "CONSTRAINT_NAME": "ck_chat_dispatch_claim_3",
+      "CHECK_CLAUSE": "(json_type(`resource_json`) = _utf8mb4\\'OBJECT\\')",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_dispatch_claim",
+      "CONSTRAINT_NAME": "ck_chat_dispatch_claim_4",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "CONSTRAINT_NAME": "ck_chat_event_delivery_1",
+      "CHECK_CLAUSE": "(`sequence` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "CONSTRAINT_NAME": "ck_chat_event_delivery_2",
+      "CHECK_CLAUSE": "(`state` in (_utf8mb4\\'pending\\',_utf8mb4\\'acked\\',_utf8mb4\\'quarantined\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "CONSTRAINT_NAME": "ck_chat_event_delivery_3",
+      "CHECK_CLAUSE": "(json_storage_size(`envelope_json`) <= 262144)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "CONSTRAINT_NAME": "ck_chat_event_delivery_4",
+      "CHECK_CLAUSE": "((`state` = _utf8mb4\\'acked\\') = (`acked_at` is not null))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "CONSTRAINT_NAME": "ck_chat_event_delivery_5",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_event_delivery",
+      "CONSTRAINT_NAME": "ck_chat_event_delivery_6",
+      "CHECK_CLAUSE": "(`version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "CONSTRAINT_NAME": "ck_chat_event_inbox_1",
+      "CHECK_CLAUSE": "(`sequence` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "CONSTRAINT_NAME": "ck_chat_event_inbox_2",
+      "CHECK_CLAUSE": "(`state` in (_utf8mb4\\'pending\\',_utf8mb4\\'applied\\',_utf8mb4\\'quarantined\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "CONSTRAINT_NAME": "ck_chat_event_inbox_3",
+      "CHECK_CLAUSE": "((`state` = _utf8mb4\\'applied\\') = (`applied_at` is not null))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "CONSTRAINT_NAME": "ck_chat_event_inbox_4",
+      "CHECK_CLAUSE": "(json_storage_size(`envelope_json`) <= 262144)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "CONSTRAINT_NAME": "ck_chat_event_inbox_5",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_event_inbox",
+      "CONSTRAINT_NAME": "ck_chat_event_inbox_6",
+      "CHECK_CLAUSE": "(`version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_event_stream",
+      "CONSTRAINT_NAME": "ck_chat_event_stream_1",
+      "CHECK_CLAUSE": "(`next_sequence` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_event_stream",
+      "CONSTRAINT_NAME": "ck_chat_event_stream_2",
+      "CHECK_CLAUSE": "(`retained_from` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_event_stream",
+      "CONSTRAINT_NAME": "ck_chat_event_stream_3",
+      "CHECK_CLAUSE": "(`acked_through` < `next_sequence`)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_event_stream",
+      "CONSTRAINT_NAME": "ck_chat_event_stream_4",
+      "CHECK_CLAUSE": "(`retained_from` <= `next_sequence`)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_event_stream",
+      "CONSTRAINT_NAME": "ck_chat_event_stream_5",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_event_stream",
+      "CONSTRAINT_NAME": "ck_chat_event_stream_6",
+      "CHECK_CLAUSE": "(`version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_inbox",
+      "CONSTRAINT_NAME": "ck_chat_inbox_1",
+      "CHECK_CLAUSE": "(`version` > 0)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_inbox",
+      "CONSTRAINT_NAME": "ck_chat_inbox_2",
+      "CHECK_CLAUSE": "(`predicate_schema_version` = 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_inbox",
+      "CONSTRAINT_NAME": "ck_chat_inbox_3",
+      "CHECK_CLAUSE": "(`sort` in (_utf8mb4\\'latest_message_desc\\',_utf8mb4\\'latest_message_asc\\',_utf8mb4\\'waiting_longest\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_inbox",
+      "CONSTRAINT_NAME": "ck_chat_inbox_4",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_inbox_share",
+      "CONSTRAINT_NAME": "ck_chat_inbox_share_1",
+      "CHECK_CLAUSE": "(`target_kind` in (_utf8mb4\\'principal\\',_utf8mb4\\'team\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_inbox_share",
+      "CONSTRAINT_NAME": "ck_chat_inbox_share_2",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_migration_chunk",
+      "CONSTRAINT_NAME": "ck_chat_migration_chunk_1",
+      "CHECK_CLAUSE": "(`state` in (_utf8mb4\\'copied\\',_utf8mb4\\'validated\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_migration_chunk",
+      "CONSTRAINT_NAME": "ck_chat_migration_chunk_2",
+      "CHECK_CLAUSE": "(json_storage_size(`last_key`) <= 4096)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_migration_chunk",
+      "CONSTRAINT_NAME": "ck_chat_migration_chunk_3",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_migration_run",
+      "CONSTRAINT_NAME": "ck_chat_migration_run_1",
+      "CHECK_CLAUSE": "(`state` in (_utf8mb4\\'exporting\\',_utf8mb4\\'copying\\',_utf8mb4\\'validated\\',_utf8mb4\\'active\\',_utf8mb4\\'frozen\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_migration_run",
+      "CONSTRAINT_NAME": "ck_chat_migration_run_2",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_migration_run",
+      "CONSTRAINT_NAME": "ck_chat_migration_run_3",
+      "CHECK_CLAUSE": "(`version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "CONSTRAINT_NAME": "ck_chat_outbound_job_1",
+      "CHECK_CLAUSE": "((json_type(`binding_json`) = _utf8mb4\\'OBJECT\\') and (length(`binding_json`) <= 8192))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "CONSTRAINT_NAME": "ck_chat_outbound_job_2",
+      "CHECK_CLAUSE": "(((`lease_token` is null) and (`lease_until` is null)) or ((`lease_token` is not null) and (`lease_until` is not null)))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "CONSTRAINT_NAME": "ck_chat_outbound_job_3",
+      "CHECK_CLAUSE": "(`phase` in (_utf8mb4\\'issue\\',_utf8mb4\\'payload\\',_utf8mb4\\'prepare\\',_utf8mb4\\'claim\\',_utf8mb4\\'begin\\',_utf8mb4\\'deliver\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "CONSTRAINT_NAME": "ck_chat_outbound_job_4",
+      "CHECK_CLAUSE": "((json_type(`resource_json`) = _utf8mb4\\'OBJECT\\') and (length(`resource_json`) <= 8192))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "CONSTRAINT_NAME": "ck_chat_outbound_job_5",
+      "CHECK_CLAUSE": "(`status` in (_utf8mb4\\'pending\\',_utf8mb4\\'done\\',_utf8mb4\\'attention\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "CONSTRAINT_NAME": "ck_chat_outbound_job_6",
+      "CHECK_CLAUSE": "(`version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_outbound_job",
+      "CONSTRAINT_NAME": "ck_chat_outbound_job_7",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "CONSTRAINT_NAME": "ck_chat_owner_command_1",
+      "CHECK_CLAUSE": "(`state` in (_utf8mb4\\'prepared\\',_utf8mb4\\'committed\\',_utf8mb4\\'aborted\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "CONSTRAINT_NAME": "ck_chat_owner_command_2",
+      "CHECK_CLAUSE": "(((`state` = _utf8mb4\\'prepared\\') and (`terminal_at` is null) and (`terminal_digest` is null) and (`binding_json` is not null) and (`request_json` is not null)) or ((`state` in (_utf8mb4\\'committed\\',_utf8mb4\\'aborted\\')) and (`terminal_at` is not null) and (`terminal_digest` is not null)))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "CONSTRAINT_NAME": "ck_chat_owner_command_3",
+      "CHECK_CLAUSE": "((`state` = _utf8mb4\\'aborted\\') or ((`operation` is not null) and (`actor_kind` is not null) and (`actor_id` is not null) and (`resource_kind` is not null) and (`resource_id` is not null) and (`record_version` is not null) and (`owner_revision` is not null) and (`control_revision` is not null)))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "CONSTRAINT_NAME": "ck_chat_owner_command_4",
+      "CHECK_CLAUSE": "((`binding_json` is null) or (json_storage_size(`binding_json`) <= 262144))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "CONSTRAINT_NAME": "ck_chat_owner_command_5",
+      "CHECK_CLAUSE": "((`request_json` is null) or (json_storage_size(`request_json`) <= 262144))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "CONSTRAINT_NAME": "ck_chat_owner_command_6",
+      "CHECK_CLAUSE": "((`result_json` is null) or (json_storage_size(`result_json`) <= 262144))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "CONSTRAINT_NAME": "ck_chat_owner_command_7",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_owner_command",
+      "CONSTRAINT_NAME": "ck_chat_owner_command_8",
+      "CHECK_CLAUSE": "(`version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "CONSTRAINT_NAME": "ck_chat_owner_dependency_1",
+      "CHECK_CLAUSE": "(`state` in (_utf8mb4\\'prepared\\',_utf8mb4\\'pending\\',_utf8mb4\\'committed\\',_utf8mb4\\'aborted\\',_utf8mb4\\'released\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "CONSTRAINT_NAME": "ck_chat_owner_dependency_2",
+      "CHECK_CLAUSE": "(json_storage_size(`request_json`) <= 262144)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "CONSTRAINT_NAME": "ck_chat_owner_dependency_3",
+      "CHECK_CLAUSE": "((`proof_json` is null) or (json_storage_size(`proof_json`) <= 262144))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "CONSTRAINT_NAME": "ck_chat_owner_dependency_4",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_owner_dependency",
+      "CONSTRAINT_NAME": "ck_chat_owner_dependency_5",
+      "CHECK_CLAUSE": "(`version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_owner_selection",
+      "CONSTRAINT_NAME": "ck_chat_owner_selection_1",
+      "CHECK_CLAUSE": "(`ordinal` < 100)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_owner_selection",
+      "CONSTRAINT_NAME": "ck_chat_owner_selection_2",
+      "CHECK_CLAUSE": "(json_storage_size(`context_json`) <= 262144)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_owner_selection",
+      "CONSTRAINT_NAME": "ck_chat_owner_selection_3",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_read_rollout_conversation",
+      "CONSTRAINT_NAME": "ck_chat_read_rollout_conversation_1",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_read_rollout_principal",
+      "CONSTRAINT_NAME": "ck_chat_read_rollout_principal_1",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_report_page",
+      "CONSTRAINT_NAME": "ck_chat_report_page_1",
+      "CHECK_CLAUSE": "(`row_count` <= 100)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_report_page",
+      "CONSTRAINT_NAME": "ck_chat_report_page_2",
+      "CHECK_CLAUSE": "(json_storage_size(`facts_json`) <= 262144)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_report_page",
+      "CONSTRAINT_NAME": "ck_chat_report_page_3",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_report_snapshot",
+      "CONSTRAINT_NAME": "ck_chat_report_snapshot_1",
+      "CHECK_CLAUSE": "(`state` in (_utf8mb4\\'prepared\\',_utf8mb4\\'released\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_report_snapshot",
+      "CONSTRAINT_NAME": "ck_chat_report_snapshot_2",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_report_snapshot",
+      "CONSTRAINT_NAME": "ck_chat_report_snapshot_3",
+      "CHECK_CLAUSE": "(`version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_result_request",
+      "CONSTRAINT_NAME": "ck_chat_result_request_1",
+      "CHECK_CLAUSE": "(`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\')",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_result_request",
+      "CONSTRAINT_NAME": "ck_chat_result_request_2",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_snippet",
+      "CONSTRAINT_NAME": "ck_chat_snippet_1",
+      "CHECK_CLAUSE": "(`version` > 0)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_snippet",
+      "CONSTRAINT_NAME": "ck_chat_snippet_2",
+      "CHECK_CLAUSE": "(char_length(`text`) between 1 and 4000)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_snippet",
+      "CONSTRAINT_NAME": "ck_chat_snippet_3",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_workspace_rollout",
+      "CONSTRAINT_NAME": "ck_chat_workspace_rollout_1",
+      "CHECK_CLAUSE": "(`state` in (_utf8mb4\\'disabled\\',_utf8mb4\\'backfilling\\',_utf8mb4\\'ready\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_workspace_rollout",
+      "CONSTRAINT_NAME": "ck_chat_workspace_rollout_2",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_writer_gate",
+      "CONSTRAINT_NAME": "ck_chat_writer_gate_1",
+      "CHECK_CLAUSE": "(`mode` in (_utf8mb4\\'disabled\\',_utf8mb4\\'shadow\\',_utf8mb4\\'active\\',_utf8mb4\\'frozen\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "chat_writer_gate",
+      "CONSTRAINT_NAME": "ck_chat_writer_gate_2",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "consumer_inbox",
+      "CONSTRAINT_NAME": "ck_consumer_inbox_1",
+      "CHECK_CLAUSE": "(((`status` = _utf8mb4\\'processing\\') and (`processed_at` is null)) or ((`status` = _utf8mb4\\'completed\\') and (`processed_at` is not null)))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "consumer_inbox",
+      "CONSTRAINT_NAME": "ck_consumer_inbox_2",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation",
+      "CONSTRAINT_NAME": "ck_conversation_1",
+      "CHECK_CLAUSE": "(`status` in (_utf8mb4\\'open\\',_utf8mb4\\'pending\\',_utf8mb4\\'closed\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation",
+      "CONSTRAINT_NAME": "ck_conversation_2",
+      "CHECK_CLAUSE": "(((`status` = _utf8mb4\\'closed\\') and (`closed_at` is not null)) or ((`status` <> _utf8mb4\\'closed\\') and (`closed_at` is null)))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation",
+      "CONSTRAINT_NAME": "ck_conversation_3",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "CONSTRAINT_NAME": "ck_conversation_acquisition_session_1",
+      "CHECK_CLAUSE": "(((`status` = _utf8mb4\\'active\\') and (`closed_at` is null) and (`close_reason` is null)) or ((`status` = _utf8mb4\\'closed\\') and (`closed_at` is not null) and (`close_reason` is not null)))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "CONSTRAINT_NAME": "ck_conversation_acquisition_session_2",
+      "CHECK_CLAUSE": "(`sequence` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "CONSTRAINT_NAME": "ck_conversation_acquisition_session_3",
+      "CHECK_CLAUSE": "(`version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "CONSTRAINT_NAME": "ck_conversation_acquisition_session_4",
+      "CHECK_CLAUSE": "(`status` in (_utf8mb4\\'active\\',_utf8mb4\\'closed\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "CONSTRAINT_NAME": "ck_conversation_acquisition_session_5",
+      "CHECK_CLAUSE": "(`opening_reason` in (_utf8mb4\\'first_inbound\\',_utf8mb4\\'new_referral\\',_utf8mb4\\'after_close\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "CONSTRAINT_NAME": "ck_conversation_acquisition_session_6",
+      "CHECK_CLAUSE": "((`close_reason` is null) or (`close_reason` in (_utf8mb4\\'agent_closed\\',_utf8mb4\\'new_referral\\')))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "CONSTRAINT_NAME": "ck_conversation_acquisition_session_7",
+      "CHECK_CLAUSE": "(`source_classification` in (_utf8mb4\\'organic\\',_utf8mb4\\'paid\\',_utf8mb4\\'unknown\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_acquisition_session",
+      "CONSTRAINT_NAME": "ck_conversation_acquisition_session_8",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_activity",
+      "CONSTRAINT_NAME": "ck_conversation_activity_1",
+      "CHECK_CLAUSE": "(`activity_seq` > 0)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_activity",
+      "CONSTRAINT_NAME": "ck_conversation_activity_2",
+      "CHECK_CLAUSE": "(`source_revision` > 0)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_activity",
+      "CONSTRAINT_NAME": "ck_conversation_activity_3",
+      "CHECK_CLAUSE": "(`source_service` in (_utf8mb4\\'chat\\',_utf8mb4\\'crm\\',_utf8mb4\\'workflow\\',_utf8mb4\\'chatflow\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_activity",
+      "CONSTRAINT_NAME": "ck_conversation_activity_4",
+      "CHECK_CLAUSE": "(`kind` in (_utf8mb4\\'message\\',_utf8mb4\\'note\\',_utf8mb4\\'assignment\\',_utf8mb4\\'lifecycle\\',_utf8mb4\\'snooze\\',_utf8mb4\\'tags\\',_utf8mb4\\'automation\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_activity",
+      "CONSTRAINT_NAME": "ck_conversation_activity_5",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_activity_counter",
+      "CONSTRAINT_NAME": "ck_conversation_activity_counter_1",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_read_state",
+      "CONSTRAINT_NAME": "ck_conversation_read_state_1",
+      "CHECK_CLAUSE": "(`revision` > 0)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_read_state",
+      "CONSTRAINT_NAME": "ck_conversation_read_state_2",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_snooze",
+      "CONSTRAINT_NAME": "ck_conversation_snooze_1",
+      "CHECK_CLAUSE": "(`revision` > 0)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_snooze",
+      "CONSTRAINT_NAME": "ck_conversation_snooze_2",
+      "CHECK_CLAUSE": "(`last_cause` in (_utf8mb4\\'scheduled\\',_utf8mb4\\'rescheduled\\',_utf8mb4\\'deadline\\',_utf8mb4\\'inbound\\',_utf8mb4\\'manual\\',_utf8mb4\\'assignment\\',_utf8mb4\\'closed\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_snooze",
+      "CONSTRAINT_NAME": "ck_conversation_snooze_3",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_tag",
+      "CONSTRAINT_NAME": "ck_conversation_tag_1",
+      "CHECK_CLAUSE": "(`version` > 0)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_tag",
+      "CONSTRAINT_NAME": "ck_conversation_tag_2",
+      "CHECK_CLAUSE": "(`color` in (_utf8mb4\\'gray\\',_utf8mb4\\'blue\\',_utf8mb4\\'green\\',_utf8mb4\\'amber\\',_utf8mb4\\'red\\',_utf8mb4\\'purple\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_tag",
+      "CONSTRAINT_NAME": "ck_conversation_tag_3",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_tag_link",
+      "CONSTRAINT_NAME": "ck_conversation_tag_link_1",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_workspace",
+      "CONSTRAINT_NAME": "ck_conversation_workspace_1",
+      "CHECK_CLAUSE": "(`answered_inbound_seq` <= `latest_inbound_seq`)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_workspace",
+      "CONSTRAINT_NAME": "ck_conversation_workspace_2",
+      "CHECK_CLAUSE": "(`waiting_metric_state` in (_utf8mb4\\'ready\\',_utf8mb4\\'unavailable\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "conversation_workspace",
+      "CONSTRAINT_NAME": "ck_conversation_workspace_3",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "crm_record",
+      "CONSTRAINT_NAME": "ck_crm_record_1",
+      "CHECK_CLAUSE": "(`version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "crm_record",
+      "CONSTRAINT_NAME": "ck_crm_record_2",
+      "CHECK_CLAUSE": "(`owner_revision` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "crm_record",
+      "CONSTRAINT_NAME": "ck_crm_record_3",
+      "CHECK_CLAUSE": "(json_type(`custom_values`) = _utf8mb4\\'OBJECT\\')",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "crm_record",
+      "CONSTRAINT_NAME": "ck_crm_record_4",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "idempotency_record",
+      "CONSTRAINT_NAME": "ck_idempotency_record_1",
+      "CHECK_CLAUSE": "(`actor_kind` in (_ascii\\'human\\',_ascii\\'ai\\',_ascii\\'service\\',_ascii\\'system\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "idempotency_record",
+      "CONSTRAINT_NAME": "ck_idempotency_record_2",
+      "CHECK_CLAUSE": "(`status` in (_ascii\\'pending\\',_ascii\\'completed\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "idempotency_record",
+      "CONSTRAINT_NAME": "ck_idempotency_record_3",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "message",
+      "CONSTRAINT_NAME": "ck_message_1",
+      "CHECK_CLAUSE": "(`direction` in (_utf8mb4\\'inbound\\',_utf8mb4\\'outbound\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "message",
+      "CONSTRAINT_NAME": "ck_message_2",
+      "CHECK_CLAUSE": "(char_length(`text`) between 1 and 4000)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "message",
+      "CONSTRAINT_NAME": "ck_message_3",
+      "CHECK_CLAUSE": "(`status` in (_utf8mb4\\'received\\',_utf8mb4\\'queued\\',_utf8mb4\\'sending\\',_utf8mb4\\'sent\\',_utf8mb4\\'failed\\',_utf8mb4\\'unknown\\',_utf8mb4\\'cancelled\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "message",
+      "CONSTRAINT_NAME": "ck_message_4",
+      "CHECK_CLAUSE": "(((`direction` = _utf8mb4\\'inbound\\') and (`status` = _utf8mb4\\'received\\') and (`outbound_intent_id` is null) and (`provider_message_id` is not null)) or ((`direction` = _utf8mb4\\'outbound\\') and (`status` <> _utf8mb4\\'received\\') and (`outbound_intent_id` is not null)))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "message",
+      "CONSTRAINT_NAME": "ck_message_5",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "message_acquisition_membership",
+      "CONSTRAINT_NAME": "ck_message_acquisition_membership_1",
+      "CHECK_CLAUSE": "(((`resolution` = _utf8mb4\\'assigned\\') and (`session_id` is not null)) or ((`resolution` <> _utf8mb4\\'assigned\\') and (`session_id` is null)))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "message_acquisition_membership",
+      "CONSTRAINT_NAME": "ck_message_acquisition_membership_2",
+      "CHECK_CLAUSE": "(`resolution` in (_utf8mb4\\'assigned\\',_utf8mb4\\'unresolved_late\\',_utf8mb4\\'unresolved_legacy\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "message_acquisition_membership",
+      "CONSTRAINT_NAME": "ck_message_acquisition_membership_3",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "message_content",
+      "CONSTRAINT_NAME": "ck_message_content_1",
+      "CHECK_CLAUSE": "(json_type(`content`) = _utf8mb4\\'OBJECT\\')",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "message_content",
+      "CONSTRAINT_NAME": "ck_message_content_2",
+      "CHECK_CLAUSE": "(length(`content`) <= 65536)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "message_content",
+      "CONSTRAINT_NAME": "ck_message_content_3",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "message_workspace",
+      "CONSTRAINT_NAME": "ck_message_workspace_1",
+      "CHECK_CLAUSE": "((`inbound_seq` is null) or (`inbound_seq` > 0))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "message_workspace",
+      "CONSTRAINT_NAME": "ck_message_workspace_2",
+      "CHECK_CLAUSE": "((`inbound_seq` is null) or (`reply_through_inbound_seq` is null))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "message_workspace",
+      "CONSTRAINT_NAME": "ck_message_workspace_3",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "need_assessment",
+      "CONSTRAINT_NAME": "ck_need_assessment_1",
+      "CHECK_CLAUSE": "(`version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "need_assessment",
+      "CONSTRAINT_NAME": "ck_need_assessment_2",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "need_assessment_revision",
+      "CONSTRAINT_NAME": "ck_need_assessment_revision_1",
+      "CHECK_CLAUSE": "(`version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "need_assessment_revision",
+      "CONSTRAINT_NAME": "ck_need_assessment_revision_2",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "need_follow_up",
+      "CONSTRAINT_NAME": "ck_need_follow_up_1",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "CONSTRAINT_NAME": "ck_outbound_intent_1",
+      "CHECK_CLAUSE": "(`status` in (_utf8mb4\\'queued\\',_utf8mb4\\'sending\\',_utf8mb4\\'sent\\',_utf8mb4\\'failed\\',_utf8mb4\\'unknown\\',_utf8mb4\\'cancelled\\',_utf8mb4\\'remote_queued\\',_utf8mb4\\'remote_sending\\',_utf8mb4\\'remote_unknown\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "CONSTRAINT_NAME": "ck_outbound_intent_2",
+      "CHECK_CLAUSE": "(`actor_kind` in (_utf8mb4\\'human\\',_utf8mb4\\'ai\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "CONSTRAINT_NAME": "ck_outbound_intent_3",
+      "CHECK_CLAUSE": "(`owner_revision` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "CONSTRAINT_NAME": "ck_outbound_intent_4",
+      "CHECK_CLAUSE": "(char_length(`text`) between 1 and 4000)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "outbound_intent",
+      "CONSTRAINT_NAME": "ck_outbound_intent_5",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "CONSTRAINT_NAME": "ck_outbox_event_1",
+      "CHECK_CLAUSE": "(`aggregate_version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "CONSTRAINT_NAME": "ck_outbox_event_2",
+      "CHECK_CLAUSE": "(`schema_version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "CONSTRAINT_NAME": "ck_outbox_event_3",
+      "CHECK_CLAUSE": "(`actor_kind` in (_ascii\\'human\\',_ascii\\'ai\\',_ascii\\'service\\',_ascii\\'system\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "CONSTRAINT_NAME": "ck_outbox_event_4",
+      "CHECK_CLAUSE": "(`status` in (_ascii\\'pending\\',_ascii\\'processing\\',_ascii\\'dispatched\\',_ascii\\'failed\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "outbox_event",
+      "CONSTRAINT_NAME": "ck_outbox_event_5",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "ownership_history",
+      "CONSTRAINT_NAME": "ck_ownership_history_1",
+      "CHECK_CLAUSE": "(`owner_revision` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "ownership_history",
+      "CONSTRAINT_NAME": "ck_ownership_history_2",
+      "CHECK_CLAUSE": "(`actor_kind` in (_utf8mb4\\'human\\',_utf8mb4\\'ai\\',_utf8mb4\\'service\\',_utf8mb4\\'system\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "ownership_history",
+      "CONSTRAINT_NAME": "ck_ownership_history_3",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "property_index_value",
+      "CONSTRAINT_NAME": "ck_property_index_value_1",
+      "CHECK_CLAUSE": "(((((((`string_value` is not null) + (`integer_value` is not null)) + (`decimal_value` is not null)) + (`boolean_value` is not null)) + (`date_value` is not null)) + (`datetime_value` is not null)) = 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "property_index_value",
+      "CONSTRAINT_NAME": "ck_property_index_value_2",
+      "CHECK_CLAUSE": "(((`value_kind` = _utf8mb4\\'string\\') and (`string_value` is not null)) or ((`value_kind` = _utf8mb4\\'integer\\') and (`integer_value` is not null)) or ((`value_kind` = _utf8mb4\\'decimal\\') and (`decimal_value` is not null)) or ((`value_kind` = _utf8mb4\\'boolean\\') and (`boolean_value` is not null)) or ((`value_kind` = _utf8mb4\\'date\\') and (`date_value` is not null)) or ((`value_kind` = _utf8mb4\\'datetime\\') and (`datetime_value` is not null)))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "property_index_value",
+      "CONSTRAINT_NAME": "ck_property_index_value_3",
+      "CHECK_CLAUSE": "((`boolean_value` is null) or (`boolean_value` in (0,1)))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "property_index_value",
+      "CONSTRAINT_NAME": "ck_property_index_value_4",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "record_team_access",
+      "CONSTRAINT_NAME": "ck_record_team_access_1",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "schema_migration",
+      "CONSTRAINT_NAME": "ck_schema_migration_1",
+      "CHECK_CLAUSE": "(`state` in (_utf8mb4\\'started\\',_utf8mb4\\'applied\\',_utf8mb4\\'failed\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "schema_migration",
+      "CONSTRAINT_NAME": "ck_schema_migration_2",
+      "CHECK_CLAUSE": "(`tenant_id` = _utf8mb4\\'01900000-0000-7000-8000-000000000001\\')",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "schema_migration",
+      "CONSTRAINT_NAME": "ck_schema_migration_3",
+      "CHECK_CLAUSE": "(`version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "session_classification",
+      "CONSTRAINT_NAME": "ck_session_classification_1",
+      "CHECK_CLAUSE": "(`version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "session_classification",
+      "CONSTRAINT_NAME": "ck_session_classification_2",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "session_contribution",
+      "CONSTRAINT_NAME": "ck_session_contribution_1",
+      "CHECK_CLAUSE": "(`revision` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "session_contribution",
+      "CONSTRAINT_NAME": "ck_session_contribution_2",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "session_milestone_event",
+      "CONSTRAINT_NAME": "ck_session_milestone_event_1",
+      "CHECK_CLAUSE": "(((`kind` = _utf8mb4\\'record\\') and (`supersedes_id` is null)) or ((`kind` in (_utf8mb4\\'replace\\',_utf8mb4\\'retract\\')) and (`supersedes_id` is not null)))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "session_milestone_event",
+      "CONSTRAINT_NAME": "ck_session_milestone_event_2",
+      "CHECK_CLAUSE": "(`kind` in (_utf8mb4\\'record\\',_utf8mb4\\'replace\\',_utf8mb4\\'retract\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "session_milestone_event",
+      "CONSTRAINT_NAME": "ck_session_milestone_event_3",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "session_need",
+      "CONSTRAINT_NAME": "ck_session_need_1",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "session_process_head",
+      "CONSTRAINT_NAME": "ck_session_process_head_1",
+      "CHECK_CLAUSE": "(`version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "session_process_head",
+      "CONSTRAINT_NAME": "ck_session_process_head_2",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "session_process_version",
+      "CONSTRAINT_NAME": "ck_session_process_version_1",
+      "CHECK_CLAUSE": "(`version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "session_process_version",
+      "CONSTRAINT_NAME": "ck_session_process_version_2",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "session_progress",
+      "CONSTRAINT_NAME": "ck_session_progress_1",
+      "CHECK_CLAUSE": "(`version` >= 1)",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "session_progress",
+      "CONSTRAINT_NAME": "ck_session_progress_2",
+      "CHECK_CLAUSE": "(`coverage` in (_utf8mb4\\'full\\',_utf8mb4\\'partial\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "session_progress",
+      "CONSTRAINT_NAME": "ck_session_progress_3",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "session_stage_event",
+      "CONSTRAINT_NAME": "ck_session_stage_event_1",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    },
+    {
+      "TABLE_NAME": "session_touchpoint",
+      "CONSTRAINT_NAME": "ck_session_touchpoint_1",
+      "CHECK_CLAUSE": "((`tenant_id` <> _utf8mb4\\'01900000-0000-7000-8000-000000000001\\') and (`tenant_id` <> _utf8mb4\\'\\') and (`tenant_id` <> _utf8mb4\\'00000000-0000-0000-0000-000000000000\\'))",
+      "ENFORCED": "YES"
+    }
+  ]
+}

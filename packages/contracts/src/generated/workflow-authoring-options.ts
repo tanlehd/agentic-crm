@@ -27,14 +27,6 @@ export interface WorkflowAuthoringOptions {
       name: string;
       provider: "mock_messenger";
     }[];
-    /**
-     * @maxItems 200
-     */
-    chatflows: {
-      id: string;
-      name: string;
-      number: number;
-    }[];
   };
   meta: {
     correlation_id: string;

@@ -1,6 +1,6 @@
 # UI/UX — hệ thống thiết kế ứng dụng
 
-Mỗi đặc tả mới hoặc được sửa phải ghi nhóm mục tiêu G01…G08, người sử dụng và người cấu hình theo [bản đồ tính năng](../product/capability-map.md). Phân nhóm phục vụ cùng trục với tài liệu/presentation; không tự đổi navigation hoặc mở gate runtime.
+Mỗi đặc tả mới hoặc được sửa phải ghi nhóm mục tiêu theo [bản đồ tính năng](../product/capability-map.md), người sử dụng và người cấu hình. Phân nhóm phục vụ cùng trục với tài liệu/presentation; không tự đổi navigation hoặc mở gate runtime.
 
 UX-004, 2026-10-07: bỏ tab bar dưới header, thay thiết kế work tabs UX-003. Đây là bộ thiết kế đích và mock độc lập, chưa thay giao diện ứng dụng đang chạy.
 

@@ -26,4 +26,4 @@ Seed CLI development/test only theo bootstrap guard; Alpha/Beta mỗi channel/in
 
 ## Compatibility
 
-V10 additive config columns, inbound_delivery, touchpoint và identity display_label. Không mở Lead M2 refs hoặc tạo Workflow/Chatflow. Events contact.created/conversation.created/message.received actor service ingress, metadata không body/label. Conversation detail thêm attribution optional do composition port; query phải có conversation.read; source=unknown/ad/campaign null nếu không touchpoint.
+V10 additive config columns, inbound_delivery, touchpoint và identity display_label. Không mở Lead M2 refs hoặc tạo Workflow. Events contact.created/conversation.created/message.received actor service ingress, metadata không body/label. Conversation detail thêm attribution optional do composition port; query phải có conversation.read; source=unknown/ad/campaign null nếu không touchpoint.
