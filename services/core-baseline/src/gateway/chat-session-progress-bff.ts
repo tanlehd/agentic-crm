@@ -7,10 +7,10 @@ import {AuthError,hash} from '../modules/identity/auth/security.js';
 import {CommandError} from '../kernel/reliability/commands.js';
 
 function processInput(value:unknown){
- if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).some(k=>!['stages','milestones'].includes(k)))throw new CommandError(400,'INVALID_REQUEST');
+ if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).some(k=>!['stages','milestones','automations'].includes(k)))throw new CommandError(400,'INVALID_REQUEST');
  const definition=value as Record<string,unknown>;
  for(const [kind,max] of [['stages',20],['milestones',12]] as const){const rows=definition[kind];if(!Array.isArray(rows)||!rows.length||rows.length>max)throw new CommandError(422,'INVALID_PROCESS');const keys=new Set();
-  for(const row of rows){if(!row||typeof row!=='object'||Array.isArray(row)||Object.keys(row).some(k=>!['key','label'].includes(k)))throw new CommandError(400,'INVALID_REQUEST');if(typeof row.key!=='string'||!/^[a-z][a-z0-9_]{0,63}$/.test(row.key)||['won','lost','revenue','consent'].includes(row.key)||keys.has(row.key)||typeof row.label!=='string'||!row.label.trim()||row.label.length>120)throw new CommandError(422,'INVALID_PROCESS');keys.add(row.key);}
+  for(const row of rows){if(!row||typeof row!=='object'||Array.isArray(row)||Object.keys(row).some(k=>!(kind==='stages'?['key','label','description','color','requirements','type']:['key','label']).includes(k)))throw new CommandError(400,'INVALID_REQUEST');if(typeof row.key!=='string'||!/^[a-z][a-z0-9_]{0,63}$/.test(row.key)||['won','lost','revenue','consent'].includes(row.key)||keys.has(row.key)||typeof row.label!=='string'||!row.label.trim()||row.label.length>120)throw new CommandError(422,'INVALID_PROCESS');keys.add(row.key);}
  }
 }
 

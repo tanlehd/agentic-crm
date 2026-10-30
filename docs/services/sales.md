@@ -2,6 +2,8 @@
 
 Manual/session Lead, manual/from-Lead Deal, won/lost, Customer transition và session context đã có trong monolith. Sales chưa tách service; configurable pipeline/thực thu không được suy từ scope hiện có.
 
+Định hướng sản phẩm CHG-20261030-01, tên mới theo CHG-20261030-02: doanh nghiệp có thể dùng thêm Lead hoặc Deal với pipeline riêng, trong khi Omnichannel dùng Conversation nghiệp vụ cùng pipeline cho phạm vi tiếp nhận. Không bắt buộc chuỗi Conversation → Lead → Deal; source hiện tại vẫn dùng session refs cho lượt tiếp nhận. Configurable Lead/Deal pipelines cần exact design/source riêng. [Định nghĩa pipeline/stage](../product/glossary.md).
+
 ## Trách nhiệm và dữ liệu sở hữu
 
 Lead/draft/qualification, handoff/acceptance, Lead/Deal ownership, Deal stages/outcomes/value/currency, immutable source, sales session context/merge/contribution và stage history.

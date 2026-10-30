@@ -1,0 +1,17 @@
+import {describe,it,expect,vi} from 'vitest';
+import type {PoolConnection} from 'mysql2/promise';
+import {upgradeConversationPipeline,validConversationStageTypes,type ConversationPipelineDefinition} from '@agentic-crm/contracts';
+import {readSessionConvertTime} from './session-convert-time.js';
+const legacy:ConversationPipelineDefinition={stages:[{key:'received',label:'Tiếp nhận'},{key:'consulting',label:'Tư vấn',requirements:{need:true}}],milestones:[{key:'need',label:'Nhu cầu'}]};
+describe('typed pipeline compatibility',()=>{
+ it('adds system stages in an unpublished clone, preserving custom stages and guards',()=>{const d=upgradeConversationPipeline(legacy);expect(d.stages.map(s=>s.key)).toEqual(['new','received','consulting','converted','unqualified']);expect(d.stages[2]?.requirements).toEqual({need:true});expect(legacy.stages).toHaveLength(2);expect(validConversationStageTypes(d,legacy)).toBe(true);expect(upgradeConversationPipeline(d)).toEqual(d);});
+ it('rejects removal or type change of any system stage, missing types and wrong first stage',()=>{const d=upgradeConversationPipeline(legacy);for(const key of ['new','received','converted','unqualified']){expect(validConversationStageTypes({...d,stages:d.stages.filter(s=>s.key!==key)})).toBe(false);expect(validConversationStageTypes({...d,stages:d.stages.map(s=>s.key===key?{...s,type:undefined}:s)})).toBe(false);}expect(validConversationStageTypes({...d,stages:[...d.stages].reverse()})).toBe(false);});
+ it('preserves old versions but prevents downgrading typed config',()=>{expect(validConversationStageTypes(legacy,legacy)).toBe(true);expect(validConversationStageTypes(legacy,upgradeConversationPipeline(legacy))).toBe(false);expect(validConversationStageTypes({...legacy,automations:{set_convert_time:false,clear_convert_time:false}})).toBe(false);});
+});
+describe('conversion time from durable stage history',()=>{
+ const at='2026-10-30T08:12:13.123Z';
+ const connection=(event:unknown)=>{const execute=vi.fn(async()=>[event?[event]:[]]);return {execute,c:{execute} as unknown as PoolConnection};};
+ it.each(['converted','received','unqualified'])('uses the latest applicable event for %s',async key=>{const {c,execute}=connection({to_stage:key,recorded_at:at});expect(await readSessionConvertTime(c,'tenant-a','session-a',upgradeConversationPipeline(legacy))).toBe(key==='converted'?at:null);expect(execute.mock.calls[0]).toEqual([expect.stringContaining('ORDER BY revision DESC LIMIT 1'),['tenant-a','session-a','new','received','consulting','converted','unqualified']]);});
+ it.each([[true,false,['converted']],[false,true,['new','received','consulting','unqualified']]] as const)('independently filters disabled rules (%s/%s)',async(set,clear,keys)=>{const {c,execute}=connection(null),d=upgradeConversationPipeline(legacy);d.automations={set_convert_time:set,clear_convert_time:clear};expect(await readSessionConvertTime(c,'t','s',d)).toBeNull();expect(execute.mock.calls[0]).toEqual([expect.any(String),['t','s',...keys]]);});
+ it('does not invent conversions for legacy or fully disabled definitions',async()=>{const {c,execute}=connection({to_stage:'converted',recorded_at:at});expect(await readSessionConvertTime(c,'t','s',legacy)).toBeNull();expect(await readSessionConvertTime(c,'t','s',{...upgradeConversationPipeline(legacy),automations:{set_convert_time:false,clear_convert_time:false}})).toBeNull();expect(execute).not.toHaveBeenCalled();});
+});

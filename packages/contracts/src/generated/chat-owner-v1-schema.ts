@@ -448,6 +448,16 @@ export const chatOwnerV1Schema = {
           "maxItems": 200,
           "uniqueItems": true
         },
+        "session_read_fields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "maxItems": 200,
+          "uniqueItems": true
+        },
         "record_read_fields": {
           "type": "array",
           "items": {
@@ -17304,12 +17314,56 @@ export const chatOwnerV1Schema = {
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 120
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "color": {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$"
+              },
+              "requirements": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "fields": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                    },
+                    "maxItems": 100,
+                    "uniqueItems": true
+                  },
+                  "need": {
+                    "type": "boolean"
+                  },
+                  "milestones": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                    },
+                    "maxItems": 12,
+                    "uniqueItems": true
+                  }
+                },
+                "title": "SessionStageRequirements"
+              },
+              "type": {
+                "enum": [
+                  "open",
+                  "converted",
+                  "unqualified"
+                ]
               }
             },
             "required": [
               "key",
               "label"
-            ]
+            ],
+            "title": "SessionProcessStage"
           },
           "maxItems": 20,
           "minItems": 1
@@ -17345,6 +17399,22 @@ export const chatOwnerV1Schema = {
           },
           "maxItems": 12,
           "minItems": 1
+        },
+        "automations": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "set_convert_time": {
+              "type": "boolean"
+            },
+            "clear_convert_time": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "set_convert_time",
+            "clear_convert_time"
+          ]
         }
       },
       "required": [
@@ -18600,12 +18670,56 @@ export const chatOwnerV1Schema = {
                         "type": "string",
                         "minLength": 1,
                         "maxLength": 120
+                      },
+                      "description": {
+                        "type": "string",
+                        "maxLength": 500
+                      },
+                      "color": {
+                        "type": "string",
+                        "pattern": "^#[0-9a-fA-F]{6}$"
+                      },
+                      "requirements": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "fields": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                            },
+                            "maxItems": 100,
+                            "uniqueItems": true
+                          },
+                          "need": {
+                            "type": "boolean"
+                          },
+                          "milestones": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                            },
+                            "maxItems": 12,
+                            "uniqueItems": true
+                          }
+                        },
+                        "title": "SessionStageRequirements"
+                      },
+                      "type": {
+                        "enum": [
+                          "open",
+                          "converted",
+                          "unqualified"
+                        ]
                       }
                     },
                     "required": [
                       "key",
                       "label"
-                    ]
+                    ],
+                    "title": "SessionProcessStage"
                   },
                   "maxItems": 20,
                   "minItems": 1
@@ -18641,6 +18755,22 @@ export const chatOwnerV1Schema = {
                   },
                   "maxItems": 12,
                   "minItems": 1
+                },
+                "automations": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "set_convert_time": {
+                      "type": "boolean"
+                    },
+                    "clear_convert_time": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "set_convert_time",
+                    "clear_convert_time"
+                  ]
                 }
               },
               "required": [
@@ -18776,12 +18906,56 @@ export const chatOwnerV1Schema = {
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 120
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "color": {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$"
+              },
+              "requirements": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "fields": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                    },
+                    "maxItems": 100,
+                    "uniqueItems": true
+                  },
+                  "need": {
+                    "type": "boolean"
+                  },
+                  "milestones": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                    },
+                    "maxItems": 12,
+                    "uniqueItems": true
+                  }
+                },
+                "title": "SessionStageRequirements"
+              },
+              "type": {
+                "enum": [
+                  "open",
+                  "converted",
+                  "unqualified"
+                ]
               }
             },
             "required": [
               "key",
               "label"
-            ]
+            ],
+            "title": "SessionProcessStage"
           },
           "maxItems": 20,
           "minItems": 1
@@ -18817,6 +18991,22 @@ export const chatOwnerV1Schema = {
           },
           "maxItems": 12,
           "minItems": 1
+        },
+        "automations": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "set_convert_time": {
+              "type": "boolean"
+            },
+            "clear_convert_time": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "set_convert_time",
+            "clear_convert_time"
+          ]
         }
       },
       "required": [
@@ -18993,12 +19183,56 @@ export const chatOwnerV1Schema = {
                                 "type": "string",
                                 "minLength": 1,
                                 "maxLength": 120
+                              },
+                              "description": {
+                                "type": "string",
+                                "maxLength": 500
+                              },
+                              "color": {
+                                "type": "string",
+                                "pattern": "^#[0-9a-fA-F]{6}$"
+                              },
+                              "requirements": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "fields": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string",
+                                      "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                                    },
+                                    "maxItems": 100,
+                                    "uniqueItems": true
+                                  },
+                                  "need": {
+                                    "type": "boolean"
+                                  },
+                                  "milestones": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string",
+                                      "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                                    },
+                                    "maxItems": 12,
+                                    "uniqueItems": true
+                                  }
+                                },
+                                "title": "SessionStageRequirements"
+                              },
+                              "type": {
+                                "enum": [
+                                  "open",
+                                  "converted",
+                                  "unqualified"
+                                ]
                               }
                             },
                             "required": [
                               "key",
                               "label"
-                            ]
+                            ],
+                            "title": "SessionProcessStage"
                           },
                           "maxItems": 20,
                           "minItems": 1
@@ -19034,6 +19268,22 @@ export const chatOwnerV1Schema = {
                           },
                           "maxItems": 12,
                           "minItems": 1
+                        },
+                        "automations": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "set_convert_time": {
+                              "type": "boolean"
+                            },
+                            "clear_convert_time": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "set_convert_time",
+                            "clear_convert_time"
+                          ]
                         }
                       },
                       "required": [
@@ -19310,6 +19560,17 @@ export const chatOwnerV1Schema = {
             "updated_at": {
               "type": "string",
               "format": "date-time"
+            },
+            "convert_time": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
             }
           },
           "required": [

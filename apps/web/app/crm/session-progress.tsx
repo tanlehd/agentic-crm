@@ -1,13 +1,15 @@
 'use client';
+import {ConversationPipeline} from './conversation-pipeline';
 import { NeedAssessmentPanel } from './need-assessment';
 import { useRef,useState } from 'react';
-import { useApi,useCommand,ErrorNotice,can,type Context } from './api';
+import { useApi,useCommand,ErrorNotice,type Context } from './api';
 import { Button } from '../../components/ui/button';
 import { Dialog } from './dialog';
 import { ConversationClassificationPanel } from './conversation-classification';
 
 type Entry={key:string;label:string};
 export function SessionProgressPanel({tenant,context,conversation,sessions}:{tenant:string;context:Context;conversation:string;sessions:any[]}){
+ const [processDirty,setProcessDirty]=useState(false);
  const [chosen,setChosen]=useState(''),[tool,setTool]=useState<'process'|'funnel'|null>(null);
  const selected=sessions.find(s=>s.id===chosen)??sessions.find(s=>s.status==='active')??sessions[0];
  return <section className="crm-form" aria-label="Tiến trình phiên"><h4>TIẾN TRÌNH & CHUYỂN ĐỔI</h4>
@@ -15,7 +17,7 @@ export function SessionProgressPanel({tenant,context,conversation,sessions}:{ten
  {!!sessions.length&&<label>Phiên theo dõi<select aria-label="Phiên theo dõi" value={selected?.id??''} onChange={e=>setChosen(e.target.value)}>{sessions.map(s=><option key={s.id} value={s.id}>#{s.sequence} · {s.status==='active'?'Đang mở':'Đã đóng'}</option>)}</select></label>}
  {selected&&<Progress key={selected.id} {...{tenant,conversation}} session={selected}/>}
  {selected&&<ConversationClassificationPanel key={'classification:'+selected.id} tenant={tenant} thread={conversation} session={selected.id}/>}
- {tool==='process'&&<Dialog title="Quy trình phiên" onClose={()=>setTool(null)}><ProcessEditor tenant={tenant} editable={can(context,'schema','update')}/></Dialog>}
+ {tool==='process'&&<Dialog wide title="Conversation Pipeline" onClose={()=>{if(!processDirty||confirm('Bỏ thay đổi pipeline chưa lưu?')){setProcessDirty(false);setTool(null);}}}><ConversationPipeline tenant={tenant} context={context} onDirty={setProcessDirty}/></Dialog>}
  {tool==='funnel'&&<Dialog title="Phễu chuyển đổi theo lượt inbox" onClose={()=>setTool(null)}><Funnel tenant={tenant}/></Dialog>}
  </section>;
 }
@@ -29,11 +31,12 @@ function Progress({tenant,conversation,session}:{tenant:string;conversation:stri
  if(query.error)return <ErrorNotice error={query.error} reload={()=>void query.refetch()}/>;
  const active=p.status==='active'&&p.can_edit,stages:Entry[]=p.process?.definition.stages??[],milestones:Entry[]=p.process?.definition.milestones??[];
  return <div className="crm-form"><ErrorNotice error={command.error} reload={()=>void query.refetch()}/>
+ {p.process?.definition.automations&&<p>Convert time: <strong>{p.convert_time?new Date(p.convert_time).toLocaleString('vi-VN'):'Chưa có'}</strong></p>}
  <p>{p.coverage==='none'?'Phiên cũ chưa có dữ liệu tiến trình.':`Quy trình v${p.process.version} · ${p.coverage==='full'?'Theo dõi từ đầu phiên':'Theo dõi một phần; không nằm trong mẫu số phễu'}`}</p>
  {p.coverage==='none'&&p.status==='closed'&&p.can_edit&&<div className="crm-form"><p>Ghi nhận nhu cầu lúc xem lại; không dựng lại giai đoạn hoặc bằng chứng cũ.</p><label>Nhu cầu phát hiện khi xem lại<input value={label} maxLength={120} onChange={e=>setLabel(e.target.value)}/></label><Button disabled={command.busy||!label.trim()} onClick={()=>void mutate({action:'identify_need',label})}>Ghi nhận nhu cầu khi xem lại</Button></div>}
  {p.coverage==='none'?active&&<Button disabled={command.busy} onClick={()=>void mutate({action:'enroll'})}>Bắt đầu theo dõi từ bây giờ</Button>:<>
  <p>{p.coverage==='partial'&&p.status==='closed'?'Giai đoạn theo dõi bổ sung (không suy đoán lịch sử cũ): ':'Giai đoạn: '}<strong>{stages.find(s=>s.key===p.stage_key)?.label}</strong>{p.status==='closed'&&' · Phiên đã đóng'}</p>
- {active&&<details><summary>Chuyển giai đoạn</summary><div className="crm-form"><label>Giai đoạn mới<select aria-label="Giai đoạn mới" value={stage} onChange={e=>setStage(e.target.value)}><option value="">Chọn giai đoạn…</option>{stages.filter(s=>s.key!==p.stage_key).map(s=><option key={s.key} value={s.key}>{s.label}</option>)}</select></label><label>Lý do chuyển<input maxLength={500} value={stageReason} onChange={e=>setStageReason(e.target.value)}/></label><p>Chuyển giai đoạn không tự tạo mốc chuyển đổi.</p><Button disabled={command.busy||!stage||stage===p.stage_key||!stageReason.trim()} onClick={()=>void mutate({action:'stage',stage_key:stage,reason:stageReason})}>Lưu giai đoạn</Button></div></details>}
+ {active&&<details><summary>Chuyển giai đoạn</summary><div className="crm-form"><label>Giai đoạn mới<select aria-label="Giai đoạn mới" value={stage} onChange={e=>setStage(e.target.value)}><option value="">Chọn giai đoạn…</option>{stages.filter(s=>s.key!==p.stage_key).map(s=><option key={s.key} value={s.key}>{s.label}</option>)}</select></label>{stage&&<div className="op-note">{(()=>{const rules=p.process.definition.stages.find((s:any)=>s.key===stage)?.requirements;return rules&&(rules.fields?.length||rules.need||rules.milestones?.length)?<>Điều kiện: {rules.fields?.length>0&&<>đủ thuộc tính {rules.fields.join(', ')}; </>}{rules.need&&<>đã ghi nhận nhu cầu; </>}{rules.milestones?.length>0&&<>bằng chứng cùng một nhu cầu cho {rules.milestones.map((key:string)=>milestones.find(m=>m.key===key)?.label??key).join(', ')}.</>}</>:'Không có điều kiện đầu vào bổ sung.';})()}</div>}<label>Lý do chuyển<input maxLength={500} value={stageReason} onChange={e=>setStageReason(e.target.value)}/></label><p>Chuyển giai đoạn không tự tạo mốc chuyển đổi.</p><Button disabled={command.busy||!stage||stage===p.stage_key||!stageReason.trim()} onClick={()=>void mutate({action:'stage',stage_key:stage,reason:stageReason})}>Lưu giai đoạn</Button></div></details>}
  <NeedAssessmentPanel tenant={tenant} thread={conversation} session={session.id} needs={p.needs??[]}/>
  <details ref={evidenceRef}><summary>Nhu cầu và bằng chứng hành vi</summary><fieldset disabled={!p.can_edit||command.busy}><div className="crm-form"><p>Mỗi bằng chứng thuộc một nhu cầu cụ thể. Chỉ ghi xác nhận đã kiểm chứng; không nhập thông tin bệnh nhân hoặc nội dung chat nhạy cảm.</p>
  {p.can_edit&&<><label>Tên nhu cầu mới<input maxLength={120} value={label} onChange={e=>setLabel(e.target.value)}/></label><Button variant="outline" disabled={command.busy||!label.trim()} onClick={()=>void mutate({action:active?'need':'identify_need',label})}>Thêm nhu cầu theo dõi</Button></>}
@@ -45,16 +48,6 @@ function Progress({tenant,conversation,session}:{tenant:string;conversation:stri
  <details><summary>Lịch sử giai đoạn / bằng chứng</summary>{p.history.length===0&&<p>Chưa có thay đổi.</p>}{p.history.map((h:any)=><div className="crm-form" key={h.id}><strong>{h.type==='stage'?`${stages.find(s=>s.key===h.from_stage)?.label} → ${stages.find(s=>s.key===h.to_stage)?.label}`:`${p.needs.find((n:any)=>n.id===h.need_id)?.label} · ${milestones.find(m=>m.key===h.milestone_key)?.label}`}</strong><span>{h.kind==='retract'?'Đã thu hồi':h.corrected_by?'Đã có bản sửa':h.kind==='replace'?'Bản thay thế':''}</span><span>{h.reason}</span>{h.occurred_at&&<small>Hành vi: {new Date(h.occurred_at).toLocaleString('vi-VN')}</small>}<small>Ghi nhận: {new Date(h.recorded_at).toLocaleString('vi-VN')} · {h.actor_id}</small>{p.can_edit&&h.type==='milestone'&&h.kind!=='retract'&&!h.corrected_by&&<div className="crm-actions">{(['replace','retract'] as const).map(action=><Button key={action} variant="outline" disabled={command.busy} onClick={()=>{setCorrection({...h,action});if(evidenceRef.current){evidenceRef.current.open=true;evidenceRef.current.scrollIntoView({block:'nearest'});}setReason('');setMessage(h.message_id??'');const d=new Date(h.occurred_at);setAt(new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,23));}}>{action==='replace'?'Sửa bằng chứng':'Thu hồi'}</Button>)}</div>}</div>)}{p.next_before_revision&&<Button variant="outline" onClick={()=>setBefore(p.next_before_revision)}>Lịch sử cũ hơn</Button>}{before&&<Button variant="outline" onClick={()=>setBefore('')}>Lịch sử mới nhất</Button>}</details>
  </>}
  </div>;
-}
-function ProcessEditor({tenant,editable}:{tenant:string;editable:boolean}){
- const query=useApi(tenant,'/api/v1/session-process');if(query.isPending)return <p>Đang tải quy trình…</p>;if(query.error)return <ErrorNotice error={query.error}/>;
- return <DefinitionEditor key={query.data.data.version} {...{tenant,editable}} process={query.data.data}/>;
-}
-function DefinitionEditor({tenant,editable,process}:{tenant:string;editable:boolean;process:any}){
- const [definition,setDefinition]=useState<{stages:Entry[];milestones:Entry[]}>(process.definition),command=useCommand(tenant),[saved,setSaved]=useState(false);
- return <div className="crm-form"><p>Phiên bản hiện tại: {process.version}. Công bố chỉ áp dụng cho phiên mới; phiên đang mở giữ nguyên phiên bản đã ghim.</p><p>Mốc là xác nhận hành vi thủ công. Kết quả thắng/thua và doanh thu thuộc Deal. Thứ tự mốc bên dưới là thứ tự phễu cùng nhu cầu.</p>
- {(['stages','milestones'] as const).map(kind=><fieldset key={kind} disabled={!editable||command.busy}><legend>{kind==='stages'?'Giai đoạn xử lý':'Mốc chuyển đổi có bằng chứng'}</legend>{definition[kind].map((row,index)=><div className="crm-form" key={index}><label>Mã {kind==='stages'?'giai đoạn':'mốc'} {index+1}<input value={row.key} maxLength={64} onChange={e=>setDefinition({...definition,[kind]:definition[kind].map((v,i)=>i===index?{...v,key:e.target.value}:v)})}/></label><label>Tên hiển thị {index+1}<input value={row.label} maxLength={120} onChange={e=>setDefinition({...definition,[kind]:definition[kind].map((v,i)=>i===index?{...v,label:e.target.value}:v)})}/></label><div className="crm-actions"><Button variant="outline" disabled={index===0} onClick={()=>{const rows=[...definition[kind]];[rows[index-1],rows[index]]=[rows[index]!,rows[index-1]!];setDefinition({...definition,[kind]:rows});}}>Lên</Button><Button variant="outline" disabled={definition[kind].length===1} onClick={()=>setDefinition({...definition,[kind]:definition[kind].filter((_,i)=>i!==index)})}>Bỏ mục</Button></div></div>)}<Button variant="outline" disabled={definition[kind].length>=(kind==='stages'?20:12)} onClick={()=>setDefinition({...definition,[kind]:[...definition[kind],{key:'',label:''}]})}>Thêm {kind==='stages'?'giai đoạn':'mốc'}</Button></fieldset>)}
- {editable?<Button disabled={command.busy} onClick={async()=>{if(await command.run('/api/v1/session-process',definition,'POST',process.version))setSaved(true);}}>Công bố phiên bản mới</Button>:<p>Cần quyền cấu hình schema để công bố phiên bản.</p>}{saved&&<p role="status">Đã công bố quy trình.</p>}<ErrorNotice error={command.error}/></div>;
 }
 function Funnel({tenant}:{tenant:string}){
  const config=useApi(tenant,'/api/v1/session-process'),[version,setVersion]=useState(''),[from,setFrom]=useState(()=>new Date(Date.now()-7*86400000).toISOString().slice(0,10)),[to,setTo]=useState(()=>new Date(Date.now()+86400000).toISOString().slice(0,10)),[asOf,setAsOf]=useState(''),[path,setPath]=useState(''),query=useApi(tenant,path,!!path);

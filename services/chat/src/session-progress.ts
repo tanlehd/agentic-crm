@@ -1,4 +1,7 @@
 import { writeChatOutbox } from './event-store.js';
+import {stageRequirementsMet,validStageRequirements} from './stage-requirements.js';
+import {validConversationStageTypes} from '@agentic-crm/contracts';
+import {readSessionConvertTime} from './session-convert-time.js';
 import {randomUUID} from 'node:crypto';
 import type {PoolConnection,RowDataPacket} from 'mysql2/promise';
 import type {OwnerAdmission,OwnerCommandBinding,OwnerCommandRef,OwnerResource} from '@agentic-crm/contracts';
@@ -12,7 +15,7 @@ type Policy={principal_id:string;auth_revision:string;can_edit:boolean};
 type Peers=RecordPeers&{policy(tenant:string,command:OwnerCommandRef,admission:string):Promise<Policy>;contact(tenant:string,command:OwnerCommandRef,admission:string):Promise<{contact_id:string;version:string}>};
 const sqlTime=(value:string)=>value.replace('T',' ').replace('Z','');
 const uuid=(v:unknown):v is string=>typeof v==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(v);
-type Snapshot={resource:OwnerResource;projection?:{contact_id:string;connection_id:string};session?:RowDataPacket};
+type Snapshot={resource:OwnerResource;projection?:{contact_id:string;connection_id:string};session?:RowDataPacket;requiredFields?:string[]};
 export class ChatSessionProgress{
  constructor(private readonly commands:ChatOwnerCommands,private readonly peers:Peers){}
  private async snapshot(c:PoolConnection,tenant:string,input:OwnerCommandRequest):Promise<Snapshot>{
@@ -21,14 +24,20 @@ export class ChatSessionProgress{
   }
   const id=input.payload.conversation as string,base=await recordSnapshot(c,tenant,id),[[row]]=await c.execute<RowDataPacket[]>('SELECT contact_id,connection_id FROM conversation WHERE tenant_id=? AND record_id=?',[tenant,id]);
   const [[session]]=await c.execute<RowDataPacket[]>('SELECT id,status,version,opening_occurred_at,closed_at FROM conversation_acquisition_session WHERE tenant_id=? AND conversation_id=? AND id=?',[tenant,id,input.payload.session as string]);if(!session)ownerFail('NOT_FOUND');
-  return {resource:base.resource,projection:{contact_id:row!.contact_id,connection_id:row!.connection_id},session};
+  const body=input.payload.body as {action?:string;stage_key?:string}|undefined;
+  let requiredFields:string[]=[];
+  if(body?.action==='stage'){
+   const [[progress]]=await c.execute<RowDataPacket[]>('SELECT process_version FROM session_progress WHERE tenant_id=? AND session_id=?',[tenant,session.id]);
+   if(progress){const pinned=await readSessionProcess(c,tenant,String(progress.process_version));requiredFields=[...(pinned.definition.stages.find(s=>s.key===body.stage_key)?.requirements?.fields??[])].sort();}
+  }
+  return {resource:base.resource,projection:{contact_id:row!.contact_id,connection_id:row!.connection_id},session,requiredFields};
  }
  async run(raw:OwnerCommandRequest){
   if(!(Object.values(sessionProgressOperations) as string[]).includes(raw.operation))ownerFail('INVALID_REQUEST');const input=validateOwnerValue<OwnerCommandRequest>('Request_chat-'+raw.operation,raw);if(input.actor.kind!=='human')ownerFail('FORBIDDEN');
   const tenant=input.tenant_id,write=[sessionProgressOperations.publish,sessionProgressOperations.write].includes(input.operation as typeof sessionProgressOperations.write),process=[sessionProgressOperations.process,sessionProgressOperations.publish].includes(input.operation as typeof sessionProgressOperations.process);
   if(write&&(!/^[\x21-\x7e]{1,128}$/.test(input.payload.idempotency_key as string)||process&&input.payload.expected_version==='0'))ownerFail('INVALID_REQUEST');if(write&&input.payload.expected_version===null)ownerFail('PRECONDITION_REQUIRED');
   const snapshot=await this.commands.transaction(tenant,c=>this.snapshot(c,tenant,input)),command=randomUUID(),request={payload:input.payload},fields=process?[]:['attribution','channel','channel_id','contact_id','page_id','text'];
-  const binding:OwnerCommandBinding={tenant_id:tenant,command_id:command,owner:'chat',operation:input.operation,actor:input.actor,resource:snapshot.resource,...(snapshot.projection?{projection:snapshot.projection}:{}),target:null,session_id:snapshot.session?.id??null,fields,payload_digest:ownerDigest(request),legacy_receipt_key:'session-progress:'+command,graph:null,dependencies:[]};
+  const binding:OwnerCommandBinding={tenant_id:tenant,command_id:command,owner:'chat',operation:input.operation,actor:input.actor,resource:snapshot.resource,...(snapshot.projection?{projection:snapshot.projection}:{}),...(snapshot.requiredFields?.length?{session_read_fields:snapshot.requiredFields}:{}),target:null,session_id:snapshot.session?.id??null,fields,payload_digest:ownerDigest(request),legacy_receipt_key:'session-progress:'+command,graph:null,dependencies:[]};
   const prepared=await this.commands.prepare(binding,request),ref={command_id:command,binding_digest:prepared.binding_digest};let admission:OwnerAdmission|undefined;
   try{
    admission=validateOwnerValue<OwnerAdmission>('OwnerAdmission',await this.peers.admit(tenant,ref));if(admission.state!=='admitted'||admission.command_id!==command||admission.binding_digest!==ref.binding_digest||ownerCanonical(admission.allowed_fields)!==ownerCanonical(fields))ownerFail('FORBIDDEN');await this.commands.rememberDependency(tenant,ref,'identity-admission',admission);
@@ -57,18 +66,21 @@ export class ChatSessionProgress{
  private async publish(c:PoolConnection,b:OwnerCommandBinding,input:OwnerCommandRequest){
   const definition=input.payload.body as ProcessDefinition;
   for(const rows of [definition.stages,definition.milestones])if(new Set(rows.map(r=>r.key)).size!==rows.length||rows.some(r=>!r.label.trim()))throw new OwnerDomainError('INVALID_PROCESS',input.correlation_id);
+  if(!validStageRequirements(definition))throw new OwnerDomainError('INVALID_PROCESS',input.correlation_id);
   const current=await ensureSessionProcess(c,b.tenant_id);if(current!==input.payload.expected_version)throw new OwnerDomainError('VERSION_CONFLICT',input.correlation_id);
+  const previous=await readSessionProcess(c,b.tenant_id,current);if(!validConversationStageTypes(definition,previous.definition))throw new OwnerDomainError('INVALID_PROCESS',input.correlation_id);
   const next=nextOwnerCounter(current),at=await advanceSessionClock(c,b.tenant_id);
   await c.execute('INSERT INTO session_process_version(tenant_id,version,definition,created_at,actor_id) VALUES (?,?,?,?,?)',[b.tenant_id,next,ownerCanonical(definition),sqlTime(at),b.actor.principal_id]);await c.execute('UPDATE session_process_head SET version=? WHERE tenant_id=?',[next,b.tenant_id]);
   await this.audit(c,b,input,'session_process',b.tenant_id,'session.process_publish',['version']);return {version:next,current_version:next,definition};
  }
  private async read(c:PoolConnection,b:OwnerCommandBinding,input:OwnerCommandRequest,session:RowDataPacket,policy:Policy){
   const tenant=b.tenant_id,sid=b.session_id!,[[progress]]=await c.execute<RowDataPacket[]>('SELECT * FROM session_progress WHERE tenant_id=? AND session_id=?',[tenant,sid]);
-  if(!progress)return {session_id:sid,status:session.status,can_edit:policy.can_edit,coverage:'none',version:'0',process:null,needs:[],history:[],next_before_revision:null};
+  if(!progress)return {session_id:sid,status:session.status,can_edit:policy.can_edit,coverage:'none',version:'0',process:null,convert_time:null,needs:[],history:[],next_before_revision:null};
   const before=input.payload.before_revision as string|undefined,params=[tenant,sid,...(before?[before]:[])],where=before?' AND e.revision<?':'';
   const [stages]=await c.execute<RowDataPacket[]>(`SELECT e.* FROM session_stage_event e WHERE e.tenant_id=? AND e.session_id=?${where} ORDER BY e.revision DESC LIMIT 51`,params),[facts]=await c.execute<RowDataPacket[]>(`SELECT e.*,corrected.id corrected_by FROM session_milestone_event e LEFT JOIN session_milestone_event corrected ON corrected.tenant_id=e.tenant_id AND corrected.supersedes_id=e.id WHERE e.tenant_id=? AND e.session_id=?${where} ORDER BY e.revision DESC LIMIT 51`,params);
   const history=[...stages.map(r=>({...cleanSessionRow(r),revision:String(r.revision),type:'stage'})),...facts.map(r=>({...cleanSessionRow(r),revision:String(r.revision),type:'milestone'}))].sort((x,y)=>BigInt(String(x.revision))>BigInt(String(y.revision))?-1:1),[needs]=await c.execute<RowDataPacket[]>('SELECT * FROM session_need WHERE tenant_id=? AND session_id=? ORDER BY created_at,id LIMIT 100',[tenant,sid]);
-  return {...cleanSessionRow(progress),status:session.status,can_edit:policy.can_edit,process:await readSessionProcess(c,tenant,String(progress.process_version)),needs:needs.map(cleanSessionRow),history:history.slice(0,50),next_before_revision:history.length>50?String(history[49]!.revision):null};
+  const process=await readSessionProcess(c,tenant,String(progress.process_version)),convert_time=await readSessionConvertTime(c,tenant,sid,process.definition);
+  return {...cleanSessionRow(progress),status:session.status,can_edit:policy.can_edit,process,convert_time,needs:needs.map(cleanSessionRow),history:history.slice(0,50),next_before_revision:history.length>50?String(history[49]!.revision):null};
  }
  private async mutate(c:PoolConnection,b:OwnerCommandBinding,input:OwnerCommandRequest,session:RowDataPacket){
   const tenant=b.tenant_id,sid=b.session_id!,body=input.payload.body as Record<string,unknown>,action=body.action as string,expected=input.payload.expected_version as string,fail=(code:ConstructorParameters<typeof OwnerDomainError>[0]):never=>{throw new OwnerDomainError(code,input.correlation_id);};
@@ -81,7 +93,8 @@ export class ChatSessionProgress{
    if(!p&&action==='identify_need'){await initializeSessionProgress(c,tenant,sid,at);[[p]]=await c.execute<RowDataPacket[]>('SELECT * FROM session_progress WHERE tenant_id=? AND session_id=?',[tenant,sid]);}
    if(!p)fail('ENROLLMENT_REQUIRED');const process=await readSessionProcess(c,tenant,String(p!.process_version));priorStage=p!.stage_key;
    if(action==='stage'){
-    const reason=text(body.reason);if(!process.definition.stages.some(s=>s.key===body.stage_key)||p!.stage_key===body.stage_key)fail('INVALID_TRANSITION');id=randomUUID();
+    const reason=text(body.reason),target=process.definition.stages.find(s=>s.key===body.stage_key);if(!target||p!.stage_key===body.stage_key)fail('INVALID_TRANSITION');
+    if(!await stageRequirementsMet(c,tenant,sid,target!.requirements))fail('STAGE_REQUIREMENTS_NOT_MET');id=randomUUID();
     await c.execute('INSERT INTO session_stage_event(tenant_id,id,session_id,revision,from_stage,to_stage,reason,actor_id,recorded_at) VALUES (?,?,?,?,?,?,?,?,?)',[tenant,id,sid,next,p!.stage_key,body.stage_key as string,reason,b.actor.principal_id,sqlTime(at)]);await c.execute('UPDATE session_progress SET stage_key=? WHERE tenant_id=? AND session_id=?',[body.stage_key as string,tenant,sid]);
    }else if(action==='need'||action==='identify_need'){
     const label=text(body.label,120),[[count]]=await c.execute<RowDataPacket[]>('SELECT COUNT(*) n FROM session_need WHERE tenant_id=? AND session_id=?',[tenant,sid]);if(Number(count!.n)>=100)fail('NEED_LIMIT');id=randomUUID();await c.execute('INSERT INTO session_need(tenant_id,id,session_id,label,created_at,actor_id) VALUES (?,?,?,?,?,?)',[tenant,id,sid,label,sqlTime(at),b.actor.principal_id]);

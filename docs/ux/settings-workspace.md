@@ -19,6 +19,8 @@ Nested Inbox Center destinations are visible in the sidebar. Queue customization
 
 ## Compatibility, state and ownership
 
+UI-20261030-01 extends Objects with [Conversation Pipeline](conversation-pipeline-settings.md): existing conversation_session key, Chat-owned versioned config and required data/evidence before stage entry. This explicitly supersedes the layout-only restriction for this editor; unrelated Inbox scaffolds remain previews.
+
 Canonical URL: `/?screen=settings&setting=<destination>`. Legacy `screen=admin`, `screen=schema`, `screen=routing` and Facebook callback query normalize to the matching Settings destination, preserving callback parameters. Browser back/forward restores the selected destination. Existing `/developer` docs remain reachable. Settings has one sidebar, including embedded object configuration without a second settings sidebar.
 
 Navigation observes existing unsaved-change confirmation. Hidden/unauthorized items and empty groups are omitted; direct inaccessible destinations show a permission state rather than opening unrelated data. Tenant changes remount settings children; existing native session, tenant headers and owner enforcement remain authoritative. Preserve loading/error/retry states of reused surfaces. UI scaffolds make their preview status visible and do not provide fake save/connect controls.

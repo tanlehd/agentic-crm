@@ -1,11 +1,13 @@
 # MOD-04 — Conversation & Chat Workspace
 
+CHG-20261030-06 Ready scope: [typed system stages and conversion-time rules](../ux/conversation-pipeline-settings.md#chg-20261030-06--system-stages-and-conversion-time-automation). Chat owns the two synchronous stage-event-derived system rules; these do not introduce a Workflow engine or Sales outcome. Messaging close remains separate.
+
 ADR-027: business orchestration belongs to [Workflow](../services/workflow.md). Chatflow/session terminology in baseline source notes below denotes [legacy compatibility](../contracts/legacy-chatflow.md), not an independent module/service to extend. The owning domain retains its own data, command validation and current authorization.
 
 
 SRC-083 scope2026-10-17: [Custom Inbox builder](../contracts/custom-inbox-builder.md) exposes saved-query authoring/preview/lifecycle/share on existing Chat storage, with minimal authorized Identity options. Counts and membership evaluate under viewer rights; no routing/owner mutation. [Runtime evidence](../tracking/details/SRC-083.md); full SRC-036/037 remain separate.
 
-**Implemented additive slice SRC-078 / 2026-10-16:** [Thread / Conversation exact contract](../contracts/thread-conversation-implementation.md), PLAN-033A DONE. Thread legacy IDs/API remain stable; Conversation episode has optional custom fields and stage, event-time ownership/contributor history, and Related Lead/Deal actions with current permissions. Cross-team transfer preserves the episode; Ticket and connected Reporting remain gated. Physical forward31 stays in the baseline monolith; service extraction rules below remain unchanged.
+**Implemented additive slice SRC-078 / 2026-10-16, terminology aligned CHG-20261029-04:** [Episode fields and contribution contract](../contracts/thread-conversation-implementation.md), PLAN-033A DONE. Persistent Conversation IDs/API remain stable; Conversation Session has optional custom fields and stage, event-time ownership/contributor history, and Related Lead/Deal actions with current permissions. Cross-team transfer preserves the session. Ticket and connected Reporting were outside this historical slice. Forward31 records the original baseline migration; current physical authority follows the Chat service cutover documentation.
 
 CHG-20261013-08 accepted [logical ERD](../data/chat-sales-erd.md): session is one inbox episode, new Ad during open session adds evidence without split/reset/cancellation solely due to referral. Configurable process version/current stage, transition history and evidence-backed milestone history are independent of open/closed processing status and Sales outcomes. SRC-068 implements the session/source/context subset through the exact Customer360 contract; stage/milestone configuration remains a separate design gate.
 
@@ -22,7 +24,9 @@ Chat agent có chat seat + conversation permissions; AI cần capability convers
 
 ## Use case và state machine
 
-Conversation là thread lâu dài trên identity; session là một đợt xử lý. Conversation `open ↔ pending`, `open/pending → closed`. Inbound mới khi pending đưa về open; tin sau thời điểm đóng reopen cùng Conversation và tạo session kế tiếp. Tin cũ đến trễ không reopen hay sửa nguồn của session đã đóng. Close tăng control revision, ghi event/terminal proof và cancel queued outbound; consumer ngoài Chat chịu trách nhiệm reconcile execution của mình.
+Tên sản phẩm CHG-20261030-02 là [Conversation Channel / Conversation](../contracts/conversation-channel-model.md). Phần state machine/source bên dưới giữ tên wire đã triển khai: persistent conversation map sang Conversation Channel; session là episode hiện tại. CHG-20261030-03: [Product Truth review](../planning/inbox-center-product-truth-review.md) chỉ rõ episode chưa mặc định là hồ sơ nhu cầu xuyên tương tác/kênh. Chưa thay lifecycle hoặc chốt aggregate đích bằng việc đổi tên.
+
+Persistent conversation `open ↔ pending`, `open/pending → closed`. Inbound mới khi pending đưa về open; tin sau thời điểm đóng reopen cùng persistent conversation và tạo session kế tiếp. Tin cũ đến trễ không reopen hay sửa nguồn của session đã đóng. Close tăng control revision, ghi event/terminal proof và cancel queued outbound; consumer ngoài Chat chịu trách nhiệm reconcile execution của mình.
 
 Message outbound `queued → sending → sent|failed|unknown`; queued → cancelled khi handoff/close. Inbound bắt đầu received. Failed pre-dispatch có thể retry cùng intent; unknown phải reconcile. Timeline xếp received_at/id ổn định, lưu source occurred_at để giải thích tin trễ.
 
@@ -37,6 +41,8 @@ Inbound handler phải lock identity để tránh hai Conversation active. Send 
 [Conversation API](../contracts/api.md), events `conversation.created`, `message.received/sent`, `record.assigned`, `message.delivery_failed`. Poll 5 giây khi mở inbox, dùng cursor cho timeline; pending outbound status poll theo cùng cadence.
 
 ## UI
+
+CHG-20261030-04: [Conversation Pipeline settings](../ux/conversation-pipeline-settings.md) adds a tenant administrator editor under Objects and reuses it in the Inbox process dialog. Chat enforces target-stage required classification values and effective evidence; historical pins/lifecycle/ownership remain unchanged. Scope and delivery evidence are tracked in UI-20261030-01.
 
 UX-003: [Inbox screen](../ux/inbox-screen.md) và [app shell](../ux/app-shell.md) supersede bố cục app rail bên dưới: grouped nav + header + work tabs, giữ nghiệp vụ/cursors/ownership UX-002. Không thêm API/schema/event trong UX-003.
 

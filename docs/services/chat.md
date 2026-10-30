@@ -4,7 +4,9 @@ SRC-109/T01–T09 DONE, Codex 2026-10-27. D3 Human-first 6/6; independent local 
 
 ## Trách nhiệm và dữ liệu sở hữu
 
-Thread/Conversation và episode/session, message/content/history, owner/control revisions, outbound intent/job/result, unread/coverage, inbox/tag/snippet/snooze, process/classification/contribution và activity references.
+CHG-20261030-06: [Conversation Pipeline](../ux/conversation-pipeline-settings.md) adds protected typed system stages and two version-pinned conversion-time rules. Chat owns the stage ledger and derived `convert_time`; neither Sales outcome nor messaging close is inferred. Source/candidate evidence and pending rollout remain in the linked task record.
+
+Conversation Channel (luồng liên lạc theo khách/kênh) và dữ liệu tiếp nhận hiện tại theo session, message/content/history, owner/control revisions, outbound intent/job/result, unread/coverage, inbox/tag/snippet/snooze, process/classification/contribution và activity references. [Thuật ngữ/mapping](../contracts/conversation-channel-model.md) phân biệt luồng với Conversation nghiệp vụ; source/API hiện tại vẫn mang tên conversation/session, chưa migration. [Product Truth review](../planning/inbox-center-product-truth-review.md) xác định session mapping chưa đủ cho hồ sơ nhu cầu xuyên kênh; aggregate đích cần exact design. Conversation Channel không là Channel Connection hoặc object thứ ba được thêm mới.
 
 Nhận tin và chống trùng; mở/đóng phiên theo contract; đọc timeline; gửi tin qua Connector; assign/takeover/close; phục vụ workspace và context có quyền.
 
@@ -40,6 +42,10 @@ Conversation/session/message, receipts và outbox lưu bền trong MySQL. Inboun
 Giữ ID/cursor/receipt và event-time history. Close Conversation là hành vi hội thoại, không lưu trữ Contact. Late/duplicate messages không sửa nguồn mở phiên. Unknown send không bị đổi thành cancelled/sent khi chưa có evidence. Contact-key mutex hiện có chỉ là cơ chế serialize ingress, không phải Contact lifecycle authority.
 
 ## Contract và evidence
+
+- [Conversation Pipeline settings](../ux/conversation-pipeline-settings.md) — scoped Ready editor and required data/evidence guards on versioned intake process; [delivery status](../tracking/details/UI-20261030-01.md).
+
+- [Đánh giá lifecycle và đề xuất Conversation pipeline](../planning/conversation-pipeline-review.md) — proposal, chưa thay contract/runtime.
 
 - [Conversation identity](../contracts/conversation-identity.md)
 - [Owner contract](../contracts/chat-owner-v1.md)

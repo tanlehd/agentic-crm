@@ -1,10 +1,16 @@
 # Kế hoạch sinh source code M1–M2
 
+UI-20261030-01 / CHG-20261030-04…06: [Conversation Pipeline settings](../ux/conversation-pipeline-settings.md) is Ready for the user-requested editor, required data/evidence guards, typed system stages and two pinned conversion-time rules on the existing process. Dependencies UI-20261029-01, REV-20261030-01, SRC-109 DONE; broader need aggregate/outcome gates remain separate.
+
 SRC-109/T01–T09 DONE, Codex 2026-10-27. D3 Human-first 6/6; independent local delivery3/14 (Reporting, Connector, Chat). Legacy Conversation graph retired; main baseline46/crm_chat4, both Chat tenant gates active epoch2 after accepted post-write freeze/forward recovery. Source data and original receipts retained. Production, AI native, live-provider delivery and other-owner business consumers remain outside this acceptance. No commit/push/reset.
 
 [Current Chat scope](chat-extraction/remaining-boundaries.md) · [Canonical step status](../tracking/tasks.md#plan-057--src-109-thread-steps). Workflow and other consumer business implementation are accepted by their owning services.
 
 ## Mục tiêu và chiến lược
+
+DOC-20261030-02 / CHG-20261030-02: [Conversation Channel / Conversation](../contracts/conversation-channel-model.md) là thuật ngữ sản phẩm cho luồng theo khách/kênh và hồ sơ tiếp nhận có pipeline. REV-20261030-01 / CHG-20261030-03: [Product Truth review](inbox-center-product-truth-review.md) chỉ rõ phạm vi nhu cầu xuyên tương tác/kênh, trách nhiệm/công việc và G1–G6; mapping acquisition session chưa đủ cho aggregate đích. Source/API vẫn dùng conversation/session; exact compatibility/lifecycle design phải đi trước code, chưa thêm bảng hoặc mở task implementation.
+
+REV-20261029-01: [Conversation pipeline review](conversation-pipeline-review.md) đánh giá lifecycle/session stages hiện có, đề xuất quản lý pipeline trong Settings/workspace và chỉ rõ Reporting owner integration sau Chat cutover. Proposal-only; chưa mở source task, multi-pipeline hoặc migration.
 
 UI-20261029-01 / CHG-20261029-01: [Settings workspace](../ux/settings-workspace.md) gom điều hướng quản trị vào một nút Settings và ba nhóm sidebar. Scope Ready chỉ gồm layout, nối màn hiện có và Inbox Center scaffolds; không mở thêm provider hoặc persistence cho Conversation view. Dependency SRC-109 và UI-20261027-01 đã DONE; trạng thái/evidence tại tracker.
 

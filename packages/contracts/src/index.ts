@@ -1,4 +1,6 @@
 export type { HealthResponse } from './generated/health.js';
+export {conversationSystemStages,isTypedConversationPipeline,validConversationStageTypes,upgradeConversationPipeline} from './session-pipeline.js';
+export type {ConversationStageType,ConversationStageRequirements,ConversationStage,ConversationAutomations,ConversationPipelineDefinition} from './session-pipeline.js';
 export type { DispatchProtocol, DispatchBinding, DispatchResourceContext, DispatchRequest, DispatchReply, DispatchFailure, ChatClaimProofRead, ChatClaimProofReply } from './generated/chat-dispatch-v1.js';
 export { chatDispatchV1Schema } from './generated/chat-dispatch-v1-schema.js';
 export type { ExchangeProtocol, ExchangeRequest, ExchangeReply, ExchangeFailure, ExchangePayload, ExchangeIngressBinding } from './generated/chat-exchange-v1.js';

@@ -26,6 +26,8 @@ Workflow owns follow-up/recover_need policy, orchestration and acceptance. Chat 
 
 ## Authority và điểm hoàn tất
 
+CHG-20261030-01, thuật ngữ sản phẩm CHG-20261030-02: tích hợp Sales là lựa chọn theo nhu cầu. Omnichannel có thể quản lý đợt tiếp nhận bằng Conversation nghiệp vụ cùng pipeline/outcome mà không tạo Lead/Deal; Conversation Channel giữ luồng lâu dài. Khi dùng thêm Lead/Deal, mỗi object quản pipeline/stage riêng. Các quy tắc receipt/lineage và tên conversation/session bên dưới mô tả wire hiện tại, chưa rename; [mapping](conversation-channel-model.md), [glossary](../product/glossary.md) và [review](../planning/conversation-pipeline-review.md) ghi design gaps còn lại.
+
 - Chat cung cấp đúng tenant/Contact/conversation/session/source và xử lý lifecycle của phiên. Một kết quả bàn giao Lead/Deal đã tạo phải dựa trên receipt thành công của Sales; publish request chưa tự là Lead created. Việc đóng Chat không đợi Sales convert Lead hoặc Deal won, và không cần Sales ghi ngược outcome contribution vào Chat.
 - Sales sở hữu Lead/Deal đã tạo, source refs, handoff/acceptance, liên kết context, chuyển đổi Lead→Deal và stage/won/value. Deal từ Lead giữ nguồn gốc Lead; phiên chăm tiếp/closing không thay primary origin.
 - Reporting tự lấy/project dữ liệu qua authorized domain API/events và suy conversion từ Chat attribution/lifecycle cùng Sales Lead/Deal lineage. Source adapter, snapshot/facts, registry metadata cho report và joins thuộc nghiệm thu Reporting; không tạo gate Chat. `contribution-apply` không phải dữ liệu bắt buộc hay điều kiện nghiệm thu cho conversion hoặc Chat extraction. Không tạo reverse callback, source-proof saga hoặc outbox delivery mới chỉ để nhân bản kết quả Sales vào Chat.

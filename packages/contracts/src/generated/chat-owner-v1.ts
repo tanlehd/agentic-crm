@@ -1951,6 +1951,10 @@ export interface OwnerCommandBinding {
   /**
    * @maxItems 200
    */
+  session_read_fields?: string[];
+  /**
+   * @maxItems 200
+   */
   record_read_fields?: string[];
   need?: {
     need_id: string;
@@ -5471,885 +5475,235 @@ export interface SessionProgressSessionProcessInput {
    * @maxItems 20
    */
   stages:
+    | [SessionProcessStage]
+    | [SessionProcessStage, SessionProcessStage]
+    | [SessionProcessStage, SessionProcessStage, SessionProcessStage]
+    | [SessionProcessStage, SessionProcessStage, SessionProcessStage, SessionProcessStage]
+    | [SessionProcessStage, SessionProcessStage, SessionProcessStage, SessionProcessStage, SessionProcessStage]
     | [
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
-      ]
-    | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
-      ]
-    | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
-      ]
-    | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
-      ]
-    | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
-      ]
-    | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage,
+        SessionProcessStage
       ];
   /**
    * @minItems 1
@@ -6692,6 +6046,42 @@ export interface SessionProgressSessionProcessInput {
           label: string;
         }
       ];
+  automations?: {
+    set_convert_time: boolean;
+    clear_convert_time: boolean;
+  };
+}
+export interface SessionProcessStage {
+  key: string;
+  label: string;
+  description?: string;
+  color?: string;
+  requirements?: SessionStageRequirements;
+  type?: "open" | "converted" | "unqualified";
+}
+export interface SessionStageRequirements {
+  /**
+   * @maxItems 100
+   */
+  fields?: string[];
+  need?: boolean;
+  /**
+   * @maxItems 12
+   */
+  milestones?:
+    | []
+    | [string]
+    | [string, string]
+    | [string, string, string]
+    | [string, string, string, string]
+    | [string, string, string, string, string]
+    | [string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string, string];
 }
 export interface OwnerSnapshot {
   snapshot_id: string;
@@ -8522,885 +7912,235 @@ export interface PublicSessionProcessResponse {
        * @maxItems 20
        */
       stages:
+        | [SessionProcessStage1]
+        | [SessionProcessStage1, SessionProcessStage1]
+        | [SessionProcessStage1, SessionProcessStage1, SessionProcessStage1]
+        | [SessionProcessStage1, SessionProcessStage1, SessionProcessStage1, SessionProcessStage1]
+        | [SessionProcessStage1, SessionProcessStage1, SessionProcessStage1, SessionProcessStage1, SessionProcessStage1]
         | [
-            {
-              key: string;
-              label: string;
-            }
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1
           ]
         | [
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            }
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1
           ]
         | [
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            }
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1
           ]
         | [
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            }
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1
           ]
         | [
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            }
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1
           ]
         | [
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            }
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1
           ]
         | [
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            }
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1
           ]
         | [
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            }
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1
           ]
         | [
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            }
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1
           ]
         | [
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            }
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1
           ]
         | [
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            }
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1
           ]
         | [
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            }
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1
           ]
         | [
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            }
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1
           ]
         | [
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            }
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1
           ]
         | [
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            }
-          ]
-        | [
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            }
-          ]
-        | [
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            }
-          ]
-        | [
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            }
-          ]
-        | [
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            }
-          ]
-        | [
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            },
-            {
-              key: string;
-              label: string;
-            }
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1,
+            SessionProcessStage1
           ];
       /**
        * @minItems 1
@@ -9743,11 +8483,47 @@ export interface PublicSessionProcessResponse {
               label: string;
             }
           ];
+      automations?: {
+        set_convert_time: boolean;
+        clear_convert_time: boolean;
+      };
     };
   };
   meta: {
     correlation_id: string;
   };
+}
+export interface SessionProcessStage1 {
+  key: string;
+  label: string;
+  description?: string;
+  color?: string;
+  requirements?: SessionStageRequirements1;
+  type?: "open" | "converted" | "unqualified";
+}
+export interface SessionStageRequirements1 {
+  /**
+   * @maxItems 100
+   */
+  fields?: string[];
+  need?: boolean;
+  /**
+   * @maxItems 12
+   */
+  milestones?:
+    | []
+    | [string]
+    | [string, string]
+    | [string, string, string]
+    | [string, string, string, string]
+    | [string, string, string, string, string]
+    | [string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string, string];
 }
 export interface RequestChatSessionProgressGetSessionProcess {
   schema_version: 1;
@@ -9773,885 +8549,235 @@ export interface PublicSessionProcessInput {
    * @maxItems 20
    */
   stages:
+    | [SessionProcessStage2]
+    | [SessionProcessStage2, SessionProcessStage2]
+    | [SessionProcessStage2, SessionProcessStage2, SessionProcessStage2]
+    | [SessionProcessStage2, SessionProcessStage2, SessionProcessStage2, SessionProcessStage2]
+    | [SessionProcessStage2, SessionProcessStage2, SessionProcessStage2, SessionProcessStage2, SessionProcessStage2]
     | [
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2
       ]
     | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
-      ]
-    | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
-      ]
-    | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
-      ]
-    | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
-      ]
-    | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
-      ]
-    | [
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        },
-        {
-          key: string;
-          label: string;
-        }
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2,
+        SessionProcessStage2
       ];
   /**
    * @minItems 1
@@ -10994,6 +9120,42 @@ export interface PublicSessionProcessInput {
           label: string;
         }
       ];
+  automations?: {
+    set_convert_time: boolean;
+    clear_convert_time: boolean;
+  };
+}
+export interface SessionProcessStage2 {
+  key: string;
+  label: string;
+  description?: string;
+  color?: string;
+  requirements?: SessionStageRequirements2;
+  type?: "open" | "converted" | "unqualified";
+}
+export interface SessionStageRequirements2 {
+  /**
+   * @maxItems 100
+   */
+  fields?: string[];
+  need?: boolean;
+  /**
+   * @maxItems 12
+   */
+  milestones?:
+    | []
+    | [string]
+    | [string, string]
+    | [string, string, string]
+    | [string, string, string, string]
+    | [string, string, string, string, string]
+    | [string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string, string];
 }
 export interface RequestChatSessionProgressPostSessionProcess {
   schema_version: 1;
@@ -11031,885 +9193,241 @@ export interface PublicSessionProgressResponse {
          * @maxItems 20
          */
         stages:
+          | [SessionProcessStage3]
+          | [SessionProcessStage3, SessionProcessStage3]
+          | [SessionProcessStage3, SessionProcessStage3, SessionProcessStage3]
+          | [SessionProcessStage3, SessionProcessStage3, SessionProcessStage3, SessionProcessStage3]
           | [
-              {
-                key: string;
-                label: string;
-              }
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3
             ]
           | [
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              }
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3
             ]
           | [
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              }
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3
             ]
           | [
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              }
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3
             ]
           | [
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              }
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3
             ]
           | [
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              }
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3
             ]
           | [
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              }
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3
             ]
           | [
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              }
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3
             ]
           | [
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              }
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3
             ]
           | [
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              }
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3
             ]
           | [
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              }
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3
             ]
           | [
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              }
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3
             ]
           | [
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              }
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3
             ]
           | [
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              }
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3
             ]
           | [
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              }
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3
             ]
           | [
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              }
-            ]
-          | [
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              }
-            ]
-          | [
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              }
-            ]
-          | [
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              }
-            ]
-          | [
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              },
-              {
-                key: string;
-                label: string;
-              }
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3,
+              SessionProcessStage3
             ];
         /**
          * @minItems 1
@@ -12252,6 +9770,10 @@ export interface PublicSessionProgressResponse {
                 label: string;
               }
             ];
+        automations?: {
+          set_convert_time: boolean;
+          clear_convert_time: boolean;
+        };
       };
     } | null;
     /**
@@ -12301,10 +9823,43 @@ export interface PublicSessionProgressResponse {
     stage_key?: string;
     created_at?: string;
     updated_at?: string;
+    convert_time?: string | null;
   };
   meta: {
     correlation_id: string;
   };
+}
+export interface SessionProcessStage3 {
+  key: string;
+  label: string;
+  description?: string;
+  color?: string;
+  requirements?: SessionStageRequirements3;
+  type?: "open" | "converted" | "unqualified";
+}
+export interface SessionStageRequirements3 {
+  /**
+   * @maxItems 100
+   */
+  fields?: string[];
+  need?: boolean;
+  /**
+   * @maxItems 12
+   */
+  milestones?:
+    | []
+    | [string]
+    | [string, string]
+    | [string, string, string]
+    | [string, string, string, string]
+    | [string, string, string, string, string]
+    | [string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string, string];
 }
 export interface RequestChatSessionProgressGetConversationsConversationSessionsSessionProgress {
   schema_version: 1;

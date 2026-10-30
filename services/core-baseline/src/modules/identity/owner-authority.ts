@@ -206,6 +206,7 @@ export class NativeOwnerHumanAuthority {
     if(!['session-progress-get-session-process','session-progress-post-session-process','session-progress-get-conversations-conversation-sessions-session-progress','session-progress-post-conversations-conversation-sessions-session-progress'].includes(b.operation)||b.tenant_id!==scope.context.tenantId||b.owner!=='chat'||b.actor.kind!=='human'||r.archived||b.target!==null)ownerFail('FORBIDDEN');
     const fields=process?[]:['attribution','channel','channel_id','contact_id','page_id','text'];
     if(ownerCanonical([...b.fields].sort())!==ownerCanonical(fields))ownerFail('FORBIDDEN');
+    if(b.session_read_fields?.length&&(process||b.operation!=='session-progress-post-conversations-conversation-sessions-session-progress'))ownerFail('FORBIDDEN');
     if(process?(r.object_key!=='session_process'||r.resource_id!==b.tenant_id||r.owner_principal_id!==null||r.team_id!==null||r.shared_team_ids.length>0||r.owner_revision!=='0'||r.control_revision!=='0'||b.session_id!==null||b.projection!==undefined):(r.object_key!=='conversation'||!b.session_id||!b.projection))ownerFail('FORBIDDEN');
     const {actor,accountId}=await this.catalogActor(scope,b,false),record={tenantId:b.tenant_id,ownerPrincipalId:r.owner_principal_id,teamId:r.team_id,sharedTeamIds:r.shared_team_ids};
     let can_edit=false;
@@ -213,6 +214,10 @@ export class NativeOwnerHumanAuthority {
     else{
       if(!this.projectionObjects.has(b.tenant_id))ownerFail('DEPENDENCY_UNAVAILABLE');if(!permits(actor,'conversation','read',record))ownerFail('NOT_FOUND');
       if(fields.some(f=>!fieldAllowed(actor,'conversation',f,'read')))throw new OwnerDomainError('FIELD_FORBIDDEN',b.command_id);
+      if(b.session_read_fields?.length){
+        if(!this.projectionObjects.get(b.tenant_id)?.conversation_session)ownerFail('DEPENDENCY_UNAVAILABLE');
+        if(b.session_read_fields.some(f=>!fieldAllowed(actor,'conversation_session',f,'read')))throw new OwnerDomainError('FIELD_FORBIDDEN',b.command_id);
+      }
       can_edit=permits(actor,'conversation','update',record)&&fieldAllowed(actor,'conversation','text','write');if(write&&!can_edit)ownerFail('FORBIDDEN');
     }
     return {accountId,principalId:actor.principalId,revision:actor.revision,fields,policy:{principal_id:actor.principalId,auth_revision:actor.revision,can_edit}};

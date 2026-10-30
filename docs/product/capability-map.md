@@ -28,6 +28,10 @@ Các nhóm năng lực có thể kết hợp thành gói nghiệp vụ/workspace
 
 ## Áp dụng cho Filter / Saved View / Agent Workspace
 
+CHG-20261030-01, tên mới theo CHG-20261030-02 — doanh nghiệp chỉ dùng Omnichannel có thể vận hành bằng Conversation nghiệp vụ và pipeline riêng, liên kết tương tác từ Conversation Channel của khách/kênh. Lead và Deal là phần bổ sung khi cần, mỗi object có pipeline/stage riêng; không bắt buộc chuỗi Conversation → Lead → Deal. [Định nghĩa chuẩn](glossary.md) và [phạm vi thiết kế/current gaps](../planning/conversation-pipeline-review.md) phân biệt định hướng với source conversation/session hiện có; chưa đổi UI/API hoặc triển khai configurable Lead/Deal pipelines/structured outcomes.
+
+CHG-20261030-03 — [Product Truth review](../planning/inbox-center-product-truth-review.md) mở rộng góc nhìn từ pipeline sang hồ sơ nhu cầu, trách nhiệm, công việc, hành động và outcome xuyên tương tác/kênh. Mapping session hiện tại chưa đủ cho aggregate đích. Sáu mục tiêu G1–G6 trong tham chiếu là bộ mục tiêu riêng, không thay mã G01–G09 của capability map; Settings Inbox Center chưa là nghiệm thu toàn bộ định vị này.
+
 Filter là điều kiện chọn bản ghi. Saved list view lưu định nghĩa danh sách, gồm filter/sort và presentation khi consumer hỗ trợ. Record page view là layout của một bản ghi. Routing queue quản lý nhận/phân công công việc khi có lifecycle tương ứng. Không dùng chung từ “view” mà bỏ qua loại và mục tiêu.
 
 | Nhu cầu | Nhóm chính | Nơi cấu hình theo định hướng | Phạm vi hiện tại |

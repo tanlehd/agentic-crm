@@ -1,5 +1,31 @@
 # Task tracker — source generation
 
+## Conversation Pipeline settings — 2026-10-30
+
+| ID | Task | Dependencies | Status | Owner | Evidence |
+|---|---|---|---|---|---|
+| UI-20261030-01 | Conversation object Pipeline editor and required data/evidence stage guards | UI-20261029-01; REV-20261030-01; SRC-109 | VERIFYING | Codex 2026-10-30 | CHG-20261030-06 PIPE-06/07 source/candidate accepted: protected stages/type/automation, unit15/native10/browser7 PASS; [evidence](details/UI-20261030-01.md). User-authorized Git delivery recorded in log; main rollout pending, earlier images superseded and require rebuild. |
+
+## Inbox Center product reference review — 2026-10-30
+
+| ID | Task | Dependencies | Status | Owner | Evidence |
+|---|---|---|---|---|---|
+| REV-20261030-01 | Review Inbox Center Product Truth v0.4 against Conversation model, owner boundaries and delivery scope | DOC-20261030-02 | DONE | Codex 2026-10-30 | CHG-20261030-03; [review / DOC-IC-01…04](../planning/inbox-center-product-truth-review.md), provisional session mapping qualified, G1–G6 and owner gaps assessed; docs/links/whitespace PASS, reference hash unchanged. Review only; runtime/native/browser/build NOT_RUN. |
+
+## Object pipeline definition — 2026-10-30
+
+| ID | Task | Dependencies | Status | Owner | Evidence |
+|---|---|---|---|---|---|
+| DOC-20261030-02 | Define Conversation Channel as persistent customer/channel stream and Conversation as business intake | DOC-20261030-01 | DONE | Codex 2026-10-30 | CHG-20261030-02; [model / DOC-CC-01…04](../contracts/conversation-channel-model.md), glossary/current-wire mapping synchronized, docs/whitespace PASS. Product naming only; runtime/API/schema/lifecycle unchanged. |
+| DOC-20261030-01 | Clarify object-scoped pipelines and optional Omnichannel/Lead/Deal adoption | REV-20261029-01; REV-20261029-02 | DONE | Codex 2026-10-30 | CHG-20261030-01; glossary, product/review and Sales boundary aligned; docs/links/whitespace PASS. Definition only; configurable Lead/Deal pipelines and structured session outcome remain exact-design/source gaps. |
+
+## Conversation pipeline review — 2026-10-29
+
+| ID | Task | Dependencies | Status | Owner | Evidence |
+|---|---|---|---|---|---|
+| REV-20261029-02 | Compare omnichannel terminology and propose consistent Conversation/Thread/Session naming | REV-20261029-01; SRC-082 | DONE | Codex 2026-10-29 | [Research / DOC-TERM-01…04](../references/omnichannel-conversation-terminology.md); 8 official pages/6 vendors, glossary and current terminology aligned, docs/whitespace PASS. Conversation → Conversation Session, Thread not a third entity. No API/schema/UI runtime changes. |
+| REV-20261029-01 | Assess Conversation lifecycle, existing session stages and conversion reporting; propose pipeline management | SRC-069; SRC-087; SRC-109 | DONE | Codex 2026-10-29 | [Review / DOC-CP-01…04](../planning/conversation-pipeline-review.md); source/design inspection, docs/links/whitespace PASS. CHG-20261029-03 confirms session-owned pipeline/outcome per CTM intake; structured outcome remains an exact-design/source gap. Runtime NOT_RUN, no new implementation or change to deferred FIX scope. |
+
 ## Repository baseline
 
 | ID | Task | Dependencies | Status | Owner | Evidence |

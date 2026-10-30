@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import {upgradeConversationPipeline} from '../../packages/contracts/dist/index.js';
+import {readSessionConvertTime} from '../../services/chat/dist/session-convert-time.js';
 import {nativeChatParity} from './chat-runtime-parity.mjs';
 import {readFile,writeFile} from 'node:fs/promises';
 import {randomUUID,createHash} from 'node:crypto';
@@ -27,7 +29,9 @@ export async function chatSessionProgressNative(ctx){
  const contacts=new NativeContactSummary(pool,(t,command)=>proof(t,'command-proof',command),(t,input)=>identity(t,'admission-contact-policy',input),undefined,(t,input)=>identity(t,'admission-session-contact-policy',input));
  const crmServer=createWorkloadServer(crmMaterial,authority,contactSummaryRoutes(contacts));servers.push(crmServer);crmServer.listen(0,'127.0.0.1');await once(crmServer,'listening');
  const crm=ownerClient(chatMaterial,chatAuthority,'crm',new URL(protocol+'//127.0.0.1:'+crmServer.address().port+'/')),peers={admit:(t,command)=>identityClient(t,'admit',{owner:'chat',command}),settle:(t,command,admission_id)=>identityClient(t,'settle',{owner:'chat',command,admission_id}),policy:(t,command,admission_id)=>identityClient(t,'admission-session-progress-policy',{command,admission_id}),contact:(t,command,admission_id)=>crm(t,'session-contact-read',{command,admission_id})};
- const server=createWorkloadServer(chatMaterial,chatAuthority,chatSessionProgressRoutes(new ChatSessionProgress(commands,peers)));servers.push(server);server.listen(0,'127.0.0.1');await once(server,'listening');const call=ownerCommandClient(bffMaterial,remoteRegistryAuthority(bffMaterial,registryConfig),'chat',new URL(protocol+'//127.0.0.1:'+server.address().port+'/'));
+ const progress=new ChatSessionProgress(commands,peers),run=progress.run.bind(progress);
+ progress.run=async input=>{try{return await run(input);}catch(e){if(e.code==='DEPENDENCY_UNAVAILABLE'||e.code?.startsWith('ER_'))console.log('Chat session diagnostic '+e.code);throw e;}};
+ const server=createWorkloadServer(chatMaterial,chatAuthority,chatSessionProgressRoutes(progress));servers.push(server);server.listen(0,'127.0.0.1');await once(server,'listening');const call=ownerCommandClient(bffMaterial,remoteRegistryAuthority(bffMaterial,registryConfig),'chat',new URL(protocol+'//127.0.0.1:'+server.address().port+'/'));
  const request=(op=ops.read,payload={})=>({schema_version:1,request_id:randomUUID(),correlation_id:randomUUID(),tenant_id:tenant,operation:op,command_id:randomUUID(),actor:{kind:'human',principal_id:f.principal,delegation_id:enrollment.delegationId},payload:{...([ops.read,ops.write].includes(op)?{conversation:v.conversation,session:v.session}:{}),...payload}}),bad=(p,code)=>assert.rejects(p,e=>e.code===code),read=async()=> (await call(request())).data,version=async()=> (await read()).version;
  const mutate=(body,expected_version,key=randomUUID())=>call(request(ops.write,{body,expected_version,idempotency_key:key}));
  const grants=[...ctx.grants,{resource:'conversation',action:'update',scope:'all'},{resource:'schema',action:'update',scope:'all'}];await setRole(grants);const [[seat]]=await operator.execute('SELECT seat_code FROM membership WHERE tenant_id=? AND id=?',[tenant,f.member]);
@@ -53,6 +57,10 @@ export async function chatSessionProgressNative(ctx){
    await assert.rejects(chatPool.query('SELECT * FROM native_identity_test.contact LIMIT 1'));await assert.rejects(pool.query('SELECT * FROM test_crm_chat_owner.session_progress LIMIT 1'));await assert.rejects(pool.query('SELECT * FROM auth_session LIMIT 1'));
   });
   await check('Chat session process publish permission immutable pins and head CAS',async()=>{
+   process.definition=upgradeConversationPipeline(process.definition);
+   process.definition.automations={set_convert_time:true,clear_convert_time:true};
+   process.definition.stages[0].requirements={};
+   process.definition.stages[1].requirements={fields:['pipeline_required'],need:true,milestones:process.definition.milestones.slice(0,2).map(m=>m.key)};
    const publish=()=>request(ops.publish,{body:process.definition,expected_version:process.current_version,idempotency_key:randomUUID()});await bad(call(publish()),'FORBIDDEN');
    await operator.execute("UPDATE membership SET seat_code='admin' WHERE tenant_id=? AND id=?",[tenant,f.member]);
    const published=await call(publish());const key=randomUUID();const enrolled=await mutate({action:'enroll'},'0',key);assert.equal(enrolled.data.version,'1');assert.deepEqual(await mutate({action:'enroll'},'0',key),enrolled);let r=await read();assert.equal(r.process.version,published.data.version);assert.equal(r.coverage,'partial');
@@ -61,9 +69,54 @@ export async function chatSessionProgressNative(ctx){
    await operator.execute('UPDATE membership SET seat_code=? WHERE tenant_id=? AND id=?',[seat.seat_code,tenant,f.member]);
   });
   await check('Chat session concurrent stage replay CAS and fresh authorization',async()=>{
+   console.log('CHECK Chat session missing data and field authorization');
+   const target={action:'stage',stage_key:process.definition.stages[1].key,reason:'Synthetic guarded transition'},before=await version();
+   await bad(mutate(target,before),'STAGE_REQUIREMENTS_NOT_MET');assert.equal(await version(),before);
+   const fieldKey='pipeline_required',sessionObject=ctx.projectionObjects.get(tenant).conversation_session;
+   await field(sessionObject,fieldKey,['read'],async()=>bad(mutate(target,await version()),'FIELD_FORBIDDEN'));
+   console.log('CHECK Chat session blank/false values and same-need effective evidence');
+   await chatOperator.execute('INSERT INTO session_classification(tenant_id,session_id,values_json,version,created_at,updated_at) VALUES (?,?,?,1,UTC_TIMESTAMP(6),UTC_TIMESTAMP(6))',[tenant,v.session,JSON.stringify({pipeline_required:'  '})]);
+   await bad(mutate(target,await version()),'STAGE_REQUIREMENTS_NOT_MET');
+   await chatOperator.execute('UPDATE session_classification SET values_json=? WHERE tenant_id=? AND session_id=?',[JSON.stringify({pipeline_required:false}),tenant,v.session]);
+   await bad(mutate(target,await version()),'STAGE_REQUIREMENTS_NOT_MET');
+   const n1=(await mutate({action:'need',label:'Synthetic guarded need'},await version())).data.id,n2=(await mutate({action:'need',label:'Synthetic separate need'},await version())).data.id;
+   const evidenceBody=(need_id,milestone_key)=>({action:'record',need_id,milestone_key,occurred_at:'2026-06-01T00:00:00.000Z',reason:'Synthetic guard evidence'});
+   const required=process.definition.stages[1].requirements.milestones;
+   await mutate(evidenceBody(n1,required[0]),await version());
+   if(required[1]){await mutate(evidenceBody(n2,required[1]),await version());await bad(mutate(target,await version()),'STAGE_REQUIREMENTS_NOT_MET');const fact=(await mutate(evidenceBody(n1,required[1]),await version())).data.id;await mutate({action:'retract',supersedes_id:fact,reason:'Synthetic retraction'},await version());await bad(mutate(target,await version()),'STAGE_REQUIREMENTS_NOT_MET');await mutate(evidenceBody(n1,required[1]),await version());}
    const current=await version();stageKey=randomUUID();const body={action:'stage',stage_key:process.definition.stages[1].key,reason:'Synthetic consultation'};
-   const results=await Promise.all([mutate(body,current,stageKey),mutate(body,current,stageKey)]);assert.deepEqual(results[0],results[1]);stageReceipt=results[0];assert.equal((await read()).history.length,1);await bad(mutate({...body,reason:'Changed'},current,stageKey),'IDEMPOTENCY_CONFLICT');await bad(mutate({action:'need',label:'Stale'},current),'VERSION_CONFLICT');
+   console.log('CHECK Chat session authorized guarded stage race');
+   const results=await Promise.all([mutate(body,current,stageKey),mutate(body,current,stageKey)]);assert.deepEqual(results[0],results[1]);stageReceipt=results[0];assert.equal((await read()).history.filter(h=>h.type==='stage').length,1);await bad(mutate({...body,reason:'Changed'},current,stageKey),'IDEMPOTENCY_CONFLICT');await bad(mutate({action:'need',label:'Stale'},current),'VERSION_CONFLICT');
    await setRole(grants.filter(g=>!(g.resource==='conversation'&&g.action==='update')));try{await bad(mutate(body,current,stageKey),'FORBIDDEN');}finally{await setRole(grants);}
+  });
+  await check('Chat session system stages and conversion-time rules use pinned durable history',async()=>{
+   const state=await read(),definition=state.process.definition;assert.equal(state.convert_time,null);
+   const conversion={action:'stage',stage_key:'converted',reason:'Synthetic converted stage'},expected=state.version,key=randomUUID();
+   const receipt=await mutate(conversion,expected,key),converted=await read();assert(converted.convert_time);assert.equal(converted.convert_time,converted.history.find(h=>h.id===receipt.data.id).recorded_at);
+   assert.deepEqual(await mutate(conversion,expected,key),receipt);assert.equal((await read()).convert_time,converted.convert_time);
+   await bad(mutate(conversion,await version()),'INVALID_TRANSITION');assert.equal((await read()).convert_time,converted.convert_time);
+   const paged=(await call(request(ops.read,{before_revision:'1'}))).data;assert.equal(paged.history.length,0);assert.equal(paged.convert_time,converted.convert_time);
+   await mutate({action:'stage',stage_key:'new',reason:'Synthetic reopen'},await version());assert.equal((await read()).convert_time,null);
+   // Same retained MySQL ledger, alternative pinned switch configs: disabled clear keeps the last conversion.
+   assert.equal(await readSessionConvertTime(chatPool,tenant,v.session,{...definition,automations:{set_convert_time:true,clear_convert_time:false}}),converted.convert_time);
+   assert.equal(await readSessionConvertTime(chatPool,tenant,v.session,{...definition,automations:{set_convert_time:false,clear_convert_time:true}}),null);
+   assert.equal(await readSessionConvertTime(chatPool,tenant,v.session,{...definition,automations:{set_convert_time:false,clear_convert_time:false}}),null);
+   assert.equal(await readSessionConvertTime(chatPool,other,v.session,definition),null);
+   assert.equal(await readSessionConvertTime(chatPool,tenant,randomUUID(),definition),null);
+   await mutate(conversion,await version());const again=await read();assert(Date.parse(again.convert_time)>Date.parse(converted.convert_time));
+   await mutate({action:'stage',stage_key:'unqualified',reason:'Synthetic unqualified'},await version());assert.equal((await read()).convert_time,null);
+   await mutate(conversion,await version());const pinned=(await read()).convert_time;
+   await operator.execute("UPDATE membership SET seat_code='admin' WHERE tenant_id=? AND id=?",[tenant,f.member]);
+   try{
+    const head=(await call(request(ops.process))).data;
+    for(const system of ['new','received','converted','unqualified']){const body=structuredClone(head.definition);body.stages=body.stages.filter(s=>s.key!==system);await bad(call(request(ops.publish,{body,expected_version:head.current_version,idempotency_key:randomUUID()})),'INVALID_PROCESS');}
+    const wrong=structuredClone(head.definition);wrong.stages.find(s=>s.key==='converted').type='open';await bad(call(request(ops.publish,{body:wrong,expected_version:head.current_version,idempotency_key:randomUUID()})),'INVALID_PROCESS');
+    const downgraded=structuredClone(head.definition);delete downgraded.automations;for(const s of downgraded.stages)delete s.type;await bad(call(request(ops.publish,{body:downgraded,expected_version:head.current_version,idempotency_key:randomUUID()})),'INVALID_PROCESS');
+    const disabled={...head.definition,automations:{set_convert_time:false,clear_convert_time:false}};
+    const published=await call(request(ops.publish,{body:disabled,expected_version:head.current_version,idempotency_key:randomUUID()}));assert.deepEqual((await call(request(ops.process))).data.definition.automations,disabled.automations);
+    assert.equal((await read()).convert_time,pinned);assert.equal((await read()).process.version,state.process.version);assert.equal((await read()).process.current_version,published.data.version);
+    await mutate({action:'stage',stage_key:'new',reason:'Synthetic pinned clear'},await version());assert.equal((await read()).convert_time,null);
+   }finally{await operator.execute('UPDATE membership SET seat_code=? WHERE tenant_id=? AND id=?',[seat.seat_code,tenant,f.member]);}
   });
   await check('Chat session needs same-session evidence corrections and historical owner',async()=>{
    need=(await mutate({action:'need',label:'Synthetic need'},await version())).data.id;const occurred_at='2026-06-01T00:00:00.000Z',milestone_key=process.definition.milestones[0].key;
@@ -71,7 +124,7 @@ export async function chatSessionProgressNative(ctx){
    evidence=(await mutate({action:'record',need_id:need,milestone_key,occurred_at,reason:'Synthetic evidence',message_id:v.message},await version())).data.id;
    correction=(await mutate({action:'replace',supersedes_id:evidence,occurred_at:'2026-06-02T00:00:00.000Z',reason:'Synthetic correction'},await version())).data.id;
    await bad(mutate({action:'retract',supersedes_id:evidence,reason:'Already replaced'},await version()),'EVIDENCE_CONFLICT');
-   const r=await read();assert.equal(r.history.find(x=>x.id===evidence).corrected_by,correction);assert.equal(r.needs[0].id,need);assert.equal(r.history.find(x=>x.id===correction).message_id,null);
+   const r=await read();assert.equal(r.history.find(x=>x.id===evidence).corrected_by,correction);assert(r.needs.some(n=>n.id===need));assert.equal(r.history.find(x=>x.id===correction).message_id,null);
   });
   await check('Chat session current Contact field tenant and source outage denial',async()=>{
    for(const key of ['contact_id','channel','channel_id','page_id','attribution','text'])await field(f.object,key,['read'],async()=>bad(call(request()),'FIELD_FORBIDDEN'));
@@ -97,6 +150,8 @@ export async function chatSessionProgressNative(ctx){
    const mutation={method:'POST',headers:{...headers,origin:'http://localhost:18080','content-type':'application/json','idempotency-key':randomUUID(),'if-match':'"'+current+'"'},body:JSON.stringify({action:'identify_need',label:'Synthetic public progress'})};assert.equal((await fetch(url,mutation)).status,403);mutation.headers['x-csrf-token']=await ctx.auth.csrf(ctx.actorSession);const response=await fetch(url,mutation);assert.equal(response.status,200);const result=await response.json();assert.equal(response.headers.get('etag'),'"'+result.data.version+'"');assert.deepEqual(await (await fetch(url,mutation)).json(),result);
    for(const query of ['?limit=2','?before_revision=1&before_revision=2'])assert.equal((await fetch(url+query,{headers})).status,400);assert.equal((await fetch(root+'/api/v1/session-process',{headers})).status,200);
    const invalidProcess=structuredClone(process.definition);invalidProcess.stages[0].key='won';const invalid=await fetch(root+'/api/v1/session-process',{...mutation,body:JSON.stringify(invalidProcess)});assert.equal(invalid.status,422);assert.equal((await invalid.json()).error.code,'INVALID_PROCESS');
+   await operator.execute("UPDATE membership SET seat_code='admin' WHERE tenant_id=? AND id=?",[tenant,f.member]);
+   try{const head=(await (await fetch(root+'/api/v1/session-process',{headers})).json()).data;const publish=await fetch(root+'/api/v1/session-process',{...mutation,headers:{...mutation.headers,'if-match':'"'+head.current_version+'"','idempotency-key':randomUUID()},body:JSON.stringify(head.definition)});assert.equal(publish.status,200);const published=(await publish.json()).data;assert.deepEqual(published.definition.automations,head.definition.automations);assert.equal(published.definition.stages[0].type,'open');assert.equal((await (await fetch(root+'/api/v1/session-process',{headers})).json()).data.current_version,published.current_version);}finally{await operator.execute('UPDATE membership SET seat_code=? WHERE tenant_id=? AND id=?',[seat.seat_code,tenant,f.member]);}
    assert(stageReceipt&&stageKey);const [[counts]]=await chatOperator.execute("SELECT COUNT(*) n FROM outbox_event WHERE tenant_id=? AND aggregate_id=? AND event_type='session.progress_changed'",[tenant,v.session]);assert(Number(counts.n)>=7);
   });
   await check('Chat session retained legacy receipt and no duplicate historical effect',async()=>{

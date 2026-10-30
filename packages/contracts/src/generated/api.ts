@@ -2662,11 +2662,25 @@ export interface components {
             stages: {
                 key: string;
                 label: string;
+                description?: string;
+                color?: string;
+                /** SessionStageRequirements */
+                requirements?: {
+                    fields?: string[];
+                    need?: boolean;
+                    milestones?: string[];
+                };
+                /** @enum {unknown} */
+                type?: "open" | "converted" | "unqualified";
             }[];
             milestones: {
                 key: string;
                 label: string;
             }[];
+            automations?: {
+                set_convert_time: boolean;
+                clear_convert_time: boolean;
+            };
         };
         "session-process-response": {
             data: {
@@ -2676,11 +2690,25 @@ export interface components {
                     stages: {
                         key: string;
                         label: string;
+                        description?: string;
+                        color?: string;
+                        /** SessionStageRequirements */
+                        requirements?: {
+                            fields?: string[];
+                            need?: boolean;
+                            milestones?: string[];
+                        };
+                        /** @enum {unknown} */
+                        type?: "open" | "converted" | "unqualified";
                     }[];
                     milestones: {
                         key: string;
                         label: string;
                     }[];
+                    automations?: {
+                        set_convert_time: boolean;
+                        clear_convert_time: boolean;
+                    };
                 };
             };
             meta: {
@@ -2748,11 +2776,25 @@ export interface components {
                         stages: {
                             key: string;
                             label: string;
+                            description?: string;
+                            color?: string;
+                            /** SessionStageRequirements */
+                            requirements?: {
+                                fields?: string[];
+                                need?: boolean;
+                                milestones?: string[];
+                            };
+                            /** @enum {unknown} */
+                            type?: "open" | "converted" | "unqualified";
                         }[];
                         milestones: {
                             key: string;
                             label: string;
                         }[];
+                        automations?: {
+                            set_convert_time: boolean;
+                            clear_convert_time: boolean;
+                        };
                     };
                 } | null;
                 needs: {
@@ -2812,6 +2854,7 @@ export interface components {
                 created_at?: string;
                 /** Format: date-time */
                 updated_at?: string;
+                convert_time?: string | null;
             };
             meta: {
                 correlation_id: string;

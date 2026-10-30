@@ -1,5 +1,7 @@
 # Data dictionary
 
+CHG-20261030-06: Conversation `convert_time` is a Chat-owned derived UTC timestamp/null from the latest applicable `session_stage_event` and immutable `session_process_version.definition.automations`. Stage types and rule booleans live in the existing strict versioned definition JSON. No column/table/grant/migration addition; [semantics, storage delta and acceptance](../ux/conversation-pipeline-settings.md#chg-20261030-06--system-stages-and-conversion-time-automation).
+
 ADR-027: one Workflow service owns business automation. CHG-20261021-08 removes legacy Chatflow code, routes and data; historical identifiers in evidence are not supported runtime APIs. Current removal scope is documented in the retirement contract.
 
 

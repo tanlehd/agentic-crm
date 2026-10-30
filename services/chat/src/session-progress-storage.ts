@@ -1,10 +1,10 @@
 import {randomUUID} from 'node:crypto';
 import type {PoolConnection,RowDataPacket} from 'mysql2/promise';
-import type {OwnerCommandBinding} from '@agentic-crm/contracts';
+import {upgradeConversationPipeline,type ConversationPipelineDefinition,type OwnerCommandBinding} from '@agentic-crm/contracts';
 import {nextOwnerCounter,ownerCanonical,ownerFail} from '@agentic-crm/workload-transport';
 
-export type ProcessDefinition={stages:{key:string;label:string}[];milestones:{key:string;label:string}[]};
-export const defaultSessionProcess:ProcessDefinition={stages:[{key:'received',label:'Tiếp nhận'},{key:'consulting',label:'Tư vấn'},{key:'next_step',label:'Bước tiếp theo'}],milestones:[{key:'need_confirmed',label:'Đã xác nhận nhu cầu'},{key:'next_step_agreed',label:'Đã thống nhất bước tiếp theo'}]};
+export type ProcessDefinition=ConversationPipelineDefinition;
+export const defaultSessionProcess:ProcessDefinition=upgradeConversationPipeline({stages:[{key:'received',label:'Tiếp nhận'},{key:'consulting',label:'Tư vấn'},{key:'next_step',label:'Bước tiếp theo'}],milestones:[{key:'need_confirmed',label:'Đã xác nhận nhu cầu'},{key:'next_step_agreed',label:'Đã thống nhất bước tiếp theo'}]});
 export const sessionStamp=(v:unknown)=>v==null?null:v instanceof Date?v.toISOString():new Date(String(v).replace(' ','T').replace(/Z?$/,'Z')).toISOString();
 export function cleanSessionRow(row:RowDataPacket){const {tenant_id:_tenant,...rest}=row;for(const k of ['version','revision','process_version'])if(rest[k]!=null)rest[k]=String(rest[k]);for(const k of ['created_at','updated_at','recorded_at','occurred_at'])if(rest[k]!=null)rest[k]=sessionStamp(rest[k]);return rest;}
 export async function readSessionProcess(c:PoolConnection,tenant:string,version?:string){

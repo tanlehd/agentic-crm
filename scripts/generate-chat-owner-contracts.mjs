@@ -82,6 +82,7 @@ Object.assign(definitions, {
 const operations = [];
 definitions.OwnerCommandBinding.properties.metadata = ref('OwnerMetadataPin');
 definitions.OwnerCommandBinding.properties.session_write_fields = fields;
+definitions.OwnerCommandBinding.properties.session_read_fields = fields;
 definitions.OwnerCommandBinding.properties.record_read_fields = fields;
 definitions.OwnerCommandBinding.properties.need = exact({need_id:uuid,assessment_version:seq});
 definitions.OwnerOutcomeSource = exact({resource:ref('OwnerResource'),source_digest:hash});
